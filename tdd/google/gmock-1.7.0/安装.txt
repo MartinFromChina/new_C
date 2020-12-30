@@ -1,0 +1,28 @@
+1.获取GTest/GMock源码
+从Google网站上http://code.google.com/p/googlemock/downloads/list下载GMock源码（GMock源码中包含GTest源码，无需另外下载GTest源码）
+放到本地目录，我下载的GMock源码版本是gmock-1.7.0，选择放在/home/USERNAME/Download下，解压，生成gmock-1.7.0
+cd gmock-1.7.0
+
+2.创建连接库
+生成gtest-all.o :         g++ -isystem gtest/include -I./gtest -isystem ./include -I. -pthread -c ./gtest/src/gtest-all.cc
+生成gmock-all.o :      g++ -isystem gtest/include -I./gtest -isystem ./include -I. -pthread -c ./src/gmock-all.cc 
+生成libgtest.a和libgmock.a :    ar -rv libgmock.a gtest-all.o gmock-all.o
+
+3.拷贝文件到/use/local目录
+将gmock-1.7.0/gtest/include下面的gtest目录拷贝到/usr/local/include下
+cp gmock-1.7.0/gtest/include/gtest/ /usr/local/include -r
+将gmock-1.7.0/include下面的gmock目录拷贝到/usr/local/include下
+cp gmock-1.7.0/include/gmock/ /usr/local/include -r
+cp gmock-1.7.0/libgtest.a /usr/local/lib
+cp gmock-1.7.0/libgmock.a /usr/local/lib
+4.编译连接，测试
+g++ -o executefile  yourcode.cpp -lpthread -lgtest -lgmock
+ 
+最后附上GTest/GMock学习文档：
+GTest学习文章：
+http://www.cnblogs.com/coderzh/archive/2009/04/06/1426755.html
+GMock三篇学习文章：
+1，http://code.google.com/p/googlemock/wiki/ForDummies
+2，http://code.google.com/p/googlemock/wiki/CheatSheet
+3，http://code.google.com/p/googlemock/wiki/CookBook
+按上述顺序阅读，最后一篇文章比较长。
