@@ -1,6 +1,17 @@
-test : test_main.c another.c another.h print1.c print2.c print3.c print1.h \
-	print2.h print3.h	
-	gcc -o test test_main.c another.c print1.c print2.c print3.c
+TARGET = test
+SRCS = test_main.c another.c print1.c print2.c print3.c
+OBJS = $(SRCS: .c = .o)
+
+CC = gcc
+CFLAGS = -Wall -std = gnu99
+
+$(TARGET):$(OBJS)
+	echo TARGET:$@
+	echo OBJECTS:$@
+	$(CC) -o $@ $^
 
 clean :
-	rm test 
+	rm -rf $(TARGET)
+
+%.o:%.c
+	$(CC) $(CFLAGS) -o $@ -c $<
