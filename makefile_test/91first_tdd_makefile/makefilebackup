@@ -1,19 +1,9 @@
 TARGET = test
 CC = g++
-DEFS = -DGTEST_IMPLEMENTATION_=1 
-
-
-SRCS = \
-     tdd_main.cc
-	 
-srcdir1 = ../../tdd/google/gmock-1.7.0/gtest
-srcdir2 = ../../tdd/google/gmock-1.7.0
 
 # We define the global AM_CPPFLAGS as everything we compile includes from these
 # directories.
-AM_CPPFLAGS = -I$(srcdir1) -I$(srcdir1)/include/gtest/  -I$(srcdir1)/include/gtest/internal \
-			  -I$(srcdir2) -I$(srcdir2)/include/gmock -I$(srcdir2)/include/gmock/internal
-AM_CPPFLAGS += $(DEFS) 
+AM_CPPFLAGS = -I$(srcdir) -I$(srcdir)/include
 
 # gtest source files that we don't compile directly.  They are
 # #included by gtest-all.cc.
@@ -76,15 +66,16 @@ gmock_pkginclude_internal_HEADERS = \
   ../../tdd/google/gmock-1.7.0/include/gmock/internal/gmock-internal-utils.h \
   ../../tdd/google/gmock-1.7.0/include/gmock/internal/gmock-port.h
  
-SRCS += $(GTEST_SRC)
+
 SRCS += $(gtest_pkginclude_HEADERS)
 SRCS += $(gtest_pkginclude_internal_HEADERS)
-SRCS += $(gmock_GMOCK_SOURCE_INGLUDES)
 SRCS += $(gmock_pkginclude_HEADERS)
 SRCS += $(gmock_pkginclude_internal_HEADERS)
+SRCS += $(GTEST_SRC)
+SRCS += $(gmock_GMOCK_SOURCE_INGLUDES)
   
 $(TARGET):$(SRCS)
-	$(CC) $(AM_CPPFLAGS) $(SRCS) -o $(TARGET)
+	$(CC) $(SRCS) -o $(TARGET)
 
 clean :
 	rm -rf $(TARGET)
