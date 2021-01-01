@@ -37,7 +37,7 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = gmock_test
+TESTS = gmock_test.a
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -75,27 +75,30 @@ GMOCK_SRCS_ = $(GMOCK_DIR)/src/*.cc $(GMOCK_HEADERS)
 # Google Test compile fast and for ordinary users their source rarely
 # changes.
 gtest-all.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GMOCK_DIR) $(CXXFLAGS) \
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include/gtest/internal $(CXXFLAGS) -I$(GMOCK_DIR) $(CXXFLAGS) \
             -c $(GTEST_DIR)/src/gtest-all.cc
 
 gmock-all.o : $(GMOCK_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GMOCK_DIR) $(CXXFLAGS) \
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)include/gmock/internal $(CXXFLAGS) -I$(GMOCK_DIR) $(CXXFLAGS) \
             -c $(GMOCK_DIR)/src/gmock-all.cc
 
-gmock_main.o : $(GMOCK_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GMOCK_DIR) $(CXXFLAGS) \
-            -c $(GMOCK_DIR)/src/gmock_main.cc
+#gmock_main.o : $(GMOCK_SRCS_)
+#	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GMOCK_DIR) $(CXXFLAGS) \
+#            -c $(GMOCK_DIR)/src/gmock_main.cc
 
 gmock.a : gmock-all.o gtest-all.o
 	$(AR) $(ARFLAGS) $@ $^
 
-gmock_main.a : gmock-all.o gtest-all.o gmock_main.o
+#gmock_main.a : gmock-all.o gtest-all.o gmock_main.o
+#	$(AR) $(ARFLAGS) $@ $^
+	
+$(TESTS): gtest-all.o gmock-all.o
 	$(AR) $(ARFLAGS) $@ $^
 
 # Builds a sample test.
 
-gmock_test.o : $(USER_DIR)/gmock_test.cc $(GMOCK_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/gmock_test.cc
+#gmock_test.o : $(USER_DIR)/gmock_test.cc $(GMOCK_HEADERS)
+#	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/gmock_test.cc
 
-gmock_test : gmock_test.o gmock_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+#gmock_test : gmock_test.o gmock_main.a
+#	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
