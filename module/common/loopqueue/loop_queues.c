@@ -13,7 +13,7 @@ typedef enum
 
 static X_Void UpdataListState( const sListManager *p_manager)
 {
-	if(p_manager == X_Null) {return;}
+	//if(p_manager == X_Null) {return;} // no need null check ,because the caller is me 
 	if(p_manager->p_LMP->used_node_num == 0)
 	{
 		p_manager->p_LMP->state = QueueEmpty;
@@ -43,7 +43,7 @@ static uint16_t NodeMoveForward(uint16_t max_node,uint16_t current_node)
 static uint16_t NodeNumberInMoveForward(const sListManager *p_manager)
 {
 		uint16_t new_in_node_number;
-		if(p_manager == X_Null) {return 0;}
+		//if(p_manager == X_Null) {return 0;}  // no need null check ,because the caller is me 
 		new_in_node_number = NodeMoveForward(p_manager ->ValidNodeNumber,p_manager->p_LMP->first_in_node_num);
 		p_manager->p_LMP->first_in_node_num = new_in_node_number;
 		return new_in_node_number;
@@ -51,7 +51,7 @@ static uint16_t NodeNumberInMoveForward(const sListManager *p_manager)
 static uint16_t NodeNumberOutMoveForward(const sListManager *p_manager)
 {
 	uint16_t new_out_node_number;
-	if(p_manager == X_Null) {return 0;}
+	//if(p_manager == X_Null) {return 0;} // no need null check ,because the caller is me 
 	new_out_node_number = NodeMoveForward(p_manager ->ValidNodeNumber,p_manager->p_LMP->first_out_node_num);
 	p_manager->p_LMP->first_out_node_num = new_out_node_number;
 	return new_out_node_number;
@@ -68,17 +68,17 @@ X_Void 		SimpleQueueInitialize(const sListManager *p_manager)
 	p_manager->p_LMP->first_out_node_num = 0;
 	p_manager->p_LMP->used_node_num = 0;
 
-	if(p_manager->ValidNodeNumber >= 0xffff) {return;}
+	if(p_manager->ValidNodeNumber >= INVALID_NODE_NUM) {return;}
 	for(i = 0;i< p_manager->ValidNodeNumber;i++)
 	{
 		p_manager->p_buf[i] = BUF_FREE;
 	}
 
 }
-uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean *isOK,X_Boolean is_OccupyPermit)
+uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean is_OccupyPermit)
 {
 	uint16_t buf_number,current_free_node_number;
-	if(p_manager == X_Null) {*isOK = X_False; return 0;}
+	if(p_manager == X_Null) { return INVALID_NODE_NUM;}
 
 	buf_number = 0;
 	current_free_node_number = p_manager->p_LMP->first_in_node_num;
@@ -96,12 +96,10 @@ uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean *isOK,X_B
 				UpdataListState(p_manager);
 
 				buf_number = current_free_node_number;
-				*isOK = X_True;
 			}
 			else
 			{
-				*isOK = X_False;
-				buf_number = 0;
+				buf_number = INVALID_NODE_NUM;
 			}
 		break;
 		case QueueFull:
@@ -114,46 +112,39 @@ uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean *isOK,X_B
 				else {p_manager->p_buf[current_free_node_number] = BUF_FREE;}
 
 				buf_number = current_free_node_number;
-				*isOK = X_True;
 			}
 			else
 			{
-				*isOK = X_False;
-				buf_number = 0;
+				buf_number = INVALID_NODE_NUM;
 			}
 		break;
 		default:
-			*isOK = X_False;
-			buf_number = 0;
+			buf_number = INVALID_NODE_NUM;
 		break;
 	}
 	return buf_number;
 }
-uint16_t    SimpleQueueFirstOut(const sListManager *p_manager,X_Boolean *isOK)
+uint16_t    SimpleQueueFirstOut(const sListManager *p_manager)
 {
 	uint16_t buf_number,current_filled_node_number;
-	if(p_manager == X_Null) {*isOK = X_False; return 0;}
+	if(p_manager == X_Null) { return INVALID_NODE_NUM;}
 
 	buf_number = 0;
 	current_filled_node_number = p_manager->p_LMP->first_out_node_num;
 	switch(p_manager->p_LMP->state)
 	{
 		case QueueEmpty:
-			*isOK = X_False;
-			buf_number = 0;
+			buf_number = INVALID_NODE_NUM;
 		break;
 		case QueueNormal:
 		case QueueFull:
 			NodeNumberOutMoveForward(p_manager);
 			if(p_manager->p_LMP->used_node_num > 0) {p_manager->p_LMP->used_node_num --;}
 			UpdataListState(p_manager);
-
-			*isOK = X_True;
 			buf_number = current_filled_node_number;
 		break;
 		default:
-			*isOK = X_False;
-			buf_number = 0;
+			buf_number = INVALID_NODE_NUM;
 		break;
 	}
 	return buf_number;

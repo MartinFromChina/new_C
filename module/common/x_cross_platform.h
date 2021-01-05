@@ -1,5 +1,5 @@
-#ifndef KEILMDK_H
-#define KEILMDK_H
+#ifndef __X_CROSS_PLATFORM_H
+#define __X_CROSS_PLATFORM_H
 
 #include <stdint.h>
 #include <wchar.h>

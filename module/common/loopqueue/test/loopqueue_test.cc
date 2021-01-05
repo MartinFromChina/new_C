@@ -14,19 +14,18 @@ SIMPLE_LOOPQUEUE_DEF(p_queue,200);
 TEST(queue_test,normal)
 {
 	uint16_t i = 200;
-	X_Boolean isOK;
 	SimpleQueueInitialize(p_queue);
 
 
 	do{
-		buf_number = SimpleQueueFirstIn(p_queue,&isOK,X_False);
-		EXPECT_EQ(X_True,isOK);
+		buf_number = SimpleQueueFirstIn(p_queue,X_False);
+		EXPECT_LT(buf_number,200);
 		
 		data_buf[buf_number] = i;
 			//printf("buf_number[%d] pushdata %d  ; occupy not permit\r\n",buf_number,i);
 		
-		buf_number = SimpleQueueFirstOut(p_queue,&isOK);
-		EXPECT_EQ(X_True,isOK);
+		buf_number = SimpleQueueFirstOut(p_queue);
+		EXPECT_LT(buf_number,200);
 		EXPECT_EQ(200-i,buf_number);
 		
 	}while(i-- > 1);

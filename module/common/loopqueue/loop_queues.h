@@ -38,6 +38,8 @@ typedef struct
 	sListManagerParam *p_LMP;
 }sListManager;
 
+#define INVALID_NODE_NUM  (0xFFFF)
+
 #define SIMPLE_LOOPQUEUE_DEF_WITHOUT_POINTER(p_manager,max_node_number)            					\
 		static uint8_t  CONCAT_2(p_manager,_loopqueue_node_buf)[max_node_number];	 				\
 		static sListManagerParam CONCAT_2(p_manager,_loopqueue_param) = {0,0,0,0};    				\
@@ -58,8 +60,8 @@ typedef struct
 		static const  sListManager * p_manager = &CONCAT_2(p_manager,_loopqueue_entry)
 
 X_Void 		SimpleQueueInitialize(const sListManager *p_manager);
-uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean *isOK,X_Boolean is_OccupyPermit);
-uint16_t    SimpleQueueFirstOut(const sListManager *p_manager,X_Boolean *isOK);
+uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean is_OccupyPermit);
+uint16_t    SimpleQueueFirstOut(const sListManager *p_manager);
 X_Void      ClearSimpleQueue(const sListManager *p_manager);
 X_Void      RealseSimpleQueueBuf(const sListManager *p_manager,uint8_t buf_num);
 uint16_t    GetSimpleQueueUsedNodeNumber(const sListManager *p_manager);
