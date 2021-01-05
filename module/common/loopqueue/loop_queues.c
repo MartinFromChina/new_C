@@ -75,6 +75,7 @@ X_Void 		SimpleQueueInitialize(const sListManager *p_manager)
 	}
 
 }
+
 uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean is_OccupyPermit)
 {
 	uint16_t buf_number,current_free_node_number;
