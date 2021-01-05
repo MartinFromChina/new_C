@@ -1,37 +1,44 @@
 DLIBS = ../../google_test/lib/libgmock.a
-CXX = g++
-INC = -I./common
+COMMON_DIR = ../common
 TARGET = loop_queues
 
 SRCFILES = loopqueue_test.cc 
-#loop_queues.c
 
-#DEPFILES := $(patsubst %.c,%.d,$(SRCFILES)) 
+OBJS = $(SRCFILES: .cc = .o) 
+#loop_queues.o
 
--include $(DEPFILES) 
+CPPFLAGS += -isystem $(COMMON_DIR)
 
-#OBJS = $(SRCFILES: .c = .o)
-OBJS = $(SRCFILES: .cc = .o)
+# Flags passed to the C++ compiler.
+CXXFLAGS += -g -Wall -Wextra -pthread
 
-CFLAGS = -pthread
-#vpath %.h ../common
+all : $(TARGET)
 
-$(TARGET) : $(OBJS)
-	echo TARGET:$@
-	echo OBJECTS:$@
-	$(CXX) $(CFLAGS) -o $@ $^ $(DLIBS)
-
-
-#%.o: %.c makefile 
-#	$(CXX) $(CFLAGS) -MMD -MP -o $@ -c $<
-	
-#loop_queues.h : ../KeilMDK.h ../CommonMarco.h
-#loop_queues.o : loop_queues.c 
-#	g++ -o loop_queues.c ../KeilMDK.h ../CommonMarco.h
-#loopqueue_test.o : loopqueue_test.cc 
-#	g++ -o loopqueue_test.cc loop_queues.h
 clean:
-	rm loop_queues
+	rm $(TARGET) loop_queues.o loopqueue_test.o
+	
+QUEUE_HEADERS = $(COMMON_DIR)/*.h 
+QUEUE_SRCS_ = $(QUEUE_HEADERS)				\
+				*.c *.h
+				
+TEST_QUEUE_HEADERS = *.h 
+TEST_QUEUE_SRCS_ = $(QUEUE_HEADERS)				\
+				 *.cc  
+
+loop_queues.o : loop_queues.c loop_queues.h ../KeilMDK.h ../CommonMarco.h
+	$(CXX) $(CXXFLAGS) -I../../common    \
+            -c loop_queues.c
+
+loopqueue_test.o : loopqueue_test.cc tdd_common.h loop_queues.h ../KeilMDK.h ../CommonMarco.h
+	$(CXX) $(CXXFLAGS) -I../../common \
+            -c loopqueue_test.cc
+			
+
+			
+$(TARGET) : loopqueue_test.o loop_queues.o
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(DLIBS)
+
+
 
 
 

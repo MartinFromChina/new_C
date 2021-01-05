@@ -10,8 +10,8 @@
  extern "C"{
 #endif
 
-#include "..\KeilMDK.h"
-#include "..\CommonMarco.h"
+#include "../../common/KeilMDK.h"
+#include "../../common/CommonMarco.h"
 
 typedef enum
 {
@@ -49,9 +49,9 @@ typedef struct
 		static sListManagerParam CONCAT_2(p_manager,_loopqueue_param) = {0,0,0,0};    				\
 		static const  sListManager  CONCAT_2(p_manager,_loopqueue_entry) = {						\
 			CONCAT_2(p_manager,_loopqueue_node_buf),												\
-			{			max_node_number,																		\
+						max_node_number,														    \
 			&CONCAT_2(p_manager,_loopqueue_param),													\
-		} ;																						    \
+		};																						    \
 		static const  sListManager * p_manager = &CONCAT_2(p_manager,_loopqueue_entry)
 
 X_Void 		SimpleQueueInitialize(const sListManager *p_manager);
