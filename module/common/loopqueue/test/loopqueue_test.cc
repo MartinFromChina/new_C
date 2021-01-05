@@ -82,6 +82,34 @@ TEST(queue_test,node_occupy_test)
 	
 };
 
+#define BIG_QUEUE_SIZE (10000)
+TEST(queue_test,time_test)
+{
+	uint16_t i = OPERATION_TIMES,j;
+	SIMPLE_LOOPQUEUE_DEF(p_big_queue,BIG_QUEUE_SIZE);
+	
+	for(j=0;j<10;j++)
+	{
+		do{
+		buf_number = SimpleQueueFirstIn(p_big_queue,X_True);
+		EXPECT_LT(buf_number,OPERATION_TIMES);
+		
+		buf_number = SimpleQueueFirstOut(p_big_queue);
+		EXPECT_EQ((OPERATION_TIMES-i)%BIG_QUEUE_SIZE,buf_number);
+		
+		}while(i-- > 1);
+		
+		i = OPERATION_TIMES;
+		ClearSimpleQueue(p_big_queue);
+		
+	}
+	
+	
+	
+	
+	
+};
+
 
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"Running main() from loopqueue_test.cc\n";

@@ -3,6 +3,8 @@
 #define BUF_FREE   0
 #define BUF_USED   1
 
+#define USE_INLINE  //__inline // it seems use _-inline cost more time in google_test_frame , I don't understand it 
+
 typedef enum
 {
 	QueueEmpty = 0,
@@ -11,7 +13,7 @@ typedef enum
 	QueueStateError,
 }QueueState;
 
-static X_Void UpdataListState( const sListManager *p_manager)
+static USE_INLINE X_Void UpdataListState( const sListManager *p_manager)
 {
 	//if(p_manager == X_Null) {return;} // no need null check ,because the caller is me 
 	if(p_manager->p_LMP->used_node_num == 0)
@@ -27,7 +29,7 @@ static X_Void UpdataListState( const sListManager *p_manager)
 	p_manager->p_LMP->state = QueueNormal;
 }
 
-static uint16_t NodeMoveForward(uint16_t max_node,uint16_t current_node)
+static USE_INLINE uint16_t NodeMoveForward(uint16_t max_node,uint16_t current_node)
 {
 	uint16_t next_node;
 	if((current_node+1) >= max_node)
@@ -40,7 +42,7 @@ static uint16_t NodeMoveForward(uint16_t max_node,uint16_t current_node)
 	}
 	return next_node;
 }
-static uint16_t NodeNumberInMoveForward(const sListManager *p_manager)
+static USE_INLINE uint16_t NodeNumberInMoveForward(const sListManager *p_manager)
 {
 		uint16_t new_in_node_number;
 		//if(p_manager == X_Null) {return 0;}  // no need null check ,because the caller is me 
@@ -48,7 +50,7 @@ static uint16_t NodeNumberInMoveForward(const sListManager *p_manager)
 		p_manager->p_LMP->first_in_node_num = new_in_node_number;
 		return new_in_node_number;
 }
-static uint16_t NodeNumberOutMoveForward(const sListManager *p_manager)
+static USE_INLINE uint16_t NodeNumberOutMoveForward(const sListManager *p_manager)
 {
 	uint16_t new_out_node_number;
 	//if(p_manager == X_Null) {return 0;} // no need null check ,because the caller is me 
