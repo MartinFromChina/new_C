@@ -10,10 +10,10 @@
  extern "C"{
 #endif
 /*
-#include "../../common/X_cross_platform.h"
+#include "../../common/x_cross_platform.h"
 #include "../../common/CommonMarco.h"
 */
-#include "../X_cross_platform.h"
+#include "../x_cross_platform.h"
 #include "../CommonMarco.h"
 
 typedef enum
@@ -66,6 +66,27 @@ X_Void      ClearSimpleQueue(const sListManager *p_manager);
 X_Void      RealseSimpleQueueBuf(const sListManager *p_manager,uint8_t buf_num);
 uint16_t    GetSimpleQueueUsedNodeNumber(const sListManager *p_manager);
 X_Boolean   DoesSimpleQueueEmpty(const sListManager *p_manager);
+
+/**********************
+the param "X_Boolean is_OccupyPermit" is set to false when you want to protect your node ,
+if the node is not permit occupy , other caller can't insert the node a new information by function SimpleQueueFirstIn, it suck here in a word
+but still ClearSimpleQueue can clear it all
+
+you could use SimpleQueueFirstOut to get the node information 
+!!! even you called SimpleQueueFirstOut , the node is still yours ,not released to others
+ when you finish using it ,you should call RealseSimpleQueueBuf to release the node 
+*************************/
+
+/**********************
+if the node is permit occupy
+just call SimpleQueueFirstIn,SimpleQueueFirstOut whenever you want 
+*************************/
+
+/**********************
+if the return value is INVALID_NODE_NUM,
+sth wrong ,call ClearSimpleQueue to reinit it
+*************************/
+
 #ifdef __cplusplus
 }
 #endif
