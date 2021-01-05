@@ -9,9 +9,12 @@
 #ifdef __cplusplus
  extern "C"{
 #endif
-
-#include "../../common/KeilMDK.h"
+/*
+#include "../../common/X_cross_platform.h"
 #include "../../common/CommonMarco.h"
+*/
+#include "../X_cross_platform.h"
+#include "../CommonMarco.h"
 
 typedef enum
 {

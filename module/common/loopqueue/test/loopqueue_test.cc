@@ -26,7 +26,8 @@ TEST(queue_test,normal)
 			//printf("buf_number[%d] pushdata %d  ; occupy not permit\r\n",buf_number,i);
 		
 		buf_number = SimpleQueueFirstOut(p_queue,&isOK);
-		EXPECT_EQ(X_False,isOK);
+		EXPECT_EQ(X_True,isOK);
+		EXPECT_EQ(200-i,buf_number);
 		
 	}while(i-- > 1);
 	

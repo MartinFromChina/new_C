@@ -1,5 +1,4 @@
 DLIBS = ../../../google_test/lib/libgmock.a
-COMMON_DIR = ../common
 TARGET = loop_queues
 
 SRCFILES = loopqueue_test.cc 
@@ -16,20 +15,12 @@ all : $(TARGET)
 
 clean:
 	rm $(TARGET) loop_queues.o loopqueue_test.o
-	
-QUEUE_HEADERS = $(COMMON_DIR)/*.h 
-QUEUE_SRCS_ = $(QUEUE_HEADERS)				\
-				*.c *.h
-				
-TEST_QUEUE_HEADERS = *.h 
-TEST_QUEUE_SRCS_ = $(QUEUE_HEADERS)				\
-				 *.cc  
 
-loop_queues.o : ../loop_queues.c ../loop_queues.h ../../KeilMDK.h ../../CommonMarco.h
+loop_queues.o : ../loop_queues.c ../loop_queues.h ../../x_cross_platform.h ../../CommonMarco.h
 	$(CXX) $(CXXFLAGS) -I../../../common    \
             -c ../loop_queues.c
 
-loopqueue_test.o : loopqueue_test.cc tdd_common.h ../loop_queues.h ../../KeilMDK.h ../../CommonMarco.h
+loopqueue_test.o : loopqueue_test.cc tdd_common.h ../loop_queues.h ../../x_cross_platform.h ../../CommonMarco.h
 	$(CXX) $(CXXFLAGS) -I../../../common \
             -c loopqueue_test.cc
 			
