@@ -1,7 +1,7 @@
 #include <iostream>
 #include "tdd_common.h"
 
-#include "loop_queues.h"
+#include "../loop_queues.h"
 
 #define MAX_LONG_QUEUE_LENGTH   270
 

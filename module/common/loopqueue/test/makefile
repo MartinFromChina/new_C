@@ -1,4 +1,4 @@
-DLIBS = ../../google_test/lib/libgmock.a
+DLIBS = ../../../google_test/lib/libgmock.a
 COMMON_DIR = ../common
 TARGET = loop_queues
 
@@ -25,12 +25,12 @@ TEST_QUEUE_HEADERS = *.h
 TEST_QUEUE_SRCS_ = $(QUEUE_HEADERS)				\
 				 *.cc  
 
-loop_queues.o : loop_queues.c loop_queues.h ../KeilMDK.h ../CommonMarco.h
-	$(CXX) $(CXXFLAGS) -I../../common    \
-            -c loop_queues.c
+loop_queues.o : ../loop_queues.c ../loop_queues.h ../../KeilMDK.h ../../CommonMarco.h
+	$(CXX) $(CXXFLAGS) -I../../../common    \
+            -c ../loop_queues.c
 
-loopqueue_test.o : loopqueue_test.cc tdd_common.h loop_queues.h ../KeilMDK.h ../CommonMarco.h
-	$(CXX) $(CXXFLAGS) -I../../common \
+loopqueue_test.o : loopqueue_test.cc tdd_common.h ../loop_queues.h ../../KeilMDK.h ../../CommonMarco.h
+	$(CXX) $(CXXFLAGS) -I../../../common \
             -c loopqueue_test.cc
 			
 
