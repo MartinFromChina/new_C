@@ -7,28 +7,32 @@
 
 X_Void 				BT_PriorityQueueInit(const sPrioListManager *p_manager)
 {
+	if(p_manager == X_Null) {return;}
 
+
+
+	p_manager ->p_PLP ->isInit = X_True;
 }
 CURRENT_PRIORITY 	BT_PriorityQueueInsert(const sPrioListManager *p_manager,uint16_t prio_to_insert)
 {
 	if(p_manager == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
-	if(p_manager ->p_PLP -> isInit == X_False) {return INVALID_PRIOQUEUE_PRIORITY;}
-	return 0;
+	if(p_manager ->p_PLP -> isInit != X_True) {return INVALID_PRIOQUEUE_PRIORITY;}
+	return 30;
 }
 CURRENT_PRIORITY 	BT_PriorityQueueFindMin(const sPrioListManager *p_manager)
 {
 	if(p_manager == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
-	if(p_manager ->p_PLP -> isInit == X_False) {return INVALID_PRIOQUEUE_PRIORITY;}
+	if(p_manager ->p_PLP -> isInit != X_True) {return INVALID_PRIOQUEUE_PRIORITY;}
 
-	return 0;
+	return 30;
 }
 
 CURRENT_PRIORITY 	BT_PriorityQueueReleaseMin(const sPrioListManager *p_manager)
 {
 	if(p_manager == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
-	if(p_manager ->p_PLP -> isInit == X_False) {return INVALID_PRIOQUEUE_PRIORITY;}
+	if(p_manager ->p_PLP -> isInit != X_True) {return INVALID_PRIOQUEUE_PRIORITY;}
 
-	return 0;
+	return 30;
 }
 
 X_Void 				BT_PriorityQueueClear(const sPrioListManager *p_manager)
@@ -38,14 +42,14 @@ X_Void 				BT_PriorityQueueClear(const sPrioListManager *p_manager)
 X_Boolean 			BT_DoesPriorityQueueEmpty(const sPrioListManager *p_manager)
 {
 	if(p_manager == X_Null) {return X_True;}
-	if(p_manager ->p_PLP -> isInit == X_False) {return X_True;}
+	if(p_manager ->p_PLP -> isInit != X_True) {return X_True;}
 
 	return X_False;
 }
 uint16_t 			BT_GetPriorityQueueUsedNodeNum(const sPrioListManager *p_manager)
 {
 	if(p_manager == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
-	if(p_manager ->p_PLP -> isInit == X_False) {return INVALID_PRIOQUEUE_PRIORITY;}
+	if(p_manager ->p_PLP -> isInit != X_True) {return INVALID_PRIOQUEUE_PRIORITY;}
 
 	return 0;
 }
