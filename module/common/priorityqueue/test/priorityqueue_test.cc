@@ -27,29 +27,24 @@ uint16_t 				BH_GetPriorityQueueUsedNodeNum(X_PriorityQueue H);
 
 *************************/
 
-static  uint16_t buf_number;
+static  uint16_t buf_number = 0;
 #define OPERATION_TIMES 0xfffe
-APP_PRIORITYQUEUE_DEF_WITHOUT_POINTER(p_prio_queue,5000);
+APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_prio_queue,200);
 
 TEST(queue_test,normal)
 {
 	uint16_t i = 200;
 	static 	uint8_t data_buf[200];
-	PriorityQueueInit(p_prio_queue);
+	BT_PriorityQueueInit(p_prio_queue);
 
 	do{
-		buf_number = PriorityQueuePush(p_queue,X_False);
+		buf_number = BT_PriorityQueueInsert(p_prio_queue,30);
+		UNUSED_VARIABLE(data_buf);
+		
+		buf_number = BT_PriorityQueueFindMin(p_prio_queue);
 		EXPECT_LT(buf_number,200);
 		
-		data_buf[buf_number] = i;
-			//printf("buf_number[%d] pushdata %d  ; occupy not permit\r\n",buf_number,i);
-			UNUSED_VARIABLE(data_buf);
-		
-		buf_number = SimpleQueueFirstOut(p_queue);
-		EXPECT_LT(buf_number,200);
-		EXPECT_EQ(200-i,buf_number);
-		
-	}while(i-- > 1);
+	}while(0);
 	
 };
 

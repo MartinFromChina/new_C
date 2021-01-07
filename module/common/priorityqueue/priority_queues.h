@@ -13,9 +13,14 @@
 #define INVALID_PRIOQUEUE_PRIORITY  (0xFFFF) 
 #define CURRENT_PRIORITY uint16_t
 
+typedef struct
+{
+	CURRENT_PRIORITY     prio;
+}sPrioListManager;
+
 
 #define APP_BIT_TABLE_PRIORITYQUEUE_DEF_WITHOUT_POINTER() 
-#define APP_BIT_TABLE_PRIORITYQUEUE_DEF() 
+#define APP_BIT_TABLE_PRIORITYQUEUE_DEF(x,max_num)   static const sPrioListManager *x;
 
 
 X_Void 				BT_PriorityQueueInit(const sPrioListManager *p_manager);
@@ -39,7 +44,7 @@ X_Void 					BH_PriorityQueueClear(X_PriorityQueue H);
 CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue H,uint16_t priority);
 CURRENT_PRIORITY 		BH_PriorityQueueFindMin(X_PriorityQueue H);
 CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue H);
-X_boolean 				BH_DoesPriorityQueueEmpty(X_PriorityQueue H);
+X_Boolean 				BH_DoesPriorityQueueEmpty(X_PriorityQueue H);
 uint16_t 				BH_GetPriorityQueueUsedNodeNum(X_PriorityQueue H);
 
 
