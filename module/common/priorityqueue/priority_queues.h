@@ -11,6 +11,8 @@
 #include "../CommonMarco.h"
 
 #define INVALID_PRIOQUEUE_PRIORITY  (0xFFFF) 
+#define MAX_PRIOQUEUE_PRIORITY ((uint16_t)(INVALID_PRIOQUEUE_PRIORITY - 1))
+
 #define CURRENT_PRIORITY uint16_t
 
 /*

@@ -61,6 +61,26 @@ TEST(queue_test,init)
 	
 };
 
+TEST(queue_test,prio_scope)
+{
+	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_1,MAX_PRIOQUEUE_PRIORITY);
+	BT_PriorityQueueInit(p_1);
+	EXPECT_EQ(0,BT_GetPriorityQueueUsedNodeNum(p_1));
+	
+	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_2,MAX_PRIOQUEUE_PRIORITY + 1);
+	BT_PriorityQueueInit(p_2);
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BT_GetPriorityQueueUsedNodeNum(p_2));
+
+	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_3,MAX_PRIOQUEUE_PRIORITY - 1);
+	BT_PriorityQueueInit(p_3);
+	EXPECT_EQ(0,BT_GetPriorityQueueUsedNodeNum(p_3));
+	
+
+
+}
+
+
+
 /************************
 X_PriorityQueue 		BH_PriorityQueueInit(uint16_t max_elements);
 X_Void 					BH_PriorityQueueDestory(X_PriorityQueue H);

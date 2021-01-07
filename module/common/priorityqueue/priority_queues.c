@@ -8,7 +8,7 @@
 X_Void 				BT_PriorityQueueInit(const sPrioListManager *p_manager)
 {
 	if(p_manager == X_Null) {return;}
-
+	if(p_manager ->max_priority > MAX_PRIOQUEUE_PRIORITY)  {return;}
 
 
 	p_manager ->p_PLP ->isInit = X_True;
