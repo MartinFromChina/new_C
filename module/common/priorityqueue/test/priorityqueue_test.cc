@@ -128,6 +128,44 @@ TEST(queue_test,normal_insert)
 	EXPECT_EQ(buf_number,17);
 	EXPECT_EQ(0,BT_PriorityQueueFindMin(p_prio_queue));
 }
+
+TEST(queue_test,normal_delete_min)
+{
+	BT_PriorityQueueInit(p_prio_queue);
+	
+	buf_number = BT_PriorityQueueInsert(p_prio_queue,100);
+	EXPECT_EQ(buf_number,100);
+	EXPECT_EQ(100,BT_PriorityQueueReleaseMin(p_prio_queue));
+
+	buf_number = BT_PriorityQueueInsert(p_prio_queue,101);
+	EXPECT_EQ(buf_number,101);
+	EXPECT_EQ(101,BT_PriorityQueueFindMin(p_prio_queue));
+
+	buf_number = BT_PriorityQueueInsert(p_prio_queue,3);
+	EXPECT_EQ(buf_number,3);
+	EXPECT_EQ(3,BT_PriorityQueueFindMin(p_prio_queue));
+
+	buf_number = BT_PriorityQueueInsert(p_prio_queue,98);
+	EXPECT_EQ(buf_number,98);
+	EXPECT_EQ(3,BT_PriorityQueueFindMin(p_prio_queue));
+
+	buf_number = BT_PriorityQueueInsert(p_prio_queue,499);
+	EXPECT_EQ(buf_number,499);
+	EXPECT_EQ(3,BT_PriorityQueueFindMin(p_prio_queue));
+
+
+	buf_number = BT_PriorityQueueReleaseMin(p_prio_queue);
+	EXPECT_EQ(buf_number,3);
+	buf_number = BT_PriorityQueueReleaseMin(p_prio_queue);
+	EXPECT_EQ(buf_number,98);
+	buf_number = BT_PriorityQueueReleaseMin(p_prio_queue);
+	EXPECT_EQ(buf_number,101);
+
+	buf_number = BT_PriorityQueueReleaseMin(p_prio_queue);
+	EXPECT_EQ(buf_number,499);
+	
+}
+
 #endif
 /************************
 X_PriorityQueue 		BH_PriorityQueueInit(uint16_t max_elements);

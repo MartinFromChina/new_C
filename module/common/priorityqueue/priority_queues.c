@@ -69,7 +69,7 @@ CURRENT_PRIORITY 	BT_PriorityQueueInsert(const sPrioListManager *p_manager,uint1
 CURRENT_PRIORITY 	BT_PriorityQueueFindMin(const sPrioListManager *p_manager)
 {
 	X_Boolean isAllZero = X_True;
-	uint16_t i,prio = 0,priority_convert;
+	uint16_t i,prio = 0;
 
 	if(p_manager == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
 	if(p_manager ->p_PLP -> isInit != X_True) {return INVALID_PRIOQUEUE_PRIORITY;}
@@ -90,22 +90,33 @@ CURRENT_PRIORITY 	BT_PriorityQueueFindMin(const sPrioListManager *p_manager)
 
 CURRENT_PRIORITY 	BT_PriorityQueueReleaseMin(const sPrioListManager *p_manager)
 {
-	uint16_t priority_convert,index;
+	X_Boolean isAllZero = X_True;
+	uint16_t i,prio = 0,index;
 	uint32_t bit,bit_number;
-		
 
 	if(p_manager == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
 	if(p_manager ->p_PLP -> isInit != X_True) {return INVALID_PRIOQUEUE_PRIORITY;}
 
-/*
-	index = priority_convert/BIT_COUNT_IN_UINT32;
+	for(i=0;i<p_manager->table_size;i++)
+	{
+		if(p_manager-> p_bit_table[i] != 0) {isAllZero = X_False;break;}
+		else {prio += BIT_COUNT_IN_UINT32;}
+	}
+
+	if( isAllZero == X_True )  {return INVALID_PRIOQUEUE_PRIORITY;}
+
+	prio +=(uint16_t)GetLeadZeroCount(p_manager-> p_bit_table[i]);
+	if(prio > p_manager ->max_priority) {return INVALID_PRIOQUEUE_PRIORITY;}
+
+
+	index = prio/BIT_COUNT_IN_UINT32;
 	if(index > p_manager ->table_size) {return INVALID_PRIOQUEUE_PRIORITY;}
-	bit_number = (uint32_t)priority_convert & (BIT_COUNT_IN_UINT32 - 1u);
+	bit_number = (uint32_t)prio & (BIT_COUNT_IN_UINT32 - 1u);
 	bit = 1u;
 	bit <<= (BIT_COUNT_IN_UINT32 - 1u) - bit_number;
-	p_table[index] &= ~bit;
-	*/
-	return 30;
+	p_manager-> p_bit_table[index] &= ~bit;
+
+	return prio;
 }
 
 X_Void 				BT_PriorityQueueClear(const sPrioListManager *p_manager)
