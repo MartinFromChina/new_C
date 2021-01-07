@@ -1,5 +1,6 @@
 #ifndef __PRIORITY_QUEUES_H
 #define __PRIORITY_QUEUES_H
+
 #ifdef __cplusplus
  extern "C"{
 #endif
@@ -33,6 +34,7 @@ typedef struct
 typedef struct
 {
 	uint16_t  	max_priority;// 0 ~ max_priority
+	uint16_t   table_size;
 	uint32_t   *p_bit_table;
 	sPrioListparam *p_PLP;
 }sPrioListManager;
@@ -46,6 +48,7 @@ typedef struct
 		static sPrioListparam CONCAT_2(p_manager,_prio_param) = {X_False,0};				\
 		static const sPrioListManager CONCAT_2(p_manager,_prioqueue_entry)= {			\
 			max_priority_value,												\
+			GET_PRIORITY_TABLE_SIZE_BY_PRIORITY_SCOPE(max_priority_value),	\
 			CONCAT_2(p_manager,_bit_table),									\
 			&CONCAT_2(p_manager,_prio_param),								\
 		};																		\
