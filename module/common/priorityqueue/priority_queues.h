@@ -82,7 +82,11 @@ uint16_t 				BH_GetPriorityQueueUsedNodeNum(X_PriorityQueue H);
 
 
 
+#if (USE_TDD_PRIORITY_QUEUE_INTERNAL_TERST == 1)
 
+uint32_t InsertPrioTable(uint16_t priority,uint16_t *table_index);
+
+#endif
 
 
 

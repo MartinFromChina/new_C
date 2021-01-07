@@ -21,6 +21,23 @@ static  uint16_t buf_number = 0;
 #define NORMAL_PRIORITY_SCOPE  500
 APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_prio_queue,NORMAL_PRIORITY_SCOPE);
 
+
+#if (USE_TDD_PRIORITY_QUEUE_INTERNAL_TERST == 1)
+TEST(queue_test,prio_bit_table_insert)
+{
+	uint32_t table_value;
+	uint16_t table_index = 0;
+	table_value = InsertPrioTable(1,&table_index);
+	EXPECT_EQ(table_value,0x40000000);
+	EXPECT_EQ(table_index,0);
+
+	table_value = InsertPrioTable(100,&table_index);
+	EXPECT_EQ(table_value,0x08000000); 
+	EXPECT_EQ(table_index,3);
+}
+
+#else
+
 TEST(queue_test,init)
 {
 	X_Boolean isOK = X_False;
@@ -111,8 +128,7 @@ TEST(queue_test,normal_insert)
 	EXPECT_EQ(buf_number,17);
 	EXPECT_EQ(0,BT_PriorityQueueFindMin(p_prio_queue));
 }
-
-
+#endif
 /************************
 X_PriorityQueue 		BH_PriorityQueueInit(uint16_t max_elements);
 X_Void 					BH_PriorityQueueDestory(X_PriorityQueue H);
