@@ -1,6 +1,6 @@
 DLIBS = ../../../google_test/lib/libgmock.a
 TARGET = prio_queues
-DEFS = -DUSE_TDD_PRIORITY_QUEUE_INTERNAL_TERST=1
+DEFS = -DUSE_TDD_PRIORITY_QUEUE_INTERNAL_TERST=0
 SRCFILES = priorityqueue_test.cc 
 
 

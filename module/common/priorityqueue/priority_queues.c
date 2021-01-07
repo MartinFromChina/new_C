@@ -6,7 +6,7 @@
 
 #define USE_INLINE  
 
-#include <stdio.h> // for test
+////#include <stdio.h> // for test
 
 #if (USE_TDD_PRIORITY_QUEUE_INTERNAL_TERST == 1)
 
@@ -22,11 +22,11 @@ uint32_t InsertPrioTable(uint16_t priority,uint16_t *table_index)
 	index = priority_convert/BIT_COUNT_IN_UINT32;
 	*table_index = index ;
 
-printf("------------------index = %d\r\n",index);
+	//printf("------------------index = %d\r\n",index);
 	bit_number = (uint32_t)priority_convert & (BIT_COUNT_IN_UINT32 - 1u);
 	bit = 1u;
 	bit <<= (BIT_COUNT_IN_UINT32 - 1u) - bit_number;
-	printf("------------------bit_number = %2x ;bit = %2x\r\n",bit_number,bit);
+	//printf("------------------bit_number = %2x ;bit = %2x\r\n",bit_number,bit);
 	return bit;
 }
 
@@ -34,7 +34,7 @@ printf("------------------index = %d\r\n",index);
 
 X_Void 				BT_PriorityQueueInit(const sPrioListManager *p_manager)
 {
-uint8_t i;
+	uint16_t i;
 	if(p_manager == X_Null) {return;}
 	if(p_manager ->max_priority > MAX_PRIOQUEUE_PRIORITY)  {return;}
 
@@ -42,6 +42,7 @@ uint8_t i;
 	{
 		p_manager->p_bit_table[i] = 0;
 	}
+	
 	p_manager ->p_PLP->current_used_bit_cnt = 0;
 	p_manager ->p_PLP ->isInit = X_True;
 }
@@ -68,7 +69,7 @@ CURRENT_PRIORITY 	BT_PriorityQueueInsert(const sPrioListManager *p_manager,uint1
 CURRENT_PRIORITY 	BT_PriorityQueueFindMin(const sPrioListManager *p_manager)
 {
 	X_Boolean isAllZero = X_True;
-	uint16_t i,prio,priority_convert;
+	uint16_t i,prio = 0,priority_convert;
 
 	if(p_manager == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
 	if(p_manager ->p_PLP -> isInit != X_True) {return INVALID_PRIOQUEUE_PRIORITY;}
@@ -82,10 +83,8 @@ CURRENT_PRIORITY 	BT_PriorityQueueFindMin(const sPrioListManager *p_manager)
 	if( isAllZero == X_True )  {return INVALID_PRIOQUEUE_PRIORITY;}
 
 	prio +=(uint16_t)GetLeadZeroCount(p_manager-> p_bit_table[i]);
-	printf("_________________bit_table[%d] = %2x prio :%d  max prio :%d \r\n",i,p_manager-> p_bit_table[i],prio,p_manager ->max_priority);
 	if(prio > p_manager ->max_priority) {return INVALID_PRIOQUEUE_PRIORITY;}
 	
-
 	return prio;
 }
 
