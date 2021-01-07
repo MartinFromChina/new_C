@@ -110,6 +110,47 @@ TEST(queue_test,time_test)
 	
 };
 
+TEST(queue_test,mul_entry)
+{
+	uint16_t i = 10000;
+	uint16_t buf_number1,buf_number2,buf_number3,buf_number4,buf_number5;
+	SIMPLE_LOOPQUEUE_DEF(p_queue_1,BIG_QUEUE_SIZE);
+	SIMPLE_LOOPQUEUE_DEF(p_queue_2,BIG_QUEUE_SIZE/2);
+	SIMPLE_LOOPQUEUE_DEF(p_queue_3,BIG_QUEUE_SIZE/4);
+	SIMPLE_LOOPQUEUE_DEF(p_queue_4,BIG_QUEUE_SIZE -255);
+	SIMPLE_LOOPQUEUE_DEF(p_queue_5,BIG_QUEUE_SIZE * 2);
+	
+	do{
+	buf_number1 = SimpleQueueFirstIn(p_queue_1,X_False);
+	
+	buf_number2 = SimpleQueueFirstIn(p_queue_2,X_True);
+	buf_number2 = SimpleQueueFirstIn(p_queue_2,X_True);
+	
+	buf_number5 = SimpleQueueFirstIn(p_queue_5,X_False);
+	buf_number5 = SimpleQueueFirstIn(p_queue_5,X_False);
+	buf_number5 = SimpleQueueFirstIn(p_queue_5,X_False);
+	
+	}while(i-- > 1);
+	
+	
+	EXPECT_EQ(buf_number1,9999);
+	EXPECT_EQ(buf_number2,4999);
+	EXPECT_EQ(buf_number5,INVALID_NODE_NUM);
+	
+	EXPECT_EQ(10000,GetSimpleQueueUsedNodeNumber(p_queue_1));
+	EXPECT_EQ(5000,GetSimpleQueueUsedNodeNumber(p_queue_2));
+	EXPECT_EQ(20000,GetSimpleQueueUsedNodeNumber(p_queue_5));
+	EXPECT_EQ(0,GetSimpleQueueUsedNodeNumber(p_queue_4));
+	
+	buf_number5 = SimpleQueueFirstOut(p_queue_5);
+	EXPECT_EQ(19999,GetSimpleQueueUsedNodeNumber(p_queue_5));
+	EXPECT_EQ(buf_number5,0);
+	
+	UNUSED_VARIABLE(p_queue_3);
+	UNUSED_VARIABLE(buf_number3);
+	UNUSED_VARIABLE(buf_number4);
+};
+
 
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"Running main() from loopqueue_test.cc\n";
