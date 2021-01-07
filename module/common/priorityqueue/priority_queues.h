@@ -13,14 +13,41 @@
 #define INVALID_PRIOQUEUE_PRIORITY  (0xFFFF) 
 #define CURRENT_PRIORITY uint16_t
 
+/*
+ * scope : 0 ~ max_priority
+ * table size = (max_priority % 32 == 0) ? scope / 32 + 1: scope / 32 + 1
+ */
+#define BIT_COUNT_IN_UINT32   32
+#define GET_PRIORITY_TABLE_SIZE_BY_PRIORITY_SCOPE(scope)    (uint16_t)((scope/BIT_COUNT_IN_UINT32) + 1)
+
+
 typedef struct
 {
-	CURRENT_PRIORITY     prio;
+ X_Boolean isInit;
+ uint16_t current_used_bit_cnt;
+}sPrioListparam;
+
+
+typedef struct
+{
+	uint16_t  	max_priority;// 0 ~ max_priority
+	uint32_t   *p_bit_table;
+	sPrioListparam *p_PLP;
 }sPrioListManager;
 
 
 #define APP_BIT_TABLE_PRIORITYQUEUE_DEF_WITHOUT_POINTER() 
-#define APP_BIT_TABLE_PRIORITYQUEUE_DEF(x,max_num)   static const sPrioListManager *x;
+
+
+#define APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_manager,max_priority_value)   \
+		static uint32_t  CONCAT_2(p_manager,_bit_table)[GET_PRIORITY_TABLE_SIZE_BY_PRIORITY_SCOPE(max_priority_value)]; 	\
+		static sPrioListparam CONCAT_2(p_manager,_prio_param) = {X_False,0};				\
+		static const sPrioListManager CONCAT_2(p_manager,_prioqueue_entry)= {			\
+			max_priority_value,												\
+			CONCAT_2(p_manager,_bit_table),									\
+			&CONCAT_2(p_manager,_prio_param),								\
+		};																		\
+		static const sPrioListManager *p_manager = &CONCAT_2(p_manager,_prioqueue_entry);
 
 
 X_Void 				BT_PriorityQueueInit(const sPrioListManager *p_manager);

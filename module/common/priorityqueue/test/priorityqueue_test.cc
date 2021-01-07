@@ -15,6 +15,37 @@ X_Boolean 			BT_DoesPriorityQueueEmpty(const sPrioListManager *p_manager);
 uint16_t 			BT_GetPriorityQueueUsedNodeNum(const sPrioListManager *p_manager);
 
 *************************/
+
+static  uint16_t buf_number = 0;
+#define OPERATION_TIMES 0xfffe
+APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_prio_queue,200);
+
+TEST(queue_test,init)
+{
+	X_Boolean isOK = X_False;
+	//BT_PriorityQueueInit(p_prio_queue);
+
+	do{
+		buf_number = BT_PriorityQueueInsert(p_prio_queue,30);
+		EXPECT_EQ(buf_number ,INVALID_PRIOQUEUE_PRIORITY);
+
+		buf_number = BT_PriorityQueueFindMin(p_prio_queue);
+		EXPECT_EQ(buf_number ,INVALID_PRIOQUEUE_PRIORITY);
+
+		buf_number = BT_PriorityQueueReleaseMin(p_prio_queue);
+		EXPECT_EQ(buf_number ,INVALID_PRIOQUEUE_PRIORITY);
+
+		buf_number = BT_GetPriorityQueueUsedNodeNum(p_prio_queue);
+		EXPECT_EQ(buf_number ,INVALID_PRIOQUEUE_PRIORITY);
+
+		isOK = BT_DoesPriorityQueueEmpty(p_prio_queue);
+		EXPECT_EQ(isOK ,X_True);
+		//UNUSED_VARIABLE(data_buf);
+		
+	}while(0);
+	
+};
+
 /************************
 X_PriorityQueue 		BH_PriorityQueueInit(uint16_t max_elements);
 X_Void 					BH_PriorityQueueDestory(X_PriorityQueue H);
@@ -26,27 +57,6 @@ X_boolean 				BH_DoesPriorityQueueEmpty(X_PriorityQueue H);
 uint16_t 				BH_GetPriorityQueueUsedNodeNum(X_PriorityQueue H);
 
 *************************/
-
-static  uint16_t buf_number = 0;
-#define OPERATION_TIMES 0xfffe
-APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_prio_queue,200);
-
-TEST(queue_test,normal)
-{
-	uint16_t i = 200;
-	static 	uint8_t data_buf[200];
-	BT_PriorityQueueInit(p_prio_queue);
-
-	do{
-		buf_number = BT_PriorityQueueInsert(p_prio_queue,30);
-		UNUSED_VARIABLE(data_buf);
-		
-		buf_number = BT_PriorityQueueFindMin(p_prio_queue);
-		EXPECT_LT(buf_number,200);
-		
-	}while(0);
-	
-};
 
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"Running main() from loopqueue_test.cc\n";
