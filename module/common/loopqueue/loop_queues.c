@@ -64,17 +64,18 @@ X_Void 		SimpleQueueInitialize(const sListManager *p_manager)
 	uint16_t i;
 
 	if(p_manager == X_Null) {return;}
-
-	p_manager->p_LMP->state = QueueEmpty;
-	p_manager->p_LMP->first_in_node_num = 0;
-	p_manager->p_LMP->first_out_node_num = 0;
-	p_manager->p_LMP->used_node_num = 0;
-
 	if(p_manager->ValidNodeNumber >= INVALID_NODE_NUM) {return;}
+
 	for(i = 0;i< p_manager->ValidNodeNumber;i++)
 	{
 		p_manager->p_buf[i] = BUF_FREE;
 	}
+	
+	p_manager->p_LMP->isInit = X_True;
+	p_manager->p_LMP->state = QueueEmpty;
+	p_manager->p_LMP->first_in_node_num = 0;
+	p_manager->p_LMP->first_out_node_num = 0;
+	p_manager->p_LMP->used_node_num = 0;
 
 }
 
@@ -82,6 +83,7 @@ uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean is_Occupy
 {
 	uint16_t buf_number,current_free_node_number;
 	if(p_manager == X_Null) { return INVALID_NODE_NUM;}
+	if(p_manager->p_LMP->isInit == X_False) { return INVALID_NODE_NUM;}
 
 	buf_number = 0;
 	current_free_node_number = p_manager->p_LMP->first_in_node_num;
@@ -131,6 +133,7 @@ uint16_t    SimpleQueueFirstOut(const sListManager *p_manager)
 {
 	uint16_t buf_number,current_filled_node_number;
 	if(p_manager == X_Null) { return INVALID_NODE_NUM;}
+	if(p_manager->p_LMP->isInit == X_False) { return INVALID_NODE_NUM;}
 
 	buf_number = 0;
 	current_filled_node_number = p_manager->p_LMP->first_out_node_num;
@@ -165,11 +168,13 @@ X_Void      RealseSimpleQueueBuf(const sListManager *p_manager,uint8_t buf_num)
 uint16_t GetSimpleQueueUsedNodeNumber(const sListManager *p_manager)
 {
 	if(p_manager == X_Null) {return 0;}
+	if(p_manager->p_LMP->isInit == X_False) { return 0;}
 	return p_manager->p_LMP->used_node_num;
 }
 X_Boolean   DoesSimpleQueueEmpty(const sListManager *p_manager)
 {
 	if(p_manager == X_Null) {return X_True;}
+	if(p_manager->p_LMP->isInit == X_False) { return X_True;}
 	return (p_manager->p_LMP->state == QueueEmpty);
 }
 

@@ -25,6 +25,7 @@ typedef enum
 
 typedef struct
 {
+	X_Boolean   isInit;
 	uint8_t  state;
 	uint16_t first_in_node_num;
 	uint16_t first_out_node_num;
@@ -42,7 +43,7 @@ typedef struct
 
 #define SIMPLE_LOOPQUEUE_DEF_WITHOUT_POINTER(p_manager,max_node_number)            					\
 		static uint8_t  CONCAT_2(p_manager,_loopqueue_node_buf)[max_node_number];	 				\
-		static sListManagerParam CONCAT_2(p_manager,_loopqueue_param) = {0,0,0,0};    				\
+		static sListManagerParam CONCAT_2(p_manager,_loopqueue_param) = {X_False,0,0,0,0};    				\
 		static const  sListManager  CONCAT_2(p_manager,_loopqueue_entry) = {						\
 			CONCAT_2(p_manager,_loopqueue_node_buf),												\
 			max_node_number,																		\
@@ -51,7 +52,7 @@ typedef struct
 
 #define SIMPLE_LOOPQUEUE_DEF(p_manager,max_node_number)            									\
 		static uint8_t  CONCAT_2(p_manager,_loopqueue_node_buf)[max_node_number];	 				\
-		static sListManagerParam CONCAT_2(p_manager,_loopqueue_param) = {0,0,0,0};    				\
+		static sListManagerParam CONCAT_2(p_manager,_loopqueue_param) = {X_False,0,0,0,0};    				\
 		static const  sListManager  CONCAT_2(p_manager,_loopqueue_entry) = {						\
 			CONCAT_2(p_manager,_loopqueue_node_buf),												\
 						max_node_number,														    \

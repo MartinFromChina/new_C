@@ -2,54 +2,12 @@
 #include "tdd_common.h"
 
 #include "../loop_queues.h"
-/*
-#define INVALID_NODE_NUM  (0xFFFF)
-
-X_Void 		SimpleQueueInitialize(const sListManager *p_manager);
-uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean is_OccupyPermit);
-uint16_t    SimpleQueueFirstOut(const sListManager *p_manager);
-X_Void      ClearSimpleQueue(const sListManager *p_manager);
-X_Void      RealseSimpleQueueBuf(const sListManager *p_manager,uint8_t buf_num);
-uint16_t    GetSimpleQueueUsedNodeNumber(const sListManager *p_manager);
-X_Boolean   DoesSimpleQueueEmpty(const sListManager *p_manager);
-*/
 
 using namespace std;
 
 static  uint16_t buf_number;
 SIMPLE_LOOPQUEUE_DEF(p_queue,200);
 #define OPERATION_TIMES 0xfffe
-
-TEST(queue_test,init)
-{
-	X_Boolean isEmpty;
-	buf_number = SimpleQueueFirstIn(p_queue,X_True);
-	EXPECT_EQ(buf_number,INVALID_NODE_NUM);
-	
-    buf_number = SimpleQueueFirstOut(p_queue);
-	EXPECT_EQ(buf_number,INVALID_NODE_NUM);
-	
-    buf_number = GetSimpleQueueUsedNodeNumber(p_queue);
-	EXPECT_EQ(buf_number,0);
-	
-    isEmpty = DoesSimpleQueueEmpty(p_queue);
-	EXPECT_EQ(isEmpty,X_True);
-	
-	/**************************************************/
-	SimpleQueueInitialize(p_queue);
-	buf_number = SimpleQueueFirstIn(p_queue,X_True);
-	EXPECT_EQ(buf_number,0);
-	
-    buf_number = SimpleQueueFirstOut(p_queue);
-	EXPECT_EQ(buf_number,0);
-	
-    buf_number = GetSimpleQueueUsedNodeNumber(p_queue);
-	EXPECT_EQ(buf_number,0);
-	
-    isEmpty = DoesSimpleQueueEmpty(p_queue);
-	EXPECT_EQ(isEmpty,X_True);
-};
-
 
 TEST(queue_test,normal)
 {
@@ -129,7 +87,6 @@ TEST(queue_test,time_test)
 {
 	uint16_t i = OPERATION_TIMES,j;
 	SIMPLE_LOOPQUEUE_DEF(p_big_queue,BIG_QUEUE_SIZE);
-	SimpleQueueInitialize(p_big_queue);
 	
 	for(j=0;j<10;j++)
 	{
@@ -162,12 +119,6 @@ TEST(queue_test,mul_entry)
 	SIMPLE_LOOPQUEUE_DEF(p_queue_3,BIG_QUEUE_SIZE/4);
 	SIMPLE_LOOPQUEUE_DEF(p_queue_4,BIG_QUEUE_SIZE -255);
 	SIMPLE_LOOPQUEUE_DEF(p_queue_5,BIG_QUEUE_SIZE * 2);
-	
-	SimpleQueueInitialize(p_queue_1);
-	SimpleQueueInitialize(p_queue_2);
-	SimpleQueueInitialize(p_queue_3);
-	SimpleQueueInitialize(p_queue_4);
-	SimpleQueueInitialize(p_queue_5);
 	
 	do{
 	buf_number1 = SimpleQueueFirstIn(p_queue_1,X_False);
