@@ -6,7 +6,7 @@
 
 #define USE_INLINE  
 
-////#include <stdio.h> // for test
+#include <stdio.h> // for test
 
 #if (USE_TDD_PRIORITY_QUEUE_INTERNAL_TERST == 1)
 
@@ -63,7 +63,12 @@ CURRENT_PRIORITY 	BT_PriorityQueueInsert(const sPrioListManager *p_manager,uint1
 	bit_number = (uint32_t)priority_convert & (BIT_COUNT_IN_UINT32 - 1u);
 	bit = 1u;
 	bit <<= (BIT_COUNT_IN_UINT32 - 1u) - bit_number;
+
+	if((p_manager ->p_bit_table[index] & bit) == 0) {p_manager ->p_PLP ->current_used_bit_cnt ++;}
 	p_manager ->p_bit_table[index] |= bit;
+
+	
+	
 	return prio_to_insert;
 }
 CURRENT_PRIORITY 	BT_PriorityQueueFindMin(const sPrioListManager *p_manager)
@@ -116,6 +121,8 @@ CURRENT_PRIORITY 	BT_PriorityQueueReleaseMin(const sPrioListManager *p_manager)
 	bit <<= (BIT_COUNT_IN_UINT32 - 1u) - bit_number;
 	p_manager-> p_bit_table[index] &= ~bit;
 
+	if(p_manager ->p_PLP ->current_used_bit_cnt > 0) {p_manager ->p_PLP ->current_used_bit_cnt --;}
+	
 	return prio;
 }
 
@@ -135,7 +142,7 @@ uint16_t 			BT_GetPriorityQueueUsedNodeNum(const sPrioListManager *p_manager)
 	if(p_manager == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
 	if(p_manager ->p_PLP -> isInit != X_True) {return INVALID_PRIOQUEUE_PRIORITY;}
 
-	return 0;
+	return p_manager ->p_PLP ->current_used_bit_cnt;
 }
 
 
