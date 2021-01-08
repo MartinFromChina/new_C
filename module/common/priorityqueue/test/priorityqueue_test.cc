@@ -166,6 +166,27 @@ TEST(queue_test,normal_delete_min)
 	
 }
 
+TEST(queue_test,clear)
+{
+	BT_PriorityQueueInit(p_prio_queue);
+
+	buf_number = BT_PriorityQueueReleaseMin(p_prio_queue);
+	EXPECT_EQ(buf_number,INVALID_PRIOQUEUE_PRIORITY);
+
+	BT_PriorityQueueInsert(p_prio_queue,100);
+	buf_number = BT_PriorityQueueFindMin(p_prio_queue);
+	EXPECT_EQ(buf_number,100);
+
+	BT_PriorityQueueInsert(p_prio_queue,99);
+	buf_number = BT_PriorityQueueFindMin(p_prio_queue);
+	EXPECT_EQ(buf_number,99);
+
+	BT_PriorityQueueClear(p_prio_queue);
+	buf_number = BT_PriorityQueueFindMin(p_prio_queue);
+	EXPECT_EQ(buf_number,INVALID_PRIOQUEUE_PRIORITY);
+
+}
+
 #endif
 /************************
 X_PriorityQueue 		BH_PriorityQueueInit(uint16_t max_elements);

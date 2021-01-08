@@ -121,7 +121,7 @@ CURRENT_PRIORITY 	BT_PriorityQueueReleaseMin(const sPrioListManager *p_manager)
 
 X_Void 				BT_PriorityQueueClear(const sPrioListManager *p_manager)
 {
-
+	BT_PriorityQueueInit(p_manager);
 }
 X_Boolean 			BT_DoesPriorityQueueEmpty(const sPrioListManager *p_manager)
 {
