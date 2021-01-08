@@ -76,7 +76,7 @@ TEST(queue_test,init)
 		
 	}while(0);
 	
-};
+}
 
 TEST(queue_test,prio_scope)
 {
@@ -128,6 +128,29 @@ TEST(queue_test,normal_insert)
 	EXPECT_EQ(buf_number,17);
 	EXPECT_EQ(0,BT_PriorityQueueFindMin(p_prio_queue));
 }
+TEST(queue_test,same_priority_insert)
+{
+	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p1,65534);
+	BT_PriorityQueueInit(p1);
+
+	buf_number = BT_PriorityQueueInsert(p1,32767);
+	buf_number = BT_PriorityQueueInsert(p1,32767);
+	buf_number = BT_PriorityQueueInsert(p1,32767);
+	buf_number = BT_PriorityQueueInsert(p1,32767);
+	EXPECT_EQ(32767,BT_PriorityQueueFindMin(p1));
+	EXPECT_EQ(1,BT_GetPriorityQueueUsedNodeNum(p1));
+
+	buf_number = BT_PriorityQueueInsert(p1,255);
+	buf_number = BT_PriorityQueueInsert(p1,255);
+	buf_number = BT_PriorityQueueInsert(p1,255);
+	buf_number = BT_PriorityQueueInsert(p1,255);
+	buf_number = BT_PriorityQueueInsert(p1,255);
+	buf_number = BT_PriorityQueueInsert(p1,255);
+	buf_number = BT_PriorityQueueInsert(p1,255);
+	buf_number = BT_PriorityQueueInsert(p1,255);
+	EXPECT_EQ(255,BT_PriorityQueueFindMin(p1));
+	EXPECT_EQ(2,BT_GetPriorityQueueUsedNodeNum(p1));
+}
 
 TEST(queue_test,normal_delete_min)
 {
@@ -164,7 +187,7 @@ TEST(queue_test,normal_delete_min)
 	buf_number = BT_PriorityQueueReleaseMin(p_prio_queue);
 	EXPECT_EQ(buf_number,499);
 	
-};
+}
 TEST(queue_test,clear)
 {
 	BT_PriorityQueueInit(p_prio_queue);
@@ -217,7 +240,7 @@ TEST(queue_test,get_uesd_node_mum)
 	BT_PriorityQueueReleaseMin(p_prio_queue);
 	EXPECT_EQ(NORMAL_PRIORITY_SCOPE-1,BT_GetPriorityQueueUsedNodeNum(p_prio_queue));
 	
-};
+}
 
 TEST(queue_test,does_empty)
 {
@@ -239,7 +262,64 @@ TEST(queue_test,does_empty)
 	EXPECT_EQ(i, 499);
 
 	
-};
+}
+
+TEST(queue_test,boundary)
+{
+
+}
+
+TEST(queue_test,mul_entry)
+{
+	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p2,500);
+	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p3,1000);
+	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p4,2680);
+	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p5,779);
+	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p6,456);
+
+	BT_PriorityQueueInit(p2);
+	BT_PriorityQueueInit(p3);
+	BT_PriorityQueueInit(p4);
+	BT_PriorityQueueInit(p5);
+	BT_PriorityQueueInit(p6);
+
+	BT_PriorityQueueInsert(p2,288);
+	BT_PriorityQueueInsert(p6,288);
+	BT_PriorityQueueInsert(p5,288);
+	BT_PriorityQueueInsert(p3,288);
+	BT_PriorityQueueInsert(p4,288);
+
+	
+	BT_PriorityQueueInsert(p2,100);
+	BT_PriorityQueueInsert(p6,200);
+	BT_PriorityQueueInsert(p5,98);
+	BT_PriorityQueueInsert(p3,128);
+	BT_PriorityQueueInsert(p4,256);
+
+	BT_PriorityQueueReleaseMin(p3);
+	BT_PriorityQueueReleaseMin(p5);
+	
+	EXPECT_EQ(100, BT_PriorityQueueFindMin(p2));
+	EXPECT_EQ(288, BT_PriorityQueueFindMin(p3));
+	EXPECT_EQ(256, BT_PriorityQueueFindMin(p4));
+	EXPECT_EQ(288, BT_PriorityQueueFindMin(p5));
+	EXPECT_EQ(200, BT_PriorityQueueFindMin(p6));
+
+	EXPECT_EQ(2, BT_GetPriorityQueueUsedNodeNum(p2));
+	EXPECT_EQ(1, BT_GetPriorityQueueUsedNodeNum(p3));
+	EXPECT_EQ(2, BT_GetPriorityQueueUsedNodeNum(p4));
+	EXPECT_EQ(1, BT_GetPriorityQueueUsedNodeNum(p5));
+	EXPECT_EQ(2, BT_GetPriorityQueueUsedNodeNum(p6));
+	
+	
+}
+TEST(queue_test,operation_speed)
+{
+
+}
+
+
+
 
 #endif
 /************************
