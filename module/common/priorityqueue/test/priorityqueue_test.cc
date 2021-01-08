@@ -336,33 +336,34 @@ TEST(queue_test,operation_speed)
 
 #endif
 /************************
-X_PriorityQueue 		BH_PriorityQueueInit(uint16_t max_elements);
-X_Void 					BH_PriorityQueueDestory(X_PriorityQueue H);
-X_Void 					BH_PriorityQueueClear(X_PriorityQueue H);
-CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue H,uint16_t priority);
-CURRENT_PRIORITY 		BH_PriorityQueueFindMin(X_PriorityQueue H);
-CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue H);
-X_Boolean 				BH_DoesPriorityQueueEmpty(X_PriorityQueue H);
-uint16_t 				BH_GetPriorityQueueUsedNodeNum(X_PriorityQueue H);
+X_PriorityQueue *		BH_PriorityQueueInit(uint16_t max_elements);
+X_Void 					BH_PriorityQueueDestory(X_PriorityQueue * H);
+X_Void 					BH_PriorityQueueClear(X_PriorityQueue * H);
+CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base * p_base);
+CURRENT_PRIORITY		BH_PriorityQueueFindMin(X_PriorityQueue * H,s_element_base * p_base);
+CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue * H,s_element_base * p_base);
+X_Boolean 				BH_DoesPriorityQueueEmpty(X_PriorityQueue * H);
+uint16_t 				BH_GetPriorityQueueUsedNodeNum(X_PriorityQueue * H);
 *************************/
 #define NORMAL_NODE_SCOPE   500
-struct X_BinaryHeapStruct 
+typedef struct 
 {
-	uint8_t temp1;
-	uint16_t priority;
-	uint32_t temp2;
-};
+	s_element_base base;
+	uint16_t other_info;
+}s_element_extern;
+
+static s_element_extern s_ee[NORMAL_NODE_SCOPE];
 
 TEST(BH_prio_queue,init)
 {
-	X_BinaryHeapStruct *p_s1 = 0;
+	X_PriorityQueue *p_s1 = 0;
 	X_Boolean isOK = X_False;
 
 	do{		
-		buf_number = BH_PriorityQueueFindMin(p_s1);
+		buf_number = BH_PriorityQueueFindMin(p_s1,&s_ee[499].base);
 		EXPECT_EQ(buf_number ,INVALID_PRIOQUEUE_PRIORITY);
 
-		buf_number = BH_PriorityQueueReleaseMin(p_s1);
+		buf_number = BH_PriorityQueueReleaseMin(p_s1,&s_ee[499].base);
 		EXPECT_EQ(buf_number ,INVALID_PRIOQUEUE_PRIORITY);
 
 		buf_number = BH_GetPriorityQueueUsedNodeNum(p_s1);
@@ -371,15 +372,17 @@ TEST(BH_prio_queue,init)
 		isOK = BH_DoesPriorityQueueEmpty(p_s1);
 		EXPECT_EQ(isOK ,X_True);
 		//UNUSED_VARIABLE(data_buf);
+
+		s_ee[0].base.priority = 30;
 		
 		p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
-		buf_number = BH_PriorityQueueInsert(p_s1,30);
+		buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
 		EXPECT_EQ(buf_number ,30);
 
-		buf_number = BH_PriorityQueueFindMin(p_s1);
+		buf_number = BH_PriorityQueueFindMin(p_s1,&s_ee[499].base);
 		EXPECT_EQ(buf_number ,30);
 
-		buf_number = BH_PriorityQueueReleaseMin(p_s1);
+		buf_number = BH_PriorityQueueReleaseMin(p_s1,&s_ee[499].base);
 		EXPECT_EQ(buf_number ,30);
 
 		buf_number = BH_GetPriorityQueueUsedNodeNum(p_s1);
@@ -393,7 +396,7 @@ TEST(BH_prio_queue,init)
 
 TEST(BH_prio_queue,node_scope)
 {
-	X_BinaryHeapStruct *p_s1 = 0,*p_s2 = 0,*p_s3 = 0;
+	X_PriorityQueue *p_s1 = 0,*p_s2 = 0,*p_s3 = 0,*p_s4 = 0,*p_s5 = 0;
 
 	p_s1 = BH_PriorityQueueInit(MAX_BH_QUEUE_NODE_NUM);
 	EXPECT_EQ(0,BH_GetPriorityQueueUsedNodeNum(p_s1));
@@ -404,41 +407,73 @@ TEST(BH_prio_queue,node_scope)
 	p_s3 = BH_PriorityQueueInit(MAX_BH_QUEUE_NODE_NUM - 1);
 	EXPECT_EQ(0,BH_GetPriorityQueueUsedNodeNum(p_s3));
 
+
+	s_ee[0].base.priority = 1;
+	s_ee[1].base.priority = 0;
+
+	p_s4 = BH_PriorityQueueInit(1);
+	EXPECT_EQ(0,BH_GetPriorityQueueUsedNodeNum(p_s4));
+	EXPECT_EQ(1,BH_PriorityQueueInsert(p_s4,&s_ee[0].base));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert(p_s4,&s_ee[1].base));
+	EXPECT_EQ(1,BH_GetPriorityQueueUsedNodeNum(p_s4));
+
+	
+	p_s5 = BH_PriorityQueueInit(0);
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_GetPriorityQueueUsedNodeNum(p_s5));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert(p_s5,&s_ee[1].base));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert(p_s5,&s_ee[0].base));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_GetPriorityQueueUsedNodeNum(p_s5));
+
 }
 
 TEST(BH_prio_queue,normal_insert)
 {
-	X_BinaryHeapStruct *p_s1;
+	X_PriorityQueue *p_s1;
+
+	s_ee[0].base.priority = 100;
+	s_ee[1].base.priority = 101;
+	s_ee[2].base.priority = 3;
+	s_ee[3].base.priority = 98;
+	s_ee[4].base.priority = 499;
+	s_ee[5].base.priority = 0;
+	s_ee[6].base.priority = 17;
 
 	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
 	
-	buf_number = BH_PriorityQueueInsert(p_s1,100);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
 	EXPECT_EQ(buf_number,100);
-	EXPECT_EQ(100,BH_PriorityQueueFindMin(p_s1));
+	EXPECT_EQ(100,BH_PriorityQueueFindMin(p_s1,&s_ee[499].base));
+	EXPECT_EQ(100,s_ee[499].base.priority);
 
-	buf_number = BH_PriorityQueueInsert(p_s1,101);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[1].base);
 	EXPECT_EQ(buf_number,101);
-	EXPECT_EQ(100,BH_PriorityQueueFindMin(p_s1));
+	EXPECT_EQ(100,BH_PriorityQueueFindMin(p_s1,&s_ee[499].base));
+	EXPECT_EQ(100,s_ee[499].base.priority);
 
-	buf_number = BH_PriorityQueueInsert(p_s1,3);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[2].base);
 	EXPECT_EQ(buf_number,3);
-	EXPECT_EQ(3,BH_PriorityQueueFindMin(p_s1));
+	EXPECT_EQ(3,BH_PriorityQueueFindMin(p_s1,&s_ee[499].base));
+	EXPECT_EQ(3,s_ee[499].base.priority);
 
-	buf_number = BH_PriorityQueueInsert(p_s1,98);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[3].base);
 	EXPECT_EQ(buf_number,98);
-	EXPECT_EQ(3,BH_PriorityQueueFindMin(p_s1));
+	EXPECT_EQ(3,BH_PriorityQueueFindMin(p_s1,&s_ee[499].base));
+	EXPECT_EQ(3,s_ee[499].base.priority);
 
-	buf_number = BH_PriorityQueueInsert(p_s1,499);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[4].base);
 	EXPECT_EQ(buf_number,499);
-	EXPECT_EQ(3,BH_PriorityQueueFindMin(p_s1));
+	EXPECT_EQ(3,BH_PriorityQueueFindMin(p_s1,&s_ee[499].base));
+	EXPECT_EQ(3,s_ee[499].base.priority);
 
-	buf_number = BH_PriorityQueueInsert(p_s1,0);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[5].base);
 	EXPECT_EQ(buf_number,0);
-	EXPECT_EQ(0,BH_PriorityQueueFindMin(p_s1));
+	EXPECT_EQ(0,BH_PriorityQueueFindMin(p_s1,&s_ee[499].base));
+	EXPECT_EQ(0,s_ee[499].base.priority);
 
-	buf_number = BH_PriorityQueueInsert(p_s1,17);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[6].base);
 	EXPECT_EQ(buf_number,17);
-	EXPECT_EQ(0,BH_PriorityQueueFindMin(p_s1));
+	EXPECT_EQ(0,BH_PriorityQueueFindMin(p_s1,&s_ee[499].base));
+	EXPECT_EQ(17,s_ee[499].base.priority);
 }
 /*
 

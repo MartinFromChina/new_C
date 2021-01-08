@@ -1,12 +1,14 @@
 #include "priority_queues.h"
 #include "../Math/bit_operation.h"
+#include <stdlib.h> 
+
 
 #define BUF_FREE   0
 #define BUF_USED   1
 
 #define USE_INLINE  
 
-#include <stdio.h> // for test
+//#include <stdio.h> // for test
 
 #if (USE_TDD_PRIORITY_QUEUE_INTERNAL_TERST == 1)
 
@@ -148,47 +150,58 @@ uint16_t 			BT_GetPriorityQueueUsedNodeNum(const sPrioListManager *p_manager)
 /***********************************************
 ****************************************************/
 
-X_PriorityQueue 		BH_PriorityQueueInit(uint16_t max_elements)
+X_PriorityQueue  *		BH_PriorityQueueInit(uint16_t max_elements)
 {
-    X_PriorityQueue  H;
+	X_PriorityQueue entry;
+    X_PriorityQueue * H;
 
-	if(max_elements > MAX_BH_QUEUE_NODE_NUM) {return 0;}
+	if(max_elements > MAX_BH_QUEUE_NODE_NUM || max_elements == 0) {return 0;}
+
+	H = (X_PriorityQueue *)malloc (sizeof(entry));
+	if(H == NULL) {return 0;}
+
+	H ->current_size = 0;
+	H ->max_node = max_elements;
 	return H;
 }
-X_Void 					BH_PriorityQueueDestory(X_PriorityQueue H)
+X_Void 					BH_PriorityQueueDestory(X_PriorityQueue * H)
 {
 
 }
-X_Void 					BH_PriorityQueueClear(X_PriorityQueue H)
+X_Void 					BH_PriorityQueueClear(X_PriorityQueue *            H)
 {
 
 }
-CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue H,uint16_t priority)
+CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base * p_base)
 {
     if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
-	return 30;
+
+	if(H ->current_size >= H ->max_node) {return INVALID_PRIOQUEUE_PRIORITY;}
+	H ->current_size ++;
+	return p_base ->priority;
 }
-CURRENT_PRIORITY 		BH_PriorityQueueFindMin(X_PriorityQueue H)
+CURRENT_PRIORITY		BH_PriorityQueueFindMin(X_PriorityQueue * H,s_element_base * p_base)
 {
 	if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
 
 	return 30;
 }
-CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue H)
+CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue * H,s_element_base * p_base)
 {
 	if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
 
+	if(H ->current_size > 0) {H ->current_size --;}
 	return 30;
 }
-X_Boolean 				BH_DoesPriorityQueueEmpty(X_PriorityQueue H)
+X_Boolean 				BH_DoesPriorityQueueEmpty(X_PriorityQueue * H)
 {
 	if(H == X_Null) {return X_True;}
 	return X_True;
 }
-uint16_t 				BH_GetPriorityQueueUsedNodeNum(X_PriorityQueue H)
+uint16_t 				BH_GetPriorityQueueUsedNodeNum(X_PriorityQueue * H)
 {
-	  if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
-	return 0;
+	if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
+	return H ->current_size;
 }
 
 
