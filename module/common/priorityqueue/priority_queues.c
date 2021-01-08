@@ -153,6 +153,7 @@ uint16_t 			BT_GetPriorityQueueUsedNodeNum(const sPrioListManager *p_manager)
 X_PriorityQueue  *		BH_PriorityQueueInit(uint16_t max_elements)
 {
 	X_PriorityQueue entry;
+	s_element_base  element_entry;
     X_PriorityQueue * H;
 
 	if(max_elements > MAX_BH_QUEUE_NODE_NUM || max_elements == 0) {return 0;}
@@ -160,6 +161,8 @@ X_PriorityQueue  *		BH_PriorityQueueInit(uint16_t max_elements)
 	H = (X_PriorityQueue *)malloc (sizeof(entry));
 	if(H == NULL) {return 0;}
 
+	H ->p_base = (s_element_base *)malloc (sizeof(element_entry) * max_elements);
+	if(H ->p_base == NULL) {return 0;}
 	H ->current_size = 0;
 	H ->max_node = max_elements;
 	return H;
@@ -172,19 +175,24 @@ X_Void 					BH_PriorityQueueClear(X_PriorityQueue *            H)
 {
 
 }
-CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base * p_base)
+CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base const * p_base)
 {
+	uint16_t i;
     if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
-
 	if(H ->current_size >= H ->max_node) {return INVALID_PRIOQUEUE_PRIORITY;}
-	H ->current_size ++;
+
+	for(i= ++ H ->current_size ;H->p_base[i/2].priority > p_base ->priority ;i /= 2)
+	{
+		H ->p_base[i] = H ->p_base[i/2];
+	}
+	H ->p_base[i] = *p_base;
 	return p_base ->priority;
 }
 CURRENT_PRIORITY		BH_PriorityQueueFindMin(X_PriorityQueue * H,s_element_base * p_base)
 {
 	if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
-
-	return 30;
+    *p_base = H ->p_base[1];
+	return H ->p_base[1].priority;
 }
 CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue * H,s_element_base * p_base)
 {

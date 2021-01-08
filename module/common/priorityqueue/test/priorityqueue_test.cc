@@ -473,7 +473,7 @@ TEST(BH_prio_queue,normal_insert)
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[6].base);
 	EXPECT_EQ(buf_number,17);
 	EXPECT_EQ(0,BH_PriorityQueueFindMin(p_s1,&s_ee[499].base));
-	EXPECT_EQ(17,s_ee[499].base.priority);
+	EXPECT_EQ(0,s_ee[499].base.priority);
 }
 /*
 
