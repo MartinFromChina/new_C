@@ -164,8 +164,7 @@ TEST(queue_test,normal_delete_min)
 	buf_number = BT_PriorityQueueReleaseMin(p_prio_queue);
 	EXPECT_EQ(buf_number,499);
 	
-}
-
+};
 TEST(queue_test,clear)
 {
 	BT_PriorityQueueInit(p_prio_queue);
@@ -218,7 +217,29 @@ TEST(queue_test,get_uesd_node_mum)
 	BT_PriorityQueueReleaseMin(p_prio_queue);
 	EXPECT_EQ(NORMAL_PRIORITY_SCOPE-1,BT_GetPriorityQueueUsedNodeNum(p_prio_queue));
 	
-}
+};
+
+TEST(queue_test,does_empty)
+{
+	uint16_t i;
+	BT_PriorityQueueInit(p_prio_queue);
+
+	EXPECT_EQ(X_True, BT_DoesPriorityQueueEmpty(p_prio_queue));
+
+	for(i=0;i<2000;i++)
+	{
+		BT_PriorityQueueInsert(p_prio_queue,i%NORMAL_PRIORITY_SCOPE);
+	}
+
+	for(i=0;i<2000;i++)
+	{
+		BT_PriorityQueueReleaseMin(p_prio_queue);
+		if(BT_DoesPriorityQueueEmpty(p_prio_queue) == X_True) {break;}
+	}
+	EXPECT_EQ(i, 499);
+
+	
+};
 
 #endif
 /************************

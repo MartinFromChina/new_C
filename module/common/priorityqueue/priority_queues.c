@@ -134,8 +134,7 @@ X_Boolean 			BT_DoesPriorityQueueEmpty(const sPrioListManager *p_manager)
 {
 	if(p_manager == X_Null) {return X_True;}
 	if(p_manager ->p_PLP -> isInit != X_True) {return X_True;}
-
-	return X_False;
+	return (p_manager ->p_PLP ->current_used_bit_cnt == 0);
 }
 uint16_t 			BT_GetPriorityQueueUsedNodeNum(const sPrioListManager *p_manager)
 {
