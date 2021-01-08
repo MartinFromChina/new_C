@@ -146,21 +146,49 @@ uint16_t 			BT_GetPriorityQueueUsedNodeNum(const sPrioListManager *p_manager)
 
 
 /***********************************************
+****************************************************/
+
 X_PriorityQueue 		BH_PriorityQueueInit(uint16_t max_elements)
 {
-	return 0;
+    X_PriorityQueue  H;
+	return H;
 }
 X_Void 					BH_PriorityQueueDestory(X_PriorityQueue H)
 {
 
 }
-X_Void 					BH_PriorityQueueClear(X_PriorityQueue H);
-CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue H,uint16_t priority);
-CURRENT_PRIORITY 		BH_PriorityQueueFindMin(X_PriorityQueue H);
-CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue H);
-X_Boolean 				BH_DoesPriorityQueueEmpty(X_PriorityQueue H);
-uint16_t 				BH_GetPriorityQueueUsedNodeNum(X_PriorityQueue H);
+X_Void 					BH_PriorityQueueClear(X_PriorityQueue H)
+{
 
-****************************************************/
+}
+CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue H,uint16_t priority)
+{
+    if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
+	return 30;
+}
+CURRENT_PRIORITY 		BH_PriorityQueueFindMin(X_PriorityQueue H)
+{
+	if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
+
+	return 30;
+}
+CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue H)
+{
+	if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
+
+	return 30;
+}
+X_Boolean 				BH_DoesPriorityQueueEmpty(X_PriorityQueue H)
+{
+	if(H == X_Null) {return X_True;}
+	return X_True;
+}
+uint16_t 				BH_GetPriorityQueueUsedNodeNum(X_PriorityQueue H)
+{
+	  if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
+	return 0;
+}
+
+
 
 
