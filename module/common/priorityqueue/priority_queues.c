@@ -151,6 +151,8 @@ uint16_t 			BT_GetPriorityQueueUsedNodeNum(const sPrioListManager *p_manager)
 X_PriorityQueue 		BH_PriorityQueueInit(uint16_t max_elements)
 {
     X_PriorityQueue  H;
+
+	if(max_elements > MAX_BH_QUEUE_NODE_NUM) {return 0;}
 	return H;
 }
 X_Void 					BH_PriorityQueueDestory(X_PriorityQueue H)

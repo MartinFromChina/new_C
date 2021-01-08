@@ -377,24 +377,24 @@ TEST(BH_prio_queue,init)
 	}while(0);
 	
 }
-/*
-TEST(BH_prio_queue,prio_scope)
+
+TEST(BH_prio_queue,node_scope)
 {
-	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_1,MAX_PRIOQUEUE_PRIORITY);
-	BT_PriorityQueueInit(p_1);
-	EXPECT_EQ(0,BT_GetPriorityQueueUsedNodeNum(p_1));
-	
-	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_2,MAX_PRIOQUEUE_PRIORITY + 1);
-	BT_PriorityQueueInit(p_2);
-	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BT_GetPriorityQueueUsedNodeNum(p_2));
+	X_BinaryHeapStruct *p_s1 = 0,*p_s2 = 0,*p_s3 = 0;
 
-	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_3,MAX_PRIOQUEUE_PRIORITY - 1);
-	BT_PriorityQueueInit(p_3);
-	EXPECT_EQ(0,BT_GetPriorityQueueUsedNodeNum(p_3));
+	p_s1 = BH_PriorityQueueInit(MAX_BH_QUEUE_NODE_NUM);
+	EXPECT_EQ(0,BH_GetPriorityQueueUsedNodeNum(p_s1));
 	
+	p_s2 = BH_PriorityQueueInit(MAX_BH_QUEUE_NODE_NUM + 1);
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_GetPriorityQueueUsedNodeNum(p_s2));
 
+	p_s3 = BH_PriorityQueueInit(MAX_BH_QUEUE_NODE_NUM - 1);
+	EXPECT_EQ(0,BH_GetPriorityQueueUsedNodeNum(p_s3));
 
 }
+
+/*
+
 
 TEST(BH_prio_queue,normal_insert)
 {
