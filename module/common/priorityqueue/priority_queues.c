@@ -36,7 +36,7 @@ X_Void 				BT_PriorityQueueInit(const sPrioListManager *p_manager)
 {
 	uint16_t i;
 	if(p_manager == X_Null) {return;}
-	if(p_manager ->max_priority > MAX_PRIOQUEUE_PRIORITY)  {return;}
+	if(p_manager ->max_priority > MAX_PRIOQUEUE_PRIORITY )  {return;}
 
 	for(i=0;i<p_manager->table_size ;i++)
 	{
@@ -56,7 +56,7 @@ CURRENT_PRIORITY 	BT_PriorityQueueInsert(const sPrioListManager *p_manager,uint1
 	if(p_manager == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
 	if(p_manager ->p_PLP -> isInit != X_True) {return INVALID_PRIOQUEUE_PRIORITY;}
 
-	// don't forget prio_to_insert boundary check
+	if(prio_to_insert > p_manager ->max_priority) {return INVALID_PRIOQUEUE_PRIORITY;}
 	priority_convert = prio_to_insert;
 	index = priority_convert/BIT_COUNT_IN_UINT32;
 	if(index > p_manager ->table_size) {return INVALID_PRIOQUEUE_PRIORITY;}

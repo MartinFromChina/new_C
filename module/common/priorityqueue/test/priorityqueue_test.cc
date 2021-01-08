@@ -91,8 +91,21 @@ TEST(queue_test,prio_scope)
 	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_3,MAX_PRIOQUEUE_PRIORITY - 1);
 	BT_PriorityQueueInit(p_3);
 	EXPECT_EQ(0,BT_GetPriorityQueueUsedNodeNum(p_3));
-	
 
+	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_4,1);
+	BT_PriorityQueueInit(p_4);
+	EXPECT_EQ(0,BT_GetPriorityQueueUsedNodeNum(p_4));
+	EXPECT_EQ(1,BT_PriorityQueueInsert(p_4,1));
+	EXPECT_EQ(0,BT_PriorityQueueInsert(p_4,0));
+	EXPECT_EQ(2,BT_GetPriorityQueueUsedNodeNum(p_4));
+
+	
+	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_5,0);
+	BT_PriorityQueueInit(p_5);
+	EXPECT_EQ(0,BT_GetPriorityQueueUsedNodeNum(p_5));
+	EXPECT_EQ(0,BT_PriorityQueueInsert(p_5,0));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BT_PriorityQueueInsert(p_5,1));
+	EXPECT_EQ(1,BT_GetPriorityQueueUsedNodeNum(p_5));
 
 }
 
@@ -393,41 +406,42 @@ TEST(BH_prio_queue,node_scope)
 
 }
 
-/*
-
-
 TEST(BH_prio_queue,normal_insert)
 {
-	BT_PriorityQueueInit(p_prio_queue);
+	X_BinaryHeapStruct *p_s1;
+
+	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
 	
-	buf_number = BT_PriorityQueueInsert(p_prio_queue,100);
+	buf_number = BH_PriorityQueueInsert(p_s1,100);
 	EXPECT_EQ(buf_number,100);
-	EXPECT_EQ(100,BT_PriorityQueueFindMin(p_prio_queue));
+	EXPECT_EQ(100,BH_PriorityQueueFindMin(p_s1));
 
-	buf_number = BT_PriorityQueueInsert(p_prio_queue,101);
+	buf_number = BH_PriorityQueueInsert(p_s1,101);
 	EXPECT_EQ(buf_number,101);
-	EXPECT_EQ(100,BT_PriorityQueueFindMin(p_prio_queue));
+	EXPECT_EQ(100,BH_PriorityQueueFindMin(p_s1));
 
-	buf_number = BT_PriorityQueueInsert(p_prio_queue,3);
+	buf_number = BH_PriorityQueueInsert(p_s1,3);
 	EXPECT_EQ(buf_number,3);
-	EXPECT_EQ(3,BT_PriorityQueueFindMin(p_prio_queue));
+	EXPECT_EQ(3,BH_PriorityQueueFindMin(p_s1));
 
-	buf_number = BT_PriorityQueueInsert(p_prio_queue,98);
+	buf_number = BH_PriorityQueueInsert(p_s1,98);
 	EXPECT_EQ(buf_number,98);
-	EXPECT_EQ(3,BT_PriorityQueueFindMin(p_prio_queue));
+	EXPECT_EQ(3,BH_PriorityQueueFindMin(p_s1));
 
-	buf_number = BT_PriorityQueueInsert(p_prio_queue,499);
+	buf_number = BH_PriorityQueueInsert(p_s1,499);
 	EXPECT_EQ(buf_number,499);
-	EXPECT_EQ(3,BT_PriorityQueueFindMin(p_prio_queue));
+	EXPECT_EQ(3,BH_PriorityQueueFindMin(p_s1));
 
-	buf_number = BT_PriorityQueueInsert(p_prio_queue,0);
+	buf_number = BH_PriorityQueueInsert(p_s1,0);
 	EXPECT_EQ(buf_number,0);
-	EXPECT_EQ(0,BT_PriorityQueueFindMin(p_prio_queue));
+	EXPECT_EQ(0,BH_PriorityQueueFindMin(p_s1));
 
-	buf_number = BT_PriorityQueueInsert(p_prio_queue,17);
+	buf_number = BH_PriorityQueueInsert(p_s1,17);
 	EXPECT_EQ(buf_number,17);
-	EXPECT_EQ(0,BT_PriorityQueueFindMin(p_prio_queue));
+	EXPECT_EQ(0,BH_PriorityQueueFindMin(p_s1));
 }
+/*
+
 TEST(BH_prio_queue,same_priority_insert)
 {
 	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p1,65534);
