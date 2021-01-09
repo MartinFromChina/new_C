@@ -86,10 +86,11 @@ X_PriorityQueue *		BH_PriorityQueueInit(uint16_t max_elements);
 X_Void 					BH_PriorityQueueDestory(X_PriorityQueue * H);
 X_Void 					BH_PriorityQueueClear(X_PriorityQueue * H);
 CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base * p_base);
-CURRENT_PRIORITY		BH_PriorityQueueFindMin(X_PriorityQueue * H,s_element_base * p_base);
-CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue * H,s_element_base * p_base);
+CURRENT_PRIORITY		BH_PriorityQueueFindMin(X_PriorityQueue * H,s_element_base ** pp_base);
+CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue * H,s_element_base ** pp_base);
 X_Boolean 				BH_DoesPriorityQueueEmpty(X_PriorityQueue * H);
 uint16_t 				BH_GetPriorityQueueUsedNodeNum(X_PriorityQueue * H);
+
 
 
 
