@@ -675,12 +675,73 @@ TEST(BH_prio_queue,does_empty)
 
 	
 }
-/*
+
 
 TEST(BH_prio_queue,boundary)
 {
+	uint16_t i;
+	X_PriorityQueue *p_s1;
 
+	/**********************init node num boundary test*****************************/
+	p_s1 = BH_PriorityQueueInit(0xffff);
+	EXPECT_EQ(p_s1, (X_PriorityQueue *)0);
+
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	EXPECT_EQ(buf_number ,INVALID_PRIOQUEUE_PRIORITY);
+
+	p_s1 = BH_PriorityQueueInit(0xfffe);
+	EXPECT_NE(p_s1, (X_PriorityQueue *)0);
+
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	EXPECT_EQ(buf_number ,s_ee[0].base.priority);
+
+	p_s1 = BH_PriorityQueueInit(0);
+	EXPECT_EQ(p_s1, (X_PriorityQueue *)0);
+
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	EXPECT_EQ(buf_number ,INVALID_PRIOQUEUE_PRIORITY);
+
+	p_s1 = BH_PriorityQueueInit(1);
+	EXPECT_NE(p_s1, (X_PriorityQueue *)0);
+
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	EXPECT_EQ(buf_number ,s_ee[0].base.priority);
+
+	/**********************priority scope boundary test*****************************/
+	p_s1 = BH_PriorityQueueInit(0xfffe);
+
+	s_ee[0].base.priority = 0;		s_ee[0].other_info = 0;
+	s_ee[1].base.priority = 1;		s_ee[1].other_info = 1;
+	s_ee[2].base.priority = 256;	s_ee[2].other_info = 2;
+	s_ee[3].base.priority = 32768;	s_ee[3].other_info = 3;
+	s_ee[4].base.priority = 65534;	s_ee[4].other_info = 4;
+	s_ee[5].base.priority = 65535;	s_ee[5].other_info = 5;
+	s_ee[6].base.priority = 65537;	s_ee[6].other_info = 6;
+	BH_PriorityQueueInsert(p_s1,&s_ee[5].base);
+	BH_PriorityQueueInsert(p_s1,&s_ee[1].base);
+	BH_PriorityQueueInsert(p_s1,&s_ee[6].base);
+	BH_PriorityQueueInsert(p_s1,&s_ee[3].base);
+	BH_PriorityQueueInsert(p_s1,&s_ee[2].base);
+	BH_PriorityQueueInsert(p_s1,&s_ee[4].base);
+	BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	
+	BH_PriorityQueueReleaseMin(p_s1,&p_base);
+	EXPECT_EQ(0, p_base->priority);
+	BH_PriorityQueueReleaseMin(p_s1,&p_base);
+	EXPECT_EQ(1, p_base->priority);
+	BH_PriorityQueueReleaseMin(p_s1,&p_base);
+	EXPECT_EQ(1, p_base->priority);
+	BH_PriorityQueueReleaseMin(p_s1,&p_base);
+	EXPECT_EQ(256, p_base->priority);
+	BH_PriorityQueueReleaseMin(p_s1,&p_base);
+	EXPECT_EQ(32768, p_base->priority);
+	BH_PriorityQueueReleaseMin(p_s1,&p_base);
+	EXPECT_EQ(65534, p_base->priority);
+	BH_PriorityQueueReleaseMin(p_s1,&p_base);
+	EXPECT_EQ(65535, p_base->priority);
+	
 }
+/*
 
 TEST(BH_prio_queue,mul_entry)
 {
