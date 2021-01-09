@@ -533,8 +533,6 @@ TEST(BH_prio_queue,same_priority_insert)
 	EXPECT_EQ(4,p_extern ->other_info);
 }
 
-/*
-
 TEST(BH_prio_queue,normal_delete_min)
 {
 	X_PriorityQueue *p_s1;
@@ -547,40 +545,46 @@ TEST(BH_prio_queue,normal_delete_min)
 	s_ee[4].base.priority = 499;	s_ee[4].other_info = 4;
 
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
-	EXPECT_EQ(s_ee[0].base.priority,BH_PriorityQueueReleaseMin(p_s1,&s_ee[499].base));
-	EXPECT_EQ(s_ee[0].other_info,s_ee[499].other_info);
+	EXPECT_EQ(s_ee[0].base.priority,BH_PriorityQueueReleaseMin(p_s1,&p_base));
+	p_extern  = (s_element_extern *)p_base;
+	EXPECT_EQ(s_ee[0].other_info,p_extern ->other_info);
 
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[1].base);
-	EXPECT_EQ(s_ee[1].base.priority,BH_PriorityQueueReleaseMin(p_s1,&s_ee[499].base));
-	EXPECT_EQ(s_ee[1].other_info,s_ee[499].other_info);
+	EXPECT_EQ(s_ee[1].base.priority,BH_PriorityQueueReleaseMin(p_s1,&p_base));
+	p_extern  = (s_element_extern *)p_base;
+	EXPECT_EQ(s_ee[1].other_info,p_extern ->other_info);
 
 
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[2].base);
-	EXPECT_EQ(s_ee[2].base.priority,BH_PriorityQueueFindMin(p_s1,&s_ee[499].base));
-	EXPECT_EQ(s_ee[2].other_info,s_ee[499].other_info);
+	EXPECT_EQ(s_ee[2].base.priority,BH_PriorityQueueFindMin(p_s1,&p_base));
+	p_extern  = (s_element_extern *)p_base;
+	EXPECT_EQ(s_ee[2].other_info,p_extern ->other_info);
 	
 
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[3].base);
-	EXPECT_EQ(s_ee[3].base.priority,BH_PriorityQueueFindMin(p_s1,&s_ee[499].base));
-	EXPECT_EQ(s_ee[3].other_info,s_ee[499].other_info);
+	EXPECT_EQ(s_ee[3].base.priority,BH_PriorityQueueFindMin(p_s1,&p_base));
+	p_extern  = (s_element_extern *)p_base;
+	EXPECT_EQ(s_ee[3].other_info,p_extern ->other_info);
 
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[4].base);
-	EXPECT_EQ(s_ee[4].base.priority,BH_PriorityQueueFindMin(p_s1,&s_ee[499].base));
-	EXPECT_EQ(s_ee[4].other_info,s_ee[499].other_info);
+	EXPECT_EQ(s_ee[4].base.priority,BH_PriorityQueueFindMin(p_s1,&p_base));
+	p_extern  = (s_element_extern *)p_base;
+	EXPECT_EQ(s_ee[4].other_info,p_extern ->other_info);
 
 
-	buf_number = BH_PriorityQueueReleaseMin(p_s1,&s_ee[499].base);
+	buf_number = BH_PriorityQueueReleaseMin(p_s1,&p_base);
 	EXPECT_EQ(buf_number,3);
-	buf_number = BH_PriorityQueueReleaseMin(p_s1,&s_ee[499].base);
+	buf_number = BH_PriorityQueueReleaseMin(p_s1,&p_base);
 	EXPECT_EQ(buf_number,98);
-	buf_number = BH_PriorityQueueReleaseMin(p_s1,&s_ee[499].base);
+	buf_number = BH_PriorityQueueReleaseMin(p_s1,&p_base);
 	EXPECT_EQ(buf_number,499);
 
-	buf_number = BH_PriorityQueueReleaseMin(p_s1,&s_ee[499].base);
+	buf_number = BH_PriorityQueueReleaseMin(p_s1,&p_base);
 	EXPECT_EQ(buf_number,INVALID_PRIOQUEUE_PRIORITY);
 	
 }
 
+/*
 
 TEST(BH_prio_queue,clear)
 {
@@ -711,6 +715,11 @@ TEST(BH_prio_queue,operation_speed)
 {
 
 }
+TEST(BH_prio_queue,null_pointer)
+{
+
+}
+
 */
 
 
