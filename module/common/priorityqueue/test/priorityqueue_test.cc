@@ -354,6 +354,8 @@ typedef struct
 
 static s_element_extern s_ee[NORMAL_NODE_SCOPE];
 static s_element_base *p_base = &s_ee[NORMAL_NODE_SCOPE - 1].base;
+static s_element_extern *p_extern;
+
 
 
 TEST(BH_prio_queue,init)
@@ -482,7 +484,7 @@ TEST(BH_prio_queue,normal_insert)
 	EXPECT_EQ(0,p_base->priority);
 }
 
-/*
+
 
 TEST(BH_prio_queue,same_priority_insert)
 {
@@ -510,25 +512,28 @@ TEST(BH_prio_queue,same_priority_insert)
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[3].base);
 
 	EXPECT_EQ(4,BH_GetPriorityQueueUsedNodeNum(p_s1));
-	EXPECT_EQ(32767,BH_PriorityQueueFindMin(p_s1,&s_ee[499].base));
-	EXPECT_EQ(32767,s_ee[499].base.priority);
-	EXPECT_EQ(0,s_ee[499].other_info);
+	EXPECT_EQ(32767,BH_PriorityQueueFindMin(p_s1,&p_base));
+	EXPECT_EQ(32767,p_base->priority);
+	p_extern  = (s_element_extern *)p_base;
+	EXPECT_EQ(0,p_extern ->other_info);
 
-	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
-	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
-	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
-	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
-	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
-	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
-	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
-	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[4].base);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[5].base);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[6].base);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[7].base);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[8].base);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[9].base);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[10].base);
+	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[11].base);
 	
 	EXPECT_EQ(12,BH_GetPriorityQueueUsedNodeNum(p_s1));
-	EXPECT_EQ(255,BH_PriorityQueueFindMin(p_s1,&s_ee[499].base));
-	EXPECT_EQ(255,s_ee[499].base.priority);
-	EXPECT_EQ(4,s_ee[499].other_info);
+	EXPECT_EQ(255,BH_PriorityQueueFindMin(p_s1,&p_base));
+	EXPECT_EQ(255,p_base->priority);
+	p_extern  = (s_element_extern *)p_base;
+	EXPECT_EQ(4,p_extern ->other_info);
 }
 
+/*
 
 TEST(BH_prio_queue,normal_delete_min)
 {
