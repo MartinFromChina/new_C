@@ -767,8 +767,56 @@ TEST(BH_prio_queue,destory)
 	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueFindMin(p_s1,&p_base));
 	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueReleaseMin(p_s1,&p_base));
 }
-/*
 
+TEST(BH_prio_queue,null_pointer)
+{
+	X_PriorityQueue *p_s1;
+	s_element_base *temp_p_base;
+
+	temp_p_base = (s_element_base *)0;
+	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
+	s_ee[0].base.priority = 100;
+
+	
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert((X_PriorityQueue *)0,&s_ee[0].base));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert(p_s1,temp_p_base));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert((X_PriorityQueue *)0,temp_p_base));
+	EXPECT_EQ(s_ee[0].base.priority,BH_PriorityQueueInsert(p_s1,&s_ee[0].base));	
+
+
+
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueFindMin((X_PriorityQueue *)0,&p_base));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueFindMin(p_s1,&temp_p_base));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueFindMin((X_PriorityQueue *)0,&temp_p_base));
+	EXPECT_EQ(s_ee[0].base.priority,BH_PriorityQueueFindMin(p_s1,&p_base));
+	
+
+	
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueReleaseMin((X_PriorityQueue *)0,&temp_p_base));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueReleaseMin(p_s1,&temp_p_base));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueReleaseMin((X_PriorityQueue *)0,&temp_p_base));
+	EXPECT_EQ(s_ee[0].base.priority,BH_PriorityQueueReleaseMin(p_s1,&p_base));
+
+
+	BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	EXPECT_EQ(X_False, BH_DoesPriorityQueueEmpty(p_s1));
+	EXPECT_EQ(X_True, BH_DoesPriorityQueueEmpty((X_PriorityQueue *)0));
+	EXPECT_EQ(1, BH_GetPriorityQueueUsedNodeNum(p_s1));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY, BH_GetPriorityQueueUsedNodeNum((X_PriorityQueue *)0));
+
+	BH_PriorityQueueClear((X_PriorityQueue *)0);
+	EXPECT_EQ(1, BH_GetPriorityQueueUsedNodeNum(p_s1));
+	BH_PriorityQueueClear(p_s1);
+	EXPECT_EQ(0, BH_GetPriorityQueueUsedNodeNum(p_s1));
+	
+	BH_PriorityQueueDestory((X_PriorityQueue **)0);
+	EXPECT_NE(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert(p_s1,&s_ee[0].base));
+	BH_PriorityQueueDestory(&p_s1);
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert(p_s1,&s_ee[0].base));
+
+}
+
+/*
 TEST(BH_prio_queue,mul_entry)
 {
 	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p2,500);
@@ -817,10 +865,7 @@ TEST(BH_prio_queue,operation_speed)
 {
 
 }
-TEST(BH_prio_queue,null_pointer)
-{
 
-}
 
 */
 
