@@ -173,7 +173,8 @@ X_Void 					BH_PriorityQueueDestory(X_PriorityQueue * H)
 }
 X_Void 					BH_PriorityQueueClear(X_PriorityQueue *            H)
 {
-
+	if(H == X_Null) {return;}
+	H ->current_size = 0;
 }
 CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base         * p_base)
 {
@@ -191,6 +192,7 @@ CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base    
 CURRENT_PRIORITY		BH_PriorityQueueFindMin(X_PriorityQueue * H,s_element_base ** pp_base)
 {
 	if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
+	if(H ->current_size == 0) {return INVALID_PRIOQUEUE_PRIORITY;}
 	//printf(" ------------p_base not load: priority %d\r\n",(*pp_base) ->priority); // now the pp_base maybe null,carefully
     *pp_base = H ->p_base[1];
 	//printf(" ------------p_base load: priority %d\r\n",(*pp_base) ->priority);

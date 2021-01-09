@@ -584,28 +584,36 @@ TEST(BH_prio_queue,normal_delete_min)
 	
 }
 
-/*
+
 
 TEST(BH_prio_queue,clear)
 {
-	BT_PriorityQueueInit(p_prio_queue);
+	X_PriorityQueue *p_s1;
+	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
 
-	buf_number = BT_PriorityQueueReleaseMin(p_prio_queue);
+	s_ee[0].base.priority = 100;	s_ee[0].other_info = 0;
+	s_ee[1].base.priority = 99;		s_ee[1].other_info = 1;
+	s_ee[2].base.priority = 3;		s_ee[2].other_info = 2;
+	s_ee[3].base.priority = 98;		s_ee[3].other_info = 3;
+	s_ee[4].base.priority = 499;	s_ee[4].other_info = 4;
+
+	buf_number = BH_PriorityQueueReleaseMin(p_s1,&p_base);
 	EXPECT_EQ(buf_number,INVALID_PRIOQUEUE_PRIORITY);
 
-	BT_PriorityQueueInsert(p_prio_queue,100);
-	buf_number = BT_PriorityQueueFindMin(p_prio_queue);
+	BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	buf_number = BH_PriorityQueueFindMin(p_s1,&p_base);
 	EXPECT_EQ(buf_number,100);
 
-	BT_PriorityQueueInsert(p_prio_queue,99);
-	buf_number = BT_PriorityQueueFindMin(p_prio_queue);
+	BH_PriorityQueueInsert(p_s1,&s_ee[1].base);
+	buf_number = BH_PriorityQueueFindMin(p_s1,&p_base);
 	EXPECT_EQ(buf_number,99);
 
-	BT_PriorityQueueClear(p_prio_queue);
-	buf_number = BT_PriorityQueueFindMin(p_prio_queue);
+	BH_PriorityQueueClear(p_s1);
+	buf_number = BH_PriorityQueueFindMin(p_s1,&p_base);
 	EXPECT_EQ(buf_number,INVALID_PRIOQUEUE_PRIORITY);
 
 }
+/*
 
 TEST(BH_prio_queue,get_uesd_node_mum)
 {
