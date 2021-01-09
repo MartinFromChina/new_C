@@ -649,29 +649,33 @@ TEST(BH_prio_queue,get_uesd_node_mum)
 	EXPECT_EQ(NORMAL_NODE_SCOPE-1,BH_GetPriorityQueueUsedNodeNum(p_s1));
 	
 }
-/*
+
 
 TEST(BH_prio_queue,does_empty)
 {
 	uint16_t i;
-	BT_PriorityQueueInit(p_prio_queue);
+	X_PriorityQueue *p_s1;
+	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
 
-	EXPECT_EQ(X_True, BT_DoesPriorityQueueEmpty(p_prio_queue));
+	EXPECT_EQ(X_True, BH_DoesPriorityQueueEmpty(p_s1));
 
+	
 	for(i=0;i<2000;i++)
 	{
-		BT_PriorityQueueInsert(p_prio_queue,i%NORMAL_PRIORITY_SCOPE);
+		s_ee[0].base.priority = 3000 - i;
+		BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
 	}
 
 	for(i=0;i<2000;i++)
 	{
-		BT_PriorityQueueReleaseMin(p_prio_queue);
-		if(BT_DoesPriorityQueueEmpty(p_prio_queue) == X_True) {break;}
+		BH_PriorityQueueReleaseMin(p_s1,&p_base);
+		if(BH_DoesPriorityQueueEmpty(p_s1) == X_True) {break;}
 	}
 	EXPECT_EQ(i, 499);
 
 	
 }
+/*
 
 TEST(BH_prio_queue,boundary)
 {

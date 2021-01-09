@@ -227,7 +227,7 @@ CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue * H,s_element_base
 X_Boolean 				BH_DoesPriorityQueueEmpty(X_PriorityQueue * H)
 {
 	if(H == X_Null) {return X_True;}
-	return X_True;
+	return (H ->current_size == 0);
 }
 uint16_t 				BH_GetPriorityQueueUsedNodeNum(X_PriorityQueue * H)
 {
