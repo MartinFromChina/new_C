@@ -562,14 +562,14 @@ TEST(BH_prio_queue,normal_delete_min)
 	
 
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[3].base);
-	EXPECT_EQ(s_ee[3].base.priority,BH_PriorityQueueFindMin(p_s1,&p_base));
+	EXPECT_EQ(3,BH_PriorityQueueFindMin(p_s1,&p_base));
 	p_extern  = (s_element_extern *)p_base;
-	EXPECT_EQ(s_ee[3].other_info,p_extern ->other_info);
+	EXPECT_EQ(2,p_extern ->other_info);
 
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[4].base);
-	EXPECT_EQ(s_ee[4].base.priority,BH_PriorityQueueFindMin(p_s1,&p_base));
+	EXPECT_EQ(3,BH_PriorityQueueFindMin(p_s1,&p_base));
 	p_extern  = (s_element_extern *)p_base;
-	EXPECT_EQ(s_ee[4].other_info,p_extern ->other_info);
+	EXPECT_EQ(2,p_extern ->other_info);
 
 
 	buf_number = BH_PriorityQueueReleaseMin(p_s1,&p_base);
