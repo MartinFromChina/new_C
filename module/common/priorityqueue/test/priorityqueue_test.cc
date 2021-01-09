@@ -337,7 +337,7 @@ TEST(queue_test,operation_speed)
 #endif
 /************************
 X_PriorityQueue *		BH_PriorityQueueInit(uint16_t max_elements);
-X_Void 					BH_PriorityQueueDestory(X_PriorityQueue * H);
+X_Void 					BH_PriorityQueueDestory(X_PriorityQueue ** p_H);
 X_Void 					BH_PriorityQueueClear(X_PriorityQueue * H);
 CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base * p_base);
 CURRENT_PRIORITY		BH_PriorityQueueFindMin(X_PriorityQueue * H,s_element_base * p_base);
@@ -679,7 +679,6 @@ TEST(BH_prio_queue,does_empty)
 
 TEST(BH_prio_queue,boundary)
 {
-	uint16_t i;
 	X_PriorityQueue *p_s1;
 
 	/**********************init node num boundary test*****************************/
@@ -740,6 +739,33 @@ TEST(BH_prio_queue,boundary)
 	BH_PriorityQueueReleaseMin(p_s1,&p_base);
 	EXPECT_EQ(65535, p_base->priority);
 	
+}
+
+TEST(BH_prio_queue,destory)
+{
+	uint16_t i;
+	X_PriorityQueue *p_s1;
+	X_PriorityQueue *p_s1_copy;
+	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
+	p_s1_copy = p_s1;
+	EXPECT_EQ(X_True, BH_DoesPriorityQueueEmpty(p_s1));
+
+	
+	for(i=0;i<2000;i++)
+	{
+		s_ee[0].base.priority = 3000 - i;
+		BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	}
+	EXPECT_EQ(X_False, BH_DoesPriorityQueueEmpty(p_s1_copy));
+	EXPECT_EQ(NORMAL_NODE_SCOPE, BH_GetPriorityQueueUsedNodeNum(p_s1_copy));
+	
+	BH_PriorityQueueDestory(&p_s1);
+	EXPECT_EQ(X_True, BH_DoesPriorityQueueEmpty(p_s1));
+	EXPECT_EQ(0, BH_GetPriorityQueueUsedNodeNum(p_s1_copy));// not a good way ....
+	EXPECT_EQ(p_s1, (X_PriorityQueue*)0);
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert(p_s1,&s_ee[0].base));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueFindMin(p_s1,&p_base));
+	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueReleaseMin(p_s1,&p_base));
 }
 /*
 

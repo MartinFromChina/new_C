@@ -167,9 +167,12 @@ X_PriorityQueue  *		BH_PriorityQueueInit(uint16_t max_elements)
 
 	return H;
 }
-X_Void 					BH_PriorityQueueDestory(X_PriorityQueue * H)
+X_Void 					BH_PriorityQueueDestory(X_PriorityQueue ** p_H)
 {
-
+	 if(p_H == X_Null){return;}
+	 if(*p_H == X_Null) {return;}
+	 free(*p_H);
+	 *p_H = (X_PriorityQueue *)0;
 }
 X_Void 					BH_PriorityQueueClear(X_PriorityQueue *            H)
 {
