@@ -816,48 +816,49 @@ TEST(BH_prio_queue,null_pointer)
 
 }
 
-/*
 TEST(BH_prio_queue,mul_entry)
 {
-	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p2,500);
-	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p3,1000);
-	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p4,2680);
-	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p5,779);
-	APP_BIT_TABLE_PRIORITYQUEUE_DEF(p6,456);
+	X_PriorityQueue *p_s1,*p_s2,*p_s3,*p_s4,*p_s5;
 
-	BT_PriorityQueueInit(p2);
-	BT_PriorityQueueInit(p3);
-	BT_PriorityQueueInit(p4);
-	BT_PriorityQueueInit(p5);
-	BT_PriorityQueueInit(p6);
+	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
+	p_s2 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE*2);
+	p_s3 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE*2 + 680);
+	p_s4 = BH_PriorityQueueInit(779);
+	p_s5 = BH_PriorityQueueInit(65534);
 
-	BT_PriorityQueueInsert(p2,288);
-	BT_PriorityQueueInsert(p6,288);
-	BT_PriorityQueueInsert(p5,288);
-	BT_PriorityQueueInsert(p3,288);
-	BT_PriorityQueueInsert(p4,288);
+	s_ee[0].base.priority = 288;	s_ee[0].other_info = 0;
+	s_ee[1].base.priority = 100;	s_ee[1].other_info = 1;
+	s_ee[2].base.priority = 200;	s_ee[2].other_info = 2;
+	s_ee[3].base.priority = 98;		s_ee[3].other_info = 3;
+	s_ee[4].base.priority = 128;	s_ee[4].other_info = 4;
+	s_ee[5].base.priority = 255;	s_ee[5].other_info = 5;
 
+	BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	BH_PriorityQueueInsert(p_s5,&s_ee[0].base);
+	BH_PriorityQueueInsert(p_s4,&s_ee[0].base);
+	BH_PriorityQueueInsert(p_s2,&s_ee[0].base);
+	BH_PriorityQueueInsert(p_s3,&s_ee[0].base);
+
+	BH_PriorityQueueInsert(p_s1,&s_ee[1].base);
+	BH_PriorityQueueInsert(p_s5,&s_ee[3].base);
+	BH_PriorityQueueInsert(p_s4,&s_ee[4].base);
+	BH_PriorityQueueInsert(p_s2,&s_ee[5].base);
+	BH_PriorityQueueInsert(p_s3,&s_ee[2].base);
+
+	BH_PriorityQueueReleaseMin(p_s2,&p_base);
+	BH_PriorityQueueReleaseMin(p_s4,&p_base);
 	
-	BT_PriorityQueueInsert(p2,100);
-	BT_PriorityQueueInsert(p6,200);
-	BT_PriorityQueueInsert(p5,98);
-	BT_PriorityQueueInsert(p3,128);
-	BT_PriorityQueueInsert(p4,256);
+	EXPECT_EQ(100, BH_PriorityQueueFindMin(p_s1,&p_base));
+	EXPECT_EQ(288, BH_PriorityQueueFindMin(p_s2,&p_base));
+	EXPECT_EQ(200, BH_PriorityQueueFindMin(p_s3,&p_base));
+	EXPECT_EQ(288, BH_PriorityQueueFindMin(p_s4,&p_base));
+	EXPECT_EQ(98, BH_PriorityQueueFindMin(p_s5,&p_base));
 
-	BT_PriorityQueueReleaseMin(p3);
-	BT_PriorityQueueReleaseMin(p5);
-	
-	EXPECT_EQ(100, BT_PriorityQueueFindMin(p2));
-	EXPECT_EQ(288, BT_PriorityQueueFindMin(p3));
-	EXPECT_EQ(256, BT_PriorityQueueFindMin(p4));
-	EXPECT_EQ(288, BT_PriorityQueueFindMin(p5));
-	EXPECT_EQ(200, BT_PriorityQueueFindMin(p6));
-
-	EXPECT_EQ(2, BT_GetPriorityQueueUsedNodeNum(p2));
-	EXPECT_EQ(1, BT_GetPriorityQueueUsedNodeNum(p3));
-	EXPECT_EQ(2, BT_GetPriorityQueueUsedNodeNum(p4));
-	EXPECT_EQ(1, BT_GetPriorityQueueUsedNodeNum(p5));
-	EXPECT_EQ(2, BT_GetPriorityQueueUsedNodeNum(p6));
+	EXPECT_EQ(2, BH_GetPriorityQueueUsedNodeNum(p_s1));
+	EXPECT_EQ(1, BH_GetPriorityQueueUsedNodeNum(p_s2));
+	EXPECT_EQ(2, BH_GetPriorityQueueUsedNodeNum(p_s3));
+	EXPECT_EQ(1, BH_GetPriorityQueueUsedNodeNum(p_s4));
+	EXPECT_EQ(2, BH_GetPriorityQueueUsedNodeNum(p_s5));
 	
 	
 }
@@ -865,11 +866,6 @@ TEST(BH_prio_queue,operation_speed)
 {
 
 }
-
-
-*/
-
-
 
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"Running main() from priorityqueue_test.cc\n";
