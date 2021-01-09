@@ -43,7 +43,17 @@ typedef struct
 }sPrioListManager;
 
 
-#define APP_BIT_TABLE_PRIORITYQUEUE_DEF_WITHOUT_POINTER() 
+#define APP_BIT_TABLE_PRIORITYQUEUE_DEF_WITHOUT_POINTER(p_manager,max_priority_value)   \
+		static uint32_t  CONCAT_2(p_manager,_bit_table)[GET_PRIORITY_TABLE_SIZE_BY_PRIORITY_SCOPE(max_priority_value)]; 	\
+		static sPrioListparam CONCAT_2(p_manager,_prio_param) = {X_False,0};				\
+		static const sPrioListManager CONCAT_2(p_manager,_prioqueue_entry)= {			\
+			max_priority_value,												\
+			GET_PRIORITY_TABLE_SIZE_BY_PRIORITY_SCOPE(max_priority_value),	\
+			CONCAT_2(p_manager,_bit_table),									\
+			&CONCAT_2(p_manager,_prio_param),								\
+		};																		
+
+
 
 
 #define APP_BIT_TABLE_PRIORITYQUEUE_DEF(p_manager,max_priority_value)   \
