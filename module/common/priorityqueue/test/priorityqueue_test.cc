@@ -593,9 +593,6 @@ TEST(BH_prio_queue,clear)
 
 	s_ee[0].base.priority = 100;	s_ee[0].other_info = 0;
 	s_ee[1].base.priority = 99;		s_ee[1].other_info = 1;
-	s_ee[2].base.priority = 3;		s_ee[2].other_info = 2;
-	s_ee[3].base.priority = 98;		s_ee[3].other_info = 3;
-	s_ee[4].base.priority = 499;	s_ee[4].other_info = 4;
 
 	buf_number = BH_PriorityQueueReleaseMin(p_s1,&p_base);
 	EXPECT_EQ(buf_number,INVALID_PRIOQUEUE_PRIORITY);
@@ -613,40 +610,46 @@ TEST(BH_prio_queue,clear)
 	EXPECT_EQ(buf_number,INVALID_PRIOQUEUE_PRIORITY);
 
 }
-/*
+
 
 TEST(BH_prio_queue,get_uesd_node_mum)
 {
 	uint16_t i;
-	BT_PriorityQueueInit(p_prio_queue);
-	buf_number = BT_GetPriorityQueueUsedNodeNum(p_prio_queue);
+	X_PriorityQueue *p_s1;
+	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
+	buf_number = BH_GetPriorityQueueUsedNodeNum(p_s1);
 	EXPECT_EQ(buf_number,0);
 
-	BT_PriorityQueueInsert(p_prio_queue,100);
-	EXPECT_EQ(1,BT_GetPriorityQueueUsedNodeNum(p_prio_queue));
-	BT_PriorityQueueInsert(p_prio_queue,100);
-	EXPECT_EQ(1,BT_GetPriorityQueueUsedNodeNum(p_prio_queue));
-	BT_PriorityQueueInsert(p_prio_queue,100);
-	EXPECT_EQ(1,BT_GetPriorityQueueUsedNodeNum(p_prio_queue));
+	s_ee[0].base.priority = 100;	s_ee[0].other_info = 0;
+	s_ee[1].base.priority = 99;		s_ee[1].other_info = 1;
 
-	BT_PriorityQueueInsert(p_prio_queue,99);
-	EXPECT_EQ(2,BT_GetPriorityQueueUsedNodeNum(p_prio_queue));
-	BT_PriorityQueueInsert(p_prio_queue,98);
-	EXPECT_EQ(3,BT_GetPriorityQueueUsedNodeNum(p_prio_queue));
+	BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	EXPECT_EQ(1,BH_GetPriorityQueueUsedNodeNum(p_s1));
+	BH_PriorityQueueInsert(p_s1,&s_ee[1].base);
+	EXPECT_EQ(2,BH_GetPriorityQueueUsedNodeNum(p_s1));
+	BH_PriorityQueueInsert(p_s1,&s_ee[1].base);
+	EXPECT_EQ(3,BH_GetPriorityQueueUsedNodeNum(p_s1));
 
-	BT_PriorityQueueReleaseMin(p_prio_queue);
-	EXPECT_EQ(2,BT_GetPriorityQueueUsedNodeNum(p_prio_queue));
+	BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	EXPECT_EQ(4,BH_GetPriorityQueueUsedNodeNum(p_s1));
+	BH_PriorityQueueInsert(p_s1,&s_ee[1].base);
+	EXPECT_EQ(5,BH_GetPriorityQueueUsedNodeNum(p_s1));
+
+	BH_PriorityQueueInsert(p_s1,&s_ee[1].base);
+	EXPECT_EQ(6,BH_GetPriorityQueueUsedNodeNum(p_s1));
 
 	for(i=0;i<2000;i++)
 	{
-		BT_PriorityQueueInsert(p_prio_queue,i%NORMAL_PRIORITY_SCOPE);
+		s_ee[0].base.priority = i;
+		BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
 	}
-	EXPECT_EQ(NORMAL_PRIORITY_SCOPE,BT_GetPriorityQueueUsedNodeNum(p_prio_queue));
+	EXPECT_EQ(NORMAL_NODE_SCOPE,BH_GetPriorityQueueUsedNodeNum(p_s1));
 
-	BT_PriorityQueueReleaseMin(p_prio_queue);
-	EXPECT_EQ(NORMAL_PRIORITY_SCOPE-1,BT_GetPriorityQueueUsedNodeNum(p_prio_queue));
+	BH_PriorityQueueReleaseMin(p_s1,&p_base);
+	EXPECT_EQ(NORMAL_NODE_SCOPE-1,BH_GetPriorityQueueUsedNodeNum(p_s1));
 	
 }
+/*
 
 TEST(BH_prio_queue,does_empty)
 {
