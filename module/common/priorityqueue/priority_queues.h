@@ -14,6 +14,8 @@
 #define INVALID_PRIOQUEUE_PRIORITY  (0xFFFF) 
 #define MAX_PRIOQUEUE_PRIORITY ((uint16_t)(INVALID_PRIOQUEUE_PRIORITY - 1))
 #define MAX_BH_QUEUE_NODE_NUM   ((uint16_t)(INVALID_PRIOQUEUE_PRIORITY - 1))
+#define MINNEST_BH_QUEUE_SENTINEL  0
+
 
 #define CURRENT_PRIORITY uint16_t
 
@@ -76,14 +78,14 @@ typedef struct
 {
 	uint16_t max_node;
 	uint16_t current_size;
-	s_element_base *p_base;
+	s_element_base **p_base;
 }X_PriorityQueue;
 
 
 X_PriorityQueue *		BH_PriorityQueueInit(uint16_t max_elements);
 X_Void 					BH_PriorityQueueDestory(X_PriorityQueue * H);
 X_Void 					BH_PriorityQueueClear(X_PriorityQueue * H);
-CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base const * p_base);
+CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base * p_base);
 CURRENT_PRIORITY		BH_PriorityQueueFindMin(X_PriorityQueue * H,s_element_base * p_base);
 CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue * H,s_element_base * p_base);
 X_Boolean 				BH_DoesPriorityQueueEmpty(X_PriorityQueue * H);

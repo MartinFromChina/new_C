@@ -69,8 +69,6 @@ CURRENT_PRIORITY 	BT_PriorityQueueInsert(const sPrioListManager *p_manager,uint1
 	if((p_manager ->p_bit_table[index] & bit) == 0) {p_manager ->p_PLP ->current_used_bit_cnt ++;}
 	p_manager ->p_bit_table[index] |= bit;
 
-	
-	
 	return prio_to_insert;
 }
 CURRENT_PRIORITY 	BT_PriorityQueueFindMin(const sPrioListManager *p_manager)
@@ -153,7 +151,7 @@ uint16_t 			BT_GetPriorityQueueUsedNodeNum(const sPrioListManager *p_manager)
 X_PriorityQueue  *		BH_PriorityQueueInit(uint16_t max_elements)
 {
 	X_PriorityQueue entry;
-	s_element_base  element_entry;
+	s_element_base  *element_point_entry;
     X_PriorityQueue * H;
 
 	if(max_elements > MAX_BH_QUEUE_NODE_NUM || max_elements == 0) {return 0;}
@@ -161,10 +159,11 @@ X_PriorityQueue  *		BH_PriorityQueueInit(uint16_t max_elements)
 	H = (X_PriorityQueue *)malloc (sizeof(entry));
 	if(H == NULL) {return 0;}
 
-	H ->p_base = (s_element_base *)malloc (sizeof(element_entry) * max_elements);
+	H ->p_base = (s_element_base **)malloc ((sizeof(element_point_entry) * max_elements) + 1);
 	if(H ->p_base == NULL) {return 0;}
 	H ->current_size = 0;
 	H ->max_node = max_elements;
+	H ->p_base[0]->priority = MINNEST_BH_QUEUE_SENTINEL;
 	return H;
 }
 X_Void 					BH_PriorityQueueDestory(X_PriorityQueue * H)
@@ -175,24 +174,24 @@ X_Void 					BH_PriorityQueueClear(X_PriorityQueue *            H)
 {
 
 }
-CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base const * p_base)
+CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base         * p_base)
 {
 	uint16_t i;
     if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
 	if(H ->current_size >= H ->max_node) {return INVALID_PRIOQUEUE_PRIORITY;}
 
-	for(i= ++ H ->current_size ;H->p_base[i/2].priority > p_base ->priority ;i /= 2)
+	for(i= ++ H ->current_size ;H->p_base[i/2]->priority > p_base ->priority ;i /= 2)
 	{
 		H ->p_base[i] = H ->p_base[i/2];
 	}
-	H ->p_base[i] = *p_base;
+	H ->p_base[i] = p_base;
 	return p_base ->priority;
 }
 CURRENT_PRIORITY		BH_PriorityQueueFindMin(X_PriorityQueue * H,s_element_base * p_base)
 {
 	if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
-    *p_base = H ->p_base[1];
-	return H ->p_base[1].priority;
+    p_base = H ->p_base[1];
+	return H ->p_base[1]->priority;
 }
 CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue * H,s_element_base * p_base)
 {
