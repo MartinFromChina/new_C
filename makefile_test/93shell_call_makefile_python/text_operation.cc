@@ -7,7 +7,12 @@ int main(){
 	ofstream ofile;
 
 	ofile.open("test.txt");
-	ofile<<1<<2<<3<<4<<5<<endl;
+	ofile<<'\t'<<1<<'\t'<<2<<endl;
+	ofile<<'\t'<<2<<'\t'<<4<<endl;
+	ofile<<'\t'<<3<<'\t'<<6<<endl;
+	ofile<<'\t'<<4<<'\t'<<8<<endl;
+	ofile<<'\t'<<5<<'\t'<<10<<endl;
+	ofile<<'\t'<<6<<'\t'<<12<<endl;
 	ofile.close();
-	cout<<"_________:\r\n----test.txt operation finished from mian.cc \r\n";
+	cout<<"----test.txt operation finished from mian.cc \r\n";
 }
