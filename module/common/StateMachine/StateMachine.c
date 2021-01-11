@@ -27,13 +27,13 @@ m_app_result mStateMachineRun( const s_StateMachine *p_ssp,s_StateMachineParam *
 			current_state = DEFAULT_STATE_NUMBER;
 			return APP_BEYOND_SCOPE;
 		}
+		(*p_ssp->p_CurrentStateNum) = current_state;
+		
 		if(previous_state != current_state)
 		{
 			if(StateRecorder != X_Null) {StateRecorder(previous_state,current_state);}
 		}
 	}
-
-	(*p_ssp->p_CurrentStateNum) = current_state;
 	return APP_SUCCESSED;
 }
 
