@@ -75,6 +75,7 @@ public:
     MOCK_METHOD0(ExpectCurrentState,	uint8_t());
 	MOCK_METHOD0(ExpectCurrentState1,	uint8_t());
 	MOCK_METHOD0(ExpectCurrentState2,	uint8_t());
+	MOCK_METHOD0(ExpectCurrentState3,	uint8_t());
 };
 
 Mock_StateFoo mocker_sf;
@@ -140,10 +141,121 @@ TEST(state_machine,mul_entry)
 		mStateMachineRun(p_mul_state,&sPE1.base,(f_jump_recorder)0);
 	}
 }
+static StateNumber t0000Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 1;}
+static StateNumber t0001Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 2;}
+static StateNumber t0002Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 3;}
+static StateNumber t0003Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 4;}
+static StateNumber t0004Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 5;}
+static StateNumber t0005Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 6;}
+static StateNumber t0006Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 7;}
+static StateNumber t0007Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 8;}
+static StateNumber t0008Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 9;}
+static StateNumber t0009Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 255;}
 
+static const StateAction jumpStateAction0000000[] = {
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0000Action},{t0001Action},{t0002Action},{t0003Action},{t0004Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+
+		{t0005Action},{t0006Action},{t0007Action},{t0008Action},{t0009Action},
+		
+};
+
+APP_STATE_MACHINE_DEF(p_boundary_state
+						,sizeof(jumpStateAction0000000)/sizeof(jumpStateAction0000000[0])
+						,&jumpStateAction0000000[0]);
+
+static X_Void JumpRecorder000(StateNumber state_going_to_leave,StateNumber state_going_to_enter)
+{
+	UNUSED_VARIABLE(state_going_to_leave);
+	UNUSED_VARIABLE(state_going_to_enter);
+
+	 EXPECT_EQ(1,2); // should never be called
+}
+
+static X_Void JumpRecorder001(StateNumber state_going_to_leave,StateNumber state_going_to_enter)
+{
+	 EXPECT_EQ(state_going_to_leave,mocker_sf.ExpectCurrentState3());
+	 EXPECT_EQ(state_going_to_enter,mocker_sf.ExpectCurrentState3());
+}
+
+
+//#include <stdio.h>
 TEST(state_machine,boundary)
 {
+	//printf("jumpStateAction0000000 size %d \r\n",p_boundary_state ->AllStateNum);
+	uint16_t i;
+	EXPECT_CALL(mocker_sf, ExpectCurrentState3()).Times(20).WillOnce(Return(0)).WillOnce(Return(1)).WillOnce(Return(1))
+														  .WillOnce(Return(2)).WillOnce(Return(2)).WillOnce(Return(3))
+														  .WillOnce(Return(3)).WillOnce(Return(4)).WillOnce(Return(4))
+														  .WillOnce(Return(5))
+														  .WillOnce(Return(5)).WillOnce(Return(6)).WillOnce(Return(6))
+														  .WillOnce(Return(7)).WillOnce(Return(7)).WillOnce(Return(8))
+														  .WillOnce(Return(8)).WillOnce(Return(9)).WillOnce(Return(9))
+														  .WillOnce(Return(0));
+	sPE.base.current_state = 0;
+	for(i=0;i<10;i++)
+	{
+		mStateMachineRun(p_boundary_state,&sPE.base,JumpRecorder000);
+	}
 
+	APP_STATE_MACHINE_DEF(p_boundary_state1
+						,(sizeof(jumpStateAction0000000)/sizeof(jumpStateAction0000000[0]) - 1)
+						,&jumpStateAction0000000[0]);
+	sPE.base.current_state = 0;
+	
+	for(i=0;i<10;i++)
+	{
+		mStateMachineRun(p_boundary_state1,&sPE.base,JumpRecorder001);
+	}
+	
 }
 
 TEST(state_machine,param)
