@@ -24,10 +24,12 @@ typedef enum
 
 static StateNumber RWC_IdleAction(s_StateMachineParam *p_this)
 {
+	UNUSED_VARIABLE(p_this);
 	return RWC_Second;
 }
 static StateNumber RWC_SecondAction(s_StateMachineParam *p_this)
 {
+	UNUSED_VARIABLE(p_this);
 	return RWC_Idle;
 }
 
@@ -39,6 +41,9 @@ static const StateAction SimpleStateAction[] = {
 
 static X_Void StateJumpRecorder(StateNumber state_going_to_leave,StateNumber state_going_to_enter)
 {
+	UNUSED_VARIABLE(state_going_to_leave);
+	UNUSED_VARIABLE(state_going_to_enter);
+
 	 EXPECT_EQ(2,2);
 }
 
@@ -69,6 +74,7 @@ class Mock_StateFoo {
 public:
     MOCK_METHOD0(ExpectCurrentState,	uint8_t());
 	MOCK_METHOD0(ExpectCurrentState1,	uint8_t());
+	MOCK_METHOD0(ExpectCurrentState2,	uint8_t());
 };
 
 Mock_StateFoo mocker_sf;
@@ -94,8 +100,8 @@ APP_STATE_MACHINE_DEF(p_jump_state
 TEST(state_machine,state_jump)
 {
 	uint8_t i;
-	EXPECT_CALL(mocker_sf, ExpectCurrentState()).Times(6).WillOnce(Return(0)).WillOnce(Return(1)).WillOnce(Return(2))
-														  .WillOnce(Return(3)).WillOnce(Return(4)).WillOnce(Return(0));
+	EXPECT_CALL(mocker_sf, ExpectCurrentState()).Times(5).WillOnce(Return(0)).WillOnce(Return(1)).WillOnce(Return(2))
+														  .WillOnce(Return(3)).WillOnce(Return(4));
 	for(i=0;i<5;i++)
 	{
 		mStateMachineRun(p_jump_state,&sPE.base,(f_jump_recorder)0);
@@ -124,10 +130,10 @@ APP_STATE_MACHINE_DEF(p_mul_state
 TEST(state_machine,mul_entry)
 {
 	uint8_t i;
-	EXPECT_CALL(mocker_sf, ExpectCurrentState()).Times(6).WillOnce(Return(0)).WillOnce(Return(1)).WillOnce(Return(2))
-														  .WillOnce(Return(3)).WillOnce(Return(4)).WillOnce(Return(0));
-	EXPECT_CALL(mocker_sf, ExpectCurrentState1()).Times(6).WillOnce(Return(0)).WillOnce(Return(3)).WillOnce(Return(2))
-														  .WillOnce(Return(4)).WillOnce(Return(1)).WillOnce(Return(0));
+	EXPECT_CALL(mocker_sf, ExpectCurrentState()).Times(5).WillOnce(Return(0)).WillOnce(Return(1)).WillOnce(Return(2))
+														  .WillOnce(Return(3)).WillOnce(Return(4));
+	EXPECT_CALL(mocker_sf, ExpectCurrentState1()).Times(5).WillOnce(Return(0)).WillOnce(Return(3)).WillOnce(Return(2))
+														  .WillOnce(Return(4)).WillOnce(Return(1));
 	for(i=0;i<5;i++)
 	{
 		mStateMachineRun(p_jump_state,&sPE.base,(f_jump_recorder)0);
@@ -145,9 +151,39 @@ TEST(state_machine,param)
 
 }
 
+
+static StateNumber t000Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 1;}
+static StateNumber t001Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 2;}
+static StateNumber t002Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 3;}
+static StateNumber t003Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 4;}
+static StateNumber t004Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 0;}
+
+static const StateAction jumpStateAction00[] = {
+		{t000Action},{t001Action},{t002Action},{t003Action},{t004Action},
+};
+
+APP_STATE_MACHINE_DEF(p_record_state
+						,sizeof(jumpStateAction00)/sizeof(jumpStateAction00[0])
+						,&jumpStateAction00[0]);
+
+
+static X_Void JumpRecorder(StateNumber state_going_to_leave,StateNumber state_going_to_enter)
+{
+	 EXPECT_EQ(state_going_to_leave,mocker_sf.ExpectCurrentState2());
+	 EXPECT_EQ(state_going_to_enter,mocker_sf.ExpectCurrentState2());
+}
+
 TEST(state_machine,jump_recorder)
 {
-
+	uint8_t i;
+	EXPECT_CALL(mocker_sf, ExpectCurrentState2()).Times(10).WillOnce(Return(0)).WillOnce(Return(1)).WillOnce(Return(1))
+														  .WillOnce(Return(2)).WillOnce(Return(2)).WillOnce(Return(3))
+														  .WillOnce(Return(3)).WillOnce(Return(4)).WillOnce(Return(4))
+														  .WillOnce(Return(0));
+	for(i=0;i<5;i++)
+	{
+		mStateMachineRun(p_record_state,&sPE.base,JumpRecorder);
+	}
 }
 
 
