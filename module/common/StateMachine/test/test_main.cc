@@ -14,7 +14,7 @@ typedef struct
 	uint16_t 								wait_counter;
 }sParamExtern;
 
-static sParamExtern sPE;
+static sParamExtern sPE,sPE1;
 
 typedef enum
 {
@@ -68,6 +68,7 @@ TEST(state_machine,init)
 class Mock_StateFoo {
 public:
     MOCK_METHOD0(ExpectCurrentState,	uint8_t());
+	MOCK_METHOD0(ExpectCurrentState1,	uint8_t());
 };
 
 Mock_StateFoo mocker_sf;
@@ -76,7 +77,7 @@ static StateNumber t0Action(s_StateMachineParam *p_this){EXPECT_EQ(p_this ->curr
 static StateNumber t1Action(s_StateMachineParam *p_this){EXPECT_EQ(p_this ->current_state,mocker_sf.ExpectCurrentState()); return 2;}
 static StateNumber t2Action(s_StateMachineParam *p_this){EXPECT_EQ(p_this ->current_state,mocker_sf.ExpectCurrentState()); return 3;}
 static StateNumber t3Action(s_StateMachineParam *p_this){EXPECT_EQ(p_this ->current_state,mocker_sf.ExpectCurrentState()); return 4;}
-static StateNumber t4Action(s_StateMachineParam *p_this){EXPECT_EQ(p_this ->current_state,mocker_sf.ExpectCurrentState()); return 5;}
+static StateNumber t4Action(s_StateMachineParam *p_this){EXPECT_EQ(p_this ->current_state,mocker_sf.ExpectCurrentState()); return 0;}
 
 typedef X_Void (*f_jump_recorder)(StateNumber state_going_to_leave,StateNumber state_going_to_enter);
 
@@ -92,7 +93,7 @@ APP_STATE_MACHINE_DEF(p_jump_state
 
 TEST(state_machine,state_jump)
 {
-uint8_t i;
+	uint8_t i;
 	EXPECT_CALL(mocker_sf, ExpectCurrentState()).Times(6).WillOnce(Return(0)).WillOnce(Return(1)).WillOnce(Return(2))
 														  .WillOnce(Return(3)).WillOnce(Return(4)).WillOnce(Return(0));
 	for(i=0;i<5;i++)
@@ -102,9 +103,36 @@ uint8_t i;
 	
 }
 
+
+static StateNumber t00Action(s_StateMachineParam *p_this){EXPECT_EQ(p_this ->current_state,mocker_sf.ExpectCurrentState1()); return 3;}
+static StateNumber t01Action(s_StateMachineParam *p_this){EXPECT_EQ(p_this ->current_state,mocker_sf.ExpectCurrentState1()); return 0;}
+static StateNumber t02Action(s_StateMachineParam *p_this){EXPECT_EQ(p_this ->current_state,mocker_sf.ExpectCurrentState1()); return 4;}
+static StateNumber t03Action(s_StateMachineParam *p_this){EXPECT_EQ(p_this ->current_state,mocker_sf.ExpectCurrentState1()); return 2;}
+static StateNumber t04Action(s_StateMachineParam *p_this){EXPECT_EQ(p_this ->current_state,mocker_sf.ExpectCurrentState1()); return 1;}
+
+typedef X_Void (*f_jump_recorder)(StateNumber state_going_to_leave,StateNumber state_going_to_enter);
+
+
+static const StateAction jumpStateAction0[] = {
+		{t00Action},{t01Action},{t02Action},{t03Action},{t04Action},
+};
+
+APP_STATE_MACHINE_DEF(p_mul_state
+						,sizeof(jumpStateAction0)/sizeof(jumpStateAction0[0])
+						,&jumpStateAction0[0]);
+
 TEST(state_machine,mul_entry)
 {
-
+	uint8_t i;
+	EXPECT_CALL(mocker_sf, ExpectCurrentState()).Times(6).WillOnce(Return(0)).WillOnce(Return(1)).WillOnce(Return(2))
+														  .WillOnce(Return(3)).WillOnce(Return(4)).WillOnce(Return(0));
+	EXPECT_CALL(mocker_sf, ExpectCurrentState1()).Times(6).WillOnce(Return(0)).WillOnce(Return(3)).WillOnce(Return(2))
+														  .WillOnce(Return(4)).WillOnce(Return(1)).WillOnce(Return(0));
+	for(i=0;i<5;i++)
+	{
+		mStateMachineRun(p_jump_state,&sPE.base,(f_jump_recorder)0);
+		mStateMachineRun(p_mul_state,&sPE1.base,(f_jump_recorder)0);
+	}
 }
 
 TEST(state_machine,boundary)
