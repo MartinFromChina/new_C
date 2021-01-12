@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-plt.figure(figsize=(20, 20))
+plt.figure(figsize=(10, 5))
 print("draw.py start")
 filename = 'basic_data.txt'
 X,Y = [],[]
@@ -16,5 +16,6 @@ with open(filename, 'r') as f:#1
 #print(Y)
 
 
-plt.scatter(X, Y,s = 2)
+plt.scatter(X, Y,s = 1)
+plt.savefig('battery.jpg')
 plt.show()
