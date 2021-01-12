@@ -11,7 +11,7 @@ def read_excel():
     print sheet2_name
     sheet2 = workbook.sheet_by_index(1)
     cols = sheet2.col_values(3) 
-    print cols
+    #print cols
     #data = sheet2.cell(2,3).value
     #print data
     #cols = str(cols).replace('u\'','')  
@@ -34,7 +34,7 @@ if __name__ == '__main__':#?
     #txt = open(filename, 'w')
     Y = numpy.array(df_list)
     Y1 = numpy.reshape(Y,(-1,1))
-    print Y1
-    numpy.savetxt(filename,Y1,fmt='%.01f')
+    #print Y1
+    numpy.savetxt(filename,Y1,fmt='%.00f')
     #for a in Y1:
      #   txt.write(str(Y1)+"\r\n");
