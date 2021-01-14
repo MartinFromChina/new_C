@@ -4,7 +4,7 @@ TARGET = battery
 # Flags passed to the C++ compiler.
 CXXFLAGS += -g -Wall -Wextra -pthread
 
-$(TARGET) : ../test/test_main.o ../battery.o
+$(TARGET) : test_main.o battery.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(DLIBS)
 
 battery.o :../battery.c  ../battery.h ../test/test_main.h		
