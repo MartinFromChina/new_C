@@ -14,5 +14,3 @@ uint16_t ForTest(X_Void)
 	return MOCKABLE(GetBatteryAdcValue)();
 }
 
-
-
