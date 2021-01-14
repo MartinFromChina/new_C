@@ -121,6 +121,10 @@ static X_Void mockable_SystemTimeUpdata(X_Void)
 {
 	current_time ++;
 }
+static X_Void mockable_SystemTimeSet(uint32_t times)
+{
+	current_time = times;
+}
 static X_Void mockable_SystemHandler(X_Void)
 {
 	mockable_SystemTimeUpdata();
@@ -166,6 +170,22 @@ TEST(battery_monitor,Get_adcvalue_100times_during_10seconds_after_wakeup)
 	EXPECT_EQ(adc_times,104);
 }
 
+TEST(battery_monitor,Get_adcvalue_105times_during_40seconds_after_wakeup)
+{
+	TestInit();
+	do{
+		mockable_SystemHandler();
+	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(40000));
+	EXPECT_EQ(adc_times,105);
+}
+TEST(battery_monitor,Get_adcvalue_120times_during_500seconds_after_wakeup)
+{
+	TestInit();
+	do{
+		mockable_SystemHandler();
+	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(500000));
+	EXPECT_EQ(adc_times,120);
+}
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------Running battery_monitor_test from test_test.cc \r\n";
   testing::InitGoogleTest(&argc, argv);

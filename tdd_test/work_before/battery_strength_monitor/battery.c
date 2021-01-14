@@ -26,7 +26,17 @@ X_Void mModule_BatteryStrengthMonitor(X_Void)
 	uint32_t time =  MOCKABLE(GetCurrentTime)();
 	if(time <= CONV_MS_TO_TICKS(10000))
 	{
-		if((time % CONV_MS_TO_TICKS(100)) == 0) {MOCKABLE(GetBatteryAdcValue)();}
+		if((time % CONV_MS_TO_TICKS(100)) == 0) 
+		{
+			MOCKABLE(GetBatteryAdcValue)();
+		}
+	}
+	else
+	{
+		if((time % CONV_MS_TO_TICKS(30000)) == 0)	
+		{
+			MOCKABLE(GetBatteryAdcValue)();
+		}
 	}
 	
 }
