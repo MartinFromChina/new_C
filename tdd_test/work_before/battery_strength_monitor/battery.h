@@ -7,6 +7,7 @@
 
 #include "../../../module/common/x_cross_platform.h"
 
+uint16_t ForTest(X_Void);
 
 #ifdef __cplusplus
 	}

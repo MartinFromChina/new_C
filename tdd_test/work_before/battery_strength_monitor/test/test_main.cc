@@ -1,20 +1,15 @@
 #include <iostream>
-#include "tdd_common.h"
-#include "../battery.h"
+#include "test_main.h"
 using namespace std;
 using namespace testing;
 
-class Adc_Mock{
-	public:	
-	MOCK_METHOD0(ExpectCurrentIndex,	uint8_t());
-};
 Adc_Mock adcm;
 ///////EXPECT_CALL(adcm, ExpectCurrentIndex()).Times(AnyNumber()).WillRepeatedly(Return((temp_index)));
 
 #define MAX_BATTERY_RAWDATA_SIZE 213
 static uint16_t battery_raw_data[MAX_BATTERY_RAWDATA_SIZE];
 static uint16_t temp_index = 0;
-static uint16_t mockable_GetBatteryAdcValue(X_Void)
+uint16_t mockable_GetBatteryAdcValue(X_Void)
 {
 	 return battery_raw_data[(temp_index ++) % MAX_BATTERY_RAWDATA_SIZE];
 }
@@ -119,7 +114,7 @@ TEST(battery_monitor,adc_mock)
 	
 	for(i=0;i< 500 ;i++)
 	{	
-		value = mockable_GetBatteryAdcValue();
+		value = ForTest();
 		EXPECT_EQ(battery_raw_data[i % MAX_BATTERY_RAWDATA_SIZE],value);
 		EXPECT_GT(value,1700);
 		EXPECT_LT(value,2300);
