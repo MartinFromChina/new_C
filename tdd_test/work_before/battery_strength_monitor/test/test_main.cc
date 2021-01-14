@@ -9,8 +9,10 @@ Adc_Mock adcm;
 #define MAX_BATTERY_RAWDATA_SIZE 213
 static uint16_t battery_raw_data[MAX_BATTERY_RAWDATA_SIZE];
 static uint16_t temp_index = 0;
+static uint32_t adc_times = 0;
 uint16_t mockable_GetBatteryAdcValue(X_Void)
-{
+{	
+	adc_times ++;
 	 return battery_raw_data[(temp_index ++) % MAX_BATTERY_RAWDATA_SIZE];
 }
 
@@ -104,9 +106,32 @@ static X_Void BatteryRawDataLoadFromTXT(X_Void)
 		
    
 }
+static uint32_t current_time = 0;
+uint32_t mockable_GetCurrentTime(X_Void)
+{
+	return current_time;
+}
+static X_Void TestInit(X_Void)
+{
+	adc_times = 0;
+	current_time = 0;
+}
 
+static X_Void mockable_SystemTimeUpdata(X_Void)
+{
+	current_time ++;
+}
+static X_Void mockable_SystemHandler(X_Void)
+{
+	mockable_SystemTimeUpdata();
+	mModule_BatteryStrengthMonitor();
+}
 
-TEST(battery_monitor,adc_mock)
+#define SYSTICK_RUN_TIME_IN_HOURS  		2
+#define SYSTICK_RUN_TIME_IN_MS     		(SYSTICK_RUN_TIME_IN_HOURS * 60 * 60 * 1000)
+#define SYSTICK_RUN_TIME_IN_TICKS    	((uint32_t)(SYSTICK_RUN_TIME_IN_MS/BATTERY_MONITOR_CALL_FREQUENCT_IN_MS))
+
+TEST(battery_monitor,adc_mock)// must be first test ,because the adc basic data should be load !!!
 {
 	uint16_t i,value;
 	temp_index = 0;
@@ -119,9 +144,26 @@ TEST(battery_monitor,adc_mock)
 		EXPECT_GT(value,1700);
 		EXPECT_LT(value,2300);
 	}
-	
-	
-	
+}
+TEST(battery_monitor,systick)
+{
+	TestInit();
+	do{
+		mockable_SystemHandler();
+	}while(mockable_GetCurrentTime() < SYSTICK_RUN_TIME_IN_TICKS);
+	EXPECT_EQ(mockable_GetCurrentTime(), 900000);
+}
+
+TEST(battery_monitor,Get_adcvalue_100times_during_10seconds_after_wakeup)
+{
+	EXPECT_EQ(CONV_MS_TO_TICKS(8), 1);
+	EXPECT_EQ(CONV_MS_TO_TICKS(3), 0);
+	EXPECT_EQ(CONV_MS_TO_TICKS(2000), 250);
+	TestInit();
+	do{
+		mockable_SystemHandler();
+	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(10000));
+	EXPECT_EQ(adc_times,104);
 }
 
 GTEST_API_ int main(int argc, char **argv) {
