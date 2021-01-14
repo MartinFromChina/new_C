@@ -2,6 +2,7 @@ rm basic_data.txt
 touch basic_data.txt
 python rd_wr_excel.py
 
+make clean
 make
 if [ $? -ne "0" ]; then
 echo "make failed!!! please Check error"

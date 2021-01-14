@@ -1,8 +1,10 @@
 DLIBS = ../../../google_test/lib/libgmock.a
+DEFS = -DUSE_TDD_MOCK=1
 TARGET = battery
 
 # Flags passed to the C++ compiler.
 CXXFLAGS += -g -Wall -Wextra -pthread
+CXXFLAGS += $(DEFS)
 
 $(TARGET) : test_main.o battery.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(DLIBS)
