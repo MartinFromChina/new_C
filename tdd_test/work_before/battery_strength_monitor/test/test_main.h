@@ -10,6 +10,6 @@ class Adc_Mock{
 	MOCK_METHOD0(ExpectCurrentIndex,	uint8_t());
 };
 
-uint16_t mockable_GetBatteryAdcValue(X_Void);
+uint32_t mockable_GetCurrentTime(X_Void);
 
 #endif

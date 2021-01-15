@@ -102,7 +102,7 @@ static X_Void BatteryRawDataLoadFromTXT(X_Void)
    
 }
 static uint32_t current_time = 0;
-uint16_t mockable_GetBatteryAdcValue(X_Void)
+static uint16_t mockable_GetBatteryAdcValue(X_Void)
 {	
 	adc_times ++;
 	 return battery_raw_data[(temp_index ++) % MAX_BATTERY_RAWDATA_SIZE];

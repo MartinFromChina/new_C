@@ -7,7 +7,6 @@ static onBatteryAdc adc_value_get = (onBatteryAdc)0;
 #include "./test/test_main.h"
 
 extern Adc_Mock adcm;
-extern uint32_t MOCKABLE(GetCurrentTime)(X_Void);
 X_Void mModule_BatteryDeInit(X_Void)
 {
 	adc_value_get = (onBatteryAdc)0;
@@ -24,23 +23,25 @@ X_Void mModule_BatteryInit(onBatteryAdc getadc)
 }
 X_Boolean mModule_BatteryStrengthMonitor(X_Void)
 {
+	X_Boolean isBatteryStateUpdate = X_False;
 	uint32_t time =  MOCKABLE(GetCurrentTime)();
-	if(adc_value_get == X_Null) {return X_False;}
+	if(adc_value_get == X_Null) {return isBatteryStateUpdate;}
 	if(time <= CONV_MS_TO_TICKS(10000))
 	{
 		if((time % CONV_MS_TO_TICKS(100)) == 0) 
 		{
-			MOCKABLE(GetBatteryAdcValue)();
+			adc_value_get();
 		}
 	}
 	else
 	{
 		if((time % CONV_MS_TO_TICKS(30000)) == 0)	
 		{
-			MOCKABLE(GetBatteryAdcValue)();
+			adc_value_get();
 		}
 	}
-	
+
+	return isBatteryStateUpdate;
 }
 
 uint8_t mModule_GetBatteryStrength(X_Void)
