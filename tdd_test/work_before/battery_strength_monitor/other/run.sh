@@ -1,6 +1,7 @@
-rm basic_data.txt display_data.txt
+rm basic_data.txt display_data.txt finial_display.txt
 touch basic_data.txt
 touch display_data.txt
+touch finial_display.txt
 python rd_wr_excel.py
 
 make clean

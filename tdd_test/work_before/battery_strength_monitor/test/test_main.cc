@@ -10,7 +10,7 @@ Adc_Mock adcm;
 static uint16_t battery_raw_data[MAX_BATTERY_RAWDATA_SIZE];
 static uint16_t temp_index = 0,display_data_length = 0;
 static uint32_t adc_times = 0;
-static X_Boolean isBatteryUpdata = X_False;
+static X_Boolean isBatteryUpdata = X_False,isInChargeState = X_False;
 static uint8_t battery_dtrength = 0,battery_dtrength_backup = 0;
 
 
@@ -150,6 +150,7 @@ static X_Void TestInit(X_Void)
 	current_time = 0;
 	isDislayByPython = X_False;
 	isBatteryUpdata = X_False;
+	isInChargeState = X_False;
 	display_data_length = 0;
 	battery_dtrength = 0;battery_dtrength_backup = 50;
 	mModule_BatteryInit(mockable_GetBatteryAdcValue);
@@ -159,18 +160,24 @@ static X_Void mockable_SystemTimeUpdata(X_Void)
 {
 	current_time ++;
 }
-static X_Void mockable_SystemTimeSet(uint32_t times)
+/*static X_Void mockable_SystemTimeSet(uint32_t times)
 {
 	current_time = times;
-}
+}*/
 
 static uint8_t buf[300];
 static uint32_t linenum[300];
 static X_Void mockable_SystemHandler(X_Void)
 {
-	X_Boolean isBatteryValueCome = X_False; 
+	X_Boolean isBatteryValueCome = X_False,isInCharge = X_False; 
+	isInCharge = isInChargeState;
+
+	/***************************************************************/
 	mockable_SystemTimeUpdata();
-	isBatteryValueCome = mModule_BatteryStrengthMonitor();
+	isBatteryValueCome = mModule_BatteryStrengthMonitor(isInCharge);
+	/***************************************************************/
+
+	
 	if(isBatteryValueCome == X_True){battery_dtrength = mModule_GetBatteryStrength();}
 	if(isBatteryValueCome == X_True && isDislayByPython == X_True)
 	{ 
@@ -258,7 +265,6 @@ TEST(battery_monitor,Get_adcvalue_120times_during_500seconds_after_wakeup)
 
 TEST(battery_monitor,battery_sterngth_display_by_python_in_100minutes_after_reset)
 {	
-	uint16_t i;
 	TestInit();
 	isDislayByPython = X_True;
 	do{
@@ -281,7 +287,7 @@ TEST(battery_monitor,display_battery_in_5_seconds)
 		if(mockable_GetCurrentTime() > CONV_MS_TO_TICKS(5000) && isBatteryUpdata == X_True)
 		{
 			EXPECT_GT(mModule_GetBatteryStrength(), 4);
-			EXPECT_LT(mModule_GetBatteryStrength(), 23);
+			EXPECT_LT(mModule_GetBatteryStrength(), 25);
 		}
 	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(10000));
 }
@@ -299,6 +305,76 @@ TEST(battery_monitor,battery_sterngth_no_sudden_change_in_100minutes_after_reset
 			if(CONV_TICKS_TO_MS(mockable_GetCurrentTime()) <= 10000){EXPECT_LT(mul,6);}
 			else{EXPECT_LT(mul,3);}
 			battery_dtrength_backup = battery_dtrength;
+		}
+	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(6000000));
+}
+
+TEST(battery_monitor,battery_sterngth_no_drop_when_in_charge0)
+{	
+	uint8_t mul;
+	TestInit();
+	isDislayByPython = X_True;
+	do{
+		if(mockable_GetCurrentTime() > CONV_MS_TO_TICKS(0) && mockable_GetCurrentTime() < CONV_MS_TO_TICKS(6000000)) {isInChargeState = X_True;}
+		else{isInChargeState = X_False;}
+		mockable_SystemHandler();
+		if(isInChargeState == X_True)
+		{
+			if(isBatteryUpdata == X_True)
+			{	
+				//cout<<"------------dot \r\n";
+				EXPECT_GT(battery_dtrength,battery_dtrength_backup);
+				battery_dtrength_backup = battery_dtrength;
+			}
+		}
+	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(6000000));
+		
+	EXPECT_GT(display_data_length,0);
+	if(display_data_length > 0 )
+	{
+		string file ="../other/finial_display.txt";
+		WriteTxT_by_line(file,display_data_length,linenum,buf);
+	}
+}
+
+TEST(battery_monitor,battery_sterngth_no_drop_when_10_200_secs_in_charge0)
+{	
+	uint8_t mul;
+	TestInit();
+	do{
+		if(mockable_GetCurrentTime() > CONV_MS_TO_TICKS(10000) && mockable_GetCurrentTime() < CONV_MS_TO_TICKS(200000)) {isInChargeState = X_True;}
+		else{isInChargeState = X_False;}
+		mockable_SystemHandler();
+		if(isInChargeState == X_True)
+		{
+			if(isBatteryUpdata == X_True)
+			{	
+				//cout<<"------------dot \r\n";
+				EXPECT_GT(battery_dtrength,battery_dtrength_backup);
+				battery_dtrength_backup = battery_dtrength;
+			}
+		}
+	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(6000000));
+}
+
+TEST(battery_monitor,battery_sterngth_no_drop_when_200_400_secs_2000_5000_in_charge0)
+{	
+	uint8_t mul;
+	TestInit();
+	do{
+		if(mockable_GetCurrentTime() > CONV_MS_TO_TICKS(10000) && mockable_GetCurrentTime() < CONV_MS_TO_TICKS(200000)) {isInChargeState = X_True;}
+		else{isInChargeState = X_False;}
+		if(mockable_GetCurrentTime() > CONV_MS_TO_TICKS(2000000) && mockable_GetCurrentTime() < CONV_MS_TO_TICKS(5000000)) {isInChargeState = X_True;}
+		else{isInChargeState = X_False;}
+		mockable_SystemHandler();
+		if(isInChargeState == X_True)
+		{
+			if(isBatteryUpdata == X_True)
+			{	
+				//cout<<"------------dot \r\n";
+				EXPECT_GT(battery_dtrength,battery_dtrength_backup);
+				battery_dtrength_backup = battery_dtrength;
+			}
 		}
 	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(6000000));
 }

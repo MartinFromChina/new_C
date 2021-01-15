@@ -23,10 +23,25 @@ with open(filename, 'r') as f1:#1
         X1.append(value[0])#5
         Y1.append(value[1])
 
+filename = 'finial_display.txt'
+X2,Y2 = [],[]
+with open(filename, 'r') as f2:#1
+    lines = f2.readlines()#2
+    for line in lines:#3
+        value = [float(s) for s in line.split()]#4
+        X2.append(value[0])#5
+        Y2.append(value[1])
+
 plt.figure(figsize=(10, 5))
 plt.scatter(X, Y,s = 1)
 plt.savefig('battery.jpg')
+
 plt.figure(figsize=(10, 5))
 plt.scatter(X1, Y1,s = 1)
 plt.savefig('display.jpg')
+
+plt.figure(figsize=(10, 5))
+plt.scatter(X2, Y2,s = 1)
+plt.savefig('finial_display.jpg')
+
 plt.show()

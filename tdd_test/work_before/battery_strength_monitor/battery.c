@@ -43,7 +43,7 @@ static struct
         { 1617, 5	,42	,13 },//3.4
 		{ 1589, 4	,28	,1 },//3.3
     };
-static uint8_t ConvAdcToPercentage(uint16_t adc)
+static uint8_t ConvAdcToPercentage(uint16_t adc)//the func need a specific test later
 {
 	uint8_t value = 1,i;
 	uint16_t mul,adc_in_scale;
@@ -66,7 +66,24 @@ static uint8_t ConvAdcToPercentage(uint16_t adc)
 	}
 	return value;
 }
-
+static uint8_t BatterySmooth(uint8_t current,uint8_t back_up,uint8_t threshold)
+{
+	if(current >= back_up )
+	{
+		if((current - back_up) > threshold ) 
+		{
+			current = back_up + threshold;
+		}
+	}
+	else
+	{
+		if((back_up - current ) > threshold ) 
+		{
+			current = back_up - threshold;
+		}
+	}
+	return current;
+}
 X_Void mModule_BatteryInit(onBatteryAdc getadc)
 {
 	CurrentBatteryStrength = 50;
@@ -74,8 +91,9 @@ X_Void mModule_BatteryInit(onBatteryAdc getadc)
  	adc_value_backup = 0;
 	adc_value_get = getadc;
 }
-X_Boolean mModule_BatteryStrengthMonitor(X_Void)
+X_Boolean mModule_BatteryStrengthMonitor(X_Boolean isInCharge)
 {
+	//uint8_t thres_hold;
 	uint16_t adc_value;
 	X_Boolean isBatteryStateUpdate = X_False;
 	uint32_t time =  MOCKABLE(GetCurrentTime)();
@@ -86,20 +104,8 @@ X_Boolean mModule_BatteryStrengthMonitor(X_Void)
 		{
 			adc_value = adc_value_get();
 			CurrentBatteryStrength = ConvAdcToPercentage(adc_value);
-			if(CurrentBatteryStrength >= CurrentBatteryStrength_backup )
-			{
-				if((CurrentBatteryStrength - CurrentBatteryStrength_backup) > MAX_BATTERY_SPAN_AFTER_RESET ) 
-				{
-					CurrentBatteryStrength = CurrentBatteryStrength_backup + MAX_BATTERY_SPAN_AFTER_RESET;
-				}
-			}
-			else
-			{
-				if((CurrentBatteryStrength_backup - CurrentBatteryStrength ) > MAX_BATTERY_SPAN_AFTER_RESET ) 
-				{
-					CurrentBatteryStrength = CurrentBatteryStrength_backup - MAX_BATTERY_SPAN_AFTER_RESET;
-				}
-			}
+			//thres_hold = MAX_BATTERY_SPAN_AFTER_RESET;
+			CurrentBatteryStrength = BatterySmooth(CurrentBatteryStrength,CurrentBatteryStrength_backup,MAX_BATTERY_SPAN_AFTER_RESET);
 		}
 	}
 	else
@@ -108,23 +114,8 @@ X_Boolean mModule_BatteryStrengthMonitor(X_Void)
 		{
 			adc_value = adc_value_get();
 			CurrentBatteryStrength = ConvAdcToPercentage(adc_value);
-			
-			if(CurrentBatteryStrength >= CurrentBatteryStrength_backup )
-			{
-				if((CurrentBatteryStrength - CurrentBatteryStrength_backup) > MAX_BATTERY_SPAN_NORMAL ) 
-				{
-					CurrentBatteryStrength = CurrentBatteryStrength_backup + MAX_BATTERY_SPAN_NORMAL;
-				}
-			}
-			else
-			{
-				if((CurrentBatteryStrength_backup - CurrentBatteryStrength ) > MAX_BATTERY_SPAN_NORMAL ) 
-				{
-					CurrentBatteryStrength = CurrentBatteryStrength_backup - MAX_BATTERY_SPAN_NORMAL;
-				}
-				
-			}
-			
+			//thres_hold = MAX_BATTERY_SPAN_NORMAL;
+			CurrentBatteryStrength = BatterySmooth(CurrentBatteryStrength,CurrentBatteryStrength_backup,MAX_BATTERY_SPAN_NORMAL);	
 		}
 	}
 	if(CurrentBatteryStrength_backup != CurrentBatteryStrength)

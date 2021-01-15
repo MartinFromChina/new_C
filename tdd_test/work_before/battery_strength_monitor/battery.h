@@ -12,7 +12,7 @@ typedef uint16_t (*onBatteryAdc)(X_Void);
 
 X_Void mModule_BatteryInit(onBatteryAdc get_adc);
 uint8_t mModule_GetBatteryStrength(X_Void);
-X_Boolean mModule_BatteryStrengthMonitor(X_Void);
+X_Boolean mModule_BatteryStrengthMonitor(X_Boolean isInCharge);
 
 #if (USE_TDD_MOCK != 0)
 	X_Void mModule_BatteryDeInit(X_Void);
