@@ -104,8 +104,8 @@ X_Boolean mModule_BatteryStrengthMonitor(X_Boolean isInCharge)
 		{
 			adc_value = adc_value_get();
 			CurrentBatteryStrength = ConvAdcToPercentage(adc_value);
-			//thres_hold = MAX_BATTERY_SPAN_AFTER_RESET;
 			CurrentBatteryStrength = BatterySmooth(CurrentBatteryStrength,CurrentBatteryStrength_backup,MAX_BATTERY_SPAN_AFTER_RESET);
+			
 		}
 	}
 	else
@@ -115,7 +115,14 @@ X_Boolean mModule_BatteryStrengthMonitor(X_Boolean isInCharge)
 			adc_value = adc_value_get();
 			CurrentBatteryStrength = ConvAdcToPercentage(adc_value);
 			//thres_hold = MAX_BATTERY_SPAN_NORMAL;
-			CurrentBatteryStrength = BatterySmooth(CurrentBatteryStrength,CurrentBatteryStrength_backup,MAX_BATTERY_SPAN_NORMAL);	
+			if(isInCharge == X_False || CurrentBatteryStrength > CurrentBatteryStrength_backup)
+			{
+				CurrentBatteryStrength = BatterySmooth(CurrentBatteryStrength,CurrentBatteryStrength_backup,MAX_BATTERY_SPAN_NORMAL);	
+			}
+			else
+			{
+				CurrentBatteryStrength = CurrentBatteryStrength_backup;
+			}
 		}
 	}
 	if(CurrentBatteryStrength_backup != CurrentBatteryStrength)

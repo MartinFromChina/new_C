@@ -318,14 +318,15 @@ TEST(battery_monitor,battery_sterngth_no_drop_when_in_charge0)
 		if(mockable_GetCurrentTime() > CONV_MS_TO_TICKS(0) && mockable_GetCurrentTime() < CONV_MS_TO_TICKS(6000000)) {isInChargeState = X_True;}
 		else{isInChargeState = X_False;}
 		mockable_SystemHandler();
-		if(isInChargeState == X_True)
-		{
-			if(isBatteryUpdata == X_True)
-			{	
-				//cout<<"------------dot \r\n";
-				EXPECT_GT(battery_dtrength,battery_dtrength_backup);
-				battery_dtrength_backup = battery_dtrength;
+		
+		if(isBatteryUpdata == X_True)
+		{	
+			if(isInChargeState == X_True && mockable_GetCurrentTime() > CONV_MS_TO_TICKS(10000))
+			{
+			//cout<<"------------dot \r\n";
+			EXPECT_GT(battery_dtrength,battery_dtrength_backup);
 			}
+			battery_dtrength_backup = battery_dtrength;
 		}
 	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(6000000));
 		
@@ -345,14 +346,15 @@ TEST(battery_monitor,battery_sterngth_no_drop_when_10_200_secs_in_charge0)
 		if(mockable_GetCurrentTime() > CONV_MS_TO_TICKS(10000) && mockable_GetCurrentTime() < CONV_MS_TO_TICKS(200000)) {isInChargeState = X_True;}
 		else{isInChargeState = X_False;}
 		mockable_SystemHandler();
-		if(isInChargeState == X_True)
-		{
-			if(isBatteryUpdata == X_True)
-			{	
+		
+		if(isBatteryUpdata == X_True)
+		{	
+			if(isInChargeState == X_True && mockable_GetCurrentTime() > CONV_MS_TO_TICKS(10000))
+			{
 				//cout<<"------------dot \r\n";
 				EXPECT_GT(battery_dtrength,battery_dtrength_backup);
-				battery_dtrength_backup = battery_dtrength;
 			}
+			battery_dtrength_backup = battery_dtrength;
 		}
 	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(6000000));
 }
@@ -367,14 +369,15 @@ TEST(battery_monitor,battery_sterngth_no_drop_when_200_400_secs_2000_5000_in_cha
 		if(mockable_GetCurrentTime() > CONV_MS_TO_TICKS(2000000) && mockable_GetCurrentTime() < CONV_MS_TO_TICKS(5000000)) {isInChargeState = X_True;}
 		else{isInChargeState = X_False;}
 		mockable_SystemHandler();
-		if(isInChargeState == X_True)
-		{
-			if(isBatteryUpdata == X_True)
-			{	
+		
+		if(isBatteryUpdata == X_True)
+		{	
+			if(isInChargeState == X_True && mockable_GetCurrentTime() > CONV_MS_TO_TICKS(10000))
+			{
 				//cout<<"------------dot \r\n";
 				EXPECT_GT(battery_dtrength,battery_dtrength_backup);
-				battery_dtrength_backup = battery_dtrength;
 			}
+			battery_dtrength_backup = battery_dtrength;
 		}
 	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(6000000));
 }
