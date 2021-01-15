@@ -1,29 +1,31 @@
 #include "battery.h"
 
+static uint8_t CurrentBatteryStrength = 0;
+static onBatteryAdc adc_value_get = (onBatteryAdc)0;
+
 #if (USE_TDD_MOCK != 0)
 #include "./test/test_main.h"
 
 extern Adc_Mock adcm;
-uint16_t ForTest(X_Void)
-{
-	return MOCKABLE(GetBatteryAdcValue)();
-}
-
 extern uint32_t MOCKABLE(GetCurrentTime)(X_Void);
-
+X_Void mModule_BatteryDeInit(X_Void)
+{
+	adc_value_get = (onBatteryAdc)0;
+}
 #endif
-
-
-static uint8_t CurrentBatteryStrength = 0;
 
 static uint16_t GetBatteryAdcValue(X_Void)
 {
 	return 0;
 }
-
-X_Void mModule_BatteryStrengthMonitor(X_Void)
+X_Void mModule_BatteryInit(onBatteryAdc getadc)
+{
+	adc_value_get = getadc;
+}
+X_Boolean mModule_BatteryStrengthMonitor(X_Void)
 {
 	uint32_t time =  MOCKABLE(GetCurrentTime)();
+	if(adc_value_get == X_Null) {return X_False;}
 	if(time <= CONV_MS_TO_TICKS(10000))
 	{
 		if((time % CONV_MS_TO_TICKS(100)) == 0) 
