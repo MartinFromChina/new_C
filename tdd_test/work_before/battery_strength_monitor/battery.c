@@ -108,7 +108,7 @@ X_Boolean mModule_BatteryStrengthMonitor(X_Void)
 		{
 			adc_value = adc_value_get();
 			CurrentBatteryStrength = ConvAdcToPercentage(adc_value);
-			/*
+			
 			if(CurrentBatteryStrength >= CurrentBatteryStrength_backup )
 			{
 				if((CurrentBatteryStrength - CurrentBatteryStrength_backup) > MAX_BATTERY_SPAN_NORMAL ) 
@@ -124,7 +124,7 @@ X_Boolean mModule_BatteryStrengthMonitor(X_Void)
 				}
 				
 			}
-			*/
+			
 		}
 	}
 	if(CurrentBatteryStrength_backup != CurrentBatteryStrength)

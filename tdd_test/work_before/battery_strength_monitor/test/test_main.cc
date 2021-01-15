@@ -11,6 +11,8 @@ static uint16_t battery_raw_data[MAX_BATTERY_RAWDATA_SIZE];
 static uint16_t temp_index = 0,display_data_length = 0;
 static uint32_t adc_times = 0;
 static X_Boolean isBatteryUpdata = X_False;
+static uint8_t battery_dtrength = 0,battery_dtrength_backup = 0;
+
 
 #include <fstream>
 #include <string>
@@ -149,6 +151,7 @@ static X_Void TestInit(X_Void)
 	isDislayByPython = X_False;
 	isBatteryUpdata = X_False;
 	display_data_length = 0;
+	battery_dtrength = 0;battery_dtrength_backup = 50;
 	mModule_BatteryInit(mockable_GetBatteryAdcValue);
 }
 
@@ -168,6 +171,7 @@ static X_Void mockable_SystemHandler(X_Void)
 	X_Boolean isBatteryValueCome = X_False; 
 	mockable_SystemTimeUpdata();
 	isBatteryValueCome = mModule_BatteryStrengthMonitor();
+	if(isBatteryValueCome == X_True){battery_dtrength = mModule_GetBatteryStrength();}
 	if(isBatteryValueCome == X_True && isDislayByPython == X_True)
 	{ 
 		if(display_data_length < 300)
@@ -281,6 +285,24 @@ TEST(battery_monitor,display_battery_in_5_seconds)
 		}
 	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(10000));
 }
+
+TEST(battery_monitor,battery_sterngth_no_sudden_change_in_100minutes_after_reset)
+{	
+	uint8_t mul;
+	TestInit();
+	do{
+		mockable_SystemHandler();
+		if(isBatteryUpdata == X_True)
+		{	
+			mul = (battery_dtrength >= battery_dtrength_backup) ? battery_dtrength - battery_dtrength_backup :battery_dtrength_backup - battery_dtrength;
+
+			if(CONV_TICKS_TO_MS(mockable_GetCurrentTime()) <= 10000){EXPECT_LT(mul,6);}
+			else{EXPECT_LT(mul,3);}
+			battery_dtrength_backup = battery_dtrength;
+		}
+	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(6000000));
+}
+
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------Running battery_monitor_test from test_test.cc \r\n";
   testing::InitGoogleTest(&argc, argv);
