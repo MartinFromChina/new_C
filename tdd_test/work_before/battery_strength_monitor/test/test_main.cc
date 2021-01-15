@@ -311,7 +311,9 @@ TEST(battery_monitor,battery_sterngth_no_sudden_change_in_100minutes_after_reset
 
 TEST(battery_monitor,battery_sterngth_no_drop_when_in_charge0)
 {	
-	uint8_t mul;
+	uint16_t i = 0;
+	uint32_t linenum1[4000],time;
+	uint8_t buf1[4000];
 	TestInit();
 	isDislayByPython = X_True;
 	do{
@@ -328,19 +330,27 @@ TEST(battery_monitor,battery_sterngth_no_drop_when_in_charge0)
 			}
 			battery_dtrength_backup = battery_dtrength;
 		}
+		time = mockable_GetCurrentTime();
+		
+		if((time%(CONV_MS_TO_TICKS(1500))) == 0 && i < 3999)
+		{	
+			linenum1[i] = time/2;
+			buf1[i]     = mModule_GetBatteryStrength();
+			i++;
+		}
 	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(6000000));
 		
-	EXPECT_GT(display_data_length,0);
-	if(display_data_length > 0 )
+	EXPECT_GT(i,0);
+	EXPECT_LT(i,4000);
+	if(i > 0 && i< 4000)
 	{
 		string file ="../other/finial_display.txt";
-		WriteTxT_by_line(file,display_data_length,linenum,buf);
+		WriteTxT_by_line(file,i,linenum1,buf1);
 	}
 }
 
 TEST(battery_monitor,battery_sterngth_no_drop_when_10_200_secs_in_charge0)
 {	
-	uint8_t mul;
 	TestInit();
 	do{
 		if(mockable_GetCurrentTime() > CONV_MS_TO_TICKS(10000) && mockable_GetCurrentTime() < CONV_MS_TO_TICKS(200000)) {isInChargeState = X_True;}
@@ -361,7 +371,6 @@ TEST(battery_monitor,battery_sterngth_no_drop_when_10_200_secs_in_charge0)
 
 TEST(battery_monitor,battery_sterngth_no_drop_when_200_400_secs_2000_5000_in_charge0)
 {	
-	uint8_t mul;
 	TestInit();
 	do{
 		if(mockable_GetCurrentTime() > CONV_MS_TO_TICKS(10000) && mockable_GetCurrentTime() < CONV_MS_TO_TICKS(200000)) {isInChargeState = X_True;}
