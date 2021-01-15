@@ -6,10 +6,11 @@ using namespace testing;
 Adc_Mock adcm;
 ///////EXPECT_CALL(adcm, ExpectCurrentIndex()).Times(AnyNumber()).WillRepeatedly(Return((temp_index)));
 
-#define MAX_BATTERY_RAWDATA_SIZE 213
+#define MAX_BATTERY_RAWDATA_SIZE 313
 static uint16_t battery_raw_data[MAX_BATTERY_RAWDATA_SIZE];
-static uint16_t temp_index = 0;
+static uint16_t temp_index = 0,display_data_length = 0;
 static uint32_t adc_times = 0;
+static X_Boolean isBatteryUpdata = X_False;
 
 #include <fstream>
 #include <string>
@@ -46,7 +47,7 @@ int read_scanf(const string &filename, const int &cols, vector<double *> &_vecto
 	fclose(fp);
 	return 1;
 }
-int WriteTxT_by_line(const string &filename, uint16_t total_line,uint16_t *p_line_num,uint16_t *p_value)
+int WriteTxT_by_line(const string &filename, uint16_t total_line,uint32_t *p_line_num,uint8_t *p_value)
 {
 	uint16_t i;
 	FILE *fp = fopen(filename.c_str(), "w");
@@ -64,6 +65,8 @@ int WriteTxT_by_line(const string &filename, uint16_t total_line,uint16_t *p_lin
 	return 1;
 
 }
+#include <cstdlib> // Header file needed to use srand and rand
+#include <ctime>
 static X_Void BatteryRawDataLoadFromTXT(X_Void)
 {
 	string file ="../other/basic_data.txt";
@@ -83,9 +86,17 @@ static X_Void BatteryRawDataLoadFromTXT(X_Void)
 		for (int j = 0; j < columns; j++) 
 		{ 
 			//cout << output_vector[i][j] << " "; 
-			if (i < MAX_BATTERY_RAWDATA_SIZE) {battery_raw_data[i] = output_vector[i][0];}
+			if (i < MAX_BATTERY_RAWDATA_SIZE) {battery_raw_data[i+100] = output_vector[i][0];}
 		}
 		//cout << endl;
+	}
+	unsigned seed;  // Random generator seed
+    // Use the time function to get a "seed” value for srand
+    seed = time(0);
+    srand(seed);
+	for(int i = 0; i < 100; i++)
+	{
+		battery_raw_data[i] = 1770 + (rand()%20);
 	}
 	/*
 	uint16_t line_num = 0,i = 0;
@@ -132,9 +143,12 @@ uint32_t mockable_GetCurrentTime(X_Void)
 }
 static X_Void TestInit(X_Void)
 {
+	temp_index = 0;
 	adc_times = 0;
 	current_time = 0;
 	isDislayByPython = X_False;
+	isBatteryUpdata = X_False;
+	display_data_length = 0;
 	mModule_BatteryInit(mockable_GetBatteryAdcValue);
 }
 
@@ -147,18 +161,24 @@ static X_Void mockable_SystemTimeSet(uint32_t times)
 	current_time = times;
 }
 
+static uint8_t buf[300];
+static uint32_t linenum[300];
 static X_Void mockable_SystemHandler(X_Void)
 {
 	X_Boolean isBatteryValueCome = X_False; 
-	uint16_t battery;
 	mockable_SystemTimeUpdata();
 	isBatteryValueCome = mModule_BatteryStrengthMonitor();
 	if(isBatteryValueCome == X_True && isDislayByPython == X_True)
-	{
-		battery = mModule_GetBatteryStrength();
-
-		//WriteTxT_by_line();
+	{ 
+		if(display_data_length < 300)
+		{
+			linenum[display_data_length] 	= current_time/2;
+			buf[display_data_length]		= mModule_GetBatteryStrength();
+			display_data_length ++;
+		}
+		
 	}
+	isBatteryUpdata = isBatteryValueCome;
 }
 
 #define SYSTICK_RUN_TIME_IN_HOURS  		2
@@ -174,7 +194,6 @@ TEST(battery_monitor,adc_mock)// must be first test ,because the adc basic data 
 	for(i=0;i< 500 ;i++)
 	{	
 		value = mockable_GetBatteryAdcValue();
-		EXPECT_EQ(battery_raw_data[i % MAX_BATTERY_RAWDATA_SIZE],value);
 		EXPECT_GT(value,1700);
 		EXPECT_LT(value,2300);
 	}
@@ -233,21 +252,35 @@ TEST(battery_monitor,Get_adcvalue_120times_during_500seconds_after_wakeup)
 	EXPECT_EQ(adc_times,120);
 }
 
-TEST(battery_monitor,battery_sterngth_display_by_python)
+TEST(battery_monitor,battery_sterngth_display_by_python_in_100minutes_after_reset)
 {	
 	uint16_t i;
 	TestInit();
 	isDislayByPython = X_True;
 	do{
 		mockable_SystemHandler();
-	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(500000));
-	EXPECT_EQ(adc_times,120);
+	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(6000000));
+	EXPECT_GT(display_data_length,0);
+	if(display_data_length > 0 )
+	{
+		string file ="../other/display_data.txt";
+		WriteTxT_by_line(file,display_data_length,linenum,buf);
+	}
+}
 
-	uint16_t linenum[10] = {2,4,6,8,10,12,14,16,18,20};
-	uint16_t buf[10] = {1,2,3,4,100,78,66,45,33};
-	string file ="../other/display_data.txt";
-	WriteTxT_by_line(file,10,linenum,buf);
-
+TEST(battery_monitor,display_battery_in_5_seconds)
+{
+	TestInit();
+	EXPECT_EQ(mModule_GetBatteryStrength(), 50);
+	do{
+		mockable_SystemHandler();
+		if(mockable_GetCurrentTime() > CONV_MS_TO_TICKS(5000) && isBatteryUpdata == X_True)
+		{
+			EXPECT_GT(mModule_GetBatteryStrength(), 4);
+			EXPECT_LT(mModule_GetBatteryStrength(), 11);
+			//cout<<"------------Running battery_monitor_test from test_test.cc \r\n";
+		}
+	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(10000));
 }
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------Running battery_monitor_test from test_test.cc \r\n";
