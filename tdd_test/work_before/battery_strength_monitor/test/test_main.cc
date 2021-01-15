@@ -46,6 +46,24 @@ int read_scanf(const string &filename, const int &cols, vector<double *> &_vecto
 	fclose(fp);
 	return 1;
 }
+int WriteTxT_by_line(const string &filename, uint16_t total_line,uint16_t *p_line_num,uint16_t *p_value)
+{
+	uint16_t i;
+	FILE *fp = fopen(filename.c_str(), "w");
+	if (!fp) 
+	{ 
+		cout << "File open error!\n"; 
+		return 0; 
+	}
+	for(i = 0;i<total_line;i++)
+	{
+		fprintf(fp,"%d  %d \r\n",p_line_num[i],p_value[i]);
+	}
+	
+	fclose(fp);
+	return 1;
+
+}
 static X_Void BatteryRawDataLoadFromTXT(X_Void)
 {
 	string file ="../other/basic_data.txt";
@@ -102,6 +120,7 @@ static X_Void BatteryRawDataLoadFromTXT(X_Void)
    
 }
 static uint32_t current_time = 0;
+static X_Boolean isDislayByPython = X_False;
 static uint16_t mockable_GetBatteryAdcValue(X_Void)
 {	
 	adc_times ++;
@@ -115,6 +134,7 @@ static X_Void TestInit(X_Void)
 {
 	adc_times = 0;
 	current_time = 0;
+	isDislayByPython = X_False;
 	mModule_BatteryInit(mockable_GetBatteryAdcValue);
 }
 
@@ -126,10 +146,19 @@ static X_Void mockable_SystemTimeSet(uint32_t times)
 {
 	current_time = times;
 }
+
 static X_Void mockable_SystemHandler(X_Void)
 {
+	X_Boolean isBatteryValueCome = X_False; 
+	uint16_t battery;
 	mockable_SystemTimeUpdata();
-	mModule_BatteryStrengthMonitor();
+	isBatteryValueCome = mModule_BatteryStrengthMonitor();
+	if(isBatteryValueCome == X_True && isDislayByPython == X_True)
+	{
+		battery = mModule_GetBatteryStrength();
+
+		//WriteTxT_by_line();
+	}
 }
 
 #define SYSTICK_RUN_TIME_IN_HOURS  		2
@@ -202,6 +231,23 @@ TEST(battery_monitor,Get_adcvalue_120times_during_500seconds_after_wakeup)
 		mockable_SystemHandler();
 	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(500000));
 	EXPECT_EQ(adc_times,120);
+}
+
+TEST(battery_monitor,battery_sterngth_display_by_python)
+{	
+	uint16_t i;
+	TestInit();
+	isDislayByPython = X_True;
+	do{
+		mockable_SystemHandler();
+	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(500000));
+	EXPECT_EQ(adc_times,120);
+
+	uint16_t linenum[10] = {2,4,6,8,10,12,14,16,18,20};
+	uint16_t buf[10] = {1,2,3,4,100,78,66,45,33};
+	string file ="../other/display_data.txt";
+	WriteTxT_by_line(file,10,linenum,buf);
+
 }
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------Running battery_monitor_test from test_test.cc \r\n";

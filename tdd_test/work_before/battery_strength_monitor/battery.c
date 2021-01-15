@@ -13,10 +13,6 @@ X_Void mModule_BatteryDeInit(X_Void)
 }
 #endif
 
-static uint16_t GetBatteryAdcValue(X_Void)
-{
-	return 0;
-}
 X_Void mModule_BatteryInit(onBatteryAdc getadc)
 {
 	adc_value_get = getadc;
