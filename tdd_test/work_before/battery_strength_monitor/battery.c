@@ -19,6 +19,10 @@ X_Void mModule_BatteryDeInit(X_Void)
 #define ADCVALUE_TABLE_RELATIVE_MAX (1980)
 #define ADCVALUE_TABLE_RELATIVE_MIN (1588)
 
+#define MAX_BATTERY_SPAN_AFTER_RESET   5
+#define MAX_BATTERY_SPAN_NORMAL   2
+#define BATTERY_ABS_MUL(current,backup)    ((uint8_t)((current >= backup)? current - backup :backup - current ))
+
 static struct
     {
         uint16_t ad_value;
@@ -82,6 +86,20 @@ X_Boolean mModule_BatteryStrengthMonitor(X_Void)
 		{
 			adc_value = adc_value_get();
 			CurrentBatteryStrength = ConvAdcToPercentage(adc_value);
+			if(CurrentBatteryStrength >= CurrentBatteryStrength_backup )
+			{
+				if((CurrentBatteryStrength - CurrentBatteryStrength_backup) > MAX_BATTERY_SPAN_AFTER_RESET ) 
+				{
+					CurrentBatteryStrength = CurrentBatteryStrength_backup + MAX_BATTERY_SPAN_AFTER_RESET;
+				}
+			}
+			else
+			{
+				if((CurrentBatteryStrength_backup - CurrentBatteryStrength ) > MAX_BATTERY_SPAN_AFTER_RESET ) 
+				{
+					CurrentBatteryStrength = CurrentBatteryStrength_backup - MAX_BATTERY_SPAN_AFTER_RESET;
+				}
+			}
 		}
 	}
 	else
@@ -90,6 +108,23 @@ X_Boolean mModule_BatteryStrengthMonitor(X_Void)
 		{
 			adc_value = adc_value_get();
 			CurrentBatteryStrength = ConvAdcToPercentage(adc_value);
+			/*
+			if(CurrentBatteryStrength >= CurrentBatteryStrength_backup )
+			{
+				if((CurrentBatteryStrength - CurrentBatteryStrength_backup) > MAX_BATTERY_SPAN_NORMAL ) 
+				{
+					CurrentBatteryStrength = CurrentBatteryStrength_backup + MAX_BATTERY_SPAN_NORMAL;
+				}
+			}
+			else
+			{
+				if((CurrentBatteryStrength_backup - CurrentBatteryStrength ) > MAX_BATTERY_SPAN_NORMAL ) 
+				{
+					CurrentBatteryStrength = CurrentBatteryStrength_backup - MAX_BATTERY_SPAN_NORMAL;
+				}
+				
+			}
+			*/
 		}
 	}
 	if(CurrentBatteryStrength_backup != CurrentBatteryStrength)

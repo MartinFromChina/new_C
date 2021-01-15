@@ -277,8 +277,7 @@ TEST(battery_monitor,display_battery_in_5_seconds)
 		if(mockable_GetCurrentTime() > CONV_MS_TO_TICKS(5000) && isBatteryUpdata == X_True)
 		{
 			EXPECT_GT(mModule_GetBatteryStrength(), 4);
-			EXPECT_LT(mModule_GetBatteryStrength(), 11);
-			//cout<<"------------Running battery_monitor_test from test_test.cc \r\n";
+			EXPECT_LT(mModule_GetBatteryStrength(), 23);
 		}
 	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(10000));
 }
