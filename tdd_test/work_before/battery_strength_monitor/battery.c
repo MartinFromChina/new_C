@@ -8,9 +8,20 @@ static onBatteryAdc adc_value_get = (onBatteryAdc)0;
 #include "./test/test_main.h"
 
 extern Adc_Mock adcm;
+static uint8_t ConvAdcToPercentage(uint16_t adc);
+static uint8_t BatterySmooth(uint8_t current,uint8_t back_up,uint8_t threshold);
+
 X_Void mModule_BatteryDeInit(X_Void)
 {
 	adc_value_get = (onBatteryAdc)0;
+}
+uint8_t BatterySmooth_ForTest(uint8_t current,uint8_t back_up,uint8_t threshold)
+{
+	return BatterySmooth(current,back_up,threshold);
+}
+uint8_t ConvAdcToPercentage_ForTest(uint16_t adc)
+{
+	return ConvAdcToPercentage(adc);
 }
 #endif
 
@@ -43,7 +54,7 @@ static struct
         { 1617, 5	,42	,13 },//3.4
 		{ 1589, 4	,28	,1 },//3.3
     };
-static uint8_t ConvAdcToPercentage(uint16_t adc)//the func need a specific test later
+static uint8_t ConvAdcToPercentage(uint16_t adc)
 {
 	uint8_t value = 1,i;
 	uint16_t mul,adc_in_scale;
@@ -82,6 +93,7 @@ static uint8_t BatterySmooth(uint8_t current,uint8_t back_up,uint8_t threshold)
 			current = back_up - threshold;
 		}
 	}
+	if(current > 100) {current = 100;}
 	return current;
 }
 X_Void mModule_BatteryInit(onBatteryAdc getadc)

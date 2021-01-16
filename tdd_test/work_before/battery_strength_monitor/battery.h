@@ -16,6 +16,8 @@ X_Boolean mModule_BatteryStrengthMonitor(X_Boolean isInCharge);
 
 #if (USE_TDD_MOCK != 0)
 	X_Void mModule_BatteryDeInit(X_Void);
+	uint8_t BatterySmooth_ForTest(uint8_t current,uint8_t back_up,uint8_t threshold);
+	uint8_t ConvAdcToPercentage_ForTest(uint16_t adc);
 #endif
 
 #ifdef __cplusplus

@@ -391,6 +391,22 @@ TEST(battery_monitor,battery_sterngth_no_drop_when_200_400_secs_2000_5000_in_cha
 	}while(mockable_GetCurrentTime() < CONV_MS_TO_TICKS(6000000));
 }
 
+TEST(battery_monitor,battery_not_beyond100)
+{
+	uint16_t i;
+	TestInit();
+	for(i = 0;i<65535;i++)
+	{
+		EXPECT_LT(ConvAdcToPercentage_ForTest(i),101);
+	}
+	for(i = 0;i<101;i++)
+	{
+		EXPECT_LT(BatterySmooth_ForTest(i,i+10,5),101);
+		EXPECT_LT(BatterySmooth_ForTest(i,i+8,2),101);
+	}
+	
+	
+}
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------Running battery_monitor_test from test_test.cc \r\n";
   testing::InitGoogleTest(&argc, argv);
