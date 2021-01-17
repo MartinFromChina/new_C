@@ -40,14 +40,24 @@ void mainloop(void)
 		usleep(2);
 	}
 }
+#include <cstdlib> // Header file needed to use srand and rand
+#include <ctime>
+
 void irq_handler(void) 
 {
-	uint32_t i;
+	uint32_t i,sleeptime;
+	unsigned seed;  // Random generator seed
+    // Use the time function to get a "seed” value for srand
+    seed = time(0);
+	srand(seed);
+
 	for(i=0;i<50;i++)
 	{
 		globle_buf[j] = 2;
 		if(j<9999){j++;}
-		usleep(1);
+
+		sleeptime = rand()%5;
+		usleep(sleeptime);
 	}
 }
 
