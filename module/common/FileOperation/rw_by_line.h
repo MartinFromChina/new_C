@@ -7,9 +7,12 @@
 #include "../x_cross_platform.h"
 #include "../CommonMarco.h"
 
+#ifndef MAX_LENGTH_OF_LINE
+#define MAX_LENGTH_OF_LINE  500
+#endif
 
-X_Void WriteFileByLine(const char* p_filename,const char *p_string,...); // linux sz : send Zmodem
-uint16_t ReadFileByLine(const char* p_filename,char *p_context,uint16_t *p_length);
+X_Boolean WriteFileByLine(const char* p_filename,const char *p_string,...); // linux sz : send Zmodem
+X_Boolean ReadFileByLine(const char* p_filename,uint16_t line_num,char *p_context);
 
 
 #ifdef __cplusplus
