@@ -13,6 +13,14 @@ char* ConvFileStrToChar(const char *src)
 	strcpy(buf, src);
 	return buf;
 }
+X_Boolean FileClear(const char* p_filename)
+{
+	FILE* pFile;
+	pFile = fopen(p_filename,"w+");
+	if(pFile == X_Null) {return X_False;}
+	fclose(pFile);
+	return X_True;
+}
 
 X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p_string,...)
 {
@@ -30,7 +38,7 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 	 va_start(argp,p_string);
 	if (-1== vsnprintf(logstr,ARRSIZE(logstr),p_string,argp)) logstr[ARRSIZE(logstr)-1]=0;
 	
-	fprintf(pFile,"%s",logstr);
+	fprintf(pFile,"%s\r\n",logstr);
 	va_end(argp);
 	// unlock irq
     fclose(pFile);

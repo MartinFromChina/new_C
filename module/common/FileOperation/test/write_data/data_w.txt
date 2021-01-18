@@ -1,1 +1,6 @@
-unknowunknowunknowunknowunknowunknow
+unknow
+unsupport
+gGattProcExchangeMtu_c
+gGattProcDiscoverAllPrimaryServices_c
+gGattProcDiscoverPrimaryServicesByUuid_c
+gGattProcFindIncludedServices_c

@@ -74,13 +74,20 @@ static char Table[6][100] = {
 
 TEST(file,open_and_write)
 {
+	uint8_t i;
 	X_Boolean isOk;
 	char *p_file_name;
 	p_file_name = ConvFileStrToChar("./write_data/data_w.txt");
+	isOk = FileClear(p_file_name);
+	EXPECT_EQ(isOk,X_True);
 	
-	isOk = WriteFileByLine(p_file_name,0,&Table[0][0]);
-	ReadFileByLine(p_file_name,0,context);
-	EXPECT_STREQ(&Table[0][0],context);
+	for(i=0;i<6;i++)
+	{
+		isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+		ReadFileByLine(p_file_name,i,context);
+		EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
+	}
+	
 }
 
 GTEST_API_ int main(int argc, char **argv) {

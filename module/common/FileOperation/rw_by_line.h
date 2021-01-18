@@ -16,6 +16,7 @@
 #endif
 
 char* ConvFileStrToChar(const char *src);
+X_Boolean FileClear(const char* p_filename);
 X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p_string,...); // linux sz : send Zmodem
 X_Boolean ReadFileByLine(const char* p_filename,uint16_t line_num,char *p_context);
 
