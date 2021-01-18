@@ -5,6 +5,8 @@ using namespace std;
 #include "../InsertLogDebug.h"
 
 #define USE_INSERT_DEBUG 1
+//#define LOG_DEBUG_METHOD  printf
+
 
 #if (USE_TDD_MOCK != 0)
 	#define MOCKABLE(method)  mockable_##method
@@ -53,6 +55,7 @@ TEST(insert_LOG_DEBUG,printf)
 	uint8_t i;
 	//insert_LogDebugInit(mLog_method_init);
 	//insert_LOG_Debug
+	//cout<<"------------ should print  once counter1 counter2\r\n";
 	INSERT(LogDebug)(1,("hello \r\n"));
 	INSERT(LogDebug)(0,("!!!!mistake 1\r\n"));
 
