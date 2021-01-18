@@ -33,26 +33,26 @@ int log_printf(const char * sFormat, ...);
 X_Boolean OnceEntryCheck(uint16_t *backup_entry,uint16_t new_value) ;
 X_Boolean CounterEntryCheck(uint32_t *backup_entry,uint32_t counter_limit);
 
-#define insert_LOG_Debug(flag,message)   do{ 																\
-												if(flag == 1)	\
+#define insert_LogDebug(flag,message)   do{ 																\
+												if(flag != 0)	\
 												{	DEBUG_METHOD	message ;	   	}			\
 											}while(0)
-/*******************************************/
+/****************print when entry == once_ref***************************/
 
-#define insert_LOG_Debug_Once(flag,entry,once_ref,message)   do{ 																\
+#define insert_LogDebugOnce(flag,entry,once_ref,message)   do{ 																\
 																	if(flag != 0 && OnceEntryCheck(entry,once_ref) == X_True)	\
 																	{	DEBUG_METHOD	message ;	   	}			\
 																}while(0)
-/*******************************************/
-#define insert_LOG_Debug_Counter(flag,entry,counter_ref,message)   do{ 																\
+/**************print when entry = 0 , entry ++ per call ,until entry == counter_ref ,then entry = 0***********************/
+#define insert_LogDebugCounter(flag,entry,counter_ref,message)   do{ 																\
 																		if(flag != 0 && CounterEntryCheck(entry,counter_ref) == X_True)	\
 																		{	DEBUG_METHOD	message ;	   	}			\
 																	 }while(0)
 
 /*******************************************/
-#define remove_LOG_Debug(flag,message)   do{ }while(0)
-#define remove_LOG_Debug_Once(flag,entry,once_ref,message)   do{ }while(0)
-#define remove_LOG_Debug_Counter(flag,entry,counter_ref,message)   do{ }while(0)
+#define remove_LogDebug(flag,message)   do{ }while(0)
+#define remove_LogDebugOnce(flag,entry,once_ref,message)   do{ }while(0)
+#define remove_LogDebugCounter(flag,entry,counter_ref,message)   do{ }while(0)
 /*******************************************/
 X_Void insert_OnceEntryValueSet(uint16_t * p_entry,uint16_t value);
 X_Void insert_CounterEntryValueSet(uint32_t * p_entry,uint32_t value);														
