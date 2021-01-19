@@ -75,7 +75,7 @@ static char Table[6][100] = {
 	    "4_eee"       , 
 	    "5_fff"       ,
 };     
-
+/*
 TEST(file,open_and_write)
 {
 	uint8_t i;
@@ -129,7 +129,7 @@ TEST(file,open_and_write_random_simple)
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
 	ReadFileByLine(p_file_name,i,context);
 	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
-	/*
+	
 
 	i = 3;
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
@@ -140,7 +140,7 @@ TEST(file,open_and_write_random_simple)
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
 	ReadFileByLine(p_file_name,i,context);
 	EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
-	*/
+	
 }
 
 static char Table1[6][100] = {
@@ -186,7 +186,7 @@ TEST(file,open_and_write_random_complex)
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
 	ReadFileByLine(p_file_name,i,context);
 	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
-	/*
+	
 
 	i = 3;
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
@@ -197,8 +197,54 @@ TEST(file,open_and_write_random_complex)
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
 	ReadFileByLine(p_file_name,i,context);
 	EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
-	*/
+	
 }
+*/
+TEST(file,open_and_write_random_empty)
+{
+	uint8_t i;
+	X_Boolean isOk;
+	char *p_file_name;
+	p_file_name = ConvFileStrToChar("./write_data/empty/empty.txt");
+
+	i = 5;
+	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+}
+TEST(file,open_and_write_random_first_line_empty)
+{
+	uint8_t i;
+	X_Boolean isOk;
+	char *p_file_name;
+	p_file_name = ConvFileStrToChar("./write_data/FirstLineEmpty/first_empty.txt");
+	
+	i = 5;
+	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+}
+TEST(file,open_and_write_random_empty_middle_empty)
+{
+	uint8_t i;
+	X_Boolean isOk;
+	char *p_file_name;
+	p_file_name = ConvFileStrToChar("./write_data/MiddleLineEmpty/middle_empty.txt");
+
+	i = 5;
+	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+}
+TEST(file,open_and_write_random_full)
+{
+  
+	uint8_t i;
+	X_Boolean isOk;
+	char *p_file_name;
+	p_file_name = ConvFileStrToChar("./write_data/full/full.txt");
+	
+	i = 5;
+	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+	
+}
+
+
+
 
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------Running file_operation_test from test_test.cc \r\n";

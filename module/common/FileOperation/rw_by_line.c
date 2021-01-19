@@ -7,6 +7,7 @@
 #define ARRSIZE(x) (sizeof(x)/sizeof(x[0]))
 
 static char buf[MAX_LENGTH_OF_FILE_NAME],buf_temp[MAX_LENGTH_OF_FILE_NAME];
+
 static X_Boolean LoadBufTemp(const char* p_filename)
 {
 	uint16_t i,j;
@@ -44,8 +45,34 @@ static X_Boolean LoadBufTemp(const char* p_filename)
 	}
 	return X_False;
 }
+static X_Boolean InserOneLineToTempFile(FILE* pSrc,FILE* pDes,uint16_t line_num,const char *p_string)
+{
+	return X_True;
+}
+static uint16_t GetFileLineNum(FILE* pFile)
+{
+	uint16_t i, total_num;
+	char temp_buf[MAX_LENGTH_OF_ONE_LINE+1];
+	for(i=0,total_num = 0;i<TOTAL_LINE_NUM_MAX;i++)
+	{
+		if(fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile) == NULL) 
+		{
+			 break;
+		}
+		total_num++;
+	}
+	return total_num;
+}
+
+
+
 char* ConvFileStrToChar(const char *src)
 {
+	uint16_t i;
+	for(i=0;i<MAX_LENGTH_OF_FILE_NAME;i++)
+	{
+		buf[i] = ' ';
+	}
 	strcpy(buf, src);
 	return buf;
 }
@@ -60,7 +87,7 @@ X_Boolean FileClear(const char* p_filename)
 
 X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p_string,...)
 {
-	uint16_t i,offset;
+	uint16_t i,total_line;
 	X_Boolean isOK = X_False;
 	char logstr[MAX_LENGTH_OF_ONE_LINE+1];
 	char temp_buf[MAX_LENGTH_OF_ONE_LINE+100];
@@ -69,65 +96,70 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 	va_list argp;
 	if(line_num == 0xFFFF || p_string == X_Null || 0==p_string[0]) {return X_False;}
 	if(LoadBufTemp(p_filename) == X_False)  {return X_False;}
-	printf("--- buf_temp %s\r\n",buf_temp);
 	pFile = fopen(p_filename,"r+");
-	p_tempF = fopen(buf_temp,"a");
-	if(pFile == X_Null) {return X_False;}
+	p_tempF = fopen(buf_temp,"w");
+	if(pFile == X_Null || p_tempF == X_Null) {return X_False;}
 
-	for(i=0;i<MAX_LENGTH_OF_ONE_LINE;i++)
+	//total_line = GetFileLineNum(pFile);
+
+	uint16_t total_num;
+	//char temp_buf[MAX_LENGTH_OF_ONE_LINE+1];
+	for(i=0,total_num = 0;i<TOTAL_LINE_NUM_MAX;i++)
 	{
-		logstr[i] = ' ';
+		if(feof(pFile)!=0) {break;}
+		if(fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile) == NULL) 
+		{
+			 break;
+		}
+		else
+		{
+			printf("...get sth in line %d %s\r\n",i,temp_buf);
+		}
+		total_num++;
 	}
+	total_line = total_num;
+	printf("...total_line %d\r\n",total_line);
+/*
+	if(total_line >= line_num)
+	{
+		//InserOneLineToTempFile();
+	}
+	else
+	{
 
-	offset = 0;
+	}
 	for(i=0;i<line_num;i++)
 	{
 		if(fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile) == NULL) 
 		{
 			fputs("\n",pFile);
-			offset ++;
 			fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile);
-			printf(" --------------------empty line %d ,put sth in the line  offset : %d\r\n",i,offset);
+			printf(" --------------------empty line %d ,put sth in the line and copy to temp t.txt \r\n",i);
 			 
 		}
 		else
 		{
-			offset +=strlen(temp_buf) ;
-			//offset++;
-			printf("-------------------- get sth in the line %d %s offset :%d\r\n",i,temp_buf,offset);
+			printf("-------------------- get sth in the line %d %s \r\n",i,temp_buf);
 		}
+		fputs(temp_buf,p_tempF);
 	}
 	// lock irq
-	 va_start(argp,p_string);
+	va_start(argp,p_string);
 	if (-1== vsnprintf(logstr,ARRSIZE(logstr),p_string,argp)) logstr[ARRSIZE(logstr)-1]='\0';
-/*
-	for(i=0;i<MAX_LENGTH_OF_ONE_LINE;i++)
-	{
-		if(logstr[i] == '\0') 
-		{
-			printf("ARRSIZE(logstr) %d %d\r\n",i,logstr[i+1]);
-			logstr[i] = ' ';
-			break;
-		}
-	}
-	*/
-	  i = fseek(pFile,offset,SEEK_SET);/*定位到要修改的位置，注意，这个位置是上一次读的最后，故写的时候要先写换行，第一行除外*/
-	  /*
-	  if(line_num!=0) 
-	  { 
-	   fprintf(pFile,"\n"); 
-	  } 
-	  */
-	  i = fwrite(logstr,strlen(logstr),1, pFile);
-	  //strcpy(logstr,pFile);
-	 // fprintf(pFile,"%s\n",logstr);
-	  printf(" -------------------------------------------------put %s in the offset %d\r\n",logstr,offset);
-	  //fprintf(pFile,"%s","\r\n"); 
-	//fputs();
-	//fwrite(logstr,1,8,pFile);
+
+	fprintf(p_tempF,"%s\n",logstr);
+	printf(" -------------------------------------------------put %s in the certain line\r\n",logstr); 
 	va_end(argp);
 	// unlock irq
+	fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile);
+	
+	while(fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile) != NULL)
+	{
+		fputs(temp_buf,p_tempF);fputs("\n",pFile);
+	}
+	*/
     fclose(pFile);
+	fclose(p_tempF);
 
 
 	printf(" ----!!!!!!end\r\n");

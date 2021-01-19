@@ -15,6 +15,11 @@
 #define MAX_LENGTH_OF_FILE_NAME  256
 #endif
 
+#ifndef TOTAL_LINE_NUM_MAX
+#define TOTAL_LINE_NUM_MAX  1000
+#endif
+
+
 char* ConvFileStrToChar(const char *src);
 X_Boolean FileClear(const char* p_filename);
 X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p_string,...); // linux sz : send Zmodem
