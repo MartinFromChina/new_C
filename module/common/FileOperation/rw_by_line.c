@@ -6,7 +6,7 @@
 
 #define ARRSIZE(x) (sizeof(x)/sizeof(x[0]))
 
-static char buf[MAX_LENGTH_OF_FILE_NAME],buf_temp[MAX_LENGTH_OF_FILE_NAME];
+static char buf_temp[MAX_LENGTH_OF_FILE_NAME];
 
 static X_Boolean LoadBufTemp(const char* p_filename)
 {
@@ -69,15 +69,16 @@ static uint16_t GetFileLineNum(FILE* pFile)
 
 
 
-char* ConvFileStrToChar(const char *src)
+char* ConvFileStrToChar(const char *src,char *p_buf)
 {
 	uint16_t i;
+	if(p_buf == X_Null) {return (char *)0;}
 	for(i=0;i<MAX_LENGTH_OF_FILE_NAME;i++)
 	{
-		buf[i] = ' ';
+		p_buf[i] = ' ';
 	}
-	strcpy(buf, src);
-	return buf;
+	strcpy(p_buf, src);
+	return p_buf;
 }
 X_Boolean FileClear(const char* p_filename)
 {
@@ -159,5 +160,45 @@ X_Boolean ReadFileByLine(const char* p_filename,uint16_t line_num,char *p_contex
 	fclose(pFile);
 	return isOK;
 }
+X_Boolean CompareTwoFileByLine(const char* p_filename1,const char* p_filename2,uint16_t start_line,uint16_t end_line)
+{	
+	FILE *pFile1,*pFile2;	
+	uint16_t i,j;
+	X_Boolean isSame = X_True;
+	char buf1[MAX_LENGTH_OF_ONE_LINE],buf2[MAX_LENGTH_OF_ONE_LINE];
 
+	if(start_line > end_line || end_line == 0xffff) {return X_False;}
+	if(p_filename1 == p_filename2) {return X_True;}
+
+	pFile1 = fopen(p_filename1,"r");
+	pFile2 = fopen(p_filename2,"r");
+
+	if(pFile1 == X_Null || pFile2 == X_Null) {return X_False;}
+	
+	for(i = start_line; i <= end_line;i++)
+	{
+		fgets(buf1,MAX_LENGTH_OF_ONE_LINE,pFile1);
+		fgets(buf2,MAX_LENGTH_OF_ONE_LINE,pFile2);
+
+		for(j = 0;j<MAX_LENGTH_OF_ONE_LINE;j++)
+		{
+			
+			if(buf1[j] == '\0' && buf2[j] == '\0'){break;}
+			
+			if(buf1[j] != buf2[j])
+			{
+				isSame = X_False;
+			//	printf(" line %d : buf1[%d]  = % 2x not equal buf1[%d]  = % 2x\r\n",i,j,buf1[j],j,buf2[j]);
+				i = 0xfffe;
+				break;
+			}
+			//printf(" line %d : buf[%d] same :%2x\r\n",i,j,buf1[j]);
+			
+		}
+		
+	}
+	 fclose(pFile1);
+	fclose(pFile2);
+	return isSame;
+}
 

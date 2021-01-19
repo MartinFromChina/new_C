@@ -11,8 +11,8 @@ static char context[MAX_LENGTH_OF_ONE_LINE];
 TEST(file,open_and_read)
 {
 	X_Boolean isOk;
-	char *p_file_name;
-	p_file_name = ConvFileStrToChar("data_r.txt");
+	char *p_file_name,buf[MAX_LENGTH_OF_FILE_NAME];
+	p_file_name = ConvFileStrToChar("data_r.txt",buf);
 	isOk = ReadFileByLine("data_r.txt",0,context);
 	EXPECT_STREQ("11\r\n",context);
 
@@ -37,8 +37,8 @@ TEST(file,open_and_read)
 TEST(file,open_and_read_random)
 {
 	X_Boolean isOk;
-	char *p_file_name;
-	p_file_name = ConvFileStrToChar("data_r.txt");
+	char *p_file_name,buf[MAX_LENGTH_OF_FILE_NAME];
+	p_file_name = ConvFileStrToChar("data_r.txt",buf);
 
 	
 	isOk = ReadFileByLine(p_file_name,3,context);
@@ -204,21 +204,29 @@ TEST(file,open_and_write_random_empty)
 {
 	uint8_t i;
 	X_Boolean isOk;
-	char *p_file_name;
-	p_file_name = ConvFileStrToChar("./write_data/empty/empty.txt");
+	char *p_file_name,buf[MAX_LENGTH_OF_FILE_NAME];
+	p_file_name = ConvFileStrToChar("./write_data/empty/empty.txt",buf);
 
 	i = 5;
 	isOk = WriteFileByLine(p_file_name,20,&Table[i][0]);
 
 	isOk = ReadFileByLine(p_file_name,20,context);
 	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
+
+	
+	isOk = CompareTwoFileByLine(p_file_name,"./write_data/Backup/empty.txt",0,19);
+	EXPECT_EQ(isOk,X_True);
+	
+
+	isOk = CompareTwoFileByLine(p_file_name,"./write_data/Backup/empty.txt",0,20);
+	EXPECT_EQ(isOk,X_False);
 }
 TEST(file,open_and_write_random_first_line_empty)
 {
 	uint8_t i;
 	X_Boolean isOk;
-	char *p_file_name;
-	p_file_name = ConvFileStrToChar("./write_data/FirstLineEmpty/first_empty.txt");
+	char *p_file_name,buf[MAX_LENGTH_OF_FILE_NAME];
+	p_file_name = ConvFileStrToChar("./write_data/FirstLineEmpty/first_empty.txt",buf);
 	
 	i = 5;
 	isOk = WriteFileByLine(p_file_name,20,&Table[i][0]);
@@ -227,8 +235,8 @@ TEST(file,open_and_write_random_empty_middle_empty)
 {
 	uint8_t i;
 	X_Boolean isOk;
-	char *p_file_name;
-	p_file_name = ConvFileStrToChar("./write_data/MiddleLineEmpty/middle_empty.txt");
+	char *p_file_name,buf[MAX_LENGTH_OF_FILE_NAME];
+	p_file_name = ConvFileStrToChar("./write_data/MiddleLineEmpty/middle_empty.txt",buf);
 
 	i = 5;
 	isOk = WriteFileByLine(p_file_name,20,&Table[i][0]);
@@ -238,8 +246,8 @@ TEST(file,open_and_write_random_full)
   
 	uint8_t i;
 	X_Boolean isOk;
-	char *p_file_name;
-	p_file_name = ConvFileStrToChar("./write_data/full/full.txt");
+	char *p_file_name,buf[MAX_LENGTH_OF_FILE_NAME];
+	p_file_name = ConvFileStrToChar("./write_data/full/full.txt",buf);
 	
 	i = 5;
 	isOk = WriteFileByLine(p_file_name,20,&Table[i][0]);
