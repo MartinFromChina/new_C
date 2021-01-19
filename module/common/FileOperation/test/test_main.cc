@@ -209,6 +209,9 @@ TEST(file,open_and_write_random_empty)
 
 	i = 5;
 	isOk = WriteFileByLine(p_file_name,20,&Table[i][0]);
+
+	isOk = ReadFileByLine(p_file_name,20,context);
+	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
 }
 TEST(file,open_and_write_random_first_line_empty)
 {

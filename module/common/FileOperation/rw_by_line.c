@@ -132,6 +132,9 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 		va_end(argp);
 		// unlock irq
 	}
+
+	remove(p_filename);
+	rename(buf_temp,p_filename);
     fclose(pFile);
 	fclose(p_tempF);
 	
