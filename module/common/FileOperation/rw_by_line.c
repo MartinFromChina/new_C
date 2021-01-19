@@ -15,7 +15,7 @@ static X_Boolean LoadBufTemp(const char* p_filename)
 	{
 		buf_temp[i] = p_filename[i];
 	}
-	printf(" buf_temp %s\r\n",buf_temp);
+	//printf(" buf_temp %s\r\n",buf_temp);
 
 	j = 0;
 	for(i=0;i<MAX_LENGTH_OF_FILE_NAME;i++)
@@ -53,14 +53,17 @@ static uint16_t GetFileLineNum(FILE* pFile)
 {
 	uint16_t i, total_num;
 	char temp_buf[MAX_LENGTH_OF_ONE_LINE+1];
+	
 	for(i=0,total_num = 0;i<TOTAL_LINE_NUM_MAX;i++)
 	{
+		if(feof(pFile) != 0) {break;}
 		if(fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile) == NULL) 
 		{
 			 break;
 		}
 		total_num++;
 	}
+	fseek(pFile,0,SEEK_SET);
 	return total_num;
 }
 
@@ -90,7 +93,6 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 	uint16_t i,total_line;
 	X_Boolean isOK = X_False;
 	char logstr[MAX_LENGTH_OF_ONE_LINE+1];
-	char temp_buf[MAX_LENGTH_OF_ONE_LINE+100];
 	
 	FILE* pFile,*p_tempF;
 	va_list argp;
@@ -100,72 +102,38 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 	p_tempF = fopen(buf_temp,"w");
 	if(pFile == X_Null || p_tempF == X_Null) {return X_False;}
 
-	//total_line = GetFileLineNum(pFile);
+	total_line = GetFileLineNum(pFile);
+	//printf(" --- %d\r\n",total_line);
 
-	uint16_t total_num;
-	//char temp_buf[MAX_LENGTH_OF_ONE_LINE+1];
-	for(i=0,total_num = 0;i<TOTAL_LINE_NUM_MAX;i++)
-	{
-		if(feof(pFile)!=0) {break;}
-		if(fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile) == NULL) 
-		{
-			 break;
-		}
-		else
-		{
-			printf("...get sth in line %d %s\r\n",i,temp_buf);
-		}
-		total_num++;
-	}
-	total_line = total_num;
-	printf("...total_line %d\r\n",total_line);
-/*
-	if(total_line >= line_num)
+	if(total_line >= (line_num + 1))
 	{
 		//InserOneLineToTempFile();
 	}
 	else
 	{
-
-	}
-	for(i=0;i<line_num;i++)
-	{
-		if(fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile) == NULL) 
+		for(i = 0;i<(total_line);i++)// copy file to temp file
 		{
-			fputs("\n",pFile);
-			fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile);
-			printf(" --------------------empty line %d ,put sth in the line and copy to temp t.txt \r\n",i);
-			 
+			fgets(logstr,MAX_LENGTH_OF_ONE_LINE,pFile);
+			fputs(logstr,p_tempF);
+			//printf(" copy %s to line %d\r\n",temp_buf,i);
 		}
-		else
-		{
-			printf("-------------------- get sth in the line %d %s \r\n",i,temp_buf);
-		}
-		fputs(temp_buf,p_tempF);
-	}
-	// lock irq
-	va_start(argp,p_string);
-	if (-1== vsnprintf(logstr,ARRSIZE(logstr),p_string,argp)) logstr[ARRSIZE(logstr)-1]='\0';
 
-	fprintf(p_tempF,"%s\n",logstr);
-	printf(" -------------------------------------------------put %s in the certain line\r\n",logstr); 
-	va_end(argp);
-	// unlock irq
-	fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile);
-	
-	while(fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile) != NULL)
-	{
-		fputs(temp_buf,p_tempF);fputs("\n",pFile);
+		for(i = 0;i<(line_num - total_line);i++)
+		{
+			fputs("\n",p_tempF);
+			//printf(" insert next line to line %d \r\n",i);
+		}
+
+		// lock irq
+		va_start(argp,p_string);
+		if (-1== vsnprintf(logstr,ARRSIZE(logstr),p_string,argp)) logstr[ARRSIZE(logstr)-1]='\0';
+
+		fprintf(p_tempF,"%s\n",logstr);
+		va_end(argp);
+		// unlock irq
 	}
-	*/
     fclose(pFile);
 	fclose(p_tempF);
-
-
-	printf(" ----!!!!!!end\r\n");
-	printf(" ----!!!!!!end\r\n");
-	printf(" ----!!!!!!end\r\n");
-	printf(" ----!!!!!!end\r\n");
 	
 	return X_True;
 }

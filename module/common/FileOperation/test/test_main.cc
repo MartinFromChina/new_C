@@ -208,7 +208,7 @@ TEST(file,open_and_write_random_empty)
 	p_file_name = ConvFileStrToChar("./write_data/empty/empty.txt");
 
 	i = 5;
-	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+	isOk = WriteFileByLine(p_file_name,20,&Table[i][0]);
 }
 TEST(file,open_and_write_random_first_line_empty)
 {
@@ -218,7 +218,7 @@ TEST(file,open_and_write_random_first_line_empty)
 	p_file_name = ConvFileStrToChar("./write_data/FirstLineEmpty/first_empty.txt");
 	
 	i = 5;
-	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+	isOk = WriteFileByLine(p_file_name,20,&Table[i][0]);
 }
 TEST(file,open_and_write_random_empty_middle_empty)
 {
@@ -228,7 +228,7 @@ TEST(file,open_and_write_random_empty_middle_empty)
 	p_file_name = ConvFileStrToChar("./write_data/MiddleLineEmpty/middle_empty.txt");
 
 	i = 5;
-	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+	isOk = WriteFileByLine(p_file_name,20,&Table[i][0]);
 }
 TEST(file,open_and_write_random_full)
 {
@@ -239,7 +239,7 @@ TEST(file,open_and_write_random_full)
 	p_file_name = ConvFileStrToChar("./write_data/full/full.txt");
 	
 	i = 5;
-	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+	isOk = WriteFileByLine(p_file_name,20,&Table[i][0]);
 	
 }
 

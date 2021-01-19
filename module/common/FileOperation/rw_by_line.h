@@ -8,7 +8,7 @@
 #include "../CommonMarco.h"
 
 #ifndef MAX_LENGTH_OF_ONE_LINE
-#define MAX_LENGTH_OF_ONE_LINE  20
+#define MAX_LENGTH_OF_ONE_LINE  500
 #endif
 
 #ifndef MAX_LENGTH_OF_FILE_NAME
