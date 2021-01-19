@@ -27,7 +27,7 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 	uint16_t i,offset;
 	X_Boolean isOK = X_False;
 	char logstr[MAX_LENGTH_OF_ONE_LINE+1];
-	char temp_buf[MAX_LENGTH_OF_ONE_LINE+1];
+	char temp_buf[MAX_LENGTH_OF_ONE_LINE+100];
 	
 	FILE* pFile;
 	va_list argp;
@@ -35,12 +35,9 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 	pFile = fopen(p_filename,"r+");
 	if(pFile == X_Null) {return X_False;}
 
-	temp_buf[50] = '\0';
-	temp_buf[0] = 'a';
-	temp_buf[10] = 'b';
 	for(i=0;i<MAX_LENGTH_OF_ONE_LINE;i++)
 	{
-		logstr[i] = 'a';
+		logstr[i] = ' ';
 	}
 
 	offset = 0;
@@ -48,38 +45,55 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 	{
 		if(fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile) == NULL) 
 		{
-			
-			printf(" empty line %d ,put sth in the line\r\n",i);
 			fputs("\n",pFile);
 			offset ++;
 			fgets(temp_buf,MAX_LENGTH_OF_ONE_LINE,pFile);
+			printf(" --------------------empty line %d ,put sth in the line  offset : %d\r\n",i,offset);
 			 
 		}
 		else
 		{
-			printf(" get sth in the line %d %s\r\n",i,temp_buf);
-			offset +=strlen(temp_buf);
+			offset +=strlen(temp_buf) ;
+			//offset++;
+			printf("-------------------- get sth in the line %d %s offset :%d\r\n",i,temp_buf,offset);
 		}
 	}
-	printf("offset %d\r\n",offset);
 	// lock irq
 	 va_start(argp,p_string);
-	if (-1== vsnprintf(logstr,ARRSIZE(logstr),p_string,argp)) logstr[ARRSIZE(logstr)-1]=0;
-
+	if (-1== vsnprintf(logstr,ARRSIZE(logstr),p_string,argp)) logstr[ARRSIZE(logstr)-1]='\0';
+/*
+	for(i=0;i<MAX_LENGTH_OF_ONE_LINE;i++)
+	{
+		if(logstr[i] == '\0') 
+		{
+			printf("ARRSIZE(logstr) %d %d\r\n",i,logstr[i+1]);
+			logstr[i] = ' ';
+			break;
+		}
+	}
+	*/
 	  i = fseek(pFile,offset,SEEK_SET);/*定位到要修改的位置，注意，这个位置是上一次读的最后，故写的时候要先写换行，第一行除外*/
-	 // printf("fseek %d\r\n",i);
 	  /*
 	  if(line_num!=0) 
 	  { 
 	   fprintf(pFile,"\n"); 
 	  } 
 	  */
-	  fprintf(pFile,"%s\n",logstr); 
+	  fprintf(pFile,"%s\n",logstr);
+	  printf(" -------------------------------------------------put %s in the offset %d\r\n",logstr,offset);
+	  //fprintf(pFile,"%s","\r\n"); 
 	//fputs();
 	//fwrite(logstr,1,8,pFile);
 	va_end(argp);
 	// unlock irq
     fclose(pFile);
+
+
+	printf(" ----!!!!!!end\r\n");
+	printf(" ----!!!!!!end\r\n");
+	printf(" ----!!!!!!end\r\n");
+	printf(" ----!!!!!!end\r\n");
+	
 	return X_True;
 }
 X_Boolean ReadFileByLine(const char* p_filename,uint16_t line_num,char *p_context)

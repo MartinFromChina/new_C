@@ -68,12 +68,12 @@ TEST(file,open_and_read_empty)
 
 
 static char Table[6][100] = {
-		"0_unknow",
-		"1_unsupport",
-		"2_gGattProcExchangeMtu_c"                        , /*!< MTU Exchange */
-	    "3_gGattProcDiscoverAllPrimaryServices_c"        , /*!< Primary Service Discovery */
-	    "4_GattProcDiscoverPrimaryServicesByUuid_c"       , /*!< Discovery of Services by UUID */
-	    "5_GattProcFindIncludedServices_c"       , /*!< Discovery of Included Services within a Service range */
+		"0_aa",
+		"1_bbb",
+		"2_ccc"                        , /*!< MTU Exchange */
+	    "3_ddd"        , /*!< Primary Service Discovery */
+	    "4_eee"       , /*!< Discovery of Services by UUID */
+	    "5_fff"       , /*!< Discovery of Included Services within a Service range */
 };     
 
 TEST(file,open_and_write)
@@ -101,19 +101,19 @@ TEST(file,open_and_write_random)
 	X_Boolean isOk;
 	char *p_file_name;
 	p_file_name = ConvFileStrToChar("./write_data/data_w.txt");
-	//isOk = FileClear(p_file_name);
-	//EXPECT_EQ(isOk,X_True);
+	isOk = FileClear(p_file_name);
+	EXPECT_EQ(isOk,X_True);
 	
-	i = 1;
+	i = 2;
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
-	ReadFileByLine(p_file_name,i,context);
-	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
+	//ReadFileByLine(p_file_name,i,context);
+	//EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
 
 
 	i ++;
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
-	ReadFileByLine(p_file_name,i,context);
-	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
+	//ReadFileByLine(p_file_name,i,context);
+	//EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
 	
 	//isOk = ReadFileByLine(p_file_name,5,context);
 	//EXPECT_EQ(isOk,X_True);
@@ -122,13 +122,13 @@ TEST(file,open_and_write_random)
 		
     i ++;
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
-	ReadFileByLine(p_file_name,i,context);
-	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
+	//ReadFileByLine(p_file_name,i,context);
+	//EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
 
 	i ++;
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
-	ReadFileByLine(p_file_name,i,context);
-	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
+	//ReadFileByLine(p_file_name,i,context);
+	//EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
 	/*
 
 	i = 3;
