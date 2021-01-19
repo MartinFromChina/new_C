@@ -85,10 +85,53 @@ TEST(file,open_and_write)
 	{
 		isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
 		ReadFileByLine(p_file_name,i,context);
-		EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
+		//EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
+		EXPECT_STREQ(&Table[i][0],context);
 	}
 	
 }
+/*
+TEST(file,open_and_write_random)
+{
+	uint8_t i;
+	X_Boolean isOk;
+	char *p_file_name;
+	p_file_name = ConvFileStrToChar("./write_data/data_w.txt");
+	isOk = FileClear(p_file_name);
+	EXPECT_EQ(isOk,X_True);
+	
+	i = 5;
+	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+	ReadFileByLine(p_file_name,i,context);
+	EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
+
+	i = 4;
+	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+	ReadFileByLine(p_file_name,i,context);
+	EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
+
+    i = 2;
+	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+	ReadFileByLine(p_file_name,i,context);
+	EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
+
+	i = 0;
+	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+	ReadFileByLine(p_file_name,i,context);
+	EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
+
+	i = 3;
+	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+	ReadFileByLine(p_file_name,i,context);
+	EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
+
+	i = 1;
+	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+	ReadFileByLine(p_file_name,i,context);
+	EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
+	
+}
+*/
 
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------Running file_operation_test from test_test.cc \r\n";

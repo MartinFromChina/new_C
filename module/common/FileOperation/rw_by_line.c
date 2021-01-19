@@ -26,19 +26,25 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 {
 	uint16_t i;
 	X_Boolean isOK = X_False;
-	char logstr[MAX_LENGTH_OF_ONE_LINE];
+	char logstr[MAX_LENGTH_OF_ONE_LINE+1];
 	
 	FILE* pFile;
 	va_list argp;
 	if(line_num == 0xFFFF || p_string == X_Null || 0==p_string[0]) {return X_False;}
 	pFile = fopen(p_filename,"a");
 	if(pFile == X_Null) {return X_False;}
-
+	
 	// lock irq
 	 va_start(argp,p_string);
 	if (-1== vsnprintf(logstr,ARRSIZE(logstr),p_string,argp)) logstr[ARRSIZE(logstr)-1]=0;
+
+	  fseek(pFile,line_num,SEEK_SET);/*定位到要修改的位置，注意，这个位置是上一次读的最后，故写的时候要先写换行，第一行除外*/
+	  if(line_num!=0) 
+	  { 
+	   fprintf(pFile,"\n"); 
+	  } 
+	  fprintf(pFile,"%s",logstr); 
 	
-	fprintf(pFile,"%s\r\n",logstr);
 	va_end(argp);
 	// unlock irq
     fclose(pFile);
