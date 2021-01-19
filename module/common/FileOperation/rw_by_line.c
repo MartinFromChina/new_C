@@ -114,8 +114,8 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 	{
 		for(i = 0;i<(total_line);i++)// copy file to temp file
 		{
-			fgets(logstr,MAX_LENGTH_OF_ONE_LINE,pFile);
-			fputs(logstr,p_tempF);
+			if(fgets(logstr,MAX_LENGTH_OF_ONE_LINE,pFile)!=NULL){fputs(logstr,p_tempF);}
+			else{fputs("\n",p_tempF);}
 			//printf(" copy %s to line %d\r\n",temp_buf,i);
 		}
 
@@ -133,10 +133,9 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 		va_end(argp);
 		// unlock irq
 	}
-
+	fclose(pFile);
 	remove(p_filename);
 	rename(buf_temp,p_filename);
-    fclose(pFile);
 	fclose(p_tempF);
 	
 	return X_True;
@@ -172,8 +171,20 @@ X_Boolean CompareTwoFileByLine(const char* p_filename1,const char* p_filename2,u
 
 	pFile1 = fopen(p_filename1,"r");
 	pFile2 = fopen(p_filename2,"r");
-
+	
 	if(pFile1 == X_Null || pFile2 == X_Null) {return X_False;}
+/*
+	if(feof(pFile1)==0){fgets(buf1,MAX_LENGTH_OF_ONE_LINE,pFile1);}
+	if(feof(pFile2)==0){fgets(buf2,MAX_LENGTH_OF_ONE_LINE,pFile2);}
+	
+	fseek(pFile1,0,SEEK_SET);fseek(pFile2,0,SEEK_SET);
+	*/
+	
+	for(i=0;i<start_line;i++)
+	{
+		fgets(buf1,MAX_LENGTH_OF_ONE_LINE,pFile1);
+		fgets(buf2,MAX_LENGTH_OF_ONE_LINE,pFile2);
+	}
 	
 	for(i = start_line; i <= end_line;i++)
 	{
@@ -188,7 +199,7 @@ X_Boolean CompareTwoFileByLine(const char* p_filename1,const char* p_filename2,u
 			if(buf1[j] != buf2[j])
 			{
 				isSame = X_False;
-			//	printf(" line %d : buf1[%d]  = % 2x not equal buf1[%d]  = % 2x\r\n",i,j,buf1[j],j,buf2[j]);
+			//	printf(" line %d : buf1[%d]  = % d not equal buf2[%d]  = % d\r\n",i,j,buf1[j],j,buf2[j]);
 				i = 0xfffe;
 				break;
 			}

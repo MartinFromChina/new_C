@@ -202,12 +202,13 @@ TEST(file,open_and_write_random_complex)
 */
 TEST(file,open_and_write_random_empty)
 {
+	//uint32_t j;
 	uint8_t i;
 	X_Boolean isOk;
 	char *p_file_name,buf[MAX_LENGTH_OF_FILE_NAME];
 	p_file_name = ConvFileStrToChar("./write_data/empty/empty.txt",buf);
 
-	i = 5;
+	i = 3;
 	isOk = WriteFileByLine(p_file_name,20,&Table[i][0]);
 
 	isOk = ReadFileByLine(p_file_name,20,context);
@@ -216,10 +217,43 @@ TEST(file,open_and_write_random_empty)
 	
 	isOk = CompareTwoFileByLine(p_file_name,"./write_data/Backup/empty.txt",0,19);
 	EXPECT_EQ(isOk,X_True);
+	/*isOk = CompareTwoFileByLine(p_file_name,"./write_data/Backup/empty.txt",0,20);
+	EXPECT_EQ(isOk,X_False);*/
+
+	i = 4;
+	isOk = WriteFileByLine(p_file_name,21,&Table[i][0]);
 	
 
-	isOk = CompareTwoFileByLine(p_file_name,"./write_data/Backup/empty.txt",0,20);
-	EXPECT_EQ(isOk,X_False);
+	isOk = ReadFileByLine(p_file_name,21,context);
+	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
+/*
+	for(j= 0;j<120000;j++)
+	{
+
+	}*/
+	isOk = ReadFileByLine(p_file_name,2,context);
+	//EXPECT_STREQ("\n",context);
+
+	/*isOk = ReadFileByLine(p_file_name,0,context);
+	EXPECT_STREQ("\n",context);
+	isOk = ReadFileByLine(p_file_name,1,context);
+	EXPECT_STREQ("\n",context);
+	isOk = ReadFileByLine(p_file_name,2,context);
+	EXPECT_STREQ("\n",context);
+	isOk = ReadFileByLine(p_file_name,3,context);
+	EXPECT_STREQ("\n",context);
+	isOk = ReadFileByLine(p_file_name,4,context);
+	EXPECT_STREQ("\n",context);
+	isOk = ReadFileByLine(p_file_name,5,context);
+	EXPECT_STREQ("\n",context);
+	*/
+	isOk = CompareTwoFileByLine(p_file_name,"./write_data/Backup/empty.txt",0,19);
+	EXPECT_EQ(isOk,X_True);
+
+	
+	/*isOk = CompareTwoFileByLine(p_file_name,"./write_data/Backup/empty.txt",0,21);
+	EXPECT_EQ(isOk,X_False);*/
+	
 }
 TEST(file,open_and_write_random_first_line_empty)
 {
