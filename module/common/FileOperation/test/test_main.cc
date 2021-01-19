@@ -61,15 +61,19 @@ TEST(file,open_and_read_random)
 	EXPECT_STREQ("33433333\r\n",context);
 
 }
+TEST(file,open_and_read_empty)
+{
+
+}
 
 
 static char Table[6][100] = {
-		"unknow",
-		"unsupport",
-		"gGattProcExchangeMtu_c"                        , /*!< MTU Exchange */
-	    "gGattProcDiscoverAllPrimaryServices_c"        , /*!< Primary Service Discovery */
-	    "gGattProcDiscoverPrimaryServicesByUuid_c"       , /*!< Discovery of Services by UUID */
-	    "gGattProcFindIncludedServices_c"       , /*!< Discovery of Included Services within a Service range */
+		"0_unknow",
+		"1_unsupport",
+		"2_gGattProcExchangeMtu_c"                        , /*!< MTU Exchange */
+	    "3_gGattProcDiscoverAllPrimaryServices_c"        , /*!< Primary Service Discovery */
+	    "4_GattProcDiscoverPrimaryServicesByUuid_c"       , /*!< Discovery of Services by UUID */
+	    "5_GattProcFindIncludedServices_c"       , /*!< Discovery of Included Services within a Service range */
 };     
 
 TEST(file,open_and_write)
@@ -90,35 +94,42 @@ TEST(file,open_and_write)
 	}
 	
 }
-/*
+
 TEST(file,open_and_write_random)
 {
 	uint8_t i;
 	X_Boolean isOk;
 	char *p_file_name;
 	p_file_name = ConvFileStrToChar("./write_data/data_w.txt");
-	isOk = FileClear(p_file_name);
-	EXPECT_EQ(isOk,X_True);
+	//isOk = FileClear(p_file_name);
+	//EXPECT_EQ(isOk,X_True);
 	
-	i = 5;
+	i = 1;
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
 	ReadFileByLine(p_file_name,i,context);
-	EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
+	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
 
-	i = 4;
-	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
-	ReadFileByLine(p_file_name,i,context);
-	EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
 
-    i = 2;
+	i ++;
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
 	ReadFileByLine(p_file_name,i,context);
-	EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
+	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
+	
+	//isOk = ReadFileByLine(p_file_name,5,context);
+	//EXPECT_EQ(isOk,X_True);
+	//EXPECT_STREQ(strcat(&Table[5][0],"\n"),context);
 
-	i = 0;
+		
+    i ++;
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
 	ReadFileByLine(p_file_name,i,context);
-	EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
+	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
+
+	i ++;
+	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
+	ReadFileByLine(p_file_name,i,context);
+	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
+	/*
 
 	i = 3;
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
@@ -129,13 +140,14 @@ TEST(file,open_and_write_random)
 	isOk = WriteFileByLine(p_file_name,i,&Table[i][0]);
 	ReadFileByLine(p_file_name,i,context);
 	EXPECT_STREQ(strcat(&Table[i][0],"\r\n"),context);
-	
+	*/
 }
-*/
+
 
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------Running file_operation_test from test_test.cc \r\n";
   testing::InitGoogleTest(&argc, argv);
+  testing::FLAGS_gtest_filter = "file.open_and_write_random";
   return RUN_ALL_TESTS();
 }
 
