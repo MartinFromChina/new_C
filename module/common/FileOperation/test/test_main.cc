@@ -138,6 +138,21 @@ TEST(file,open_and_write_random_empty)
 
 	isOk = ReadFileByLine(p_file_name,21,context);
 	EXPECT_STREQ(strcat(&Table[4][0],""),context);
+
+	i = 2;
+	isOk = WriteFileByLine(p_file_name,0,&Table[i][0]);
+
+	isOk = ReadFileByLine(p_file_name,0,context);
+	EXPECT_STREQ(strcat(&Table[i][0],""),context);
+
+	isOk = ReadFileByLine(p_file_name,4,context); // 3 ?
+	EXPECT_STREQ(strcat(&Table[i][0],""),context);
+
+	isOk = ReadFileByLine(p_file_name,21,context);  // 20 ?
+	EXPECT_STREQ(strcat(&Table[3][0],""),context);
+
+	isOk = ReadFileByLine(p_file_name,22,context);  // 21 ? 
+	EXPECT_STREQ(strcat(&Table[4][0],""),context);
 	
 }
 TEST(file,open_and_write_random_first_line_empty)
