@@ -45,8 +45,21 @@ static X_Boolean LoadBufTemp(const char* p_filename)
 	}
 	return X_False;
 }
-static X_Boolean InserOneLineToTempFile(FILE* pSrc,FILE* pDes,uint16_t line_num,const char *p_string)
+static X_Boolean InserOneLineToTempFile(FILE* pSrc,FILE* pDes,uint16_t insert_line,uint16_t total_line,const char *p_string)
 {
+	uint16_t i;
+	char logstr[MAX_LENGTH_OF_ONE_LINE+1];
+	for(i = 0;i<total_line;i++)//
+	{
+		if(i == insert_line )
+		{
+			fprintf(pDes,"%s\n",p_string);	
+			fgets(logstr,MAX_LENGTH_OF_ONE_LINE,pSrc);
+			continue;
+		}
+		if(fgets(logstr,MAX_LENGTH_OF_ONE_LINE,pSrc)!=NULL){fputs(logstr,pDes);}
+		else{fputs("\n",pDes);}
+	}
 	return X_True;
 }
 static uint16_t GetFileLineNum(FILE* pFile)
@@ -66,8 +79,6 @@ static uint16_t GetFileLineNum(FILE* pFile)
 	fseek(pFile,0,SEEK_SET);
 	return total_num;
 }
-
-
 
 char* ConvFileStrToChar(const char *src,char *p_buf)
 {
@@ -93,7 +104,7 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 {
 	uint16_t i,total_line;
 	X_Boolean isOK = X_False;
-	char logstr[MAX_LENGTH_OF_ONE_LINE+1];
+	char logstr[MAX_LENGTH_OF_ONE_LINE+1],logstr1[MAX_LENGTH_OF_ONE_LINE+1];
 	
 	FILE* pFile,*p_tempF;
 	va_list argp;
@@ -104,11 +115,16 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 	if(pFile == X_Null || p_tempF == X_Null) {return X_False;}
 
 	total_line = GetFileLineNum(pFile);
-	//printf(" --- %d\r\n",total_line);
 
+	// lock irq
+	va_start(argp,p_string);
+	if (-1== vsnprintf(logstr1,ARRSIZE(logstr),p_string,argp)) {logstr1[ARRSIZE(logstr)-1]='\0';}
+	va_end(argp);
+	// unlock irq
+		
 	if(total_line >= (line_num + 1))
 	{
-		//InserOneLineToTempFile();
+		InserOneLineToTempFile(pFile,p_tempF,line_num,total_line,logstr1);
 	}
 	else
 	{
@@ -124,14 +140,7 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 			fputs("\n",p_tempF);
 			//printf(" insert next line to line %d \r\n",i);
 		}
-
-		// lock irq
-		va_start(argp,p_string);
-		if (-1== vsnprintf(logstr,ARRSIZE(logstr),p_string,argp)) logstr[ARRSIZE(logstr)-1]='\0';
-
-		fprintf(p_tempF,"%s\n",logstr);
-		va_end(argp);
-		// unlock irq
+		fprintf(p_tempF,"%s\n",logstr1);	
 	}
 	fclose(pFile);
 	remove(p_filename);
@@ -173,12 +182,6 @@ X_Boolean CompareTwoFileByLine(const char* p_filename1,const char* p_filename2,u
 	pFile2 = fopen(p_filename2,"r");
 	
 	if(pFile1 == X_Null || pFile2 == X_Null) {return X_False;}
-/*
-	if(feof(pFile1)==0){fgets(buf1,MAX_LENGTH_OF_ONE_LINE,pFile1);}
-	if(feof(pFile2)==0){fgets(buf2,MAX_LENGTH_OF_ONE_LINE,pFile2);}
-	
-	fseek(pFile1,0,SEEK_SET);fseek(pFile2,0,SEEK_SET);
-	*/
 	
 	for(i=0;i<start_line;i++)
 	{
