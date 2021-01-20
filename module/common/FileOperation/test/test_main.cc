@@ -82,8 +82,8 @@ TEST(file,open_and_read_empty)
 
 static char Table[6][100] = {
 		"0_aa",
-		"1_bbb",
-		"2_cccfuygiugiuhohbvjhvhg.../;';...",               
+		"1_bbb ",
+		"2_cccasdasdfadfsagf../;..,.,",               
 	    "3_ddd", 
 	    "4_eee", 
 	    "5_fff",
@@ -138,22 +138,24 @@ TEST(file,open_and_write_random_empty)
 
 	isOk = ReadFileByLine(p_file_name,21,context);
 	EXPECT_STREQ(strcat(&Table[4][0],""),context);
+	
 
 	i = 2;
-	isOk = WriteFileByLine(p_file_name,0,&Table[i][0]);
+	isOk = WriteFileByLine(p_file_name,2,&Table[i][0]);
+	
 
 	isOk = ReadFileByLine(p_file_name,0,context);
 	EXPECT_STREQ(strcat(&Table[i][0],""),context);
 
-	isOk = ReadFileByLine(p_file_name,4,context); // 3 ?
+	isOk = ReadFileByLine(p_file_name,3,context); // 
 	EXPECT_STREQ(strcat(&Table[i][0],""),context);
 
-	isOk = ReadFileByLine(p_file_name,21,context);  // 20 ?
+	/*isOk = ReadFileByLine(p_file_name,20,context);  // 
 	EXPECT_STREQ(strcat(&Table[3][0],""),context);
 
-	isOk = ReadFileByLine(p_file_name,22,context);  // 21 ? 
+	isOk = ReadFileByLine(p_file_name,21,context);  // 
 	EXPECT_STREQ(strcat(&Table[4][0],""),context);
-	
+*/	
 }
 TEST(file,open_and_write_random_first_line_empty)
 {
@@ -161,9 +163,26 @@ TEST(file,open_and_write_random_first_line_empty)
 	X_Boolean isOk;
 	char *p_file_name,buf[MAX_LENGTH_OF_FILE_NAME];
 	p_file_name = ConvFileStrToChar("./write_data/FirstLineEmpty/first_empty.txt",buf);
+
+	isOk = CompareTwoFileByLine(p_file_name,"./write_data/Backup/first_empty.txt",0,7);
+	EXPECT_EQ(isOk,X_True);
 	
 	i = 5;
 	isOk = WriteFileByLine(p_file_name,20,&Table[i][0]);
+
+	isOk = ReadFileByLine(p_file_name,20,context);
+	EXPECT_STREQ(strcat(&Table[i][0],"\n"),context);
+	isOk = ReadFileByLine(p_file_name,3,context);
+	EXPECT_STREQ("cxdddfsagfsdaffg\n",context);
+
+	i = 3;
+	isOk = WriteFileByLine(p_file_name,1,&Table[i][0]);
+	/*
+
+	isOk = ReadFileByLine(p_file_name,1,context);
+	EXPECT_STREQ(strcat(&Table[i][0],""),context);
+	*/
+
 }
 TEST(file,open_and_write_random_empty_middle_empty)
 {
@@ -194,7 +213,7 @@ TEST(file,open_and_write_random_full)
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------Running file_operation_test from test_test.cc \r\n";
   testing::InitGoogleTest(&argc, argv);
- // testing::FLAGS_gtest_filter = "file.open_and_write_random*";
+  testing::FLAGS_gtest_filter = "file.open_and_write_random_empty";
   return RUN_ALL_TESTS();
 }
 
