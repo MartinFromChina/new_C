@@ -69,7 +69,7 @@ TEST(file,open_and_read_empty)
 	isOk = ReadFileByLine("./read_data/data_r_empty.txt",0,context);
 	EXPECT_STREQ("\n",context);
 
-	isOk = ReadFileByLine("./read_data/data_r_empty.txt",2,context);
+	isOk = ReadFileByLine(p_file_name,2,context);
 	EXPECT_STREQ("\n",context);
 
 	isOk = ReadFileByLine("./read_data/data_r_empty.txt",1,context);
@@ -77,6 +77,7 @@ TEST(file,open_and_read_empty)
 
 	isOk = ReadFileByLine("./read_data/data_r_empty.txt",10,context);
 	EXPECT_STREQ("\n",context);
+	EXPECT_EQ(isOk,X_False);
 }
 
 
@@ -224,6 +225,7 @@ TEST(file,open_and_write_random_empty_middle_empty)
 
 	isOk = ReadFileByLine(p_file_name,15,context);
 	EXPECT_STREQ(strcat(&Table[5][0],""),context);
+	EXPECT_EQ(isOk,X_True);
 }
 TEST(file,open_and_write_random_full)
 {
@@ -232,10 +234,31 @@ TEST(file,open_and_write_random_full)
 	X_Boolean isOk;
 	char *p_file_name,buf[MAX_LENGTH_OF_FILE_NAME];
 	p_file_name = ConvFileStrToChar("./write_data/full/full.txt",buf);
-	
+
 	i = 5;
-	isOk = WriteFileByLine(p_file_name,20,&Table[i][0]);
-	
+	isOk = WriteFileByLine(p_file_name,15,&Table[i][0]);
+
+	isOk = ReadFileByLine(p_file_name,15,context);
+	EXPECT_STREQ(strcat(&Table[i][0],""),context);
+
+	i = 3;
+	isOk = WriteFileByLine(p_file_name,1,&Table[i][0]);
+
+	isOk = ReadFileByLine(p_file_name,1,context);
+	EXPECT_STREQ(strcat(&Table[i][0],""),context);
+
+	i = 2;
+	isOk = WriteFileByLine(p_file_name,0,&Table[i][0]);
+
+	isOk = ReadFileByLine(p_file_name,0,context);
+	EXPECT_STREQ(strcat(&Table[i][0],""),context);
+
+	isOk = ReadFileByLine(p_file_name,1,context);
+	EXPECT_STREQ(strcat(&Table[3][0],""),context);
+
+	isOk = ReadFileByLine(p_file_name,15,context);
+	EXPECT_STREQ(strcat(&Table[5][0],""),context);
+	EXPECT_EQ(isOk,X_True);
 }
 
 

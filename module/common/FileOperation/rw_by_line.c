@@ -1,13 +1,10 @@
 #include "rw_by_line.h"
 #include <stdio.h>
 #include <stdarg.h>
-
 #include <string.h>
 
 #define ARRSIZE(x) (sizeof(x)/sizeof(x[0]))
-
 static char buf_temp[MAX_LENGTH_OF_FILE_NAME];
-
 static X_Boolean LoadBufTemp(const char* p_filename)
 {
 	uint16_t i,j;
@@ -15,7 +12,6 @@ static X_Boolean LoadBufTemp(const char* p_filename)
 	{
 		buf_temp[i] = p_filename[i];
 	}
-	//printf(" buf_temp %s\r\n",buf_temp);
 
 	j = 0;
 	for(i=0;i<MAX_LENGTH_OF_FILE_NAME;i++)
@@ -25,22 +21,12 @@ static X_Boolean LoadBufTemp(const char* p_filename)
 
 	if(j == 0)
 	{
-		buf_temp[0] = 't';
-		buf_temp[1] = '.';
-		buf_temp[2] = 't';
-		buf_temp[3] = 'x';
-		buf_temp[4] = 't';
-		buf_temp[5] = '\0';
+		buf_temp[0] = 't';buf_temp[1] = '.';buf_temp[2] = 't';buf_temp[3] = 'x';buf_temp[4] = 't';buf_temp[5] = '\0';
 		return X_True;
 	}
 	else if((j + 6) <= (MAX_LENGTH_OF_FILE_NAME - 1)) 
 	{
-		buf_temp[j+1] = 't';
-		buf_temp[j+2] = '.';
-		buf_temp[j+3] = 't';
-		buf_temp[j+4] = 'x';
-		buf_temp[j+5] = 't';
-		buf_temp[j+6] = '\0';
+		buf_temp[j+1] = 't';buf_temp[j+2] = '.';buf_temp[j+3] = 't';buf_temp[j+4] = 'x';buf_temp[j+5] = 't';buf_temp[j+6] = '\0';
 		return X_True;
 	}
 	return X_False;
@@ -78,12 +64,10 @@ static X_Boolean InserOneLineToTempFile(FILE* pSrc,FILE* pDes,uint16_t insert_li
 		if(fgets(logstr,MAX_LENGTH_OF_ONE_LINE,pSrc)!=NULL)
 		{	
 			fputs(logstr,pDes);
-			//printf("----copy line %d with string %s current f_p :%d %d \n",i,logstr,ftell(pSrc),ftell(pDes));
 		}
 		else
 		{
 			fputs("\n",pDes);
-			//printf("----fill line %d with n current f_p :%d %d \n",i,ftell(pSrc),ftell(pDes));
 	
 		}
 	}
@@ -130,7 +114,6 @@ X_Boolean FileClear(const char* p_filename)
 X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p_string,...)
 {
 	uint16_t i,total_line;
-	X_Boolean isOK = X_False;
 	char logstr[MAX_LENGTH_OF_ONE_LINE+1],logstr1[MAX_LENGTH_OF_ONE_LINE+1];
 	
 	FILE* pFile,*p_tempF;
@@ -163,13 +146,11 @@ X_Boolean WriteFileByLine(const char* p_filename,uint16_t line_num,const char *p
 		{
 			if(fgets(logstr,MAX_LENGTH_OF_ONE_LINE,pFile)!=NULL){fputs(logstr,p_tempF);}
 			else{fputs("\n",p_tempF);}
-			//printf(" copy %s to line %d\r\n",temp_buf,i);
 		}
 
 		for(i = 0;i<(line_num - total_line);i++)
 		{
 			fputs("\n",p_tempF);
-			//printf(" insert next line to line %d \r\n",i);
 		}
 		fprintf(p_tempF,"%s\n",logstr1);	
 	}
@@ -199,6 +180,9 @@ X_Boolean ReadFileByLine(const char* p_filename,uint16_t line_num,char *p_contex
 	fclose(pFile);
 	return isOK;
 }
+/*****************
+not a stable function , do not use it in real product ;use it just for test
+**********************/
 X_Boolean CompareTwoFileByLine(const char* p_filename1,const char* p_filename2,uint16_t start_line,uint16_t end_line)
 {	
 	FILE *pFile1,*pFile2;	
