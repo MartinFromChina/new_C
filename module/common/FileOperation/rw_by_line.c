@@ -47,41 +47,43 @@ static X_Boolean LoadBufTemp(const char* p_filename)
 }
 static X_Boolean InserOneLineToTempFile(FILE* pSrc,FILE* pDes,uint16_t insert_line,uint16_t total_line,const char *p_string)
 {
-	uint16_t i;
+	uint16_t i,j;
 	X_Boolean isChangeLineNeeded = X_True;
 	char logstr[MAX_LENGTH_OF_ONE_LINE+1];
 	for(i = 0;i<total_line;i++)//
 	{
 		if(i == insert_line ) 
 		{
-			fprintf(pDes,"%s\n",p_string);
-
-		/*	for(i = 0;i< MAX_LENGTH_OF_ONE_LINE+1;i++)
+			for(j = 0;j< MAX_LENGTH_OF_ONE_LINE+1;j++)
 			{
-				if(p_string[i] == '\n') {isChangeLineNeeded = X_False;break;}
+				if(p_string[j] == '\n') {isChangeLineNeeded = X_False;break;}
 			}
 			
-			if(isChangeLineNeeded == X_True)
+			if(isChangeLineNeeded == X_True) // not a good method ; i can not unserstand why pstring sometimes with '\n' othertimes not 
 			{
-				fputs("\n",pDes);
+				fprintf(pDes,"%s\n",p_string);
 			}
-			*/
+			else
+			{
+				fprintf(pDes,"%s",p_string);
+			}
+			
 			fgets(logstr,MAX_LENGTH_OF_ONE_LINE,pSrc);
-			/*
-			printf("-----------！！！---insert line %d with string %s ;and then over current string %s ; isChangeLineNeeded %d current f_p :%d %d \n"
-						,i,p_string,isChangeLineNeeded,logstr,ftell(pSrc),ftell(pDes));
-			*/continue;
+			
+			//printf("-----------！！！---insert line %d with string %s ;and then over current string %s ; isChangeLineNeeded %d current f_p :%d %d \n"
+			//			,i,p_string,logstr,(isChangeLineNeeded == X_True),ftell(pSrc),ftell(pDes));
+			continue;
 			
 		}
 		if(fgets(logstr,MAX_LENGTH_OF_ONE_LINE,pSrc)!=NULL)
 		{	
 			fputs(logstr,pDes);
-			printf("----copy line %d with string %s current f_p :%d %d \n",i,logstr,ftell(pSrc),ftell(pDes));
+			//printf("----copy line %d with string %s current f_p :%d %d \n",i,logstr,ftell(pSrc),ftell(pDes));
 		}
 		else
 		{
 			fputs("\n",pDes);
-			printf("----fill line %d with n current f_p :%d %d \n",i,ftell(pSrc),ftell(pDes));
+			//printf("----fill line %d with n current f_p :%d %d \n",i,ftell(pSrc),ftell(pDes));
 	
 		}
 	}

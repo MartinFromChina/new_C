@@ -141,7 +141,7 @@ TEST(file,open_and_write_random_empty)
 	
 
 	i = 2;
-	isOk = WriteFileByLine(p_file_name,2,&Table[i][0]);
+	isOk = WriteFileByLine(p_file_name,0,&Table[i][0]);
 	
 
 	isOk = ReadFileByLine(p_file_name,0,context);
@@ -150,12 +150,11 @@ TEST(file,open_and_write_random_empty)
 	isOk = ReadFileByLine(p_file_name,3,context); // 
 	EXPECT_STREQ(strcat(&Table[i][0],""),context);
 
-	/*isOk = ReadFileByLine(p_file_name,20,context);  // 
+	isOk = ReadFileByLine(p_file_name,20,context);  // 
 	EXPECT_STREQ(strcat(&Table[3][0],""),context);
 
 	isOk = ReadFileByLine(p_file_name,21,context);  // 
 	EXPECT_STREQ(strcat(&Table[4][0],""),context);
-*/	
 }
 TEST(file,open_and_write_random_first_line_empty)
 {
@@ -177,11 +176,22 @@ TEST(file,open_and_write_random_first_line_empty)
 
 	i = 3;
 	isOk = WriteFileByLine(p_file_name,1,&Table[i][0]);
-	/*
 
 	isOk = ReadFileByLine(p_file_name,1,context);
 	EXPECT_STREQ(strcat(&Table[i][0],""),context);
-	*/
+
+	i = 2;
+	isOk = WriteFileByLine(p_file_name,0,&Table[i][0]);
+
+	isOk = ReadFileByLine(p_file_name,0,context);
+	EXPECT_STREQ(strcat(&Table[i][0],""),context);
+
+	isOk = ReadFileByLine(p_file_name,1,context);
+	EXPECT_STREQ(strcat(&Table[3][0],""),context);
+
+	isOk = ReadFileByLine(p_file_name,20,context);
+	EXPECT_STREQ(strcat(&Table[5][0],""),context);
+	
 
 }
 TEST(file,open_and_write_random_empty_middle_empty)
@@ -213,7 +223,7 @@ TEST(file,open_and_write_random_full)
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------Running file_operation_test from test_test.cc \r\n";
   testing::InitGoogleTest(&argc, argv);
-  testing::FLAGS_gtest_filter = "file.open_and_write_random_empty";
+  //testing::FLAGS_gtest_filter = "file.open_and_write_random_empty";
   return RUN_ALL_TESTS();
 }
 
