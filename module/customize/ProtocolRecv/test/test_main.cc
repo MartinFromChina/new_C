@@ -45,31 +45,31 @@ TEST(Protocol_recv,init)
 	ProtocolRecvInit(p_uart0);
 	EXPECT_EQ(DoesProtocolRecvInitOK(p_uart0),X_False);
 	
-	PROTOCOL_RECV_DATA_BUF_DEF(p_uart1,MAX_FARME_LENGTH,MAX_FRAME_CHCHE_NUM,empty_unit_receive,empty_find_header,empty_find_others);
+	PROTOCOL_RECV_DATA_BUF_DEF(p_uart1,MAX_FRAME_LENGTH,MAX_FRAME_CHCHE_NUM,empty_unit_receive,empty_find_header,empty_find_others);
 	ProtocolRecvInit(p_uart1);
 	EXPECT_EQ(DoesProtocolRecvInitOK(p_uart1),X_True);
 
-	PROTOCOL_RECV_DATA_BUF_DEF(p_uart2,MAX_FARME_LENGTH,MAX_FRAME_CHCHE_NUM,empty_unit_receive,empty_find_header,p3);
+	PROTOCOL_RECV_DATA_BUF_DEF(p_uart2,MAX_FRAME_LENGTH,MAX_FRAME_CHCHE_NUM,empty_unit_receive,empty_find_header,p3);
 	ProtocolRecvInit(p_uart2);
 	EXPECT_EQ(DoesProtocolRecvInitOK(p_uart2),X_False);
 
-	PROTOCOL_RECV_DATA_BUF_DEF(p_uart3,MAX_FARME_LENGTH,MAX_FRAME_CHCHE_NUM,empty_unit_receive,p2,empty_find_others);
+	PROTOCOL_RECV_DATA_BUF_DEF(p_uart3,MAX_FRAME_LENGTH,MAX_FRAME_CHCHE_NUM,empty_unit_receive,p2,empty_find_others);
 	ProtocolRecvInit(p_uart3);
 	EXPECT_EQ(DoesProtocolRecvInitOK(p_uart3),X_False);
 
-	PROTOCOL_RECV_DATA_BUF_DEF(p_uart4,MAX_FARME_LENGTH,MAX_FRAME_CHCHE_NUM,p1,empty_find_header,empty_find_others);
+	PROTOCOL_RECV_DATA_BUF_DEF(p_uart4,MAX_FRAME_LENGTH,MAX_FRAME_CHCHE_NUM,p1,empty_find_header,empty_find_others);
 	ProtocolRecvInit(p_uart4);
 	EXPECT_EQ(DoesProtocolRecvInitOK(p_uart4),X_False);
 
-	PROTOCOL_RECV_DATA_BUF_DEF(p_uart5,MAX_FARME_LENGTH+1,MAX_FRAME_CHCHE_NUM,empty_unit_receive,empty_find_header,empty_find_others);
+	PROTOCOL_RECV_DATA_BUF_DEF(p_uart5,MAX_FRAME_LENGTH+1,MAX_FRAME_CHCHE_NUM,empty_unit_receive,empty_find_header,empty_find_others);
 	ProtocolRecvInit(p_uart5);
 	EXPECT_EQ(DoesProtocolRecvInitOK(p_uart5),X_False);
 
-	PROTOCOL_RECV_DATA_BUF_DEF(p_uart6,MAX_FARME_LENGTH,MAX_FRAME_CHCHE_NUM+1,empty_unit_receive,empty_find_header,empty_find_others);
+	PROTOCOL_RECV_DATA_BUF_DEF(p_uart6,MAX_FRAME_LENGTH,MAX_FRAME_CHCHE_NUM+1,empty_unit_receive,empty_find_header,empty_find_others);
 	ProtocolRecvInit(p_uart6);
 	EXPECT_EQ(DoesProtocolRecvInitOK(p_uart6),X_False);
 
-	PROTOCOL_RECV_DATA_BUF_DEF(p_uart7,MAX_FARME_LENGTH,0,empty_unit_receive,empty_find_header,empty_find_others);
+	PROTOCOL_RECV_DATA_BUF_DEF(p_uart7,MAX_FRAME_LENGTH,0,empty_unit_receive,empty_find_header,empty_find_others);
 	ProtocolRecvInit(p_uart7);
 	EXPECT_EQ(DoesProtocolRecvInitOK(p_uart7),X_False);
 
@@ -90,6 +90,8 @@ TEST(Protocol_recv,init)
 
 #include "../../../common/StateMachine/StateMachine.h"
 #include "../../../common/FileOperation/rw_by_line.h"
+#include "../../../common/CharToNum/char_to_num.h"
+
 
 
 typedef X_Void (*func_irq)(X_Void);
@@ -204,6 +206,26 @@ static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq
 
 	
 }
+	TEST(CharToNum,_8bit)
+	{
+		X_Boolean isOk;
+		char buf[11] = {
+			'0','5',
+			'9','8',
+			'4','0',
+			'f','f',
+			'f','e',
+			'\n'
+		};
+
+		EXPECT_EQ( GetStringLength(buf), 10); 
+		
+		EXPECT_EQ( HexCharTo_8bit(buf[0],buf[1],&isOk), 5); 
+		EXPECT_EQ( HexCharTo_8bit(buf[2],buf[3],&isOk), 0x98); 
+		EXPECT_EQ( HexCharTo_8bit(buf[4],buf[5],&isOk), 0x40); 
+		EXPECT_EQ( HexCharTo_8bit(buf[6],buf[7],&isOk), 255); 
+		EXPECT_EQ( HexCharTo_8bit(buf[8],buf[9],&isOk), 254); 
+	}
 
 
 TEST(Protocol_recv,find_headers)

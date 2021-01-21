@@ -7,7 +7,7 @@ X_Boolean ProtocolRecvInit(const sProtocolRecv *p_manager)
 	*p_manager ->isInitCalled = X_True;
 	if(p_manager ->p_buf == X_Null) {return X_False;} 
 	if(p_manager ->func_recv == X_Null || p_manager ->func_fheader == X_Null || p_manager ->func_fothers == X_Null){return X_False;}
-	if(p_manager ->max_frame_length == 0 || p_manager ->max_frame_length > MAX_FARME_LENGTH) {return X_False;}
+	if(p_manager ->max_frame_length == 0 || p_manager ->max_frame_length > MAX_FRAME_LENGTH) {return X_False;}
 	if(p_manager ->max_frame_num == 0 || p_manager ->max_frame_num > MAX_FRAME_CHCHE_NUM) {return X_False;}
 	*p_manager ->isInitOK = X_True;
 }
