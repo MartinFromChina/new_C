@@ -169,28 +169,46 @@ static X_Void TestBench(X_Void)
 
 static uint8_t base_data_buf[1000];
 
-static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq,func_irq irq,func_main_loop main_loop)
+static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq
+	/*,func_irq irq,func_main_loop main_loop*/
+	,const char * p_file_path
+	)
 {
-	uint8_t i;
-	char buf[MAX_LENGTH_OF_ONE_LINE];
+	uint16_t i;
+	char buf[MAX_LENGTH_OF_ONE_LINE],name_buf[200];
 	sPE.isFinished 		= X_False;
 	sPE.wait_counter 	= 0;
 	sPE.irq_freq 		= irq_freq;
 	sPE.mian_loop_freq  = main_freq;
-	sPE.irq 			= irq;
-	sPE.main_loop       = main_loop;
+	//sPE.irq 			= irq;
+	//sPE.main_loop       = main_loop;
 
 	mStateMachineStateSet(p_state,CTI_Idle);
 	for(i=0;i<1000;i++)
 	{
-
+		base_data_buf[i] = 0xFF;
 	}
+
+	char *p_file_name = ConvFileStrToChar(p_file_path,name_buf);
+
+	uint8_t line_num = 0;
+	X_Boolean isOK = X_True;
+
+	for(line_num = 0;isOK == X_True;line_num ++)
+	{
+		isOK = ReadFileByLine(p_file_name,line_num,buf);
+		//if(buf[0] == '\n') {break;}
+		printf("%s",buf);
+	}
+	
+
+	
 }
 
 
 TEST(Protocol_recv,find_headers)
 {
-	//TestBenchInit(1,1,);
+	TestBenchInit(1,1,"./data_recv/data1.txt");
 	TestBench();
 }
 
