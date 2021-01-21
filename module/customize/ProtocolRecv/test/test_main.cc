@@ -87,8 +87,133 @@ TEST(Protocol_recv,init)
 }
 
 
+
+#include "../../../common/StateMachine/StateMachine.h"
+#include "../../../common/FileOperation/rw_by_line.h"
+
+
+typedef X_Void (*func_irq)(X_Void);
+typedef X_Void (*func_main_loop)(X_Void);
+
+
+typedef struct
+{
+	s_StateMachineParam 				base;
+	//uint16_t							current_index;
+	uint16_t                            irq_freq;
+	uint16_t                            mian_loop_freq;
+	uint16_t 							wait_counter;
+	X_Boolean 							isFinished;
+	func_irq							irq;
+	func_main_loop						main_loop;
+}sParamExtern;
+
+static sParamExtern sPE;
+
+typedef enum
+{
+	CTI_Idle = 0,
+	CTI_Irq ,
+	CTI_Main_loop,
+	CTI_End ,
+}ConvTXT_to_irq_state;
+
+/**********************************************************************************************************************************
+			0
+*********************************************************************************************************************************/
+static StateNumber CTI_IdleAction(s_StateMachineParam *p_this)
+{
+	sParamExtern * p_backup = (sParamExtern*)p_this;
+	p_backup ->isFinished = X_True;
+	return p_this->current_state;
+}
+static StateNumber CTI_IrqAction(s_StateMachineParam *p_this)
+{
+	return p_this->current_state;
+}
+static StateNumber CTI_Main_loopAction(s_StateMachineParam *p_this)
+{
+	return p_this->current_state;
+}
+static StateNumber CTI_EndAction(s_StateMachineParam *p_this)
+{
+	return p_this->current_state;
+}
+
+
+
+
+static const StateAction CTI_StateAction[] = {
+		{CTI_IdleAction},
+		{CTI_IrqAction},
+		{CTI_Main_loopAction},
+		{CTI_EndAction},
+};
+
+APP_STATE_MACHINE_DEF(p_state
+								,sizeof(CTI_StateAction)/sizeof(CTI_StateAction[0])
+								,&CTI_StateAction[0]);
+
+static X_Void StateJumpRecorder(StateNumber state_going_to_leave,StateNumber state_going_to_enter)
+{
+	
+}
+
+static X_Void TestBench(X_Void)
+{
+	while(sPE.isFinished = X_False)
+	{
+		mStateMachineRun(p_state,&sPE.base,StateJumpRecorder);
+	}
+}
+
+static uint8_t base_data_buf[1000];
+
+static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq,func_irq irq,func_main_loop main_loop)
+{
+	uint8_t i;
+	char buf[MAX_LENGTH_OF_ONE_LINE];
+	sPE.isFinished 		= X_False;
+	sPE.wait_counter 	= 0;
+	sPE.irq_freq 		= irq_freq;
+	sPE.mian_loop_freq  = main_freq;
+	sPE.irq 			= irq;
+	sPE.main_loop       = main_loop;
+
+	mStateMachineStateSet(p_state,CTI_Idle);
+	for(i=0;i<1000;i++)
+	{
+
+	}
+}
+
+
+TEST(Protocol_recv,find_headers)
+{
+	//TestBenchInit(1,1,);
+	TestBench();
+}
+
+TEST(Protocol_recv,find_whole_frame)
+{
+
+}
+
+TEST(Protocol_recv,stress_testing)
+{
+
+}
+
+TEST(Protocol_recv,mul_entrys)
+{
+
+}
+
+
+
+
 GTEST_API_ int main(int argc, char **argv) {
-  cout<<"------------insert_log_test from test_main.cc \r\n";
+  cout<<"------------protocol_recv_test from test_main.cc \r\n";
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

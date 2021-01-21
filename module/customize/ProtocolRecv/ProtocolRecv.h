@@ -54,7 +54,7 @@ typedef e_find_other_process (*find_others_and_checksum)(X_DATA_UNIT current_dat
 
 
 X_Boolean ProtocolRecvInit(const sProtocolRecv *p_manager);
-X_Void ProtocolRecvProcess(const sProtocolRecv *p_manager);
+X_Void ProtocolRecvProcess(const sProtocolRecv *p_manager);// call it in a recv_irq or main_loop
 X_Boolean ProtocolRecvGetFrame(const sProtocolRecv *p_manager,X_DATA_UNIT *p_buf,uint16_t length);
 X_Boolean DoesProtocolRecvInitOK(const sProtocolRecv *p_manager);
 
