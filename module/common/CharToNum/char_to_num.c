@@ -16,7 +16,7 @@ uint16_t GetStringLength(char *p_strings)
 	uint16_t i;
 	for(i=0;i<65534;i++)
 	{
-		if(p_strings[i]=='\0' || p_strings[i]== '\n' )
+		if(p_strings[i]==' ' || p_strings[i]== '\n' || p_strings[i]== '\0' || p_strings[i] == 0x0a || p_strings[i] == 0x0d )
 		{
 			break;
 		}

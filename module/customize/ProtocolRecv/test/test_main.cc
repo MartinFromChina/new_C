@@ -101,7 +101,7 @@ typedef X_Void (*func_main_loop)(X_Void);
 typedef struct
 {
 	s_StateMachineParam 				base;
-	//uint16_t							current_index;
+	uint16_t							max_valid_size;
 	uint16_t                            irq_freq;
 	uint16_t                            mian_loop_freq;
 	uint16_t 							wait_counter;
@@ -186,45 +186,63 @@ static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq
 	//sPE.main_loop       = main_loop;
 
 	mStateMachineStateSet(p_state,CTI_Idle);
-	for(i=0;i<1000;i++)
-	{
-		base_data_buf[i] = 0xFF;
-	}
+
+	for(i=0;i<1000;i++){base_data_buf[i] = 0xFF;}
 
 	char *p_file_name = ConvFileStrToChar(p_file_path,name_buf);
 
-	uint8_t line_num = 0;
-	X_Boolean isOK = X_True;
-
+	uint8_t line_num = 0,_8_bit;
+	uint16_t length,j,k;
+	X_Boolean isOK = X_True,isConv;
+	j = 0;
 	for(line_num = 0;isOK == X_True;line_num ++)
 	{
 		isOK = ReadFileByLine(p_file_name,line_num,buf);
 		//if(buf[0] == '\n') {break;}
-		printf("%s",buf);
+		
+		length = GetStringLength(buf);
+		printf("length %d ;%s",length,buf);
+		if((length % 2) != 0) {printf("error !!!;length %d ;%s",length,buf);return;}
+		
+		for(i = 0,k = 0;i<(length);i = i + 2,k++)
+		{
+			_8_bit = HexCharTo_8bit(buf[i],buf[i+1],&isConv);
+			base_data_buf[j + k] = _8_bit;
+			//printf(" %2x load to base_data_buf[%d] \r\n",_8_bit,j + k);
+		}
+		j += (length/2);
 	}
-	
-
+	sPE.max_valid_size = j;
+/*
+	for(i=0;i<j;i++)
+	{
+		printf(" %2x ",base_data_buf[i]);
+	}
+	printf("\r\n");
+	*/
 	
 }
 	TEST(CharToNum,_8bit)
 	{
 		X_Boolean isOk;
-		char buf[11] = {
+		char buf[13] = {
 			'0','5',
 			'9','8',
 			'4','0',
 			'f','f',
 			'f','e',
+			'0','0',
 			'\n'
 		};
 
-		EXPECT_EQ( GetStringLength(buf), 10); 
+		EXPECT_EQ( GetStringLength(buf), 12); 
 		
 		EXPECT_EQ( HexCharTo_8bit(buf[0],buf[1],&isOk), 5); 
 		EXPECT_EQ( HexCharTo_8bit(buf[2],buf[3],&isOk), 0x98); 
 		EXPECT_EQ( HexCharTo_8bit(buf[4],buf[5],&isOk), 0x40); 
 		EXPECT_EQ( HexCharTo_8bit(buf[6],buf[7],&isOk), 255); 
 		EXPECT_EQ( HexCharTo_8bit(buf[8],buf[9],&isOk), 254); 
+		EXPECT_EQ( HexCharTo_8bit(buf[10],buf[11],&isOk), 0); 
 	}
 
 
