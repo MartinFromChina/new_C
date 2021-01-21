@@ -15,7 +15,7 @@ X_Void ProtocolRecvProcess(const sProtocolRecv *p_manager)
 {
 
 }
-X_Boolean ProtocolRecvGetFrame(const sProtocolRecv *p_manager,X_DATA_UNIT *p_buf,uint16_t length)
+X_Boolean ProtocolRecvGetFrame(const sProtocolRecv *p_manager,X_DATA_UNIT **pp_buf,uint16_t *p_length)
 {
 	return X_True;
 }

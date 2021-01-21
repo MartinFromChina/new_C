@@ -34,6 +34,26 @@ static X_DATA_UNIT empty_unit_receive(X_Void){return 0;}
 X_Boolean empty_find_header(X_DATA_UNIT current_data,X_DATA_UNIT *p_header_buf,uint16_t *p_header_length){return X_True;}
 e_find_other_process empty_find_others(X_DATA_UNIT current_data,X_DATA_UNIT *p_other_buf,uint16_t *p_other_unit){return FOP_successed;}
 
+PROTOCOL_RECV_DATA_BUF_DEF(p_common0,MAX_FRAME_LENGTH,MAX_FRAME_CHCHE_NUM,empty_unit_receive,empty_find_header,empty_find_others);
+
+static uint8_t frame_buf[100];
+static uint16_t frame_length;
+static uint16_t jump_counter = 0,main_loop_count = 0,irq_count = 0;
+
+static X_Void FackMainLoop(X_Void)
+{	
+	uint8_t *p_frame;
+	main_loop_count ++;
+	//lock irq
+	ProtocolRecvGetFrame(p_common0,&p_frame,&frame_length);
+	//unlock irq
+}
+static X_Void FackIrq(X_Void)
+{
+	irq_count ++;
+	ProtocolRecvProcess(p_common0);
+}
+
 
 TEST(Protocol_recv,init)
 {
@@ -104,6 +124,8 @@ typedef struct
 	uint16_t							max_valid_size;
 	uint16_t                            irq_freq;
 	uint16_t                            mian_loop_freq;
+	uint16_t                            irq_cnt;
+	uint16_t                            mian_loop_cnt;
 	uint16_t 							wait_counter;
 	X_Boolean 							isFinished;
 	func_irq							irq;
@@ -125,25 +147,54 @@ typedef enum
 *********************************************************************************************************************************/
 static StateNumber CTI_IdleAction(s_StateMachineParam *p_this)
 {
-	sParamExtern * p_backup = (sParamExtern*)p_this;
-	p_backup ->isFinished = X_True;
-	return p_this->current_state;
+	sParamExtern * p_ext = (sParamExtern*)p_this;
+	//printf(" CTI_IdleAction \r\n");
+	if(p_ext ->irq == (func_irq)0 || p_ext ->main_loop == (func_main_loop)0)    
+	{p_ext ->isFinished = X_True;return p_this->current_state;}
+
+	return CTI_Main_loop;
 }
 static StateNumber CTI_IrqAction(s_StateMachineParam *p_this)
 {
-	return p_this->current_state;
+	sParamExtern * p_ext = (sParamExtern*)p_this;
+
+	//printf(" CTI_IrqAction \r\n");
+	if(p_ext ->irq_cnt == 0)
+	{
+		p_ext ->irq();
+		//printf(" ---------------------irq \r\n");
+		if(p_ext ->max_valid_size > 0) {p_ext ->max_valid_size --;}
+		else
+		{
+			p_ext ->isFinished = X_True;return CTI_End;
+		}
+	}
+	p_ext ->irq_cnt ++;
+	if(p_ext ->irq_cnt >= p_ext ->irq_freq) {p_ext ->irq_cnt = 0;}
+	return CTI_Main_loop;
 }
 static StateNumber CTI_Main_loopAction(s_StateMachineParam *p_this)
 {
-	return p_this->current_state;
+	sParamExtern * p_ext = (sParamExtern*)p_this;
+
+	//printf(" CTI_Main_loopAction \r\n");
+	if(p_ext ->mian_loop_cnt == 0)
+	{
+		p_ext ->main_loop();
+		//printf(" ---------------------main_loop \r\n");
+	}
+	p_ext ->mian_loop_cnt ++;
+	if(p_ext ->mian_loop_cnt >= p_ext ->mian_loop_freq) {p_ext ->mian_loop_cnt = 0;}
+	
+	return CTI_Irq;
 }
 static StateNumber CTI_EndAction(s_StateMachineParam *p_this)
 {
+	sParamExtern * p_ext = (sParamExtern*)p_this;
+
+	printf(" error!!!;should  never comeCTI_EndAction \r\n");
 	return p_this->current_state;
 }
-
-
-
 
 static const StateAction CTI_StateAction[] = {
 		{CTI_IdleAction},
@@ -158,12 +209,12 @@ APP_STATE_MACHINE_DEF(p_state
 
 static X_Void StateJumpRecorder(StateNumber state_going_to_leave,StateNumber state_going_to_enter)
 {
-	
+	jump_counter ++;
 }
 
 static X_Void TestBench(X_Void)
 {
-	while(sPE.isFinished = X_False)
+	while(sPE.isFinished == X_False)
 	{
 		mStateMachineRun(p_state,&sPE.base,StateJumpRecorder);
 	}
@@ -172,7 +223,7 @@ static X_Void TestBench(X_Void)
 static uint8_t base_data_buf[1000];
 
 static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq
-	/*,func_irq irq,func_main_loop main_loop*/
+	,func_irq irq,func_main_loop main_loop
 	,const char * p_file_path
 	)
 {
@@ -182,9 +233,12 @@ static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq
 	sPE.wait_counter 	= 0;
 	sPE.irq_freq 		= irq_freq;
 	sPE.mian_loop_freq  = main_freq;
-	//sPE.irq 			= irq;
-	//sPE.main_loop       = main_loop;
-
+	sPE.irq 			= irq;
+	sPE.main_loop       = main_loop;
+	sPE.irq_cnt         = 0;
+	sPE.mian_loop_cnt   = 0;
+	jump_counter = 0;
+	main_loop_count = 0;irq_count = 0;
 	mStateMachineStateSet(p_state,CTI_Idle);
 
 	for(i=0;i<1000;i++){base_data_buf[i] = 0xFF;}
@@ -201,7 +255,6 @@ static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq
 		//if(buf[0] == '\n') {break;}
 		
 		length = GetStringLength(buf);
-		printf("length %d ;%s",length,buf);
 		if((length % 2) != 0) {printf("error !!!;length %d ;%s",length,buf);return;}
 		
 		for(i = 0,k = 0;i<(length);i = i + 2,k++)
@@ -220,7 +273,7 @@ static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq
 	}
 	printf("\r\n");
 	*/
-	
+
 }
 	TEST(CharToNum,_8bit)
 	{
@@ -248,8 +301,12 @@ static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq
 
 TEST(Protocol_recv,find_headers)
 {
-	TestBenchInit(1,1,"./data_recv/data1.txt");
+	ProtocolRecvInit(p_common0);
+	TestBenchInit(2,5,FackIrq,FackMainLoop,"./data_recv/data1.txt");
 	TestBench();
+	EXPECT_EQ(jump_counter, 403);
+	EXPECT_EQ(main_loop_count, 41);
+	EXPECT_EQ(irq_count, 101);
 }
 
 TEST(Protocol_recv,find_whole_frame)
