@@ -17,18 +17,18 @@
 
 typedef enum{
 	FOP_successed,
-	FOP_failed,
+	FOP_errordata,
 	FOP_inprocess,
+	FOP_nospace,
 }e_find_other_process;
 
 typedef X_DATA_UNIT (*unit_receive)(X_Void);
-typedef X_Boolean (*find_header)(X_DATA_UNIT current_data,X_DATA_UNIT *p_header_buf,uint16_t *p_header_length);
-typedef e_find_other_process (*find_others_and_checksum)(X_DATA_UNIT current_data,X_DATA_UNIT *p_other_buf,uint16_t *p_other_unit);
+typedef X_Boolean (*find_header)(X_DATA_UNIT current_data);
+typedef e_find_other_process (*find_others_and_checksum)(X_DATA_UNIT current_data);
 
  typedef struct
 {
     X_DATA_UNIT 	*  const	p_buf;
-	X_Boolean                   *isInitCalled;
 	X_Boolean 					*isInitOK;
 	const uint16_t              max_frame_length;
 	const uint16_t              max_frame_num;
@@ -39,10 +39,9 @@ typedef e_find_other_process (*find_others_and_checksum)(X_DATA_UNIT current_dat
 
 #define PROTOCOL_RECV_DATA_BUF_DEF(p_manager,max_frame_length,max_faram_to_cache,recv,fheader,fothers)  \
 			static X_DATA_UNIT  CONCAT_2(p_manager,_recv_buf)[max_faram_to_cache][max_frame_length];     \
-			static X_Boolean    CONCAT_2(p_manager,_isInitOk) = X_False,CONCAT_2(p_manager,_isInitCalled) = X_False;  \
+			static X_Boolean    CONCAT_2(p_manager,_isInitOk) = X_False;  \
 			static const sProtocolRecv CONCAT_2(p_manager,_protocol_recv) = {							\
 					&CONCAT_2(p_manager,_recv_buf)[0][0],												\
-					&CONCAT_2(p_manager,_isInitCalled),													\
 					&CONCAT_2(p_manager,_isInitOk),														\
 					max_frame_length,																	\
 					max_faram_to_cache,																	\
