@@ -10,6 +10,7 @@ X_Boolean ProtocolRecvInit(const sProtocolRecv *p_manager)
 	if(p_manager ->max_frame_num == 0 || p_manager ->max_frame_num > MAX_FRAME_CHCHE_NUM) {return X_False;}
 	*p_manager ->isInitOK = X_True;
 }
+//#include <stdio.h>
 X_Void ProtocolRecvProcess(const sProtocolRecv *p_manager)
 {
 	X_DATA_UNIT data;
@@ -19,7 +20,10 @@ X_Void ProtocolRecvProcess(const sProtocolRecv *p_manager)
 
 	
 	data =  p_manager ->func_recv();
-	p_manager ->func_fheader(data);
+	if(p_manager ->func_fheader(data) == X_True)
+	{
+		//printf("find 0x55aa\r\n");
+	}
 }
 X_Boolean ProtocolRecvGetFrame(const sProtocolRecv *p_manager,X_DATA_UNIT **pp_buf,uint16_t *p_length)
 {

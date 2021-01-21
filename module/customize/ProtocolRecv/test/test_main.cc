@@ -36,15 +36,26 @@ e_find_other_process empty_find_others(X_DATA_UNIT current_data){UNUSED_PARAMETE
 
 static uint8_t base_data_buf[1000];
 static uint16_t current_index = 0;
-
+static uint16_t find_header_times = 0;
 
 static X_DATA_UNIT HardWareRecvByte(X_Void)
 {
 	return base_data_buf[current_index ++];
 }
+static uint8_t header_index = 0;
 static X_Boolean ProtocolFindHeader(X_DATA_UNIT current_data)
 {
-	UNUSED_PARAMETER(current_data);
+	X_Boolean isFind = X_False;
+	
+	if(header_index == 0 && current_data == 0x55) {header_index = 1;return X_False;}
+
+	if(header_index == 1 && current_data == 0xaa)
+	{
+		header_index = 0;
+		find_header_times ++;
+		return X_True;
+	}
+	header_index = 0;
 	return X_False;
 }
 static e_find_other_process ProtocolFindOthers(X_DATA_UNIT current_data)
@@ -289,6 +300,8 @@ static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq
 	}
 	sPE.max_valid_size = j;
 	current_index = 0;
+	header_index = 0;
+	find_header_times = 0;
 /*
 	for(i=0;i<j;i++)
 	{
@@ -330,6 +343,8 @@ TEST(Protocol_recv,find_headers)
 	EXPECT_EQ(jump_counter, 403);
 	EXPECT_EQ(main_loop_count, 41);
 	EXPECT_EQ(irq_count, 101);
+	EXPECT_EQ(find_header_times,9);
+	
 }
 
 TEST(Protocol_recv,find_whole_frame)
