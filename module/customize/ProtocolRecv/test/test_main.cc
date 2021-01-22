@@ -92,7 +92,6 @@ static e_find_other_process ProtocolFindOthers(X_DATA_UNIT current_data,e_find_o
 		{
 			if(CheckSum(&p_buf[1],p_buf[3]) == X_True)// check sum OK
 			{
-				p_buf[0] = GOOD_FRAME_FLAG;
 				/*
 				printf("receive successed length %d ;",p_buf[3]);
 				for(i = 0;i<=p_buf[3];i++)
@@ -105,9 +104,7 @@ static e_find_other_process ProtocolFindOthers(X_DATA_UNIT current_data,e_find_o
 				return FOP_successed;
 			}
 			else
-			{
-				p_buf[0] = BAD_FRAME_FLAG;
-				
+			{				
 				/*printf("receive failed length %d ;",p_buf[3]);
 				for(i = 0;i<=p_buf[3];i++)
 				{
@@ -140,7 +137,7 @@ static X_Void FackMainLoop(X_Void)
 {	
 	X_Boolean isOK;
 	uint8_t *p_frame;
-	//uint8_t i;
+	
 	UNUSED_VARIABLE(frame_buf);
 	main_loop_count ++;
 	//lock irq
@@ -149,7 +146,8 @@ static X_Void FackMainLoop(X_Void)
 	if(isOK == X_True)
 	{
 		frame_length_get = p_frame[2];
-		/*
+
+		/*uint8_t i;
 		printf("--------------------------get successed length %d ;",p_frame[2]);
 		
 		for(i=0;i<frame_length_get;i++)
@@ -463,12 +461,18 @@ TEST(Protocol_recv,get_whole_frame)
 }
 
 
-TEST(Protocol_recv,stress_testing)
+TEST(Protocol_recv,stress_testing)// test later
 {
 
 }
 
-TEST(Protocol_recv,mul_entrys)
+TEST(Protocol_recv,error_data_test)// test later
+{
+
+}
+
+
+TEST(Protocol_recv,mul_entrys) // test later
 {
 
 }

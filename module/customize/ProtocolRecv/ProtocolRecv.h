@@ -16,9 +16,6 @@
 
 #define MAX_FRAME_LENGTH         50
 #define MAX_FRAME_CHCHE_NUM      20   
-#define BAD_FRAME_FLAG 			0x77
-#define RECV_PROCESS_FLAG 		0x88  //
-#define GOOD_FRAME_FLAG 		0x99  //
 
 
 typedef enum{
