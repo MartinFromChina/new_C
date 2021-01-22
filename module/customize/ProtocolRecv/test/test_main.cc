@@ -140,7 +140,7 @@ static X_Void FackMainLoop(X_Void)
 {	
 	X_Boolean isOK;
 	uint8_t *p_frame;
-	uint8_t i;
+	//uint8_t i;
 	UNUSED_VARIABLE(frame_buf);
 	main_loop_count ++;
 	//lock irq
@@ -149,6 +149,7 @@ static X_Void FackMainLoop(X_Void)
 	if(isOK == X_True)
 	{
 		frame_length_get = p_frame[2];
+		/*
 		printf("--------------------------get successed length %d ;",p_frame[2]);
 		
 		for(i=0;i<frame_length_get;i++)
@@ -157,6 +158,7 @@ static X_Void FackMainLoop(X_Void)
 			printf(" %2x",frame_buf[i]);
 		}
 		printf("\r\n");
+		*/
 		get_fram_times++;
 	}
 	else

@@ -40,7 +40,7 @@ X_Void ProtocolRecvProcess(const sProtocolRecv *p_manager)
 		if(p_manager ->func_fheader(data) == X_True)
 		{
 			p_manager ->p_operation ->cur_push_node = p_manager ->p_operation ->queue_fi(p_manager ->p_operation->p_manager,X_False);
-			if(p_manager ->p_operation ->cur_push_node != INVALID_NODE_NUM)
+			if(p_manager ->p_operation ->cur_push_node < p_manager ->max_frame_num)
 			{
 				p_manager ->p_process->isHeaderFind = X_True;
 				p_manager ->p_process->process      = FOP_idle;
@@ -51,6 +51,13 @@ X_Void ProtocolRecvProcess(const sProtocolRecv *p_manager)
 	}
 	else
 	{	
+		if(p_manager ->p_operation ->cur_push_node >= p_manager ->max_frame_num) 
+		{
+			//should never come here
+			p_manager ->p_process->isHeaderFind = X_False;
+			p_manager ->p_operation ->queue_clear(p_manager ->p_operation ->p_manager);
+			return;
+		}
 		index = p_manager ->p_operation ->cur_push_node*p_manager ->max_frame_length;
 		p_manager ->p_process ->process = p_manager ->func_fothers(data,&p_manager ->p_process->process,&(p_manager ->p_buf[index]));
 		
@@ -69,7 +76,7 @@ X_Boolean ProtocolRecvGetFrame(const sProtocolRecv *p_manager,X_DATA_UNIT **pp_b
 	if(*p_manager->isInitOK == X_False) {return X_False;}
 	if( pp_buf == X_Null) {return X_False;}
 
-	if(p_manager ->p_operation ->cur_pop_node != INVALID_NODE_NUM) // maybe push in process not finished yet
+	if(p_manager ->p_operation ->cur_pop_node < p_manager ->max_frame_num) // maybe push in process not finished yet
 	{
 		index = p_manager ->p_operation ->cur_pop_node*p_manager ->max_frame_length;
 		if(p_manager ->p_buf[index] == RECV_PROCESS_FLAG) 
@@ -97,7 +104,7 @@ X_Boolean ProtocolRecvGetFrame(const sProtocolRecv *p_manager,X_DATA_UNIT **pp_b
 
 	p_manager ->p_operation ->cur_pop_node = p_manager ->p_operation ->queue_fo( p_manager ->p_operation ->p_manager);
 	
-	if(p_manager ->p_operation ->cur_pop_node == INVALID_NODE_NUM) {return X_False;}
+	if(p_manager ->p_operation ->cur_pop_node >= p_manager ->max_frame_num) {return X_False;}
 
 	index = p_manager ->p_operation ->cur_pop_node*p_manager ->max_frame_length;
 	if(p_manager ->p_buf[index] == RECV_PROCESS_FLAG) 
