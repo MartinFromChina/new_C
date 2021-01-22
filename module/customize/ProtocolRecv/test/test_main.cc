@@ -37,7 +37,7 @@ e_find_other_process empty_find_others(X_DATA_UNIT current_data,e_find_other_pro
 
 static uint8_t base_data_buf[1000];
 static uint16_t current_index = 0;
-static uint16_t find_header_times = 0;
+static uint16_t find_header_times = 0,find_frame_times = 0,find_failed_times = 0;
 
 static X_DATA_UNIT HardWareRecvByte(X_Void)
 {
@@ -62,7 +62,7 @@ static X_Boolean CheckSum(uint8_t *p_buf,uint8_t length)
 {
 	uint16_t i;
 	uint8_t sum = 0;
-	if(length == 0 || length == 65535) {return X_False;}
+	if(length == 0 || length == 255) {return X_False;}
 	for(i=0;i<length - 1;i++)
 	{
 		sum += p_buf[i];
@@ -82,7 +82,7 @@ static e_find_other_process ProtocolFindOthers(X_DATA_UNIT current_data,e_find_o
 		return FOP_inprocess;
 	}
 
-	uint8_t i;
+	//uint8_t i;
 	if(*p_fop == FOP_inprocess)
 	{
 		p_buf[temp_index] = current_data;
@@ -93,23 +93,29 @@ static e_find_other_process ProtocolFindOthers(X_DATA_UNIT current_data,e_find_o
 			if(CheckSum(&p_buf[1],p_buf[3]) == X_True)// check sum OK
 			{
 				p_buf[0] = GOOD_FRAME_FLAG;
+				/*
 				printf("receive successed length %d ;",p_buf[3]);
 				for(i = 0;i<=p_buf[3];i++)
 				{
 					printf(" %2x",p_buf[i]);
 				}
 				printf("\r\n");
+				*/
+				find_frame_times ++;
 				return FOP_successed;
 			}
 			else
 			{
 				p_buf[0] = BAD_FRAME_FLAG;
+				/*
 				printf("receive failed length %d ;",p_buf[3]);
 				for(i = 0;i<=p_buf[3];i++)
 				{
 					printf(" %2x",p_buf[i]);
 				}
 				printf("\r\n");
+				*/
+				find_failed_times ++;
 			}
 		}
 		else
@@ -359,6 +365,8 @@ static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq
 	current_index = 0;
 	header_index = 0;
 	find_header_times = 0;
+	find_frame_times = 0;
+	find_failed_times = 0;
 /*
 	for(i=0;i<j;i++)
 	{
@@ -410,8 +418,13 @@ TEST(Protocol_recv,find_whole_frame)
 	TestBench();
 	EXPECT_EQ(jump_counter, 403);
 	EXPECT_EQ(main_loop_count, 41);
-	EXPECT_EQ(irq_count, 101);
+	EXPECT_EQ(find_frame_times, 5);
+	EXPECT_EQ(find_failed_times, 0);
 }
+TEST(Protocol_recv,get_whole_frame)
+{
+}
+
 
 TEST(Protocol_recv,stress_testing)
 {
