@@ -37,7 +37,7 @@ e_find_other_process empty_find_others(X_DATA_UNIT current_data,e_find_other_pro
 
 static uint8_t base_data_buf[1000];
 static uint16_t current_index = 0;
-static uint16_t find_header_times = 0,find_frame_times = 0,find_failed_times = 0;
+static uint16_t find_header_times = 0,find_frame_times = 0,find_failed_times = 0,get_fram_times = 0,get_fram_failed_times = 0;
 
 static X_DATA_UNIT HardWareRecvByte(X_Void)
 {
@@ -86,7 +86,7 @@ static e_find_other_process ProtocolFindOthers(X_DATA_UNIT current_data,e_find_o
 	if(*p_fop == FOP_inprocess)
 	{
 		p_buf[temp_index] = current_data;
-		////printf("---------p_buf[%d]=  %2x\r\n",temp_index,p_buf[temp_index]);
+		//printf("---------p_buf[%d]=  %2x\r\n",temp_index,p_buf[temp_index]);
 		temp_index++;
 		if(temp_index == (p_buf[3] + 1)) 
 		{
@@ -107,8 +107,8 @@ static e_find_other_process ProtocolFindOthers(X_DATA_UNIT current_data,e_find_o
 			else
 			{
 				p_buf[0] = BAD_FRAME_FLAG;
-				/*
-				printf("receive failed length %d ;",p_buf[3]);
+				
+				/*printf("receive failed length %d ;",p_buf[3]);
 				for(i = 0;i<=p_buf[3];i++)
 				{
 					printf(" %2x",p_buf[i]);
@@ -116,6 +116,7 @@ static e_find_other_process ProtocolFindOthers(X_DATA_UNIT current_data,e_find_o
 				printf("\r\n");
 				*/
 				find_failed_times ++;
+				return FOP_idle;
 			}
 		}
 		else
@@ -137,11 +138,32 @@ static uint16_t jump_counter = 0,main_loop_count = 0,irq_count = 0;
 
 static X_Void FackMainLoop(X_Void)
 {	
+	X_Boolean isOK;
 	uint8_t *p_frame;
+	uint8_t i;
 	UNUSED_VARIABLE(frame_buf);
 	main_loop_count ++;
 	//lock irq
-	ProtocolRecvGetFrame(p_common0,&p_frame,&frame_length_get);
+	isOK = ProtocolRecvGetFrame(p_common0,&p_frame);
+
+	if(isOK == X_True)
+	{
+		frame_length_get = p_frame[2];
+		printf("--------------------------get successed length %d ;",p_frame[2]);
+		
+		for(i=0;i<frame_length_get;i++)
+		{
+			frame_buf[i] = p_frame[i];
+			printf(" %2x",frame_buf[i]);
+		}
+		printf("\r\n");
+		get_fram_times++;
+	}
+	else
+	{
+		get_fram_failed_times ++;
+	}
+	
 	//unlock irq
 }
 static X_Void FackIrq(X_Void)
@@ -367,6 +389,8 @@ static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq
 	find_header_times = 0;
 	find_frame_times = 0;
 	find_failed_times = 0;
+	get_fram_times = 0;
+	get_fram_failed_times = 0;
 /*
 	for(i=0;i<j;i++)
 	{
@@ -376,7 +400,7 @@ static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq
 	*/
 
 }
-	TEST(CharToNum,_8bit)
+TEST(CharToNum,_8bit)
 	{
 		X_Boolean isOk;
 		char buf[13] = {
@@ -399,10 +423,11 @@ static X_Void TestBenchInit(uint16_t irq_freq,uint16_t main_freq
 		EXPECT_EQ( HexCharTo_8bit(buf[10],buf[11],&isOk), 0); 
 	}
 
-
 TEST(Protocol_recv,find_headers)
 {
-	ProtocolRecvInit(p_common0);
+	X_Boolean isOK;
+	isOK = ProtocolRecvInit(p_common0);
+	EXPECT_EQ(isOK,X_True);
 	TestBenchInit(2,5,FackIrq,FackMainLoop,"./data_recv/data1.txt");
 	TestBench();
 	EXPECT_EQ(jump_counter, 403);
@@ -418,11 +443,21 @@ TEST(Protocol_recv,find_whole_frame)
 	TestBench();
 	EXPECT_EQ(jump_counter, 403);
 	EXPECT_EQ(main_loop_count, 41);
-	EXPECT_EQ(find_frame_times, 5);
+	EXPECT_EQ(find_frame_times, 9);
 	EXPECT_EQ(find_failed_times, 0);
 }
 TEST(Protocol_recv,get_whole_frame)
 {
+	ProtocolRecvInit(p_common0);
+	TestBenchInit(2,5,FackIrq,FackMainLoop,"./data_recv/data1.txt");
+	TestBench();
+	EXPECT_EQ(jump_counter, 403);
+	EXPECT_EQ(main_loop_count, 41);
+	EXPECT_EQ(find_frame_times, 9);
+	EXPECT_EQ(find_failed_times, 0);
+
+	EXPECT_EQ(get_fram_times,9);
+	EXPECT_EQ(get_fram_failed_times,32);
 }
 
 
@@ -442,5 +477,6 @@ TEST(Protocol_recv,mul_entrys)
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------protocol_recv_test from test_main.cc \r\n";
   testing::InitGoogleTest(&argc, argv);
+  //testing::FLAGS_gtest_filter = "Protocol_recv.find_headers_0";
   return RUN_ALL_TESTS();
 }

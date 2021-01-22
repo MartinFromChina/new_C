@@ -10,18 +10,15 @@
 #include "../../common/loopqueue/loop_queues.h"
 
 
-
-
-
-
 #ifndef X_DATA_UNIT   
 #define X_DATA_UNIT uint8_t
 #endif
 
 #define MAX_FRAME_LENGTH         50
 #define MAX_FRAME_CHCHE_NUM      20   
-#define BAD_FRAME_FLAG 		0x77
-#define GOOD_FRAME_FLAG 	0x99  //
+#define BAD_FRAME_FLAG 			0x77
+#define RECV_PROCESS_FLAG 		0x88  //
+#define GOOD_FRAME_FLAG 		0x99  //
 
 
 typedef enum{
@@ -52,7 +49,8 @@ typedef struct
 }s_ProtocolRecvProcess;
  typedef struct
  {
-	uint16_t node_num;
+	uint16_t cur_push_node;
+	uint16_t cur_pop_node;
 	const sListManager *p_manager;
 	QueueInit 			queue_init;
 	QueueFI				queue_fi;
@@ -83,6 +81,7 @@ typedef struct
 			SIMPLE_LOOPQUEUE_DEF(CONCAT_2(p_manager,_queue),max_faram_to_cache);							\
 			static s_QueueOperation      CONCAT_2(p_manager,_Protocol_recv_queue) = {						\
 					0,																				\
+					0,																				\
 					CONCAT_2(p_manager,_queue),														\
 					SimpleQueueInitialize,															\
 					SimpleQueueFirstIn,																\
@@ -108,7 +107,7 @@ typedef struct
 
 X_Boolean ProtocolRecvInit(const sProtocolRecv *p_manager);
 X_Void ProtocolRecvProcess(const sProtocolRecv *p_manager);// call it in a recv_irq or main_loop
-X_Boolean ProtocolRecvGetFrame(const sProtocolRecv *p_manager,X_DATA_UNIT **pp_buf,uint16_t *p_length);
+X_Boolean ProtocolRecvGetFrame(const sProtocolRecv *p_manager,X_DATA_UNIT **pp_buf);
 X_Boolean DoesProtocolRecvInitOK(const sProtocolRecv *p_manager);
 
 #ifdef __cplusplus
