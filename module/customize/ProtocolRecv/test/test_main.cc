@@ -32,7 +32,7 @@ using namespace std;
 */
 static X_DATA_UNIT empty_unit_receive(X_Void){return 0;}
 X_Boolean empty_find_header(X_DATA_UNIT current_data){UNUSED_PARAMETER(current_data);return X_True;}
-e_find_other_process empty_find_others(X_DATA_UNIT current_data){UNUSED_PARAMETER(current_data); return FOP_successed;}
+e_find_other_process empty_find_others(X_DATA_UNIT current_data,e_find_other_process *p_fop){UNUSED_PARAMETER(current_data);UNUSED_PARAMETER(p_fop); return FOP_successed;}
 
 static uint8_t base_data_buf[1000];
 static uint16_t current_index = 0;
@@ -44,9 +44,7 @@ static X_DATA_UNIT HardWareRecvByte(X_Void)
 }
 static uint8_t header_index = 0;
 static X_Boolean ProtocolFindHeader(X_DATA_UNIT current_data)
-{
-	X_Boolean isFind = X_False;
-	
+{	
 	if(header_index == 0 && current_data == 0x55) {header_index = 1;return X_False;}
 
 	if(header_index == 1 && current_data == 0xaa)
@@ -58,10 +56,20 @@ static X_Boolean ProtocolFindHeader(X_DATA_UNIT current_data)
 	header_index = 0;
 	return X_False;
 }
-static e_find_other_process ProtocolFindOthers(X_DATA_UNIT current_data)
+static uint8_t frame_length = 0,temp_buf[30],temp_index = 0;;
+static e_find_other_process ProtocolFindOthers(X_DATA_UNIT current_data,e_find_other_process *p_fop)
 {
 	UNUSED_PARAMETER(current_data);
-	return FOP_inprocess;
+
+	if(*p_fop == FOP_idle)
+	{
+		frame_length = current_data;
+		*p_fop = FOP_inprocess;
+		temp_buf[0] = current_data;
+		temp_index = 1;
+	}
+	
+	return FOP_idle;
 }
 
 PROTOCOL_RECV_DATA_BUF_DEF(p_common0,MAX_FRAME_LENGTH,MAX_FRAME_CHCHE_NUM
@@ -69,7 +77,7 @@ PROTOCOL_RECV_DATA_BUF_DEF(p_common0,MAX_FRAME_LENGTH,MAX_FRAME_CHCHE_NUM
 
 
 static uint8_t frame_buf[100];
-static uint16_t frame_length;
+static uint16_t frame_length_get;
 static uint16_t jump_counter = 0,main_loop_count = 0,irq_count = 0;
 
 static X_Void FackMainLoop(X_Void)
@@ -78,7 +86,7 @@ static X_Void FackMainLoop(X_Void)
 	UNUSED_VARIABLE(frame_buf);
 	main_loop_count ++;
 	//lock irq
-	ProtocolRecvGetFrame(p_common0,&p_frame,&frame_length);
+	ProtocolRecvGetFrame(p_common0,&p_frame,&frame_length_get);
 	//unlock irq
 }
 static X_Void FackIrq(X_Void)
@@ -344,12 +352,16 @@ TEST(Protocol_recv,find_headers)
 	EXPECT_EQ(main_loop_count, 41);
 	EXPECT_EQ(irq_count, 101);
 	EXPECT_EQ(find_header_times,9);
-	
 }
 
 TEST(Protocol_recv,find_whole_frame)
 {
-
+	ProtocolRecvInit(p_common0);
+	TestBenchInit(2,5,FackIrq,FackMainLoop,"./data_recv/data1.txt");
+	TestBench();
+	EXPECT_EQ(jump_counter, 403);
+	EXPECT_EQ(main_loop_count, 41);
+	EXPECT_EQ(irq_count, 101);
 }
 
 TEST(Protocol_recv,stress_testing)
