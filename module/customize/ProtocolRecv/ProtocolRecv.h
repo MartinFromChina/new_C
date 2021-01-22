@@ -20,6 +20,9 @@
 
 #define MAX_FRAME_LENGTH         50
 #define MAX_FRAME_CHCHE_NUM      20   
+#define BAD_FRAME_FLAG 		0x77
+#define GOOD_FRAME_FLAG 	0x99  //
+
 
 typedef enum{
 	FOP_idle,
@@ -40,7 +43,7 @@ typedef X_Boolean   (*QueueDoesEmpty)(const sListManager *p_manager);
 
 typedef X_DATA_UNIT (*unit_receive)(X_Void);
 typedef X_Boolean (*find_header)(X_DATA_UNIT current_data);
-typedef e_find_other_process (*find_others_and_checksum)(X_DATA_UNIT current_data,e_find_other_process *p_fop);
+typedef e_find_other_process (*find_others_and_checksum)(X_DATA_UNIT current_data,e_find_other_process const*p_fop,X_DATA_UNIT *p_buf);
 
 typedef struct
 {

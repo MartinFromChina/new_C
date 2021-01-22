@@ -32,7 +32,8 @@ using namespace std;
 */
 static X_DATA_UNIT empty_unit_receive(X_Void){return 0;}
 X_Boolean empty_find_header(X_DATA_UNIT current_data){UNUSED_PARAMETER(current_data);return X_True;}
-e_find_other_process empty_find_others(X_DATA_UNIT current_data,e_find_other_process *p_fop){UNUSED_PARAMETER(current_data);UNUSED_PARAMETER(p_fop); return FOP_successed;}
+e_find_other_process empty_find_others(X_DATA_UNIT current_data,e_find_other_process const *p_fop,X_DATA_UNIT *p_buf)
+	{UNUSED_PARAMETER(current_data);UNUSED_PARAMETER(p_fop); UNUSED_PARAMETER(p_buf);return FOP_successed;}
 
 static uint8_t base_data_buf[1000];
 static uint16_t current_index = 0;
@@ -56,23 +57,71 @@ static X_Boolean ProtocolFindHeader(X_DATA_UNIT current_data)
 	header_index = 0;
 	return X_False;
 }
-static uint8_t frame_length = 0,temp_buf[30],temp_index = 0;;
-static e_find_other_process ProtocolFindOthers(X_DATA_UNIT current_data,e_find_other_process *p_fop)
+static uint8_t temp_index = 0;
+static X_Boolean CheckSum(uint8_t *p_buf,uint8_t length)
 {
-	UNUSED_PARAMETER(current_data);
-
+	uint16_t i;
+	uint8_t sum = 0;
+	if(length == 0 || length == 65535) {return X_False;}
+	for(i=0;i<length - 1;i++)
+	{
+		sum += p_buf[i];
+	}
+	if(sum == p_buf[length - 1]) {return X_True;}
+	return X_False;
+}
+static e_find_other_process ProtocolFindOthers(X_DATA_UNIT current_data,e_find_other_process const *p_fop,X_DATA_UNIT *p_buf)
+{
 	if(*p_fop == FOP_idle)
 	{
-		frame_length = current_data;
-		*p_fop = FOP_inprocess;
-		temp_buf[0] = current_data;
-		temp_index = 1;
+		if(current_data < 5) {return FOP_idle;}
+		p_buf[1] = 0x55;
+		p_buf[2] = 0xaa;
+		p_buf[3] = current_data;
+		temp_index = 4;
+		return FOP_inprocess;
+	}
+
+	uint8_t i;
+	if(*p_fop == FOP_inprocess)
+	{
+		p_buf[temp_index] = current_data;
+		////printf("---------p_buf[%d]=  %2x\r\n",temp_index,p_buf[temp_index]);
+		temp_index++;
+		if(temp_index == (p_buf[3] + 1)) 
+		{
+			if(CheckSum(&p_buf[1],p_buf[3]) == X_True)// check sum OK
+			{
+				p_buf[0] = GOOD_FRAME_FLAG;
+				printf("receive successed length %d ;",p_buf[3]);
+				for(i = 0;i<=p_buf[3];i++)
+				{
+					printf(" %2x",p_buf[i]);
+				}
+				printf("\r\n");
+				return FOP_successed;
+			}
+			else
+			{
+				p_buf[0] = BAD_FRAME_FLAG;
+				printf("receive failed length %d ;",p_buf[3]);
+				for(i = 0;i<=p_buf[3];i++)
+				{
+					printf(" %2x",p_buf[i]);
+				}
+				printf("\r\n");
+			}
+		}
+		else
+		{
+			return FOP_inprocess;
+		}
 	}
 	
 	return FOP_idle;
 }
 
-PROTOCOL_RECV_DATA_BUF_DEF(p_common0,MAX_FRAME_LENGTH,MAX_FRAME_CHCHE_NUM
+PROTOCOL_RECV_DATA_BUF_DEF(p_common0,MAX_FRAME_LENGTH,5
 										,HardWareRecvByte,ProtocolFindHeader,ProtocolFindOthers);
 
 
