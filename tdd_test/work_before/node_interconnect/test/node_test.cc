@@ -15,6 +15,8 @@ using namespace std;
 	#define INSERT(log_method)  remove_##log_method
 #endif
 
+#include "../node_interconnect.h"
+
 /*
 
 #if (SEGGER_RTT_DEBUG == 0)
@@ -28,6 +30,12 @@ using namespace std;
 #endif
 
 */
+
+
+TEST(no,name)
+{
+	RunNodeCommunicationProcess();
+}
 
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------note interconnect_test from node_test.cc \r\n";

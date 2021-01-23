@@ -6,7 +6,7 @@ TARGET = node
 CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += $(DEFS)
 
-$(TARGET) : node_test.o node_interconnect.o  node.o #StateMachine.o char_to_num.o loop_queues.o
+$(TARGET) : node_test.o node_interconnect.o  node.o StateMachine.o #char_to_num.o loop_queues.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(DLIBS)
 
 #loop_queues.o : ../../../common/loopqueue/loop_queues.c   ../../../common/loopqueue/loop_queues.h
@@ -21,9 +21,9 @@ node.o: ../node.c   ../node.h
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
             -c ../node.c
 
-#StateMachine.o:../../../common/StateMachine/StateMachine.c   ../../../common/StateMachine/StateMachine.h 
-#	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
-#           -c ../../../common/StateMachine/StateMachine.c
+StateMachine.o:../../../../module/common/StateMachine/StateMachine.c   ../../../../module/common/StateMachine/StateMachine.h 
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
+           -c ../../../../module/common/StateMachine/StateMachine.c
             
 node_interconnect.o :../node_interconnect.c   ../node_interconnect.h 	
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
@@ -33,4 +33,4 @@ node_test.o : node_test.cc   #../ProtocolRecv.h    ../../../common/StateMachine/
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
             -c node_test.cc
 						
-clean:node_test.o node_interconnect.o  node.o #StateMachine.o char_to_num.o loop_queues.otest_main.o ProtocolRecv.o StateMachine.o rw_by_line.o char_to_num.o loop_queues.o
+clean:node_test.o node_interconnect.o  node.o StateMachine.o #char_to_num.o loop_queues.otest_main.o ProtocolRecv.o StateMachine.o rw_by_line.o char_to_num.o loop_queues.o

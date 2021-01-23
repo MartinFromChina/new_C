@@ -8,6 +8,7 @@
 
 #include "../../../module/common/x_cross_platform.h"
 
+X_Void RunNodeCommunicationProcess(X_Void);
 
 
 
