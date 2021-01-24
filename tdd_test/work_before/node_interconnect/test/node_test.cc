@@ -9,12 +9,6 @@ using namespace std;
 	#define MOCKABLE(method)  method
 #endif
 
-#if (USE_INSERT_DEBUG != 0)
-	#define INSERT(log_method)  insert_##log_method
-#else
-	#define INSERT(log_method)  remove_##log_method
-#endif
-
 #include "../node_interconnect.h"
 
 /*
@@ -30,11 +24,42 @@ using namespace std;
 #endif
 
 */
+static uint16_t node_handle_called_cnt = 0;
+static X_Boolean NodeHandle(s_node_handler message)
+{
+	node_handle_called_cnt++;
+	EXPECT_EQ(message.wave_num, 8);
+	return X_True;
+}
 
+static s_node_manager m_node1;
+static s_node         node1;
 
 TEST(no,name)
 {
-	RunNodeCommunicationProcess();
+	X_Boolean isRun = X_True;
+	s_node_manager *p_manager;
+	node_handle_called_cnt = 0;
+	p_manager = WaveTransInit();
+
+	m_node1.p_node = &node1;
+	//m_node1.p_node->node_name	  			= "node1"; 
+	m_node1.p_node->node_number  			= 1;
+	m_node1.p_node->forware_node		 	= INVALID_NODE_NUM;
+	m_node1.p_node->backward_node 			= 2;
+	m_node1.p_node->node_handle   			= NodeHandle;
+	m_node1.p_node->node_message_num 		= 0;
+	m_node1.p_node->node_message.wave_num   = 8;
+
+	
+	NodeAdd(p_manager,&m_node1);
+
+	while(isRun == X_True)
+	{
+		isRun = RunNodeCommunicationProcess();
+	}
+	
+	EXPECT_EQ(node_handle_called_cnt, 1);
 }
 
 GTEST_API_ int main(int argc, char **argv) {
