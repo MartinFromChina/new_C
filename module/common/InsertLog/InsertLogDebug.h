@@ -34,18 +34,18 @@ X_Boolean OnceEntryCheck(uint16_t *backup_entry,uint16_t new_value) ;
 X_Boolean CounterEntryCheck(uint32_t *backup_entry,uint32_t counter_limit);
 
 #define insert_LogDebug(flag,message)   do{ 																\
-												if(flag != 0)	\
+												if((flag) != 0)	\
 												{	LOG_DEBUG_METHOD	message ;	   	}			\
 											}while(0)
 /****************print when entry == once_ref***************************/
 
 #define insert_LogDebugOnce(flag,entry,once_ref,message)   do{ 																\
-																	if(flag != 0 && OnceEntryCheck(entry,once_ref) == X_True)	\
+																	if((flag) != 0 && OnceEntryCheck(entry,once_ref) == X_True)	\
 																	{	LOG_DEBUG_METHOD	message ;	   	}			\
 																}while(0)
 /**************print when entry = 0 , entry ++ per call ,until entry == counter_ref ,then entry = 0***********************/
 #define insert_LogDebugCounter(flag,entry,counter_ref,message)   do{ 																\
-																		if(flag != 0 && CounterEntryCheck(entry,counter_ref) == X_True)	\
+																		if((flag) != 0 && CounterEntryCheck(entry,counter_ref) == X_True)	\
 																		{	LOG_DEBUG_METHOD	message ;	   	}			\
 																	 }while(0)
 

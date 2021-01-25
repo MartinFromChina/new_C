@@ -10,6 +10,8 @@
 #define NODE_NUM_DEBUG 			    0
 #define NODE_ADD_DEBUG 			    0
 #define WAVE_TRANS_DEBUG 			1
+#define NODE_DISTANCE_DEBUG 		0
+
 
 
 static uint32_t time_cnt = 0;
@@ -279,7 +281,7 @@ X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node)
 				//p_next ->p_node ->forware_distance		= unchange;
 				p_next ->p_node ->backward_distance		= p_new_node ->p_node ->forware_distance;
 				p_next ->p_node ->backward_node         = p_new_node ->p_node ->node_number;
-				
+				if(p_next ->p_node ->backward_node <= p_next ->p_node ->node_number ){return X_False;}
 				p_new_node ->p_previous = p_next;
 				p_new_node ->p_node ->forware_node 			= p_next ->p_node ->node_number;
 				//p_new_node ->p_node ->forware_distance    = unchange;
@@ -299,9 +301,62 @@ uint16_t GetNodeNum(X_Void)
 {
 	return sPE.node_num;
 }
-X_Boolean SetDistanceBetweenNode(uint8_t node_num1,uint8_t node_num2)
+uint16_t GetDistanceBetweenNode(uint8_t node_num1,uint8_t node_num2)
 {
+	X_Boolean isSmallMatched = X_False;
+	uint8_t num_small,num_big,num;
+	uint16_t i,distance;
+	s_node_manager *p1 = (s_node_manager *)0,*p2 = (s_node_manager *)0,*p_next;
 
+	if(node_num1 <= node_num2)
+	{
+		num_small = node_num1;
+		num_big   = node_num2;
+	}
+	else
+	{
+		num_small = node_num2;
+		num_big   = node_num1;
+	}
+	p_next = &manager;
+	for(i=0 ;i < MAX_NODE_NUM  ;i++)
+	{	
+		num = (isSmallMatched == X_False) ? num_small : num_big;
+		//////INSERT(LogDebug)(NODE_DISTANCE_DEBUG,(" num %d ; num_small %d ; num_big %d; \r\n",num,num_small,num_big));
+		if(p_next ->p_node ->node_number == num)
+		{
+			if(isSmallMatched == X_False) 
+			{
+				p1 = p_next;
+				isSmallMatched = X_True;
+				if(node_num1 == node_num2) {return 0;}
+				INSERT(LogDebug)(NODE_DISTANCE_DEBUG,(" ----found P1 %d \r\n",p1 ->p_node ->node_number));
+
+			}
+			else
+			{
+				p2 = p_next;
+				INSERT(LogDebug)(NODE_DISTANCE_DEBUG,(" ----found P2 %d\r\n",p2 ->p_node ->node_number));
+				break;
+			}
+			
+		}
+		if(p_next ->p_next == X_Null ) {break;}
+		p_next = p_next ->p_next;
+	}
+	if(p1 == X_Null || p2 == X_Null ) {return INVALID_NODE_DISTANCE;}
+
+	p_next = p1;
+	distance = 0;
+	for(i=0 ;i < MAX_NODE_NUM  ;i++)
+	{
+		distance += p_next ->p_node ->backward_distance;
+		if(p_next ->p_next == X_Null ) {break;}
+		p_next = p_next ->p_next;
+		if(p_next == p2) {break;}
+	}
+	return distance;
+	
 }
 
 X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,s_wave *p_wave)

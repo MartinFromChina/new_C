@@ -1,4 +1,7 @@
 #include "node_test.h"
+#include "../../../../module/common/InsertLog/InsertLogDebug.h"
+
+#define USE_DOTTED_LINE_TO_CUT     0
 
 static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,s_node *p_cur_node)
 {
@@ -40,8 +43,36 @@ TEST(trans,init)
 		isRun = RunNodeCommunicationProcess();
 	}
 	
-	//EXPECT_EQ(node_handle_called_cnt, 15);
-	//EXPECT_EQ(GetNodeNum(), 15);
+	EXPECT_EQ(GetDistanceBetweenNode(0,0), INVALID_NODE_DISTANCE);
+	INSERT(LogDebug)(USE_DOTTED_LINE_TO_CUT,(" --------------------------------------------- \r\n"));
+	EXPECT_EQ(GetDistanceBetweenNode(0,1), INVALID_NODE_DISTANCE);
+	INSERT(LogDebug)(USE_DOTTED_LINE_TO_CUT,(" --------------------------------------------- \r\n"));
+	EXPECT_EQ(GetDistanceBetweenNode(2,4), INVALID_NODE_DISTANCE);
+	INSERT(LogDebug)(USE_DOTTED_LINE_TO_CUT,(" --------------------------------------------- \r\n"));
+	EXPECT_EQ(GetDistanceBetweenNode(3,4), INVALID_NODE_DISTANCE);
+	INSERT(LogDebug)(USE_DOTTED_LINE_TO_CUT,(" --------------------------------------------- \r\n"));
+
+	EXPECT_EQ(GetDistanceBetweenNode(1,1), 0)<<"oppos \r\n";
+	INSERT(LogDebug)(USE_DOTTED_LINE_TO_CUT,(" --------------------------------------------- \r\n"));
+	EXPECT_EQ(GetDistanceBetweenNode(2,2), 0);
+	INSERT(LogDebug)(USE_DOTTED_LINE_TO_CUT,(" --------------------------------------------- \r\n"));
+	EXPECT_EQ(GetDistanceBetweenNode(3,3), 0);
+	INSERT(LogDebug)(USE_DOTTED_LINE_TO_CUT,(" --------------------------------------------- \r\n"));
+	
+	EXPECT_EQ(GetDistanceBetweenNode(1,2), 7);
+	INSERT(LogDebug)(USE_DOTTED_LINE_TO_CUT,(" --------------------------------------------- \r\n"));
+	EXPECT_EQ(GetDistanceBetweenNode(2,3), 10);
+	INSERT(LogDebug)(USE_DOTTED_LINE_TO_CUT,(" --------------------------------------------- \r\n"));
+	EXPECT_EQ(GetDistanceBetweenNode(1,3), 17);
+	INSERT(LogDebug)(USE_DOTTED_LINE_TO_CUT,(" --------------------------------------------- \r\n"));
+
+	EXPECT_EQ(GetDistanceBetweenNode(2,1), 7);
+	INSERT(LogDebug)(USE_DOTTED_LINE_TO_CUT,(" --------------------------------------------- \r\n"));
+	EXPECT_EQ(GetDistanceBetweenNode(3,2), 10);
+	INSERT(LogDebug)(USE_DOTTED_LINE_TO_CUT,(" --------------------------------------------- \r\n"));
+	EXPECT_EQ(GetDistanceBetweenNode(3,1), 17);
+	INSERT(LogDebug)(USE_DOTTED_LINE_TO_CUT,(" --------------------------------------------- \r\n"));
+	
 	WaveTransDeInit();
 }
 
