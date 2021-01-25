@@ -1,29 +1,7 @@
-#include "../../../google_test/include/gtest/include/gtest/gtest.h"
-#include "../../../google_test/include/include/gmock/gmock.h"
+#include "node_test.h"
 #include <iostream>
 using namespace std;
 
-#if (USE_TDD_MOCK != 0)
-	#define MOCKABLE(method)  mockable_##method
-#else
-	#define MOCKABLE(method)  method
-#endif
-
-#include "../node_interconnect.h"
-
-/*
-
-#if (SEGGER_RTT_DEBUG == 0)
-	#ifdef DEBUG 
-		#error [will take the risk that marco "DEBUG" cause hardfault in product !!!]
-	#endif
-#else 
-	#ifndef DEBUG 
-		#warning [will miss more detail when fatal error occur if disable marco "DEBUG"]
-	#endif
-#endif
-
-*/
 static uint16_t node_handle_called_cnt = 0;
 static X_Boolean NodeHandle(s_node_handler message)
 {
@@ -152,10 +130,100 @@ TEST(node,add3)
 
 }
 
+
+TEST(node,add15)
+{
+	uint8_t i;
+	X_Boolean isRun = X_True;
+	s_node_manager *p_manager;
+	node_handle_called_cnt = 0;
+	p_manager = WaveTransInit();
+
+	static s_node_manager node_1,node_2,node_3,node_4,node_5,node_6,node_7,node_8,node_9,node_10,node_11,node_12,node_13,node_14,node_15;
+	static s_node_manager *node_array[15] = {&node_1,&node_2,&node_3,&node_4,&node_5,&node_6,&node_7,&node_8
+											,&node_9,&node_10,&node_11,&node_12,&node_13,&node_14,&node_15};
+	node_1.p_node = &node1;
+	//m_node1.p_node->node_name	  			= "node1"; 
+	node_1.p_node->node_number  			= 1;
+	node_1.p_node->forware_node		 	= INVALID_NODE_NUM;
+	node_1.p_node->backward_node 			= 2;
+	node_1.p_node->node_handle   			= NodeHandle;
+	node_1.p_node->node_message_num 		= 0;
+	node_1.p_node->node_message.wave_num   = 8;
+
+	
+	node_2.p_node =  &node1;
+	node_3.p_node =  &node1;
+	node_4.p_node =  &node1;
+	node_5.p_node =  &node1;
+	node_6.p_node =  &node1;
+	node_7.p_node =  &node1;
+	node_8.p_node =  &node1;
+	node_9.p_node =  &node1;
+	node_10.p_node =  &node1;
+	node_11.p_node =  &node1;
+	node_12.p_node =  &node1;
+	node_13.p_node =  &node1;
+	node_14.p_node =  &node1;
+	node_15.p_node =  &node1;
+	
+	
+
+	for(i=0;i<15;i++)
+	{
+		NodeAdd(p_manager,node_array[i]);
+		//NodeAdd(p_manager,&node_1);
+	}
+
+	while(isRun == X_True)
+	{
+		isRun = RunNodeCommunicationProcess();
+	}
+	
+	EXPECT_EQ(node_handle_called_cnt, 15);
+	EXPECT_EQ(GetNodeNum(), 15);
+
+}
+/*
+TEST(node,add15_same)  // can not add the same node_manager 
+{
+	uint8_t i;
+	X_Boolean isRun = X_True;
+	s_node_manager *p_manager;
+	node_handle_called_cnt = 0;
+	p_manager = WaveTransInit();
+
+	static s_node_manager node_1;
+
+	node_1.p_node = &node1;
+	//m_node1.p_node->node_name	  			= "node1"; 
+	node_1.p_node->node_number  			= 1;
+	node_1.p_node->forware_node		 	= INVALID_NODE_NUM;
+	node_1.p_node->backward_node 			= 2;
+	node_1.p_node->node_handle   			= NodeHandle;
+	node_1.p_node->node_message_num 		= 0;
+	node_1.p_node->node_message.wave_num   = 8;	
+
+	for(i=0;i<15;i++)
+	{
+		NodeAdd(p_manager,&node_1);
+	}
+
+	while(isRun == X_True)
+	{
+		isRun = RunNodeCommunicationProcess();
+	}
+	
+	EXPECT_EQ(node_handle_called_cnt, 15);
+	EXPECT_EQ(GetNodeNum(), 15);
+
+}
+*/
+
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------note interconnect_test from node_test.cc \r\n";
   testing::InitGoogleTest(&argc, argv);
-  //testing::FLAGS_gtest_filter = "Protocol_recv.find_headers_0";
+  //testing::FLAGS_gtest_filter = "node.add15_same";
   return RUN_ALL_TESTS();
 }
 

@@ -5,7 +5,7 @@
 #define MAX_NODE_NUM  100
 #include "../../../module/common/InsertLog/InsertLogDebug.h"
 
-#define NODE_NUM_DEBUG 1
+#define NODE_NUM_DEBUG 0
 
 typedef enum
 {
@@ -80,7 +80,7 @@ static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 {
 	uint16_t i;
-	p_node_handle p_handle[10];
+	p_node_handle p_handle[100];
 	s_node_manager *p_next;
 	sParamExtern * p_ext = (sParamExtern *)p_this;
 	INSERT(LogDebug)(NODE_NUM_DEBUG,("node num is %d\r\n",p_ext ->node_num));
@@ -91,12 +91,11 @@ static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 		p_handle[i] = p_next ->p_node ->node_handle;
 		p_next = p_next ->p_next;
 	}
-
+	
 	for(i=0;i<p_ext ->node_num;i++)
 	{
 		if( p_handle[i] != X_Null) {p_handle[i](p_ext ->p_manager ->p_node->node_message);}
 	}
-	
 	
 	return CS_end;
 }
@@ -174,7 +173,7 @@ static uint32_t GetTime(X_Void)
 
 X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node)
 {
-	//uint16_t i;
+	uint16_t i;
 	s_node_manager *p_next;
 	if(p_manager == X_Null || p_new_node == X_Null) {return X_False;}
 	p_new_node ->flag = NF_end_node;
@@ -190,8 +189,9 @@ X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node)
 	}
 	else
 	{
+		i = 1;
 		p_next = p_manager;
-		while(1)
+		while(1 && i< MAX_NODE_NUM)
 		{
 			if(p_next ->flag == NF_end_node)
 			{
@@ -202,6 +202,7 @@ X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node)
 			}
 			if(p_next ->p_next == X_Null) {return X_False;}// inter_node must have the next node
 			p_next = p_next ->p_next;//get next
+			i++;
 		}
 
 	}
