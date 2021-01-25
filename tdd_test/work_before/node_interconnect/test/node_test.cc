@@ -4,7 +4,7 @@ using namespace std;
 
 static uint16_t node_handle_called_cnt = 0;
 
-static X_Boolean NodeHandle(_s_node_manager *p_manager,s_node *p_cur_node)
+static X_Boolean NodeHandle(_s_node_manager *p_manager,uint8_t current_node_num)
 {
 	node_handle_called_cnt++;
 	//EXPECT_EQ(message.wave_num, 8);

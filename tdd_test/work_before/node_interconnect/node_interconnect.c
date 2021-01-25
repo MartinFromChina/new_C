@@ -32,6 +32,7 @@ typedef struct
 	X_Boolean 					isStateRun;
 	s_node_manager *            p_manager;
 	uint16_t 					node_num;
+	uint16_t 					wait_time;
 }sParamExtern;
 
 static sParamExtern sPE;
@@ -133,14 +134,22 @@ static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 	
 	for(i=0;i<p_ext ->node_num;i++)
 	{
-		if( p_handle[i] != X_Null) {p_handle[i](p_ext ->p_manager,p_ext ->p_manager->p_node);}
+		if( p_handle[i] != X_Null) {p_handle[i](p_ext ->p_manager,0);}
 	}
-
+	
+	INSERT(LogDebug)(WAVE_TRANS_DEBUG,("used queue node num %d\r\n",BH_GetPriorityQueueUsedNodeNum(p_queue)));
+	INSERT(LogDebug)(WAVE_TRANS_DEBUG,("min node prio is  %d\r\n",BH_PriorityQueueFindMin(p_queue,&p_base)));
+	
 	node_priority = BH_PriorityQueueReleaseMin(p_queue,&p_base);
+	//INSERT(LogDebug)(WAVE_TRANS_DEBUG,("...node_priority is %d vs %d\r\n",node_priority,p_base->priority));
 
-	if(node_priority != 65535)
+	if(node_priority != INVALID_PRIOQUEUE_PRIORITY)
 	{
 		INSERT(LogDebug)(WAVE_TRANS_DEBUG,("node_priority is %d vs %d\r\n",node_priority,p_base->priority));
+		p_ext ->wait_time = node_priority;
+		s_element_extern * p_elem_ext = (s_element_extern *)p_base;
+		p_ext ->node_num  = p_elem_ext ->other_info;
+		return CS_node_receive;
 	}
 	else
 	{
@@ -151,8 +160,14 @@ static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 }
 static StateNumber CS_node_receiveAction(s_StateMachineParam *p_this)
 {
+	uint16_t sys_time;
 	sParamExtern * p_ext = (sParamExtern *)p_this;
-	UNUSED_PARAMETER(p_ext);
+	sys_time = GetTime();
+	if(sys_time >= p_ext ->wait_time)
+	{
+		p_ext ->p_manager ->handle(p_ext ->p_manager,p_ext ->node_num);
+		return CS_transmation;
+	}
 	return p_this->current_state;
 }
 static StateNumber CS_node_sendAction(s_StateMachineParam *p_this)
@@ -361,7 +376,20 @@ uint16_t GetDistanceBetweenNode(uint8_t node_num1,uint8_t node_num2)
 
 X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,s_wave *p_wave)
 {
-	s_ee[node_num].base.priority = 5;
-	BH_PriorityQueueInsert(p_queue,&s_ee[node_num].base);
+	//s_element_base *p_base;
+	//uint16_t node_priority0;
+	s_ee[node_num].base.priority = 7;
+	s_ee[node_num].other_info    = 2;
+	if(BH_PriorityQueueInsert(p_queue,&s_ee[node_num].base) != 7){INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" insert failed\r\n"));}
+	else {INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" insert successed\r\n"));}
+	s_ee[node_num + 1].base.priority = 17;
+	s_ee[node_num + 1].other_info    = 3;
+	if(BH_PriorityQueueInsert(p_queue,&s_ee[node_num + 1].base) != 17){INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" insert failed again\r\n"));}
+
+
+	//node_priority0 = BH_PriorityQueueReleaseMin(p_queue,&p_base);
+	//INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" node_priority %d\r\n",node_priority0));
+	//node_priority0 = BH_PriorityQueueReleaseMin(p_queue,&p_base);
+	//INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" node_priority %d\r\n",node_priority0));
 	return X_True;
 }

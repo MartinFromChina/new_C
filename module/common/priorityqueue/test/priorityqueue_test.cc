@@ -768,7 +768,7 @@ TEST(BH_prio_queue,destory)
 	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueReleaseMin(p_s1,&p_base));
 }
 
-TEST(BH_prio_queue,null_pointer)
+/*TEST(BH_prio_queue,null_pointer)
 {
 	X_PriorityQueue *p_s1;
 	s_element_base *temp_p_base;
@@ -814,7 +814,7 @@ TEST(BH_prio_queue,null_pointer)
 	BH_PriorityQueueDestory(&p_s1);
 	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert(p_s1,&s_ee[0].base));
 
-}
+}*/
 
 TEST(BH_prio_queue,mul_entry)
 {

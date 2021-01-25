@@ -198,7 +198,7 @@ CURRENT_PRIORITY		BH_PriorityQueueFindMin(X_PriorityQueue * H,s_element_base ** 
 	if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
 	if(H ->current_size == 0) {return INVALID_PRIOQUEUE_PRIORITY;}
 	if(pp_base == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
-	if(*pp_base == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
+	//if(*pp_base == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
 	//printf(" ------------p_base not load: priority %d\r\n",(*pp_base) ->priority); // now the pp_base maybe null,carefully
     *pp_base = H ->p_base[1];
 	//printf(" ------------p_base load: priority %d\r\n",(*pp_base) ->priority);
@@ -212,7 +212,7 @@ CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue * H,s_element_base
 	if(H == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
 	if(H ->current_size == 0) {return INVALID_PRIOQUEUE_PRIORITY;}
 	if(pp_base == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
-	if(*pp_base == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
+	//if(*pp_base == X_Null) {return INVALID_PRIOQUEUE_PRIORITY;}
 	
 	*pp_base = H ->p_base[1];
 	p_base_prio_last = H ->p_base[H ->current_size --];
