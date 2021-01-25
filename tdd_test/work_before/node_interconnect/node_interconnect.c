@@ -5,6 +5,8 @@
 #define MAX_NODE_NUM  100
 #include "../../../module/common/InsertLog/InsertLogDebug.h"
 
+#define NODE_NUM_DEBUG 1
+
 typedef enum
 {
 	ED_forward,
@@ -52,14 +54,16 @@ static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 	s_node_manager *p_next;
 	sParamExtern * p_ext = (sParamExtern *)p_this;
 	p_ext ->node_num = 0;
-	if(p_ext ->p_manager ->flag == NF_end_node || p_ext ->p_manager ->flag == NF_idle)
+	if( p_ext ->p_manager ->flag == NF_idle)
 	{
 		p_ext ->node_num = 0;
+		INSERT(LogDebug)(NODE_NUM_DEBUG,("no node\r\n"));
 		return  CS_end;
 	}
+	p_ext ->node_num = 1;
 	if(p_ext ->p_manager ->p_next == X_Null) 
 	{	
-		p_ext ->node_num = 1;
+		INSERT(LogDebug)(NODE_NUM_DEBUG,("one node\r\n"));
 		return CS_transmation;
 	}
 	p_next = p_ext ->p_manager ->p_next;
@@ -67,6 +71,7 @@ static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 	for(i=0 ;i < MAX_NODE_NUM  ;i++)
 	{	
 		p_ext ->node_num ++;
+		INSERT(LogDebug)(NODE_NUM_DEBUG,("another node found ; total node num %d\r\n",p_ext ->node_num));
 		if(p_next ->p_next == X_Null) {break;}
 		p_next = p_next ->p_next;
 	}
@@ -74,13 +79,25 @@ static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 }
 static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 {
-	p_node_handle p_handle;
+	uint16_t i;
+	p_node_handle p_handle[10];
+	s_node_manager *p_next;
 	sParamExtern * p_ext = (sParamExtern *)p_this;
-	INSERT(LogDebug)(1,("node num is %d\r\n",p_ext ->node_num));
+	INSERT(LogDebug)(NODE_NUM_DEBUG,("node num is %d\r\n",p_ext ->node_num));
+
+	p_next = p_ext ->p_manager;
+	for(i=0;i<p_ext ->node_num;i++)
+	{
+		p_handle[i] = p_next ->p_node ->node_handle;
+		p_next = p_next ->p_next;
+	}
+
+	for(i=0;i<p_ext ->node_num;i++)
+	{
+		if( p_handle[i] != X_Null) {p_handle[i](p_ext ->p_manager ->p_node->node_message);}
+	}
 	
-	p_handle = p_ext ->p_manager ->p_node ->node_handle;
 	
-	if( p_handle != X_Null) {p_handle(p_ext ->p_manager ->p_node->node_message);}
 	return CS_end;
 }
 static StateNumber CS_node_receiveAction(s_StateMachineParam *p_this)
@@ -147,6 +164,7 @@ s_node_manager *WaveTransInit(X_Void)
 	manager.flag  = NF_idle;
 	sPE.p_manager = &manager;
 	sPE.isStateRun = X_True;
+	mStateMachineStateSet(p_state,CS_Idle);
 	return sPE.p_manager;
 }
 static uint32_t GetTime(X_Void)
@@ -164,21 +182,22 @@ X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node)
 	
 	if(p_manager ->flag == NF_idle)
 	{
-		p_manager ->flag = NF_first_node;
+		p_manager ->flag = NF_end_node;
 		p_manager ->p_node = p_new_node ->p_node;
 		p_manager ->p_next = (s_node_manager*)0;
+		INSERT(LogDebug)(NODE_NUM_DEBUG,("add header node \r\n"));
 		return X_True;
 	}
 	else
 	{
-		if(p_manager ->p_next == X_Null || p_manager ->flag == NF_end_node) {return X_False;}// first node can't be null
-		p_next = p_manager ->p_next;//get the second node
+		p_next = p_manager;
 		while(1)
 		{
 			if(p_next ->flag == NF_end_node)
 			{
 				p_next ->flag = NF_inter_node;
 				p_next ->p_next = p_new_node;
+				INSERT(LogDebug)(NODE_NUM_DEBUG,("add new node\r\n"));
 				return X_True;
 			}
 			if(p_next ->p_next == X_Null) {return X_False;}// inter_node must have the next node
@@ -186,4 +205,9 @@ X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node)
 		}
 
 	}
+}
+
+uint16_t GetNodeNum(X_Void)
+{
+	return sPE.node_num;
 }

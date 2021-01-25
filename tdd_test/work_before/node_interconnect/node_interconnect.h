@@ -40,7 +40,6 @@ typedef struct
 typedef enum
 {
 	NF_idle,
-	NF_first_node,
 	NF_inter_node,
 	NF_end_node,
 
@@ -58,8 +57,7 @@ typedef struct _s_node_manager
 X_Boolean RunNodeCommunicationProcess(X_Void);
 s_node_manager * WaveTransInit(X_Void);
 X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node);
-
-
+uint16_t GetNodeNum(X_Void);
 
 #ifdef __cplusplus
 		}
