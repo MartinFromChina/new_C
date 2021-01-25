@@ -88,13 +88,13 @@ static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 	p_next = p_ext ->p_manager;
 	for(i=0;i<p_ext ->node_num;i++)
 	{
-		p_handle[i] = p_next ->p_node ->node_handle;
+		p_handle[i] = p_next ->p_node ->handle;
 		p_next = p_next ->p_next;
 	}
 	
 	for(i=0;i<p_ext ->node_num;i++)
 	{
-		if( p_handle[i] != X_Null) {p_handle[i](p_ext ->p_manager ->p_node->node_info);}
+		if( p_handle[i] != X_Null) {p_handle[i](p_ext ->p_manager ->p_node,p_ext ->p_manager->p_node->node_info);}
 	}
 
 	node_priority = BH_PriorityQueueReleaseMin(p_queue,&p_base);
@@ -225,7 +225,7 @@ uint16_t GetNodeNum(X_Void)
 {
 	return sPE.node_num;
 }
-X_Boolean SendWave(uint32_t sys_time,uint8_t node_num,s_wave *p_wave)
+X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,s_wave *p_wave)
 {
 	s_ee[node_num].base.priority = 5;
 	BH_PriorityQueueInsert(p_queue,&s_ee[node_num].base);

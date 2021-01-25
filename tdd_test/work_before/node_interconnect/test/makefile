@@ -33,11 +33,12 @@ node_interconnect.o :../node_interconnect.c   ../node_interconnect.h
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
             -c ../node_interconnect.c
 
-node_trans_test.o : node_trans_test.cc   #../ProtocolRecv.h    ../../../common/StateMachine/StateMachine.h 
+node_trans_test.o : node_trans_test.cc  node_test.h #../ProtocolRecv.h    ../../../common/StateMachine/StateMachine.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
             -c node_trans_test.cc
-node_test.o : node_test.cc   #../ProtocolRecv.h    ../../../common/StateMachine/StateMachine.h 
+node_test.o : node_test.cc  node_test.h ../node_interconnect.h  #  ../../../common/StateMachine/StateMachine.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
             -c node_test.cc
 						
-clean:node_test.o node_interconnect.o  node.o StateMachine.o InsertLogDebug.o node_trans_test.o priority_queues.o bit_operation.o 
+clean:
+	rm node_test.o node_interconnect.o  node.o StateMachine.o InsertLogDebug.o node_trans_test.o priority_queues.o bit_operation.o 

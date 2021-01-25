@@ -1,5 +1,10 @@
 #include "node_test.h"
 
+static X_Boolean NodeRecvHandle(_s_node *p_node,s_node_handler message)
+{
+
+}
+
 TEST(trans,init)
 {
 	uint8_t i;
@@ -14,14 +19,14 @@ TEST(trans,init)
 	node_1.p_node->node_number  			= 1;
 	node_1.p_node->forware_node		 	= INVALID_NODE_NUM;
 	node_1.p_node->backward_node 			= 2;
-	node_1.p_node->node_handle   			= (p_node_handle)0;
+	node_1.p_node->handle   			= NodeRecvHandle;
 	node_1.p_node->node_message_num 		= 0;
 
 	s_wave wave ;
 
 	NodeAdd(p_manager,&node_1);
 
-	SendWave(GetTime(),1,&wave);
+	SendWave(p_manager,GetTime(),1,&wave);
 
 	while(isRun == X_True)
 	{

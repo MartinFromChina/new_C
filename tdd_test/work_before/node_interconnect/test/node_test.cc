@@ -3,7 +3,8 @@
 using namespace std;
 
 static uint16_t node_handle_called_cnt = 0;
-static X_Boolean NodeHandle(s_node_handler message)
+
+static X_Boolean NodeHandle(_s_node *p_node,s_node_handler message)
 {
 	node_handle_called_cnt++;
 	//EXPECT_EQ(message.wave_num, 8);
@@ -25,7 +26,7 @@ TEST(node,add1)
 	m_node1.p_node->node_number  			= 1;
 	m_node1.p_node->forware_node		 	= INVALID_NODE_NUM;
 	m_node1.p_node->backward_node 			= 2;
-	m_node1.p_node->node_handle   			= NodeHandle;
+	m_node1.p_node->handle   		= NodeHandle;
 	m_node1.p_node->node_message_num 		= 0;
 
 	
@@ -53,7 +54,7 @@ TEST(node,add2)
 	m_node1.p_node->node_number  			= 1;
 	m_node1.p_node->forware_node		 	= INVALID_NODE_NUM;
 	m_node1.p_node->backward_node 			= 2;
-	m_node1.p_node->node_handle   			= NodeHandle;
+	m_node1.p_node->handle   			= NodeHandle;
 	m_node1.p_node->node_message_num 		= 0;
 
 	m_node2.p_node = &node2;
@@ -61,7 +62,7 @@ TEST(node,add2)
 	m_node2.p_node->node_number  			= 2;
 	m_node2.p_node->forware_node		 	= 1;
 	m_node2.p_node->backward_node 			= INVALID_NODE_NUM;
-	m_node2.p_node->node_handle   			= NodeHandle;
+	m_node2.p_node->handle   			= NodeHandle;
 	m_node2.p_node->node_message_num 		= 0;
 
 	
@@ -90,7 +91,7 @@ TEST(node,add3)
 	m_node1.p_node->node_number  			= 1;
 	m_node1.p_node->forware_node		 	= INVALID_NODE_NUM;
 	m_node1.p_node->backward_node 			= 2;
-	m_node1.p_node->node_handle   			= NodeHandle;
+	m_node1.p_node->handle   			= NodeHandle;
 	m_node1.p_node->node_message_num 		= 0;
 
 	m_node2.p_node = &node2;
@@ -98,7 +99,7 @@ TEST(node,add3)
 	m_node2.p_node->node_number  			= 2;
 	m_node2.p_node->forware_node		 	= 1;
 	m_node2.p_node->backward_node 			= INVALID_NODE_NUM;
-	m_node2.p_node->node_handle   			= NodeHandle;
+	m_node2.p_node->handle   			= NodeHandle;
 	m_node2.p_node->node_message_num 		= 0;
 
 	m_node3.p_node = &node3;
@@ -106,7 +107,7 @@ TEST(node,add3)
 	m_node3.p_node->node_number  			= 2;
 	m_node3.p_node->forware_node		 	= 1;
 	m_node3.p_node->backward_node 			= INVALID_NODE_NUM;
-	m_node3.p_node->node_handle   			= NodeHandle;
+	m_node3.p_node->handle   			= NodeHandle;
 	m_node3.p_node->node_message_num 		= 0;
 
 	
@@ -141,7 +142,7 @@ TEST(node,add15)
 	node_1.p_node->node_number  			= 1;
 	node_1.p_node->forware_node		 	= INVALID_NODE_NUM;
 	node_1.p_node->backward_node 			= 2;
-	node_1.p_node->node_handle   			= NodeHandle;
+	node_1.p_node->handle   			= NodeHandle;
 	node_1.p_node->node_message_num 		= 0;
 
 	
@@ -193,7 +194,7 @@ TEST(node,add15_same)  // can not add the same node_manager
 	node_1.p_node->node_number  			= 1;
 	node_1.p_node->forware_node		 	= INVALID_NODE_NUM;
 	node_1.p_node->backward_node 			= 2;
-	node_1.p_node->node_handle   			= NodeHandle;
+	node_1.p_node->handle   			= NodeHandle;
 	node_1.p_node->node_message_num 		= 0;
 
 	for(i=0;i<15;i++)
