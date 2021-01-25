@@ -7,7 +7,8 @@
 
 #define MAX_NODE_NUM  100
 
-#define NODE_NUM_DEBUG 				0
+#define NODE_NUM_DEBUG 			    0
+#define NODE_ADD_DEBUG 			    0
 #define WAVE_TRANS_DEBUG 			1
 
 
@@ -48,7 +49,7 @@ typedef enum
 static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 {
 	uint16_t i;
-	s_node_manager *p_next;
+	s_node_manager *p_next,*p_previous;
 	
 	sParamExtern * p_ext = (sParamExtern *)p_this;
 	p_ext ->node_num = 0;
@@ -73,6 +74,42 @@ static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 		if(p_next ->p_next == X_Null) {break;}
 		p_next = p_next ->p_next;
 	}
+	
+	#if (NODE_ADD_DEBUG != 0)
+	p_next = p_ext ->p_manager;
+	p_previous = p_next ->p_previous;
+	for(i=0 ;i < p_ext ->node_num  ;i++)
+	{
+		
+		if(p_next != X_Null)
+		{
+			if(p_next ->p_node == X_Null) {break;}
+			INSERT(LogDebug)(NODE_ADD_DEBUG,(" --------node num : %2x ; previous node %2x , distance %d ;next node :%2x , distance %d\r\n"
+										,p_next ->p_node ->node_number
+										,p_next ->p_node ->forware_node,p_next ->p_node ->forware_distance
+										,p_next ->p_node ->backward_node,p_next ->p_node ->backward_distance));
+		}
+		
+		if(p_previous != X_Null)
+		{
+			//if(p_previous ->p_node == X_Null) {break;}
+			INSERT(LogDebug)(NODE_ADD_DEBUG,(" !!!previous node %2x , distance %d ;\r\n"
+								,p_previous ->p_node ->node_number,p_previous ->p_node ->backward_distance));
+		}
+		
+		if(p_next ->p_next != X_Null)
+		{
+			//if(p_next->p_next->p_node == X_Null) {break;}
+			INSERT(LogDebug)(NODE_ADD_DEBUG,(" !!!next node :%2x , distance %d\r\n"
+								,p_next ->p_next ->p_node ->node_number,p_next ->p_next ->p_node ->forware_distance));
+		}
+		
+		INSERT(LogDebug)(NODE_ADD_DEBUG,("\r\n"));
+		if(p_next != X_Null) {p_next = p_next ->p_next;}
+		if(p_next != X_Null) {p_previous = p_next ->p_previous;}
+	}
+	#endif
+	
 	return CS_transmation;
 }
 static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
@@ -163,6 +200,7 @@ static s_node_manager manager
 	(s_node*)0,
 	(p_node_handle)0,
 	(s_node_manager*)0,
+	(s_node_manager*)0,
 };
 
 s_node_manager *WaveTransInit(p_node_handle handle)
@@ -178,7 +216,17 @@ s_node_manager *WaveTransInit(p_node_handle handle)
 }
 X_Void WaveTransDeInit(X_Void)
 {
+	uint16_t i;
+	s_node_manager *p_next;
 	BH_PriorityQueueDestory(&p_queue);
+	
+	p_next = &manager;
+	for(i=0 ;i < MAX_NODE_NUM  ;i++)
+	{	
+		p_next ->flag = NF_idle;
+		if(p_next ->p_next == X_Null) {break;}
+		p_next = p_next ->p_next;
+	}
 }
 
 uint32_t GetTime(X_Void)
@@ -191,16 +239,29 @@ X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node)
 	uint16_t i;
 	s_node_manager *p_next;
 	if(p_manager == X_Null || p_new_node == X_Null) {return X_False;}
+	if(p_new_node ->p_node ->forware_distance == 0 ){return X_False;}
 	p_new_node ->flag = NF_end_node;
 	p_new_node ->handle = p_manager ->handle;
 	p_new_node ->p_next = (s_node_manager*)0;
+
+	//p_new_node ->p_node ->forware_node 		= 
+	//p_new_node ->p_node ->forware_distance 	= 
+	p_new_node ->p_node ->backward_node 	= INVALID_NODE_NUM;
+	p_new_node ->p_node ->backward_distance = INVALID_NODE_DISTANCE;
+	p_new_node ->p_node ->current_hold_wave = 0;
 	
 	if(p_manager ->flag == NF_idle)
 	{
 		p_manager ->flag = NF_end_node;
-		p_manager ->p_node = p_new_node ->p_node;
+		p_manager ->p_previous = (s_node_manager*)0;
 		p_manager ->p_next = (s_node_manager*)0;
-		INSERT(LogDebug)(NODE_NUM_DEBUG,("add header node \r\n"));
+		p_manager ->p_node = p_new_node ->p_node;
+		p_manager ->p_node ->forware_node 			= INVALID_NODE_NUM;
+		p_manager ->p_node ->backward_node 			= INVALID_NODE_NUM;
+		p_manager ->p_node ->forware_distance		= INVALID_NODE_DISTANCE;
+		p_manager ->p_node ->backward_distance 		= INVALID_NODE_DISTANCE;
+		p_manager ->p_node ->current_hold_wave      = 0;
+		INSERT(LogDebug)(NODE_NUM_DEBUG | NODE_ADD_DEBUG,("add header node %d\r\n",p_new_node ->p_node ->node_number));
 		return X_True;
 	}
 	else
@@ -213,7 +274,17 @@ X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node)
 			{
 				p_next ->flag = NF_inter_node;
 				p_next ->p_next = p_new_node;
-				INSERT(LogDebug)(NODE_NUM_DEBUG,("add new node\r\n"));
+				//p_next ->p_previous // unchanged
+				//p_next ->p_node ->forware_node 			= unchange;
+				//p_next ->p_node ->forware_distance		= unchange;
+				p_next ->p_node ->backward_distance		= p_new_node ->p_node ->forware_distance;
+				p_next ->p_node ->backward_node         = p_new_node ->p_node ->node_number;
+				
+				p_new_node ->p_previous = p_next;
+				p_new_node ->p_node ->forware_node 			= p_next ->p_node ->node_number;
+				//p_new_node ->p_node ->forware_distance    = unchange;
+				
+				INSERT(LogDebug)(NODE_NUM_DEBUG |NODE_ADD_DEBUG,("add new node %d\r\n",p_new_node ->p_node ->node_number));
 				return X_True;
 			}
 			if(p_next ->p_next == X_Null) {return X_False;}// inter_node must have the next node
@@ -228,6 +299,11 @@ uint16_t GetNodeNum(X_Void)
 {
 	return sPE.node_num;
 }
+X_Boolean SetDistanceBetweenNode(uint8_t node_num1,uint8_t node_num2)
+{
+
+}
+
 X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,s_wave *p_wave)
 {
 	s_ee[node_num].base.priority = 5;

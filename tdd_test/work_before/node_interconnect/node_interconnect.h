@@ -9,7 +9,11 @@
 #include "../../../module/common/x_cross_platform.h"
 
 #define INVALID_NODE_NUM (0xFF)
+#define INVALID_NODE_DISTANCE (0xFFFF)
+
 #define MAX_WAVE_FRAME_LENGTH  50
+#define MAX_WAVE_ONE_NODE_HOLD  10
+
 
 
 #define USE_INSERT_DEBUG 1
@@ -27,29 +31,6 @@ typedef enum
 	ED_bidirection,
 }e_direction;
 
-typedef struct
-{
-	e_direction direct;
-	uint16_t max_trans_distance;// speed is 1 unit trans_distance/s, so after max_trans_distance's seconds , the wave is disapper
-	uint8_t content_length;
-	uint8_t context[MAX_WAVE_FRAME_LENGTH];
-}s_wave;
-
-typedef struct
-{
-	uint8_t wave_num;
-}s_node_handler;
-
-
-typedef struct _s_node
-{
- 	uint8_t node_number;
-	uint8_t forware_node;
-	uint8_t backward_node;
-	s_node_handler node_info;
-	uint8_t node_message_num;
-}s_node;
-
 typedef enum
 {
 	NF_idle,
@@ -58,24 +39,45 @@ typedef enum
 }e_node_flag;
 
 
+typedef struct
+{
+	X_Boolean isDisapper;
+	e_direction direct;
+	uint16_t max_trans_distance;// speed is 1 unit trans_distance/s, so after max_trans_distance's seconds , the wave is disapper
+	uint8_t content_length;
+	uint8_t context[MAX_WAVE_FRAME_LENGTH];
+}s_wave;
+
+typedef struct _s_node
+{
+ 	uint8_t node_number;
+	uint8_t forware_node;
+	uint16_t  forware_distance;
+	uint8_t backward_node;
+	uint16_t  backward_distance;
+	uint8_t current_hold_wave;
+	s_wave  wave_trans[MAX_WAVE_ONE_NODE_HOLD];
+}s_node;
+
 typedef struct _s_node_manager
 {
 	e_node_flag 		flag;
 	s_node 				*p_node;
 	X_Boolean (*handle)(_s_node_manager *p_manager,s_node *p_cur_node);
+	_s_node_manager 	*p_previous;
 	_s_node_manager 	*p_next;
 }s_node_manager;
 
 typedef X_Boolean (*p_node_handle)(_s_node_manager *p_manager,s_node *p_cur_node);
 
-X_Boolean RunNodeCommunicationProcess(X_Void);
-s_node_manager * WaveTransInit(p_node_handle handle);
-X_Void WaveTransDeInit(X_Void);
-
-X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node);
-uint16_t GetNodeNum(X_Void);
-uint32_t GetTime(X_Void);
-X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,s_wave *p_wave);
+s_node_manager * 	WaveTransInit(p_node_handle handle);
+X_Void 				WaveTransDeInit(X_Void);
+X_Boolean 			RunNodeCommunicationProcess(X_Void);
+X_Boolean 			NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node);
+uint16_t 			GetNodeNum(X_Void);
+X_Boolean 			SetDistanceBetweenNode(uint8_t node_num1,uint8_t node_num2);
+uint32_t 			GetTime(X_Void);
+X_Boolean 			SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,s_wave *p_wave);
 
 
 #ifdef __cplusplus

@@ -22,11 +22,8 @@ TEST(node,add1)
 	p_manager = WaveTransInit(NodeHandle);
 
 	m_node1.p_node = &node1;
-	//m_node1.p_node->node_name	  			= "node1"; 
 	m_node1.p_node->node_number  			= 1;
-	m_node1.p_node->forware_node		 	= INVALID_NODE_NUM;
-	m_node1.p_node->backward_node 			= 2;
-	m_node1.p_node->node_message_num 		= 0;
+	node1.forware_distance                  = 1;
 
 	
 	NodeAdd(p_manager,&m_node1);
@@ -49,18 +46,13 @@ TEST(node,add2)
 	p_manager = WaveTransInit(NodeHandle);
 
 	m_node1.p_node = &node1;
-	//m_node1.p_node->node_name	  			= "node1"; 
 	m_node1.p_node->node_number  			= 1;
-	m_node1.p_node->forware_node		 	= INVALID_NODE_NUM;
-	m_node1.p_node->backward_node 			= 2;
-	m_node1.p_node->node_message_num 		= 0;
+	node1.forware_distance					= 1;
 
 	m_node2.p_node = &node2;
-	//m_node1.p_node->node_name	  			= "node1"; 
 	m_node2.p_node->node_number  			= 2;
-	m_node2.p_node->forware_node		 	= 1;
-	m_node2.p_node->backward_node 			= INVALID_NODE_NUM;
-	m_node2.p_node->node_message_num 		= 0;
+	node2.forware_distance					= 1;
+
 
 	
 	NodeAdd(p_manager,&m_node1);
@@ -84,25 +76,17 @@ TEST(node,add3)
 	p_manager = WaveTransInit(NodeHandle);
 
 	m_node1.p_node = &node1;
-	//m_node1.p_node->node_name	  			= "node1"; 
 	m_node1.p_node->node_number  			= 1;
-	m_node1.p_node->forware_node		 	= INVALID_NODE_NUM;
-	m_node1.p_node->backward_node 			= 2;
-	m_node1.p_node->node_message_num 		= 0;
+	node1.forware_distance					= 1;
 
 	m_node2.p_node = &node2;
-	//m_node1.p_node->node_name	  			= "node1"; 
 	m_node2.p_node->node_number  			= 2;
-	m_node2.p_node->forware_node		 	= 1;
-	m_node2.p_node->backward_node 			= INVALID_NODE_NUM;
-	m_node2.p_node->node_message_num 		= 0;
+	node2.forware_distance					= 1;
+
 
 	m_node3.p_node = &node3;
-	//m_node1.p_node->node_name	  			= "node1"; 
 	m_node3.p_node->node_number  			= 2;
-	m_node3.p_node->forware_node		 	= 1;
-	m_node3.p_node->backward_node 			= INVALID_NODE_NUM;
-	m_node3.p_node->node_message_num 		= 0;
+	node3.forware_distance					= 1;
 
 	
 	NodeAdd(p_manager,&m_node1);
@@ -132,12 +116,8 @@ TEST(node,add15)
 	static s_node_manager *node_array[15] = {&node_1,&node_2,&node_3,&node_4,&node_5,&node_6,&node_7,&node_8
 											,&node_9,&node_10,&node_11,&node_12,&node_13,&node_14,&node_15};
 	node_1.p_node = &node1;
-	//m_node1.p_node->node_name	  			= "node1"; 
-	node_1.p_node->node_number  			= 1;
-	node_1.p_node->forware_node		 	= INVALID_NODE_NUM;
-	node_1.p_node->backward_node 			= 2;
-	node_1.p_node->node_message_num 		= 0;
-
+	node1.node_number  			= 1;
+	node1.forware_distance      = 1;
 	
 	node_2.p_node =  &node1;	
 	node_3.p_node =  &node1;	
@@ -186,8 +166,7 @@ TEST(node,add15_same)  // can not add the same node_manager
 	//m_node1.p_node->node_name	  			= "node1"; 
 	node_1.p_node->node_number  			= 1;
 	node_1.p_node->forware_node		 	= INVALID_NODE_NUM;
-	node_1.p_node->backward_node 			= 2;
-	node_1.p_node->node_message_num 		= 0;
+	node_1.p_node->backward_node 			= 2;	
 
 	for(i=0;i<15;i++)
 	{
@@ -208,7 +187,8 @@ TEST(node,add15_same)  // can not add the same node_manager
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------note interconnect_test from node_test.cc \r\n";
   testing::InitGoogleTest(&argc, argv);
-  //testing::FLAGS_gtest_filter = "node.add15_same";
+  //testing::FLAGS_gtest_filter = "trans.init";
+  //testing::FLAGS_gtest_filter = "node.add15";
   return RUN_ALL_TESTS();
 }
 
