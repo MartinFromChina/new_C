@@ -75,6 +75,9 @@ X_Void WaveTransDeInit(X_Void);
 
 X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node);
 uint16_t GetNodeNum(X_Void);
+uint32_t GetTime(X_Void);
+X_Boolean SendWave(uint32_t sys_time,uint8_t node_num,s_wave *p_wave);
+
 
 #ifdef __cplusplus
 		}

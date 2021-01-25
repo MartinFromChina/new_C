@@ -6,7 +6,21 @@
 
 
 #define MAX_NODE_NUM  100
-#define NODE_NUM_DEBUG 0
+
+#define NODE_NUM_DEBUG 				0
+#define WAVE_TRANS_DEBUG 			1
+
+
+static uint32_t time_cnt = 0;
+static X_PriorityQueue *p_queue  = (X_PriorityQueue *)0;
+typedef struct 
+{
+	s_element_base base;
+	uint16_t other_info;
+}s_element_extern;
+
+static s_element_extern s_ee[MAX_NODE_NUM*2];
+
 
 
 typedef struct
@@ -28,9 +42,6 @@ typedef enum
 	CS_end,
 }communication_state;
 
-
-static uint32_t GetTime(X_Void);
-
 /**********************************************************************************************************************************
 			0
 *********************************************************************************************************************************/
@@ -38,6 +49,7 @@ static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 {
 	uint16_t i;
 	s_node_manager *p_next;
+	
 	sParamExtern * p_ext = (sParamExtern *)p_this;
 	p_ext ->node_num = 0;
 	if( p_ext ->p_manager ->flag == NF_idle)
@@ -65,9 +77,11 @@ static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 }
 static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 {
-	uint16_t i;
+	uint16_t i,node_priority;
 	p_node_handle p_handle[100];
 	s_node_manager *p_next;
+	s_element_base *p_base;
+	
 	sParamExtern * p_ext = (sParamExtern *)p_this;
 	INSERT(LogDebug)(NODE_NUM_DEBUG,("node num is %d\r\n",p_ext ->node_num));
 
@@ -81,6 +95,17 @@ static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 	for(i=0;i<p_ext ->node_num;i++)
 	{
 		if( p_handle[i] != X_Null) {p_handle[i](p_ext ->p_manager ->p_node->node_info);}
+	}
+
+	node_priority = BH_PriorityQueueReleaseMin(p_queue,&p_base);
+
+	if(node_priority != 65535)
+	{
+		INSERT(LogDebug)(WAVE_TRANS_DEBUG,("node_priority is %d vs %d\r\n",node_priority,p_base->priority));
+	}
+	else
+	{
+		INSERT(LogDebug)(WAVE_TRANS_DEBUG,("no node in priority queue\r\n"));
 	}
 	
 	return CS_end;
@@ -123,11 +148,6 @@ static X_Void StateJumpRecorder(StateNumber state_going_to_leave,StateNumber sta
 	UNUSED_PARAMETER(state_going_to_enter);
 }
 
-
-
-static uint32_t time_cnt = 0;
-static X_PriorityQueue *p_queue  = (X_PriorityQueue *)0;
-
 X_Boolean RunNodeCommunicationProcess(X_Void)
 {
 	if(sPE.p_manager == X_Null) {return X_False;}
@@ -151,7 +171,7 @@ s_node_manager *WaveTransInit(X_Void)
 	sPE.p_manager = &manager;
 	sPE.isStateRun = X_True;
 	mStateMachineStateSet(p_state,CS_Idle);
-	p_queue = BH_PriorityQueueInit(200);
+	p_queue = BH_PriorityQueueInit(MAX_NODE_NUM*2);
 	return sPE.p_manager;
 }
 X_Void WaveTransDeInit(X_Void)
@@ -159,7 +179,7 @@ X_Void WaveTransDeInit(X_Void)
 	BH_PriorityQueueDestory(&p_queue);
 }
 
-static uint32_t GetTime(X_Void)
+uint32_t GetTime(X_Void)
 {
 	return time_cnt;
 }
@@ -205,7 +225,9 @@ uint16_t GetNodeNum(X_Void)
 {
 	return sPE.node_num;
 }
-X_Boolean SendWave(uint32_t sys_time,uint8_t node_num,s_wave p_wave)
+X_Boolean SendWave(uint32_t sys_time,uint8_t node_num,s_wave *p_wave)
 {
+	s_ee[node_num].base.priority = 5;
+	BH_PriorityQueueInsert(p_queue,&s_ee[node_num].base);
 	return X_True;
 }
