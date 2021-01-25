@@ -48,10 +48,7 @@ typedef struct _s_node
 	uint8_t backward_node;
 	s_node_handler node_info;
 	uint8_t node_message_num;
-	X_Boolean (*handle)(_s_node *p_node,s_node_handler message);
 }s_node;
-
-typedef X_Boolean (*p_node_handle)(_s_node *p_node,s_node_handler message);
 
 typedef enum
 {
@@ -65,12 +62,14 @@ typedef struct _s_node_manager
 {
 	e_node_flag 		flag;
 	s_node 				*p_node;
+	X_Boolean (*handle)(_s_node_manager *p_manager,s_node *p_cur_node);
 	_s_node_manager 	*p_next;
 }s_node_manager;
 
+typedef X_Boolean (*p_node_handle)(_s_node_manager *p_manager,s_node *p_cur_node);
 
 X_Boolean RunNodeCommunicationProcess(X_Void);
-s_node_manager * WaveTransInit(X_Void);
+s_node_manager * WaveTransInit(p_node_handle handle);
 X_Void WaveTransDeInit(X_Void);
 
 X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node);

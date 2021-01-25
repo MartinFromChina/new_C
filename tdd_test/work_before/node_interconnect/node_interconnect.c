@@ -88,13 +88,13 @@ static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 	p_next = p_ext ->p_manager;
 	for(i=0;i<p_ext ->node_num;i++)
 	{
-		p_handle[i] = p_next ->p_node ->handle;
+		p_handle[i] = p_next ->handle;
 		p_next = p_next ->p_next;
 	}
 	
 	for(i=0;i<p_ext ->node_num;i++)
 	{
-		if( p_handle[i] != X_Null) {p_handle[i](p_ext ->p_manager ->p_node,p_ext ->p_manager->p_node->node_info);}
+		if( p_handle[i] != X_Null) {p_handle[i](p_ext ->p_manager,p_ext ->p_manager->p_node);}
 	}
 
 	node_priority = BH_PriorityQueueReleaseMin(p_queue,&p_base);
@@ -161,13 +161,15 @@ static s_node_manager manager
 {
 	NF_idle,
 	(s_node*)0,
+	(p_node_handle)0,
 	(s_node_manager*)0,
 };
 
-s_node_manager *WaveTransInit(X_Void)
+s_node_manager *WaveTransInit(p_node_handle handle)
 {
 	time_cnt = 0;
 	manager.flag  = NF_idle;
+	manager.handle = handle;
 	sPE.p_manager = &manager;
 	sPE.isStateRun = X_True;
 	mStateMachineStateSet(p_state,CS_Idle);
@@ -190,6 +192,7 @@ X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node)
 	s_node_manager *p_next;
 	if(p_manager == X_Null || p_new_node == X_Null) {return X_False;}
 	p_new_node ->flag = NF_end_node;
+	p_new_node ->handle = p_manager ->handle;
 	p_new_node ->p_next = (s_node_manager*)0;
 	
 	if(p_manager ->flag == NF_idle)

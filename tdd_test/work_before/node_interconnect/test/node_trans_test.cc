@@ -1,6 +1,6 @@
 #include "node_test.h"
 
-static X_Boolean NodeRecvHandle(_s_node *p_node,s_node_handler message)
+static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,s_node *p_cur_node)
 {
 
 }
@@ -10,7 +10,7 @@ TEST(trans,init)
 	uint8_t i;
 	X_Boolean isRun = X_True;
 	s_node_manager *p_manager;
-	p_manager = WaveTransInit();
+	p_manager = WaveTransInit(NodeRecvHandle);
 
 	s_node_manager node_1,node_2,node_3;
 	s_node         node1,node2,node3;
@@ -18,8 +18,7 @@ TEST(trans,init)
 	
 	node_1.p_node->node_number  			= 1;
 	node_1.p_node->forware_node		 	= INVALID_NODE_NUM;
-	node_1.p_node->backward_node 			= 2;
-	node_1.p_node->handle   			= NodeRecvHandle;
+	node_1.p_node->backward_node 			= 2;  			
 	node_1.p_node->node_message_num 		= 0;
 
 	s_wave wave ;
