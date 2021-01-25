@@ -1,26 +1,12 @@
 #include "node_interconnect.h"
 
 #include "../../../module/common/StateMachine/StateMachine.h"
+#include "../../../module/common/InsertLog/InsertLogDebug.h"
+#include "../../../module/common/priorityqueue/priority_queues.h"
+
 
 #define MAX_NODE_NUM  100
-#include "../../../module/common/InsertLog/InsertLogDebug.h"
-
 #define NODE_NUM_DEBUG 0
-
-typedef enum
-{
-	ED_forward,
-	ED_backward,
-	ED_bidirection,
-}e_direction;
-
-typedef struct
-{
-	uint16_t start_time;
-	e_direction direct;
-	uint16_t speed;
-	uint16_t max_trans_distance;
-}s_wave;
 
 
 typedef struct
@@ -94,7 +80,7 @@ static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 	
 	for(i=0;i<p_ext ->node_num;i++)
 	{
-		if( p_handle[i] != X_Null) {p_handle[i](p_ext ->p_manager ->p_node->node_message);}
+		if( p_handle[i] != X_Null) {p_handle[i](p_ext ->p_manager ->p_node->node_info);}
 	}
 	
 	return CS_end;
@@ -140,6 +126,7 @@ static X_Void StateJumpRecorder(StateNumber state_going_to_leave,StateNumber sta
 
 
 static uint32_t time_cnt = 0;
+static X_PriorityQueue *p_queue  = (X_PriorityQueue *)0;
 
 X_Boolean RunNodeCommunicationProcess(X_Void)
 {
@@ -164,8 +151,14 @@ s_node_manager *WaveTransInit(X_Void)
 	sPE.p_manager = &manager;
 	sPE.isStateRun = X_True;
 	mStateMachineStateSet(p_state,CS_Idle);
+	p_queue = BH_PriorityQueueInit(200);
 	return sPE.p_manager;
 }
+X_Void WaveTransDeInit(X_Void)
+{
+	BH_PriorityQueueDestory(&p_queue);
+}
+
 static uint32_t GetTime(X_Void)
 {
 	return time_cnt;
@@ -211,4 +204,8 @@ X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node)
 uint16_t GetNodeNum(X_Void)
 {
 	return sPE.node_num;
+}
+X_Boolean SendWave(uint32_t sys_time,uint8_t node_num,s_wave p_wave)
+{
+	return X_True;
 }

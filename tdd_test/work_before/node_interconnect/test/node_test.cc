@@ -6,7 +6,7 @@ static uint16_t node_handle_called_cnt = 0;
 static X_Boolean NodeHandle(s_node_handler message)
 {
 	node_handle_called_cnt++;
-	EXPECT_EQ(message.wave_num, 8);
+	//EXPECT_EQ(message.wave_num, 8);
 	return X_True;
 }
 
@@ -27,7 +27,6 @@ TEST(node,add1)
 	m_node1.p_node->backward_node 			= 2;
 	m_node1.p_node->node_handle   			= NodeHandle;
 	m_node1.p_node->node_message_num 		= 0;
-	m_node1.p_node->node_message.wave_num   = 8;
 
 	
 	NodeAdd(p_manager,&m_node1);
@@ -39,7 +38,7 @@ TEST(node,add1)
 	
 	EXPECT_EQ(node_handle_called_cnt, 1);
 	EXPECT_EQ(GetNodeNum(), 1);
-
+	WaveTransDeInit();
 }
 
 TEST(node,add2)
@@ -56,7 +55,6 @@ TEST(node,add2)
 	m_node1.p_node->backward_node 			= 2;
 	m_node1.p_node->node_handle   			= NodeHandle;
 	m_node1.p_node->node_message_num 		= 0;
-	m_node1.p_node->node_message.wave_num   = 8;
 
 	m_node2.p_node = &node2;
 	//m_node1.p_node->node_name	  			= "node1"; 
@@ -65,7 +63,6 @@ TEST(node,add2)
 	m_node2.p_node->backward_node 			= INVALID_NODE_NUM;
 	m_node2.p_node->node_handle   			= NodeHandle;
 	m_node2.p_node->node_message_num 		= 0;
-	m_node2.p_node->node_message.wave_num   = 8;
 
 	
 	NodeAdd(p_manager,&m_node1);
@@ -78,7 +75,7 @@ TEST(node,add2)
 	
 	EXPECT_EQ(node_handle_called_cnt, 2);
 	EXPECT_EQ(GetNodeNum(), 2);
-
+	WaveTransDeInit();
 }
 
 TEST(node,add3)
@@ -95,7 +92,6 @@ TEST(node,add3)
 	m_node1.p_node->backward_node 			= 2;
 	m_node1.p_node->node_handle   			= NodeHandle;
 	m_node1.p_node->node_message_num 		= 0;
-	m_node1.p_node->node_message.wave_num   = 8;
 
 	m_node2.p_node = &node2;
 	//m_node1.p_node->node_name	  			= "node1"; 
@@ -104,7 +100,6 @@ TEST(node,add3)
 	m_node2.p_node->backward_node 			= INVALID_NODE_NUM;
 	m_node2.p_node->node_handle   			= NodeHandle;
 	m_node2.p_node->node_message_num 		= 0;
-	m_node2.p_node->node_message.wave_num   = 8;
 
 	m_node3.p_node = &node3;
 	//m_node1.p_node->node_name	  			= "node1"; 
@@ -113,7 +108,6 @@ TEST(node,add3)
 	m_node3.p_node->backward_node 			= INVALID_NODE_NUM;
 	m_node3.p_node->node_handle   			= NodeHandle;
 	m_node3.p_node->node_message_num 		= 0;
-	m_node3.p_node->node_message.wave_num   = 8;
 
 	
 	NodeAdd(p_manager,&m_node1);
@@ -127,7 +121,7 @@ TEST(node,add3)
 	
 	EXPECT_EQ(node_handle_called_cnt, 3);
 	EXPECT_EQ(GetNodeNum(), 3);
-
+	WaveTransDeInit();
 }
 
 
@@ -149,7 +143,6 @@ TEST(node,add15)
 	node_1.p_node->backward_node 			= 2;
 	node_1.p_node->node_handle   			= NodeHandle;
 	node_1.p_node->node_message_num 		= 0;
-	node_1.p_node->node_message.wave_num   = 8;
 
 	
 	node_2.p_node =  &node1;
@@ -182,7 +175,7 @@ TEST(node,add15)
 	
 	EXPECT_EQ(node_handle_called_cnt, 15);
 	EXPECT_EQ(GetNodeNum(), 15);
-
+	WaveTransDeInit();
 }
 /*
 TEST(node,add15_same)  // can not add the same node_manager 
@@ -202,7 +195,6 @@ TEST(node,add15_same)  // can not add the same node_manager
 	node_1.p_node->backward_node 			= 2;
 	node_1.p_node->node_handle   			= NodeHandle;
 	node_1.p_node->node_message_num 		= 0;
-	node_1.p_node->node_message.wave_num   = 8;	
 
 	for(i=0;i<15;i++)
 	{
@@ -216,7 +208,7 @@ TEST(node,add15_same)  // can not add the same node_manager
 	
 	EXPECT_EQ(node_handle_called_cnt, 15);
 	EXPECT_EQ(GetNodeNum(), 15);
-
+	WaveTransDeInit();
 }
 */
 

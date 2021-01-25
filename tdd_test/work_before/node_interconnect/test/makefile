@@ -6,12 +6,16 @@ TARGET = node
 CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += $(DEFS)
 
-$(TARGET) : node_test.o node_interconnect.o  node.o StateMachine.o InsertLogDebug.o node_trans_test.o #char_to_num.o loop_queues.o
+$(TARGET) : node_test.o node_interconnect.o  node.o StateMachine.o InsertLogDebug.o node_trans_test.o priority_queues.o  bit_operation.o 
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(DLIBS)
 
-#loop_queues.o : ../../../common/loopqueue/loop_queues.c   ../../../common/loopqueue/loop_queues.h
-#	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
-#           -c ../../../common/loopqueue/loop_queues.c
+bit_operation.o : ../../../../module/common/Math/bit_operation.c ../../../../module/common/Math/bit_operation.h
+	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
+            -c ../../../../module/common/Math/bit_operation.c
+            
+priority_queues.o:../../../../module/common/priorityqueue/priority_queues.c   ../../../../module/common/priorityqueue/priority_queues.h 
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
+           -c ../../../../module/common/priorityqueue/priority_queues.c
 
 InsertLogDebug.o:../../../../module/common/InsertLog/InsertLogDebug.c   ../../../../module/common/InsertLog/InsertLogDebug.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
@@ -36,4 +40,4 @@ node_test.o : node_test.cc   #../ProtocolRecv.h    ../../../common/StateMachine/
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
             -c node_test.cc
 						
-clean:node_test.o node_interconnect.o  node.o StateMachine.o InsertLogDebug.o node_trans_test.o #char_to_num.o loop_queues.otest_main.o ProtocolRecv.o StateMachine.o rw_by_line.o char_to_num.o loop_queues.o
+clean:node_test.o node_interconnect.o  node.o StateMachine.o InsertLogDebug.o node_trans_test.o priority_queues.o bit_operation.o 
