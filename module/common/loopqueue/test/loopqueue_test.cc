@@ -3,50 +3,50 @@
 
 #include "../loop_queues.h"
 /*
-#define INVALID_NODE_NUM  (0xFFFF)
+#define INVALID_LOOP_QUEUE_NODE_NUM  (0xFFFF)
 
-X_Void 		SimpleQueueInitialize(const sListManager *p_manager);
-uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean is_OccupyPermit);
-uint16_t    SimpleQueueFirstOut(const sListManager *p_manager);
-X_Void      ClearSimpleQueue(const sListManager *p_manager);
-X_Void      RealseSimpleQueueBuf(const sListManager *p_manager,uint8_t buf_num);
-uint16_t    GetSimpleQueueUsedNodeNumber(const sListManager *p_manager);
-X_Boolean   DoesSimpleQueueEmpty(const sListManager *p_manager);
+X_Void 		LoopQueueInitialize(const sListManager *p_manager);
+uint16_t    LoopQueueFirstIn(const sListManager *p_manager,X_Boolean is_OccupyPermit);
+uint16_t    LoopQueueFirstOut(const sListManager *p_manager);
+X_Void      ClearLoopQueue(const sListManager *p_manager);
+X_Void      RealseLoopQueueBuf(const sListManager *p_manager,uint8_t buf_num);
+uint16_t    GetLoopQueueUsedNodeNumber(const sListManager *p_manager);
+X_Boolean   DoesLoopQueueEmpty(const sListManager *p_manager);
 */
 
 using namespace std;
 
 static  uint16_t buf_number;
-SIMPLE_LOOPQUEUE_DEF(p_queue,200);
+APP_LOOPQUEUE_DEF(p_queue,200);
 #define OPERATION_TIMES 0xfffe
 
 TEST(queue_test,init)
 {
 	X_Boolean isEmpty;
-	buf_number = SimpleQueueFirstIn(p_queue,X_True);
-	EXPECT_EQ(buf_number,INVALID_NODE_NUM);
+	buf_number = LoopQueueFirstIn(p_queue,X_True);
+	EXPECT_EQ(buf_number,INVALID_LOOP_QUEUE_NODE_NUM);
 	
-    buf_number = SimpleQueueFirstOut(p_queue);
-	EXPECT_EQ(buf_number,INVALID_NODE_NUM);
+    buf_number = LoopQueueFirstOut(p_queue);
+	EXPECT_EQ(buf_number,INVALID_LOOP_QUEUE_NODE_NUM);
 	
-    buf_number = GetSimpleQueueUsedNodeNumber(p_queue);
+    buf_number = GetLoopQueueUsedNodeNumber(p_queue);
 	EXPECT_EQ(buf_number,0);
 	
-    isEmpty = DoesSimpleQueueEmpty(p_queue);
+    isEmpty = DoesLoopQueueEmpty(p_queue);
 	EXPECT_EQ(isEmpty,X_True);
 	
 	/**************************************************/
-	SimpleQueueInitialize(p_queue);
-	buf_number = SimpleQueueFirstIn(p_queue,X_True);
+	LoopQueueInitialize(p_queue);
+	buf_number = LoopQueueFirstIn(p_queue,X_True);
 	EXPECT_EQ(buf_number,0);
 	
-    buf_number = SimpleQueueFirstOut(p_queue);
+    buf_number = LoopQueueFirstOut(p_queue);
 	EXPECT_EQ(buf_number,0);
 	
-    buf_number = GetSimpleQueueUsedNodeNumber(p_queue);
+    buf_number = GetLoopQueueUsedNodeNumber(p_queue);
 	EXPECT_EQ(buf_number,0);
 	
-    isEmpty = DoesSimpleQueueEmpty(p_queue);
+    isEmpty = DoesLoopQueueEmpty(p_queue);
 	EXPECT_EQ(isEmpty,X_True);
 };
 
@@ -55,17 +55,17 @@ TEST(queue_test,normal)
 {
 	uint16_t i = 200;
 	static 	uint8_t data_buf[200];
-	SimpleQueueInitialize(p_queue);
+	LoopQueueInitialize(p_queue);
 
 	do{
-		buf_number = SimpleQueueFirstIn(p_queue,X_False);
+		buf_number = LoopQueueFirstIn(p_queue,X_False);
 		EXPECT_LT(buf_number,200);
 		
 		data_buf[buf_number] = i;
 			//printf("buf_number[%d] pushdata %d  ; occupy not permit\r\n",buf_number,i);
 			UNUSED_VARIABLE(data_buf);
 		
-		buf_number = SimpleQueueFirstOut(p_queue);
+		buf_number = LoopQueueFirstOut(p_queue);
 		EXPECT_LT(buf_number,200);
 		EXPECT_EQ(200-i,buf_number);
 		
@@ -77,14 +77,14 @@ TEST(queue_test,normal)
 TEST(queue_test,big_amount_push_pop)
 {
 	uint16_t i = OPERATION_TIMES;
-	SimpleQueueInitialize(p_queue);
+	LoopQueueInitialize(p_queue);
 
 
 	do{
-		buf_number = SimpleQueueFirstIn(p_queue,X_True);
+		buf_number = LoopQueueFirstIn(p_queue,X_True);
 		EXPECT_LT(buf_number,OPERATION_TIMES);
 		
-		buf_number = SimpleQueueFirstOut(p_queue);
+		buf_number = LoopQueueFirstOut(p_queue);
 		EXPECT_EQ((OPERATION_TIMES-i)%200,buf_number);
 		
 	}while(i-- > 1);
@@ -95,29 +95,29 @@ TEST(queue_test,big_amount_push_pop)
 
 TEST(queue_test,node_occupy_test)
 {
-	SIMPLE_LOOPQUEUE_DEF(p_big_queue,10000);
+	APP_LOOPQUEUE_DEF(p_big_queue,10000);
 	uint16_t i = 0;
 	
-	SimpleQueueInitialize(p_big_queue);
+	LoopQueueInitialize(p_big_queue);
 
 	do{
-		buf_number = SimpleQueueFirstIn(p_big_queue,X_False);
+		buf_number = LoopQueueFirstIn(p_big_queue,X_False);
 		if(i < 10000)
 		{
 			EXPECT_EQ(buf_number,i);
 		}
 		else
 		{
-			EXPECT_EQ(buf_number,INVALID_NODE_NUM);
+			EXPECT_EQ(buf_number,INVALID_LOOP_QUEUE_NODE_NUM);
 		}
 		
 	}while((i++) < (OPERATION_TIMES - 1));
 	
-	EXPECT_EQ(10000,GetSimpleQueueUsedNodeNumber(p_big_queue));
+	EXPECT_EQ(10000,GetLoopQueueUsedNodeNumber(p_big_queue));
 	
 	i = 0;
 	do{
-		buf_number = SimpleQueueFirstOut(p_big_queue);
+		buf_number = LoopQueueFirstOut(p_big_queue);
 		EXPECT_EQ(i,buf_number);
 		
 	}while(i++ < 9999);
@@ -128,22 +128,22 @@ TEST(queue_test,node_occupy_test)
 TEST(queue_test,time_test)
 {
 	uint16_t i = OPERATION_TIMES,j;
-	SIMPLE_LOOPQUEUE_DEF(p_big_queue,BIG_QUEUE_SIZE);
-	SimpleQueueInitialize(p_big_queue);
+	APP_LOOPQUEUE_DEF(p_big_queue,BIG_QUEUE_SIZE);
+	LoopQueueInitialize(p_big_queue);
 	
 	for(j=0;j<10;j++)
 	{
 		do{
-		buf_number = SimpleQueueFirstIn(p_big_queue,X_True);
+		buf_number = LoopQueueFirstIn(p_big_queue,X_True);
 		EXPECT_LT(buf_number,OPERATION_TIMES);
 		
-		buf_number = SimpleQueueFirstOut(p_big_queue);
+		buf_number = LoopQueueFirstOut(p_big_queue);
 		EXPECT_EQ((OPERATION_TIMES-i)%BIG_QUEUE_SIZE,buf_number);
 		
 		}while(i-- > 1);
 		
 		i = OPERATION_TIMES;
-		ClearSimpleQueue(p_big_queue);
+		ClearLoopQueue(p_big_queue);
 		
 	}
 	
@@ -157,42 +157,42 @@ TEST(queue_test,mul_entry)
 {
 	uint16_t i = 10000;
 	uint16_t buf_number1,buf_number2,buf_number3,buf_number4,buf_number5;
-	SIMPLE_LOOPQUEUE_DEF(p_queue_1,BIG_QUEUE_SIZE);
-	SIMPLE_LOOPQUEUE_DEF(p_queue_2,BIG_QUEUE_SIZE/2);
-	SIMPLE_LOOPQUEUE_DEF(p_queue_3,BIG_QUEUE_SIZE/4);
-	SIMPLE_LOOPQUEUE_DEF(p_queue_4,BIG_QUEUE_SIZE -255);
-	SIMPLE_LOOPQUEUE_DEF(p_queue_5,BIG_QUEUE_SIZE * 2);
+	APP_LOOPQUEUE_DEF(p_queue_1,BIG_QUEUE_SIZE);
+	APP_LOOPQUEUE_DEF(p_queue_2,BIG_QUEUE_SIZE/2);
+	APP_LOOPQUEUE_DEF(p_queue_3,BIG_QUEUE_SIZE/4);
+	APP_LOOPQUEUE_DEF(p_queue_4,BIG_QUEUE_SIZE -255);
+	APP_LOOPQUEUE_DEF(p_queue_5,BIG_QUEUE_SIZE * 2);
 	
-	SimpleQueueInitialize(p_queue_1);
-	SimpleQueueInitialize(p_queue_2);
-	SimpleQueueInitialize(p_queue_3);
-	SimpleQueueInitialize(p_queue_4);
-	SimpleQueueInitialize(p_queue_5);
+	LoopQueueInitialize(p_queue_1);
+	LoopQueueInitialize(p_queue_2);
+	LoopQueueInitialize(p_queue_3);
+	LoopQueueInitialize(p_queue_4);
+	LoopQueueInitialize(p_queue_5);
 	
 	do{
-	buf_number1 = SimpleQueueFirstIn(p_queue_1,X_False);
+	buf_number1 = LoopQueueFirstIn(p_queue_1,X_False);
 	
-	buf_number2 = SimpleQueueFirstIn(p_queue_2,X_True);
-	buf_number2 = SimpleQueueFirstIn(p_queue_2,X_True);
+	buf_number2 = LoopQueueFirstIn(p_queue_2,X_True);
+	buf_number2 = LoopQueueFirstIn(p_queue_2,X_True);
 	
-	buf_number5 = SimpleQueueFirstIn(p_queue_5,X_False);
-	buf_number5 = SimpleQueueFirstIn(p_queue_5,X_False);
-	buf_number5 = SimpleQueueFirstIn(p_queue_5,X_False);
+	buf_number5 = LoopQueueFirstIn(p_queue_5,X_False);
+	buf_number5 = LoopQueueFirstIn(p_queue_5,X_False);
+	buf_number5 = LoopQueueFirstIn(p_queue_5,X_False);
 	
 	}while(i-- > 1);
 	
 	
 	EXPECT_EQ(buf_number1,9999);
 	EXPECT_EQ(buf_number2,4999);
-	EXPECT_EQ(buf_number5,INVALID_NODE_NUM);
+	EXPECT_EQ(buf_number5,INVALID_LOOP_QUEUE_NODE_NUM);
 	
-	EXPECT_EQ(10000,GetSimpleQueueUsedNodeNumber(p_queue_1));
-	EXPECT_EQ(5000,GetSimpleQueueUsedNodeNumber(p_queue_2));
-	EXPECT_EQ(20000,GetSimpleQueueUsedNodeNumber(p_queue_5));
-	EXPECT_EQ(0,GetSimpleQueueUsedNodeNumber(p_queue_4));
+	EXPECT_EQ(10000,GetLoopQueueUsedNodeNumber(p_queue_1));
+	EXPECT_EQ(5000,GetLoopQueueUsedNodeNumber(p_queue_2));
+	EXPECT_EQ(20000,GetLoopQueueUsedNodeNumber(p_queue_5));
+	EXPECT_EQ(0,GetLoopQueueUsedNodeNumber(p_queue_4));
 	
-	buf_number5 = SimpleQueueFirstOut(p_queue_5);
-	EXPECT_EQ(19999,GetSimpleQueueUsedNodeNumber(p_queue_5));
+	buf_number5 = LoopQueueFirstOut(p_queue_5);
+	EXPECT_EQ(19999,GetLoopQueueUsedNodeNumber(p_queue_5));
 	EXPECT_EQ(buf_number5,0);
 	
 	UNUSED_VARIABLE(p_queue_3);

@@ -59,12 +59,12 @@ static USE_INLINE uint16_t NodeNumberOutMoveForward(const sListManager *p_manage
 	return new_out_node_number;
 
 }
-X_Void 		SimpleQueueInitialize(const sListManager *p_manager)
+X_Void 		LoopQueueInitialize(const sListManager *p_manager)
 {
 	uint16_t i;
 
 	if(p_manager == X_Null) {return;}
-	if(p_manager->ValidNodeNumber >= INVALID_NODE_NUM) {return;}
+	if(p_manager->ValidNodeNumber >= INVALID_LOOP_QUEUE_NODE_NUM) {return;}
 
 	for(i = 0;i< p_manager->ValidNodeNumber;i++)
 	{
@@ -79,11 +79,11 @@ X_Void 		SimpleQueueInitialize(const sListManager *p_manager)
 
 }
 
-uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean is_OccupyPermit)
+uint16_t    LoopQueueFirstIn(const sListManager *p_manager,X_Boolean is_OccupyPermit)
 {
 	uint16_t buf_number,current_free_node_number;
-	if(p_manager == X_Null) { return INVALID_NODE_NUM;}
-	if(p_manager->p_LMP->isInit == X_False) { return INVALID_NODE_NUM;}
+	if(p_manager == X_Null) { return INVALID_LOOP_QUEUE_NODE_NUM;}
+	if(p_manager->p_LMP->isInit == X_False) { return INVALID_LOOP_QUEUE_NODE_NUM;}
 
 	buf_number = 0;
 	current_free_node_number = p_manager->p_LMP->first_in_node_num;
@@ -104,7 +104,7 @@ uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean is_Occupy
 			}
 			else
 			{
-				buf_number = INVALID_NODE_NUM;
+				buf_number = INVALID_LOOP_QUEUE_NODE_NUM;
 			}
 		break;
 		case QueueFull:
@@ -120,27 +120,27 @@ uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean is_Occupy
 			}
 			else
 			{
-				buf_number = INVALID_NODE_NUM;
+				buf_number = INVALID_LOOP_QUEUE_NODE_NUM;
 			}
 		break;
 		default:
-			buf_number = INVALID_NODE_NUM;
+			buf_number = INVALID_LOOP_QUEUE_NODE_NUM;
 		break;
 	}
 	return buf_number;
 }
-uint16_t    SimpleQueueFirstOut(const sListManager *p_manager)
+uint16_t    LoopQueueFirstOut(const sListManager *p_manager)
 {
 	uint16_t buf_number,current_filled_node_number;
-	if(p_manager == X_Null) { return INVALID_NODE_NUM;}
-	if(p_manager->p_LMP->isInit == X_False) { return INVALID_NODE_NUM;}
+	if(p_manager == X_Null) { return INVALID_LOOP_QUEUE_NODE_NUM;}
+	if(p_manager->p_LMP->isInit == X_False) { return INVALID_LOOP_QUEUE_NODE_NUM;}
 
 	buf_number = 0;
 	current_filled_node_number = p_manager->p_LMP->first_out_node_num;
 	switch(p_manager->p_LMP->state)
 	{
 		case QueueEmpty:
-			buf_number = INVALID_NODE_NUM;
+			buf_number = INVALID_LOOP_QUEUE_NODE_NUM;
 		break;
 		case QueueNormal:
 		case QueueFull:
@@ -150,28 +150,28 @@ uint16_t    SimpleQueueFirstOut(const sListManager *p_manager)
 			buf_number = current_filled_node_number;
 		break;
 		default:
-			buf_number = INVALID_NODE_NUM;
+			buf_number = INVALID_LOOP_QUEUE_NODE_NUM;
 		break;
 	}
 	return buf_number;
 }
-X_Void      ClearSimpleQueue(const sListManager *p_manager)
+X_Void      ClearLoopQueue(const sListManager *p_manager)
 {
-	SimpleQueueInitialize(p_manager);
+	LoopQueueInitialize(p_manager);
 }
-X_Void      RealseSimpleQueueBuf(const sListManager *p_manager,uint8_t buf_num)
+X_Void      RealseLoopQueueBuf(const sListManager *p_manager,uint8_t buf_num)
 {
 	if(p_manager == X_Null) {return;}
 	if(buf_num >= p_manager->ValidNodeNumber) {return;}
 	p_manager->p_buf[buf_num] = BUF_FREE;
 }
-uint16_t GetSimpleQueueUsedNodeNumber(const sListManager *p_manager)
+uint16_t GetLoopQueueUsedNodeNumber(const sListManager *p_manager)
 {
 	if(p_manager == X_Null) {return 0;}
 	if(p_manager->p_LMP->isInit == X_False) { return 0;}
 	return p_manager->p_LMP->used_node_num;
 }
-X_Boolean   DoesSimpleQueueEmpty(const sListManager *p_manager)
+X_Boolean   DoesLoopQueueEmpty(const sListManager *p_manager)
 {
 	if(p_manager == X_Null) {return X_True;}
 	if(p_manager->p_LMP->isInit == X_False) { return X_True;}

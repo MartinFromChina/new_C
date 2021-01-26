@@ -75,18 +75,18 @@ typedef struct
 			static X_DATA_UNIT  CONCAT_2(p_manager,_recv_buf)[max_faram_to_cache][max_frame_length + 1];     \
 			static X_Boolean    CONCAT_2(p_manager,_isInitOk) = X_False;  									\
 			static s_ProtocolRecvProcess CONCAT_2(p_manager,_Protocol_recv_process) = {X_False,FOP_idle};  \
-			SIMPLE_LOOPQUEUE_DEF(CONCAT_2(p_manager,_queue),max_faram_to_cache);							\
+			APP_LOOPQUEUE_DEF(CONCAT_2(p_manager,_queue),max_faram_to_cache);							\
 			static s_QueueOperation      CONCAT_2(p_manager,_Protocol_recv_queue) = {						\
 					0,																				\
 					0,																				\
 					CONCAT_2(p_manager,_queue),														\
-					SimpleQueueInitialize,															\
-					SimpleQueueFirstIn,																\
-					SimpleQueueFirstOut,															\
-					ClearSimpleQueue,																\
-					RealseSimpleQueueBuf,															\
-					GetSimpleQueueUsedNodeNumber,													\
-					DoesSimpleQueueEmpty,															\
+					LoopQueueInitialize,															\
+					LoopQueueFirstIn,																\
+					LoopQueueFirstOut,															\
+					ClearLoopQueue,																\
+					RealseLoopQueueBuf,															\
+					GetLoopQueueUsedNodeNumber,													\
+					DoesLoopQueueEmpty,															\
 			};																						\
 			static const sProtocolRecv CONCAT_2(p_manager,_protocol_recv) = {							\
 					&CONCAT_2(p_manager,_recv_buf)[0][0],												\

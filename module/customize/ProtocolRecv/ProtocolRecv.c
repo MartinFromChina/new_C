@@ -12,14 +12,14 @@ static X_Boolean    load_then_release(const sProtocolRecv *p_manager,X_DATA_UNIT
 	{
 		//printf("-----bad frame ,drop it \r\n");
 		p_manager ->p_operation ->queue_release(p_manager ->p_operation ->p_manager,p_manager ->p_operation ->cur_pop_node);
-		p_manager ->p_operation ->cur_pop_node = INVALID_NODE_NUM;
+		p_manager ->p_operation ->cur_pop_node = INVALID_LOOP_QUEUE_NODE_NUM;
 		return X_False;
 	}
 	else 
 	{
 		*pp_buf = &p_manager ->p_buf[index + 1];	
 		p_manager ->p_operation ->queue_release(p_manager ->p_operation ->p_manager,p_manager ->p_operation ->cur_pop_node);
-		p_manager ->p_operation ->cur_pop_node = INVALID_NODE_NUM;
+		p_manager ->p_operation ->cur_pop_node = INVALID_LOOP_QUEUE_NODE_NUM;
 		p_manager ->p_buf[index] = (X_DATA_UNIT)FOP_idle;
 		return X_True;
 	}
@@ -37,7 +37,7 @@ X_Boolean ProtocolRecvInit(const sProtocolRecv *p_manager)
 	if(p_manager ->max_frame_num == 0 || p_manager ->max_frame_num > MAX_FRAME_CHCHE_NUM) {return X_False;}
 	
 	p_manager ->p_operation ->cur_push_node = 0;
-	p_manager ->p_operation ->cur_pop_node = INVALID_NODE_NUM;
+	p_manager ->p_operation ->cur_pop_node = INVALID_LOOP_QUEUE_NODE_NUM;
 	p_manager ->p_operation ->queue_init(p_manager ->p_operation ->p_manager);
 	for(i = 0;i < p_manager->max_frame_num ; i++)
 	{

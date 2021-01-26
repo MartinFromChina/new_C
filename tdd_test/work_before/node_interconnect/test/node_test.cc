@@ -33,7 +33,7 @@ TEST(node,add1)
 		isRun = RunNodeCommunicationProcess();
 	}
 	
-	EXPECT_EQ(node_handle_called_cnt, 1);
+	EXPECT_EQ(node_handle_called_cnt, 0);
 	EXPECT_EQ(GetNodeNum(), 1);
 	WaveTransDeInit();
 }
@@ -63,7 +63,7 @@ TEST(node,add2)
 		isRun = RunNodeCommunicationProcess();
 	}
 	
-	EXPECT_EQ(node_handle_called_cnt, 2);
+	EXPECT_EQ(node_handle_called_cnt, 0);
 	EXPECT_EQ(GetNodeNum(), 2);
 	WaveTransDeInit();
 }
@@ -98,7 +98,7 @@ TEST(node,add3)
 		isRun = RunNodeCommunicationProcess();
 	}
 	
-	EXPECT_EQ(node_handle_called_cnt, 3);
+	EXPECT_EQ(node_handle_called_cnt,0);
 	EXPECT_EQ(GetNodeNum(), 3);
 	WaveTransDeInit();
 }
@@ -147,7 +147,7 @@ TEST(node,add15)
 		isRun = RunNodeCommunicationProcess();
 	}
 	
-	EXPECT_EQ(node_handle_called_cnt, 15);
+	EXPECT_EQ(node_handle_called_cnt, 0);
 	EXPECT_EQ(GetNodeNum(), 15);
 	WaveTransDeInit();
 }

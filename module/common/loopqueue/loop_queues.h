@@ -39,9 +39,9 @@ typedef struct
 	sListManagerParam *p_LMP;
 }sListManager;
 
-#define INVALID_NODE_NUM  (0xFFFF)
+#define INVALID_LOOP_QUEUE_NODE_NUM  (0xFFFF)
 
-#define SIMPLE_LOOPQUEUE_DEF_WITHOUT_POINTER(p_manager,max_node_number)            					\
+#define APP_LOOPQUEUE_DEF_WITHOUT_POINTER(p_manager,max_node_number)            					\
 		static uint8_t  CONCAT_2(p_manager,_loopqueue_node_buf)[max_node_number];	 				\
 		static sListManagerParam CONCAT_2(p_manager,_loopqueue_param) = {X_False,0,0,0,0};    				\
 		static const  sListManager  CONCAT_2(p_manager,_loopqueue_entry) = {						\
@@ -50,7 +50,7 @@ typedef struct
 			&CONCAT_2(p_manager,_loopqueue_param),													\
 		}
 
-#define SIMPLE_LOOPQUEUE_DEF(p_manager,max_node_number)            									\
+#define APP_LOOPQUEUE_DEF(p_manager,max_node_number)            									\
 		static uint8_t  CONCAT_2(p_manager,_loopqueue_node_buf)[max_node_number];	 				\
 		static sListManagerParam CONCAT_2(p_manager,_loopqueue_param) = {X_False,0,0,0,0};    				\
 		static const  sListManager  CONCAT_2(p_manager,_loopqueue_entry) = {						\
@@ -60,13 +60,13 @@ typedef struct
 		};																						    \
 		static const  sListManager * p_manager = &CONCAT_2(p_manager,_loopqueue_entry)
 
-X_Void 		SimpleQueueInitialize(const sListManager *p_manager);
-uint16_t    SimpleQueueFirstIn(const sListManager *p_manager,X_Boolean is_OccupyPermit);
-uint16_t    SimpleQueueFirstOut(const sListManager *p_manager);
-X_Void      ClearSimpleQueue(const sListManager *p_manager);
-X_Void      RealseSimpleQueueBuf(const sListManager *p_manager,uint8_t buf_num);
-uint16_t    GetSimpleQueueUsedNodeNumber(const sListManager *p_manager);
-X_Boolean   DoesSimpleQueueEmpty(const sListManager *p_manager);
+X_Void 		LoopQueueInitialize(const sListManager *p_manager);
+uint16_t    LoopQueueFirstIn(const sListManager *p_manager,X_Boolean is_OccupyPermit);
+uint16_t    LoopQueueFirstOut(const sListManager *p_manager);
+X_Void      ClearLoopQueue(const sListManager *p_manager);
+X_Void      RealseLoopQueueBuf(const sListManager *p_manager,uint8_t buf_num);
+uint16_t    GetLoopQueueUsedNodeNumber(const sListManager *p_manager);
+X_Boolean   DoesLoopQueueEmpty(const sListManager *p_manager);
 
 /**********************
 the param "X_Boolean is_OccupyPermit" is set to false when you want to protect your node ,

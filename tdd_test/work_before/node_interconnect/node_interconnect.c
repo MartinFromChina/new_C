@@ -3,13 +3,15 @@
 #include "../../../module/common/StateMachine/StateMachine.h"
 #include "../../../module/common/InsertLog/InsertLogDebug.h"
 #include "../../../module/common/priorityqueue/priority_queues.h"
+#include "../../../module/common/loopqueue/loop_queues.h"
+
 
 
 #define MAX_NODE_NUM  100
 
 #define NODE_NUM_DEBUG 			    0
 #define NODE_ADD_DEBUG 			    0
-#define WAVE_TRANS_DEBUG 			1
+#define WAVE_TRANS_DEBUG 			0
 #define NODE_DISTANCE_DEBUG 		0
 
 
@@ -117,25 +119,11 @@ static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 }
 static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 {
-	uint16_t i,node_priority;
-	p_node_handle p_handle[100];
-	s_node_manager *p_next;
+	uint16_t node_priority;
 	s_element_base *p_base;
 	
 	sParamExtern * p_ext = (sParamExtern *)p_this;
 	INSERT(LogDebug)(NODE_NUM_DEBUG,("node num is %d\r\n",p_ext ->node_num));
-
-	p_next = p_ext ->p_manager;
-	for(i=0;i<p_ext ->node_num;i++)
-	{
-		p_handle[i] = p_next ->handle;
-		p_next = p_next ->p_next;
-	}
-	
-	for(i=0;i<p_ext ->node_num;i++)
-	{
-		if( p_handle[i] != X_Null) {p_handle[i](p_ext ->p_manager,0);}
-	}
 	
 	node_priority = BH_PriorityQueueReleaseMin(p_queue,&p_base);
 
@@ -188,17 +176,19 @@ APP_STATE_MACHINE_DEF(p_state
 								,sizeof(NodeStateAction)/sizeof(NodeStateAction[0])
 								,&NodeStateAction[0]);
 
+/*
 static X_Void StateJumpRecorder(StateNumber state_going_to_leave,StateNumber state_going_to_enter)
 {
 	UNUSED_PARAMETER(state_going_to_leave);
 	UNUSED_PARAMETER(state_going_to_enter);
 }
-
+*/
+typedef X_Void (*state_record)(StateNumber state_going_to_leave,StateNumber state_going_to_enter);
 X_Boolean RunNodeCommunicationProcess(X_Void)
 {
 	if(sPE.p_manager == X_Null) {return X_False;}
 	if(sPE.isStateRun != X_True)  {return X_False;}
-	mStateMachineRun(p_state,&sPE.base,StateJumpRecorder);
+	mStateMachineRun(p_state,&sPE.base,(state_record)0);
 	time_cnt ++;
 	return X_True;
 }
@@ -302,6 +292,7 @@ X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node)
 		}
 
 	}
+	return X_False;
 }
 
 uint16_t GetNodeNum(X_Void)
