@@ -11,8 +11,10 @@
 
 #define NODE_NUM_DEBUG 			    0
 #define NODE_ADD_DEBUG 			    0
-#define WAVE_TRANS_DEBUG 			0
+#define WAVE_TRANS_DEBUG 			1
 #define NODE_DISTANCE_DEBUG 		0
+#define WAVE_SEND_DEBUG 			0
+
 
 
 
@@ -372,21 +374,74 @@ uint16_t GetDistanceBetweenNode(uint8_t node_num1,uint8_t node_num2)
 	
 }
 
+static s_node_manager *GetNodePointer(s_node_manager *p_manager,uint8_t curr_node_num)
+{
+	uint16_t i;
+	s_node_manager *p_current;
+	// no need pointer null check ,because the caller is me
+	s_node_manager *p_curr = (s_node_manager *)0;
+	p_current = p_manager;
+	for(i=0;i<MAX_NODE_NUM;i++)
+	{
+		if(p_current ->p_node ->node_number == curr_node_num)
+		{
+			p_curr = p_current;
+			break;
+		}
+		if(p_current ->p_next == X_Null) {break;}
+		p_current = p_current ->p_next;
+	}
+	return p_curr;
+}
 X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,s_wave *p_wave)
 {
-	//uint16_t node_num;
-	//GetNodeNum
-	//if()
+	X_Boolean isForward = X_False,isBackward = X_False;
+	uint16_t total_node_num,i,distance;
+	s_node_manager *p_current,*p_current_backup;
+	s_node_manager *p_header = &manager;
+	total_node_num = GetNodeNum();
+	p_current = GetNodePointer(&manager,node_num);
+	p_current_backup = p_current;
 
-	s_ee[element_index].base.priority = 7;
-	s_ee[element_index].other_info    = 2;
-	if(BH_PriorityQueueInsert(p_queue,&s_ee[element_index].base) != 7){INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" insert failed\r\n"));}
-	if((element_index + 1)<(MAX_NODE_NUM * 2)) {element_index ++;}
+	if(p_current == X_Null) {return X_False;}
+
+	if(p_wave ->direct == ED_bidirection || p_wave ->direct == ED_forward) {isForward = X_True;}
+	if(p_wave ->direct == ED_bidirection || p_wave ->direct == ED_backward) {isBackward = X_True;}
 	
-	s_ee[element_index].base.priority = 17;
-	s_ee[element_index].other_info    = 3;
-	if(BH_PriorityQueueInsert(p_queue,&s_ee[element_index].base) != 17){INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" insert failed again\r\n"));}
-	if((element_index + 1)<(MAX_NODE_NUM * 2)) {element_index ++;}
+	distance = 0;
+	if(isBackward == X_True)
+	{
+		for(i=0;i<total_node_num;i++)
+		{
+			if(p_current ->p_next == X_Null) {break;}
+			distance += p_current ->p_node ->backward_distance;
+			if(distance <= p_wave ->max_trans_distance)
+			{
+				s_ee[element_index].base.priority = distance + (uint16_t)sys_time;
+				s_ee[element_index].other_info    = p_current ->p_node->backward_node;
+				if(BH_PriorityQueueInsert(p_queue,&s_ee[element_index].base) != INVALID_PRIOQUEUE_PRIORITY)
+				{
+					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" -----insert successed node % d will receive it at time %d\r\n"
+								,s_ee[element_index].other_info,s_ee[element_index].base.priority));
+				}
+				else
+				{
+					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" insert failed\r\n"));
+				}
+				if((element_index + 1)<(MAX_NODE_NUM * 2)) {element_index ++;}
+			}
+			p_current = p_current ->p_next;
+		}
+	}
+	distance = 0;
+	p_current = p_current_backup;
+	if(isForward == X_True)
+	{
+		for(i=0;i<total_node_num;i++)
+		{
+			//if()
+		}
+	}
 	
 	return X_True;
 }

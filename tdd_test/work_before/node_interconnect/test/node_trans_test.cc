@@ -2,7 +2,7 @@
 #include "../../../../module/common/InsertLog/InsertLogDebug.h"
 
 #define USE_DOTTED_LINE_TO_CUT     0
-#define NODE_RECV_DEBUG     0
+#define NODE_RECV_DEBUG     1
 
 typedef struct
 {
@@ -135,6 +135,8 @@ TEST(trans,node1_send_wave)
 	{
 		isRun = RunNodeCommunicationProcess();
 	}
+	
+	EXPECT_EQ(recv_times,2);
 }
 
 static X_Boolean NodeRecvHandle1(_s_node_manager *p_manager,uint8_t current_node_num)
@@ -190,5 +192,6 @@ TEST(trans,node1_send_wave1)
 	{
 		isRun = RunNodeCommunicationProcess();
 	}
+	EXPECT_EQ(recv_times,1);
 }
 
