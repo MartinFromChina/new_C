@@ -3,7 +3,7 @@
 #include "../../../module/common/StateMachine/StateMachine.h"
 #include "../../../module/common/InsertLog/InsertLogDebug.h"
 #include "../../../module/common/priorityqueue/priority_queues.h"
-#include "../../../module/common/loopqueue/loop_queues.h"
+/*#include "../../../module/common/loopqueue/loop_queues.h" */
 
 
 
@@ -18,12 +18,18 @@
 
 static uint32_t time_cnt = 0;
 static X_PriorityQueue *p_queue  = (X_PriorityQueue *)0;
+
+/*APP_LOOPQUEUE_DEF(p_loop,MAX_NODE_NUM *2);*/
+
+
+
 typedef struct 
 {
 	s_element_base base;
 	uint16_t other_info;
 }s_element_extern;
 
+static uint16_t element_index = 0;
 static s_element_extern s_ee[MAX_NODE_NUM*2];
 
 
@@ -53,34 +59,14 @@ typedef enum
 *********************************************************************************************************************************/
 static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 {
-	uint16_t i;
-	s_node_manager *p_next,*p_previous;
-	
 	sParamExtern * p_ext = (sParamExtern *)p_this;
-	p_ext ->node_num = 0;
-	if( p_ext ->p_manager ->flag == NF_idle)
-	{
-		p_ext ->node_num = 0;
-		INSERT(LogDebug)(NODE_NUM_DEBUG,("no node\r\n"));
-		return  CS_end;
-	}
-	p_ext ->node_num = 1;
-	if(p_ext ->p_manager ->p_next == X_Null) 
-	{	
-		INSERT(LogDebug)(NODE_NUM_DEBUG,("one node\r\n"));
-		return CS_transmation;
-	}
-	p_next = p_ext ->p_manager ->p_next;
-	
-	for(i=0 ;i < MAX_NODE_NUM  ;i++)
-	{	
-		p_ext ->node_num ++;
-		INSERT(LogDebug)(NODE_NUM_DEBUG,("another node found ; total node num %d\r\n",p_ext ->node_num));
-		if(p_next ->p_next == X_Null) {break;}
-		p_next = p_next ->p_next;
-	}
+	GetNodeNum();
+	if(p_ext ->node_num == 0) {return CS_end;}
 	
 	#if (NODE_ADD_DEBUG != 0)
+	uint16_t i;
+	s_node_manager *p_next;
+	s_node_manager *p_previous;
 	p_next = p_ext ->p_manager;
 	p_previous = p_next ->p_previous;
 	for(i=0 ;i < p_ext ->node_num  ;i++)
@@ -114,7 +100,6 @@ static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 		if(p_next != X_Null) {p_previous = p_next ->p_previous;}
 	}
 	#endif
-	
 	return CS_transmation;
 }
 static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
@@ -205,12 +190,15 @@ static s_node_manager manager
 s_node_manager *WaveTransInit(p_node_handle handle)
 {
 	time_cnt = 0;
+	element_index = 0;
 	manager.flag  = NF_idle;
 	manager.handle = handle;
 	sPE.p_manager = &manager;
 	sPE.isStateRun = X_True;
+	sPE.node_num   = INVALID_NODE_NUM;
 	mStateMachineStateSet(p_state,CS_Idle);
 	p_queue = BH_PriorityQueueInit(MAX_NODE_NUM*2);
+	//LoopQueueInitialize(p_loop);
 	return sPE.p_manager;
 }
 X_Void WaveTransDeInit(X_Void)
@@ -297,6 +285,33 @@ X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node)
 
 uint16_t GetNodeNum(X_Void)
 {
+	uint16_t i;
+	s_node_manager *p_next;
+	
+	if(sPE.node_num != INVALID_NODE_NUM) {return sPE.node_num;}
+
+	sPE.node_num = 0;
+	if( manager.flag == NF_idle)
+	{
+		sPE.node_num = 0;
+		INSERT(LogDebug)(NODE_NUM_DEBUG,("no node\r\n"));
+		return  0;
+	}
+	sPE.node_num = 1;
+	if(manager.p_next == X_Null) 
+	{	
+		INSERT(LogDebug)(NODE_NUM_DEBUG,("one node\r\n"));
+		return 1;
+	}
+	p_next = manager.p_next;
+	
+	for(i=0 ;i < MAX_NODE_NUM  ;i++)
+	{	
+		sPE.node_num ++;
+		INSERT(LogDebug)(NODE_NUM_DEBUG,("another node found ; total node num %d\r\n",sPE.node_num));
+		if(p_next ->p_next == X_Null) {break;}
+		p_next = p_next ->p_next;
+	}
 	return sPE.node_num;
 }
 uint16_t GetDistanceBetweenNode(uint8_t node_num1,uint8_t node_num2)
@@ -359,12 +374,19 @@ uint16_t GetDistanceBetweenNode(uint8_t node_num1,uint8_t node_num2)
 
 X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,s_wave *p_wave)
 {
-	s_ee[node_num].base.priority = 7;
-	s_ee[node_num].other_info    = 2;
-	if(BH_PriorityQueueInsert(p_queue,&s_ee[node_num].base) != 7){INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" insert failed\r\n"));}
-	s_ee[node_num + 1].base.priority = 17;
-	s_ee[node_num + 1].other_info    = 3;
-	if(BH_PriorityQueueInsert(p_queue,&s_ee[node_num + 1].base) != 17){INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" insert failed again\r\n"));}
+	//uint16_t node_num;
+	//GetNodeNum
+	//if()
 
+	s_ee[element_index].base.priority = 7;
+	s_ee[element_index].other_info    = 2;
+	if(BH_PriorityQueueInsert(p_queue,&s_ee[element_index].base) != 7){INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" insert failed\r\n"));}
+	if((element_index + 1)<(MAX_NODE_NUM * 2)) {element_index ++;}
+	
+	s_ee[element_index].base.priority = 17;
+	s_ee[element_index].other_info    = 3;
+	if(BH_PriorityQueueInsert(p_queue,&s_ee[element_index].base) != 17){INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" insert failed again\r\n"));}
+	if((element_index + 1)<(MAX_NODE_NUM * 2)) {element_index ++;}
+	
 	return X_True;
 }
