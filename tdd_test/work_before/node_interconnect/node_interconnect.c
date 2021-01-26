@@ -11,7 +11,7 @@
 
 #define NODE_NUM_DEBUG 			    0
 #define NODE_ADD_DEBUG 			    0
-#define WAVE_TRANS_DEBUG 			0
+#define WAVE_TRANS_DEBUG 			1
 #define NODE_DISTANCE_DEBUG 		0
 #define WAVE_SEND_DEBUG 			0
 
@@ -406,11 +406,13 @@ X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,
 	total_node_num = GetNodeNum();
 	p_current = GetNodePointer(&manager,node_num);
 	p_current_backup = p_current;
-
 	if(p_current == X_Null) {return X_False;}
 
 	if(p_wave ->direct == ED_bidirection || p_wave ->direct == ED_forward) {isForward = X_True;}
 	if(p_wave ->direct == ED_bidirection || p_wave ->direct == ED_backward) {isBackward = X_True;}
+
+	p_wave ->passed_node_cnt = 0;
+	p_wave ->isDisapper               = X_False;
 	
 	distance = 0;
 	if(isBackward == X_True)
@@ -424,10 +426,12 @@ X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,
 				s_ee[element_index].base.priority = distance + (uint16_t)sys_time;
 				s_ee[element_index].other_info    = p_current ->p_node->backward_node;
 				s_ee[element_index].p_wave        = p_wave;
+				
 				if(BH_PriorityQueueInsert(p_queue,&s_ee[element_index].base) != INVALID_PRIOQUEUE_PRIORITY)
 				{
 					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" -----insert successed node % d will receive it at time %d\r\n"
 								,s_ee[element_index].other_info,s_ee[element_index].base.priority));
+					p_wave ->passed_node_cnt ++;
 				}
 				else
 				{
@@ -439,7 +443,6 @@ X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,
 		}
 	}
 
-	
 	distance = 0;
 	p_current = p_current_backup;
 	if(isForward == X_True)
@@ -453,10 +456,12 @@ X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,
 				s_ee[element_index].base.priority = distance + (uint16_t)sys_time;
 				s_ee[element_index].other_info    = p_current ->p_node->forware_node;
 				s_ee[element_index].p_wave        = p_wave;
+				
 				if(BH_PriorityQueueInsert(p_queue,&s_ee[element_index].base) != INVALID_PRIOQUEUE_PRIORITY)
 				{
 					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" -----insert successed node % d will receive it at time %d\r\n"
 								,s_ee[element_index].other_info,s_ee[element_index].base.priority));
+					p_wave ->passed_node_cnt ++;
 				}
 				else
 				{

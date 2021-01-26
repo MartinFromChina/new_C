@@ -133,7 +133,7 @@ TEST(trans,node1_send_wave)
 	node1.wave_trans[0].max_trans_distance 	= 20;
 	node1.wave_trans[0].direct  			= ED_bidirection;
 	
-	SendWave(p_manager,GetTime(),1,&node1.wave_trans[0]);
+	SendWave(p_manager,GetTime(),1,&(node1.wave_trans[0]));
 
 	while(isRun == X_True)
 	{

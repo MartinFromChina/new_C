@@ -44,6 +44,7 @@ typedef struct
 	X_Boolean isDisapper;
 	e_direction direct;
 	uint16_t max_trans_distance;// speed is 1 unit trans_distance/s, so after max_trans_distance's seconds , the wave is disapper
+	uint8_t passed_node_cnt;
 	uint8_t content_length;
 	uint8_t context[MAX_WAVE_FRAME_LENGTH];
 }s_wave;
