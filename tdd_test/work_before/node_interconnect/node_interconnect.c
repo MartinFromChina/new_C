@@ -14,10 +14,12 @@
 #define WAVE_TRANS_DEBUG 			1
 #define NODE_DISTANCE_DEBUG 		0
 #define WAVE_SEND_DEBUG 			0
+#define POWER  100
 
 
 
-
+static uint8_t power_adjust = 0;
+static X_Boolean isLockClock = X_True;
 static uint32_t time_cnt = 0;
 static X_PriorityQueue *p_queue  = (X_PriorityQueue *)0;
 
@@ -64,6 +66,7 @@ typedef enum
 static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 {
 	sParamExtern * p_ext = (sParamExtern *)p_this;
+	isLockClock = X_True;
 	GetNodeNum();
 	if(p_ext ->node_num == 0) {return CS_end;}
 	
@@ -113,12 +116,14 @@ static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 	
 	sParamExtern * p_ext = (sParamExtern *)p_this;
 	INSERT(LogDebug)(NODE_NUM_DEBUG,("node num is %d\r\n",p_ext ->node_num));
+
+	isLockClock = X_True;
 	
 	node_priority = BH_PriorityQueueReleaseMin(p_queue,&p_base);
 
 	if(node_priority != INVALID_PRIOQUEUE_PRIORITY)
 	{
-		p_ext ->wait_time = node_priority;
+		p_ext ->wait_time = node_priority/POWER;
 		s_element_extern * p_elem_ext = (s_element_extern *)p_base;
 		p_ext ->node_num  = p_elem_ext ->other_info;
 		p_ext ->p_wave    = p_elem_ext ->p_wave;
@@ -137,8 +142,10 @@ static StateNumber CS_node_receiveAction(s_StateMachineParam *p_this)
 	{
 		p_ext ->p_manager ->handle(p_ext ->p_manager,p_ext ->node_num,p_ext ->p_wave->context,p_ext->p_wave->content_length);
 		p_ext ->p_wave ->isDisapper = X_True;
+		isLockClock = X_True;
 		return CS_transmation;
 	}
+	isLockClock = X_False;
 	return p_this->current_state;
 }
 static StateNumber CS_node_sendAction(s_StateMachineParam *p_this)
@@ -180,7 +187,7 @@ X_Boolean RunNodeCommunicationProcess(X_Void)
 	if(sPE.p_manager == X_Null) {return X_False;}
 	if(sPE.isStateRun != X_True)  {return X_False;}
 	mStateMachineRun(p_state,&sPE.base,(state_record)0);
-	time_cnt ++;
+	if(isLockClock == X_False) {time_cnt ++;}
 	return X_True;
 }
 
@@ -195,8 +202,10 @@ static s_node_manager manager
 
 s_node_manager *WaveTransInit(p_node_handle handle)
 {
+	isLockClock = X_True;
 	time_cnt = 0;
 	element_index = 0;
+	power_adjust = 0;
 	manager.flag  = NF_idle;
 	manager.handle = handle;
 	sPE.p_manager = &manager;
@@ -397,6 +406,7 @@ static s_node_manager *GetNodePointer(s_node_manager *p_manager,uint8_t curr_nod
 	}
 	return p_curr;
 }
+
 X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,s_wave *p_wave)
 {
 	X_Boolean isForward = X_False,isBackward = X_False;
@@ -424,13 +434,18 @@ X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,
 			if(distance <= p_wave ->max_trans_distance)
 			{
 				s_ee[element_index].base.priority = distance + (uint16_t)sys_time;
+				s_ee[element_index].base.priority = s_ee[element_index].base.priority * POWER;
+				s_ee[element_index].base.priority += power_adjust;
+				if(power_adjust >= POWER) {power_adjust = 0;}
+				else {power_adjust ++;}
+				
 				s_ee[element_index].other_info    = p_current ->p_node->backward_node;
 				s_ee[element_index].p_wave        = p_wave;
 				
 				if(BH_PriorityQueueInsert(p_queue,&s_ee[element_index].base) != INVALID_PRIOQUEUE_PRIORITY)
 				{
-					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" -----insert successed node % d will receive it at time %d\r\n"
-								,s_ee[element_index].other_info,s_ee[element_index].base.priority));
+					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" -----insert successed node % d will receive it at time %d ; data[0]: %2x\r\n"
+								,s_ee[element_index].other_info,s_ee[element_index].base.priority/POWER,p_wave ->context[0]));
 					p_wave ->passed_node_cnt ++;
 				}
 				else
@@ -454,13 +469,18 @@ X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,
 			if(distance <= p_wave ->max_trans_distance)
 			{
 				s_ee[element_index].base.priority = distance + (uint16_t)sys_time;
+				s_ee[element_index].base.priority = s_ee[element_index].base.priority * POWER;
+				s_ee[element_index].base.priority += power_adjust;
+				if(power_adjust >= POWER) {power_adjust = 0;}
+				else {power_adjust ++;}
+				
 				s_ee[element_index].other_info    = p_current ->p_node->forware_node;
 				s_ee[element_index].p_wave        = p_wave;
 				
 				if(BH_PriorityQueueInsert(p_queue,&s_ee[element_index].base) != INVALID_PRIOQUEUE_PRIORITY)
 				{
-					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" -----insert successed node % d will receive it at time %d\r\n"
-								,s_ee[element_index].other_info,s_ee[element_index].base.priority));
+					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" -----insert successed node % d will receive it at time %d data[0]: %2x\r\n"
+								,s_ee[element_index].other_info,s_ee[element_index].base.priority/POWER,p_wave ->context[0]));
 					p_wave ->passed_node_cnt ++;
 				}
 				else
