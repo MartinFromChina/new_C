@@ -150,7 +150,7 @@ static X_Boolean NodeRecvHandle1(_s_node_manager *p_manager,uint8_t current_node
 	EXPECT_EQ(current_node_num,2);
 	INSERT(LogDebug)(NODE_RECV_DEBUG,("1: node %d receive at time %d \r\n",current_node_num,GetTime()));
 	if(recv_times != 0) {return X_False;}
-	EXPECT_EQ(GetTime(),7);
+	EXPECT_EQ(GetTime(),(uint32_t)7);
 	recv_times ++;
 	return X_True;
 }
@@ -206,7 +206,7 @@ static X_Boolean NodeRecvHandle2(_s_node_manager *p_manager,uint8_t current_node
 	EXPECT_EQ(current_node_num,2);
 	INSERT(LogDebug)(NODE_RECV_DEBUG,("1: node %d receive at time %d \r\n",current_node_num,GetTime()));
 	if(recv_times != 0) {return X_False;}
-	EXPECT_EQ(GetTime(),7);
+	EXPECT_EQ(GetTime(),(uint32_t)7);
 	recv_times ++;
 	return X_True;
 }
@@ -258,7 +258,7 @@ TEST(trans,node1_send_wave2)
 
 static X_Boolean NodeRecvHandle3(_s_node_manager *p_manager,uint8_t current_node_num)
 {
-	UNUSED_PARAMETER(p_manager);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(current_node_num);
 	EXPECT_EQ(1,0);
 	return X_True;
 }
@@ -429,7 +429,7 @@ TEST(trans,node3_send_wave5)
 
 static X_Boolean NodeRecvHandle6(_s_node_manager *p_manager,uint8_t current_node_num)
 {
-	UNUSED_PARAMETER(p_manager);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(current_node_num);
 	EXPECT_EQ(1,0);
 	recv_times ++;
 	return X_True;
@@ -652,7 +652,7 @@ TEST(trans,node2_send_wave9)
 
 static X_Boolean NodeRecvHandle10(_s_node_manager *p_manager,uint8_t current_node_num)
 {
-	UNUSED_PARAMETER(p_manager);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(current_node_num);
 	EXPECT_EQ(1,0);
 	recv_times ++;
 	return X_True;

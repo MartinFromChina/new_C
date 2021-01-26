@@ -6,7 +6,8 @@ TARGET = node
 CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += $(DEFS)
 
-$(TARGET) : node_test.o node_interconnect.o  node.o StateMachine.o InsertLogDebug.o node_trans_test.o priority_queues.o  bit_operation.o loop_queues.o
+$(TARGET) : node_test.o node_interconnect.o  node.o StateMachine.o InsertLogDebug.o \
+				node_trans_test.o priority_queues.o  bit_operation.o loop_queues.o mul_trans_test.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(DLIBS)
 
 bit_operation.o : ../../../../module/common/Math/bit_operation.c ../../../../module/common/Math/bit_operation.h
@@ -39,9 +40,15 @@ node_interconnect.o :../node_interconnect.c   ../node_interconnect.h
 node_trans_test.o : node_trans_test.cc  node_test.h #../ProtocolRecv.h    ../../../common/StateMachine/StateMachine.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
             -c node_trans_test.cc
+
+mul_trans_test.o : mul_trans_test.cc  node_test.h #../ProtocolRecv.h    ../../../common/StateMachine/StateMachine.h 
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
+            -c mul_trans_test.cc
+            
 node_test.o : node_test.cc  node_test.h ../node_interconnect.h  #  ../../../common/StateMachine/StateMachine.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
             -c node_test.cc
 						
 clean:
-	rm node_test.o node_interconnect.o  node.o StateMachine.o InsertLogDebug.o node_trans_test.o priority_queues.o bit_operation.o loop_queues.o
+	rm node_test.o node_interconnect.o  node.o StateMachine.o InsertLogDebug.o \
+			node_trans_test.o priority_queues.o bit_operation.o loop_queues.o mul_trans_test.o
