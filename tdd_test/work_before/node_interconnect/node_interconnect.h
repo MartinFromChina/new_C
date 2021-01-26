@@ -63,12 +63,12 @@ typedef struct _s_node_manager
 {
 	e_node_flag 		flag;
 	s_node 				*p_node;
-	X_Boolean (*handle)(_s_node_manager *p_manager,uint8_t current_node_num);
+	X_Boolean (*handle)(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length);
 	_s_node_manager 	*p_previous;
 	_s_node_manager 	*p_next;
 }s_node_manager;
 
-typedef X_Boolean (*p_node_handle)(_s_node_manager *p_manager,uint8_t current_node_num);
+typedef X_Boolean (*p_node_handle)(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length);
 
 s_node_manager * 	WaveTransInit(p_node_handle handle);
 X_Void 				WaveTransDeInit(X_Void);

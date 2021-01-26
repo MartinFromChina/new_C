@@ -29,6 +29,7 @@ typedef struct
 {
 	s_element_base base;
 	uint16_t other_info;
+	s_wave  *p_wave;
 }s_element_extern;
 
 static uint16_t element_index = 0;
@@ -43,6 +44,7 @@ typedef struct
 	s_node_manager *            p_manager;
 	uint16_t 					node_num;
 	uint16_t 					wait_time;
+	s_wave  		*			p_wave;
 }sParamExtern;
 
 static sParamExtern sPE;
@@ -119,6 +121,7 @@ static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 		p_ext ->wait_time = node_priority;
 		s_element_extern * p_elem_ext = (s_element_extern *)p_base;
 		p_ext ->node_num  = p_elem_ext ->other_info;
+		p_ext ->p_wave    = p_elem_ext ->p_wave;
 		return CS_node_receive;
 	}
 	else {INSERT(LogDebug)(WAVE_TRANS_DEBUG,("no node in priority queue\r\n"));	}
@@ -132,7 +135,8 @@ static StateNumber CS_node_receiveAction(s_StateMachineParam *p_this)
 	sys_time = GetTime();
 	if(sys_time >= p_ext ->wait_time)
 	{
-		p_ext ->p_manager ->handle(p_ext ->p_manager,p_ext ->node_num);
+		p_ext ->p_manager ->handle(p_ext ->p_manager,p_ext ->node_num,p_ext ->p_wave->context,p_ext->p_wave->content_length);
+		p_ext ->p_wave ->isDisapper = X_True;
 		return CS_transmation;
 	}
 	return p_this->current_state;
@@ -419,6 +423,7 @@ X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,
 			{
 				s_ee[element_index].base.priority = distance + (uint16_t)sys_time;
 				s_ee[element_index].other_info    = p_current ->p_node->backward_node;
+				s_ee[element_index].p_wave        = p_wave;
 				if(BH_PriorityQueueInsert(p_queue,&s_ee[element_index].base) != INVALID_PRIOQUEUE_PRIORITY)
 				{
 					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" -----insert successed node % d will receive it at time %d\r\n"
@@ -447,6 +452,7 @@ X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,
 			{
 				s_ee[element_index].base.priority = distance + (uint16_t)sys_time;
 				s_ee[element_index].other_info    = p_current ->p_node->forware_node;
+				s_ee[element_index].p_wave        = p_wave;
 				if(BH_PriorityQueueInsert(p_queue,&s_ee[element_index].base) != INVALID_PRIOQUEUE_PRIORITY)
 				{
 					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" -----insert successed node % d will receive it at time %d\r\n"

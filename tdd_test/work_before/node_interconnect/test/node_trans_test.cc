@@ -17,9 +17,9 @@ static s_node_rec_table node_recv_table[2] =
 	};
 
 static uint16_t recv_times = 0;
-static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_num)
+static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
-	UNUSED_PARAMETER(p_manager);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
 	INSERT(LogDebug)(NODE_RECV_DEBUG,("0: node %d receive at time %d \r\n",current_node_num,GetTime()));
 	EXPECT_EQ(current_node_num,node_recv_table[recv_times].node_num);
 	EXPECT_EQ(GetTime(),node_recv_table[recv_times].time);
@@ -143,9 +143,9 @@ TEST(trans,node1_send_wave)
 	EXPECT_EQ(recv_times,2);
 }
 
-static X_Boolean NodeRecvHandle1(_s_node_manager *p_manager,uint8_t current_node_num)
+static X_Boolean NodeRecvHandle1(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
-	UNUSED_PARAMETER(p_manager);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
 	EXPECT_EQ(recv_times,0);
 	EXPECT_EQ(current_node_num,2);
 	INSERT(LogDebug)(NODE_RECV_DEBUG,("1: node %d receive at time %d \r\n",current_node_num,GetTime()));
@@ -199,9 +199,9 @@ TEST(trans,node1_send_wave1)
 	EXPECT_EQ(recv_times,1);
 }
 
-static X_Boolean NodeRecvHandle2(_s_node_manager *p_manager,uint8_t current_node_num)
+static X_Boolean NodeRecvHandle2(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
-	UNUSED_PARAMETER(p_manager);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
 	EXPECT_EQ(recv_times,0);
 	EXPECT_EQ(current_node_num,2);
 	INSERT(LogDebug)(NODE_RECV_DEBUG,("1: node %d receive at time %d \r\n",current_node_num,GetTime()));
@@ -256,9 +256,9 @@ TEST(trans,node1_send_wave2)
 	EXPECT_EQ(recv_times,1);
 }
 
-static X_Boolean NodeRecvHandle3(_s_node_manager *p_manager,uint8_t current_node_num)
+static X_Boolean NodeRecvHandle3(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
-	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(current_node_num);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(current_node_num);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
 	EXPECT_EQ(1,0);
 	return X_True;
 }
@@ -315,9 +315,9 @@ static s_node_rec_table node_recv_table_1[2] =
 	};
 
 
-static X_Boolean NodeRecvHandle4(_s_node_manager *p_manager,uint8_t current_node_num)
+static X_Boolean NodeRecvHandle4(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
-	UNUSED_PARAMETER(p_manager);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
 	EXPECT_EQ(current_node_num,node_recv_table_1[recv_times].node_num);
 	EXPECT_EQ(GetTime(),node_recv_table_1[recv_times].time);
 	recv_times ++;
@@ -374,9 +374,9 @@ TEST(trans,node3_send_wave4)
 
 
 
-static X_Boolean NodeRecvHandle5(_s_node_manager *p_manager,uint8_t current_node_num)
+static X_Boolean NodeRecvHandle5(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
-	UNUSED_PARAMETER(p_manager);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
 	EXPECT_EQ(current_node_num,node_recv_table_1[recv_times].node_num);
 	EXPECT_EQ(GetTime(),node_recv_table_1[recv_times].time);
 	recv_times ++;
@@ -427,9 +427,9 @@ TEST(trans,node3_send_wave5)
 	EXPECT_EQ(recv_times,1);
 }
 
-static X_Boolean NodeRecvHandle6(_s_node_manager *p_manager,uint8_t current_node_num)
+static X_Boolean NodeRecvHandle6(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
-	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(current_node_num);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(current_node_num);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
 	EXPECT_EQ(1,0);
 	recv_times ++;
 	return X_True;
@@ -488,9 +488,9 @@ node 2
 			{3,10},
 		};
 
-static X_Boolean NodeRecvHandle7(_s_node_manager *p_manager,uint8_t current_node_num)
+static X_Boolean NodeRecvHandle7(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
-	UNUSED_PARAMETER(p_manager);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
 	EXPECT_EQ(current_node_num,node_recv_table_2[recv_times].node_num);
 	EXPECT_EQ(GetTime(),node_recv_table_2[recv_times].time);
 	recv_times ++;
@@ -542,9 +542,9 @@ TEST(trans,node2_send_wave7)
 }
 
 
-static X_Boolean NodeRecvHandle8(_s_node_manager *p_manager,uint8_t current_node_num)
+static X_Boolean NodeRecvHandle8(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
-	UNUSED_PARAMETER(p_manager);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
 	EXPECT_EQ(current_node_num,node_recv_table_2[recv_times].node_num);
 	EXPECT_EQ(GetTime(),node_recv_table_2[recv_times].time);
 	recv_times ++;
@@ -596,9 +596,9 @@ TEST(trans,node2_send_wave8)
 }
 
 
-static X_Boolean NodeRecvHandle9(_s_node_manager *p_manager,uint8_t current_node_num)
+static X_Boolean NodeRecvHandle9(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
-	UNUSED_PARAMETER(p_manager);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
 	EXPECT_EQ(current_node_num,node_recv_table_2[recv_times].node_num);
 	EXPECT_EQ(GetTime(),node_recv_table_2[recv_times].time);
 	recv_times ++;
@@ -650,9 +650,9 @@ TEST(trans,node2_send_wave9)
 }
 
 
-static X_Boolean NodeRecvHandle10(_s_node_manager *p_manager,uint8_t current_node_num)
+static X_Boolean NodeRecvHandle10(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
-	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(current_node_num);
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(current_node_num);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
 	EXPECT_EQ(1,0);
 	recv_times ++;
 	return X_True;
