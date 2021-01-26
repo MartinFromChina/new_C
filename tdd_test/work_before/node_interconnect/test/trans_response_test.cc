@@ -21,32 +21,13 @@ typedef struct
 static s_node_rec_table node_recv_table[] =
 	{
 		{2,2,{0x55,0xaa,0}},
-		{2,2,{0x77,0x88,0x99}},
 		{3,5,{0x55,0xaa,0}},
-		{3,5,{0x77,0x88,0x99}},
 		{4,10,{0x55,0xaa,0}},
-		{4,10,{0x77,0x88,0x99}},
 		
 	};
 
 static uint16_t recv_times = 0;
-static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
-{
-	uint16_t i;
-	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(current_node_num);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
-	INSERT(LogDebug)(NODE_RECV_DEBUG,("0: node %d receive at time %d \r\n",current_node_num,GetTime()));
-	for(i=0;i<length;i++)
-	{
-		INSERT(LogDebug)(NODE_RECV_DEBUG,(" %2x ",p_data[i]));
-	}
-	INSERT(LogDebug)(NODE_RECV_DEBUG,(" \r\n "));
-	
-	EXPECT_EQ(current_node_num,node_recv_table[recv_times].node_num);
-	EXPECT_EQ(GetTime(),node_recv_table[recv_times].time);
-	EXPECT_EQ(p_data[0],node_recv_table[recv_times].data[0]);
-	recv_times ++;
-	return X_True;
-}
+
 static s_node * NodeBasicInit(s_node *p_node,uint8_t mode_num,uint16_t forward_distance)
 {
 	//s_node *p_node = (s_node *)0;
@@ -118,6 +99,40 @@ static s_wave * NodeWaveAdd(s_node *p_node,uint8_t *p_buf,uint16_t length,e_dire
 	}
 	return p_wave;
 }
+
+
+static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
+{
+	uint16_t i;
+	s_wave * p_wave;
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(length);
+
+	uint8_t buf2[3] = {0x77,0x88,0x99};
+	INSERT(LogDebug)(NODE_RECV_DEBUG,("0: node %d receive at time %d \r\n",current_node_num,GetTime()));
+	for(i=0;i<length;i++)
+	{
+		INSERT(LogDebug)(NODE_RECV_DEBUG,(" %2x ",p_data[i]));
+	}
+	INSERT(LogDebug)(NODE_RECV_DEBUG,(" \r\n "));
+	
+	//EXPECT_EQ(current_node_num,node_recv_table[recv_times].node_num);
+	//EXPECT_EQ(GetTime(),node_recv_table[recv_times].time);
+	//EXPECT_EQ(p_data[0],node_recv_table[recv_times].data[0]);
+	recv_times ++;
+
+	if(current_node_num == 3)
+	{
+		p_wave = NodeWaveAdd(&node3,buf2,3,ED_bidirection,100);
+		if(p_wave != X_Null)
+		{
+			SendWave(p_manager,GetTime(),node3.node_number,p_wave);
+		}
+	}
+	
+	return X_True;
+}
+
+
 TEST(trans_response,same_time)
 {
 	s_wave * p_wave;
@@ -127,12 +142,9 @@ TEST(trans_response,same_time)
 
 	EXPECT_EQ(GetNodeNum(),5);
 
-	uint8_t buf1[2] = {0x55,0xaa},buf2[3] = {0x77,0x88,0x99};
+	uint8_t buf1[2] = {0x55,0xaa};
 	
 	p_wave = NodeWaveAdd(&node1,buf1,2,ED_bidirection,10);
-	if(p_wave != X_Null){SendWave(p_manager,GetTime(),node1.node_number,p_wave);}
-	
-	p_wave = NodeWaveAdd(&node1,buf2,3,ED_backward,10);
 	if(p_wave != X_Null){SendWave(p_manager,GetTime(),node1.node_number,p_wave);}
 	
 	
@@ -140,9 +152,12 @@ TEST(trans_response,same_time)
 	{
 		isRun = RunNodeCommunicationProcess();
 	}
-	EXPECT_EQ(recv_times,6);
+	EXPECT_EQ(recv_times,7);
 	WaveTransDeInit();
 }
+
+/*
+
 static s_node_rec_table node_recv_table1[] =
 	{
 		{3,5,{0x55,0xaa,0}},
@@ -171,7 +186,6 @@ static X_Boolean NodeRecvHandle1(_s_node_manager *p_manager,uint8_t current_node
 	recv_times ++;
 	return X_True;
 }
-
 TEST(trans_response,same_time1)
 {
 	s_wave * p_wave;
@@ -197,3 +211,4 @@ TEST(trans_response,same_time1)
 	EXPECT_EQ(recv_times,7);
 	WaveTransDeInit();
 }
+*/

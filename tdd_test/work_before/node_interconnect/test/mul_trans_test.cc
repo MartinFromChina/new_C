@@ -4,7 +4,7 @@
 static s_node_manager node_1,node_2,node_3,node_4,node_5;
 static s_node         node1,node2,node3,node4,node5;
 
-#define NODE_RECV_DEBUG 1
+#define NODE_RECV_DEBUG 0
 
 #define DISTANCE_BETWEEN_NODE_1_2   2
 #define DISTANCE_BETWEEN_NODE_2_3   3

@@ -1,11 +1,14 @@
 #include "node_test.h"
 #include <iostream>
+#include "../../../../module/common/InsertLog/InsertLogDebug.h"
+
 using namespace std;
 
 static uint16_t node_handle_called_cnt = 0;
 
 static X_Boolean NodeHandle(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
+	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(current_node_num);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
 	node_handle_called_cnt++;
 	//EXPECT_EQ(message.wave_num, 8);
 	return X_True;

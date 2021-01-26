@@ -20,7 +20,7 @@
 
 static uint8_t power_adjust = 0;
 static X_Boolean isLockClock = X_True;
-static uint32_t time_cnt = 0;
+static uint32_t time_cnt = 0,time_out_threshold = 0xffff;
 static X_PriorityQueue *p_queue  = (X_PriorityQueue *)0;
 
 /*APP_LOOPQUEUE_DEF(p_loop,MAX_NODE_NUM *2);*/
@@ -116,9 +116,7 @@ static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 	
 	sParamExtern * p_ext = (sParamExtern *)p_this;
 	INSERT(LogDebug)(NODE_NUM_DEBUG,("node num is %d\r\n",p_ext ->node_num));
-
 	isLockClock = X_True;
-	
 	node_priority = BH_PriorityQueueReleaseMin(p_queue,&p_base);
 
 	if(node_priority != INVALID_PRIOQUEUE_PRIORITY)
@@ -161,7 +159,6 @@ static StateNumber CS_endAction(s_StateMachineParam *p_this)
 	return p_this->current_state;
 }
 
-
 static const StateAction NodeStateAction[] = {
 		{CS_IdleAction},
 		{CS_transmationAction},
@@ -174,13 +171,6 @@ APP_STATE_MACHINE_DEF(p_state
 								,sizeof(NodeStateAction)/sizeof(NodeStateAction[0])
 								,&NodeStateAction[0]);
 
-/*
-static X_Void StateJumpRecorder(StateNumber state_going_to_leave,StateNumber state_going_to_enter)
-{
-	UNUSED_PARAMETER(state_going_to_leave);
-	UNUSED_PARAMETER(state_going_to_enter);
-}
-*/
 typedef X_Void (*state_record)(StateNumber state_going_to_leave,StateNumber state_going_to_enter);
 X_Boolean RunNodeCommunicationProcess(X_Void)
 {
@@ -188,6 +178,7 @@ X_Boolean RunNodeCommunicationProcess(X_Void)
 	if(sPE.isStateRun != X_True)  {return X_False;}
 	mStateMachineRun(p_state,&sPE.base,(state_record)0);
 	if(isLockClock == X_False) {time_cnt ++;}
+	if(time_cnt >= time_out_threshold){return X_False;}
 	return X_True;
 }
 
@@ -203,7 +194,7 @@ static s_node_manager manager
 s_node_manager *WaveTransInit(p_node_handle handle)
 {
 	isLockClock = X_True;
-	time_cnt = 0;
+	time_cnt = 0;time_out_threshold = 0xffff;
 	element_index = 0;
 	power_adjust = 0;
 	manager.flag  = NF_idle;
@@ -234,6 +225,10 @@ X_Void WaveTransDeInit(X_Void)
 uint32_t GetTime(X_Void)
 {
 	return time_cnt;
+}
+X_Void SetTimeThresHold(uint32_t threshold)
+{
+	time_out_threshold = threshold;
 }
 
 X_Boolean NodeAdd(s_node_manager *p_manager,s_node_manager *p_new_node)
@@ -412,9 +407,10 @@ X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,
 	X_Boolean isForward = X_False,isBackward = X_False;
 	uint16_t total_node_num,i,distance;
 	s_node_manager *p_current,*p_current_backup;
-	s_node_manager *p_header = &manager;
+
+	if(p_manager == X_Null)  {return X_False;}
 	total_node_num = GetNodeNum();
-	p_current = GetNodePointer(&manager,node_num);
+	p_current = GetNodePointer(p_manager,node_num);
 	p_current_backup = p_current;
 	if(p_current == X_Null) {return X_False;}
 
