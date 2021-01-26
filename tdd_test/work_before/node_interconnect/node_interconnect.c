@@ -11,7 +11,7 @@
 
 #define NODE_NUM_DEBUG 			    0
 #define NODE_ADD_DEBUG 			    0
-#define WAVE_TRANS_DEBUG 			1
+#define WAVE_TRANS_DEBUG 			0
 #define NODE_DISTANCE_DEBUG 		0
 #define WAVE_SEND_DEBUG 			0
 
@@ -433,13 +433,32 @@ X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,
 			p_current = p_current ->p_next;
 		}
 	}
+
+	
 	distance = 0;
 	p_current = p_current_backup;
 	if(isForward == X_True)
 	{
 		for(i=0;i<total_node_num;i++)
 		{
-			//if()
+			if(p_current ->p_previous == X_Null) {break;}
+			distance += p_current ->p_node ->forware_distance;
+			if(distance <= p_wave ->max_trans_distance)
+			{
+				s_ee[element_index].base.priority = distance + (uint16_t)sys_time;
+				s_ee[element_index].other_info    = p_current ->p_node->forware_node;
+				if(BH_PriorityQueueInsert(p_queue,&s_ee[element_index].base) != INVALID_PRIOQUEUE_PRIORITY)
+				{
+					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" -----insert successed node % d will receive it at time %d\r\n"
+								,s_ee[element_index].other_info,s_ee[element_index].base.priority));
+				}
+				else
+				{
+					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" insert failed\r\n"));
+				}
+				if((element_index + 1)<(MAX_NODE_NUM * 2)) {element_index ++;}
+			}
+			p_current = p_current ->p_previous;
 		}
 	}
 	
