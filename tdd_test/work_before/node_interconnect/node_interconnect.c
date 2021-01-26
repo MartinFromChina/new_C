@@ -11,7 +11,7 @@
 
 #define NODE_NUM_DEBUG 			    0
 #define NODE_ADD_DEBUG 			    0
-#define WAVE_TRANS_DEBUG 			1
+#define WAVE_TRANS_DEBUG 			0
 #define NODE_DISTANCE_DEBUG 		0
 #define WAVE_SEND_DEBUG 			0
 #define POWER  100

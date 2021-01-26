@@ -118,7 +118,7 @@ static s_wave * NodeWaveAdd(s_node *p_node,uint8_t *p_buf,uint16_t length,e_dire
 	}
 	return p_wave;
 }
-TEST(mul_trans,same_time)
+TEST(trans_response,same_time)
 {
 	s_wave * p_wave;
 	s_node_manager *p_manager;
@@ -172,7 +172,7 @@ static X_Boolean NodeRecvHandle1(_s_node_manager *p_manager,uint8_t current_node
 	return X_True;
 }
 
-TEST(mul_trans,same_time1)
+TEST(trans_response,same_time1)
 {
 	s_wave * p_wave;
 	s_node_manager *p_manager;
