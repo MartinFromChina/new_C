@@ -4,7 +4,9 @@
 static s_node_manager node_1,node_2,node_3,node_4,node_5;
 static s_node         node1,node2,node3,node4,node5;
 
-#define NODE_RECV_DEBUG 1
+#define NODE_RECV_DEBUG 0
+#define NODE_RECV1_DEBUG 0
+
 
 #define DISTANCE_BETWEEN_NODE_1_2   2
 #define DISTANCE_BETWEEN_NODE_2_3   3
@@ -22,7 +24,11 @@ static s_node_rec_table node_recv_table[] =
 	{
 		{2,2,{0x55,0xaa,0}},
 		{3,5,{0x55,0xaa,0}},
+		{2,8,{0x77,0x88,0x99}},
 		{4,10,{0x55,0xaa,0}},
+		{4,10,{0x77,0x88,0x99}},
+		{1,10,{0x77,0x88,0x99}},
+		{5,18,{0x77,0x88,0x99}},
 		
 	};
 
@@ -115,9 +121,9 @@ static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_
 	}
 	INSERT(LogDebug)(NODE_RECV_DEBUG,(" \r\n "));
 	
-	//EXPECT_EQ(current_node_num,node_recv_table[recv_times].node_num);
-	//EXPECT_EQ(GetTime(),node_recv_table[recv_times].time);
-	//EXPECT_EQ(p_data[0],node_recv_table[recv_times].data[0]);
+	EXPECT_EQ(current_node_num,node_recv_table[recv_times].node_num);
+	EXPECT_EQ(GetTime(),node_recv_table[recv_times].time);
+	EXPECT_EQ(p_data[0],node_recv_table[recv_times].data[0]);
 	recv_times ++;
 
 	if(current_node_num == 3)
@@ -156,8 +162,8 @@ TEST(trans_response,same_time)
 	WaveTransDeInit();
 }
 
-/*
 
+/*
 static s_node_rec_table node_recv_table1[] =
 	{
 		{3,5,{0x55,0xaa,0}},
@@ -169,24 +175,41 @@ static s_node_rec_table node_recv_table1[] =
 		{4,16,{0x77,0x88,0x99}},
 		
 	};
+	*/
 static X_Boolean NodeRecvHandle1(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
 	uint16_t i;
+	s_wave * p_wave;
+	X_Boolean isOK;
+	uint8_t buf[3] = {0xaa,0xaa,0xaa};
 	UNUSED_PARAMETER(p_manager);UNUSED_PARAMETER(current_node_num);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);
-	INSERT(LogDebug)(NODE_RECV_DEBUG,("0: node %d receive at time %d \r\n",current_node_num,GetTime()));
+	INSERT(LogDebug)(NODE_RECV1_DEBUG,("0: node %d receive at time %d \r\n",current_node_num,GetTime()));
 	for(i=0;i<length;i++)
 	{
-		INSERT(LogDebug)(NODE_RECV_DEBUG,(" %2x ",p_data[i]));
+		INSERT(LogDebug)(NODE_RECV1_DEBUG,(" %d ",p_data[i]));
 	}
-	INSERT(LogDebug)(NODE_RECV_DEBUG,(" \r\n "));
+	INSERT(LogDebug)(NODE_RECV1_DEBUG,(" \r\n "));
 	
-	EXPECT_EQ(current_node_num,node_recv_table1[recv_times].node_num);
-	EXPECT_EQ(GetTime(),node_recv_table1[recv_times].time);
-	EXPECT_EQ(p_data[0],node_recv_table1[recv_times].data[0]);
+	//EXPECT_EQ(current_node_num,node_recv_table1[recv_times].node_num);
+	//EXPECT_EQ(GetTime(),node_recv_table1[recv_times].time);
+	//EXPECT_EQ(p_data[0],node_recv_table1[recv_times].data[0]);
 	recv_times ++;
+	if(current_node_num == 4)
+	{
+		p_wave = NodeWaveAdd(&node4,buf,3,ED_bidirection,100);
+		if(p_wave != X_Null)
+		{
+			isOK = SendWave(p_manager,GetTime(),node4.node_number,p_wave);
+			EXPECT_EQ(isOK,X_True);
+		}
+		else
+		{
+			EXPECT_EQ(0,1)<<"-------------------------------node4 send new wave failed \r\n";
+		}
+	}
 	return X_True;
 }
-TEST(trans_response,same_time1)
+TEST(trans_response,max_response)
 {
 	s_wave * p_wave;
 	s_node_manager *p_manager;
@@ -195,20 +218,48 @@ TEST(trans_response,same_time1)
 
 	EXPECT_EQ(GetNodeNum(),5);
 
-	uint8_t buf1[2] = {0x55,0xaa},buf2[3] = {0x77,0x88,0x99};
+	uint8_t buf1[1] = {1};
+	uint8_t buf2[2] = {2,2};
+	uint8_t buf3[3] = {3,0x55,3};
+	uint8_t buf4[4] = {4,0x77,0x88,4};
+	uint8_t buf5[5] = {5,0x55,0xaa,3,5};
+	uint8_t buf6[6] = {6,0x77,0x88,0x99,5,6};
+	uint8_t buf7[7] = {7,0x55,0xaa,1,2,3,7};
+	uint8_t buf8[8] = {8,0x77,0x88,0x99,1,2,3,8};
+	uint8_t buf9[9] = {9,0x55,0xaa,1,2,3,4,5,9};
+	uint8_t buf10[10] = {10,0x77,0x88,0x99,6,5,4,3,2,10};
+	uint8_t buf11[11] = {11,0x77,0x88,0x99,6,5,4,3,2,1,11};
 	
-	p_wave = NodeWaveAdd(&node4,buf1,2,ED_bidirection,100);
+	p_wave = NodeWaveAdd(&node4,buf1,1,ED_bidirection,100);
 	if(p_wave != X_Null){SendWave(p_manager,GetTime(),node4.node_number,p_wave);}
+	p_wave = NodeWaveAdd(&node4,buf2,2,ED_bidirection,100);
+	if(p_wave != X_Null){SendWave(p_manager,GetTime()+101,node4.node_number,p_wave);}
+	p_wave = NodeWaveAdd(&node4,buf3,3,ED_bidirection,100);
+	if(p_wave != X_Null){SendWave(p_manager,GetTime()+102,node4.node_number,p_wave);}
+	p_wave = NodeWaveAdd(&node4,buf4,4,ED_bidirection,100);
+	if(p_wave != X_Null){SendWave(p_manager,GetTime()+103,node4.node_number,p_wave);}
+	p_wave = NodeWaveAdd(&node4,buf5,5,ED_bidirection,100);
+	if(p_wave != X_Null){SendWave(p_manager,GetTime()+104,node4.node_number,p_wave);}
+	p_wave = NodeWaveAdd(&node4,buf6,6,ED_bidirection,100);
+	if(p_wave != X_Null){SendWave(p_manager,GetTime()+105,node4.node_number,p_wave);}
+	p_wave = NodeWaveAdd(&node4,buf7,7,ED_bidirection,100);
+	if(p_wave != X_Null){SendWave(p_manager,GetTime()+106,node4.node_number,p_wave);}
+	p_wave = NodeWaveAdd(&node4,buf8,8,ED_bidirection,100);
+	if(p_wave != X_Null){SendWave(p_manager,GetTime()+107,node4.node_number,p_wave);}
+	p_wave = NodeWaveAdd(&node4,buf9,9,ED_bidirection,100);
+	if(p_wave != X_Null){SendWave(p_manager,GetTime()+108,node4.node_number,p_wave);}
+	p_wave = NodeWaveAdd(&node4,buf10,10,ED_bidirection,100);
+	if(p_wave != X_Null){SendWave(p_manager,GetTime()+109,node4.node_number,p_wave);}
 	
-	p_wave = NodeWaveAdd(&node1,buf2,3,ED_backward,10);
-	if(p_wave != X_Null){SendWave(p_manager,GetTime()+6,node1.node_number,p_wave);}
+	p_wave = NodeWaveAdd(&node1,buf11,3,ED_backward,10);
+	if(p_wave != X_Null){SendWave(p_manager,GetTime()+50,node1.node_number,p_wave);}
 	
 	
 	while(isRun == X_True)
 	{
 		isRun = RunNodeCommunicationProcess();
 	}
-	EXPECT_EQ(recv_times,7);
+	EXPECT_EQ(recv_times,47);
 	WaveTransDeInit();
 }
-*/
+

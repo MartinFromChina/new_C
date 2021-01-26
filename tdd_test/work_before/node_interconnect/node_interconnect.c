@@ -14,6 +14,8 @@
 #define WAVE_TRANS_DEBUG 			0
 #define NODE_DISTANCE_DEBUG 		0
 #define WAVE_SEND_DEBUG 			0
+#define WAVE_RELEASE_DEBUG 			0
+
 #define POWER  100
 
 
@@ -139,7 +141,16 @@ static StateNumber CS_node_receiveAction(s_StateMachineParam *p_this)
 	if(sys_time >= p_ext ->wait_time)
 	{
 		p_ext ->p_manager ->handle(p_ext ->p_manager,p_ext ->node_num,p_ext ->p_wave->context,p_ext->p_wave->content_length);
-		p_ext ->p_wave ->isDisapper = X_True;
+		if(p_ext ->p_wave ->passed_node_cnt > 0) 
+		{
+			p_ext ->p_wave ->passed_node_cnt --;
+			INSERT(LogDebug)(WAVE_RELEASE_DEBUG,("**************************node  %d wave passed cnt %d\r\n",p_ext ->p_wave ->source_node_num,p_ext ->p_wave ->passed_node_cnt));
+			if(p_ext ->p_wave ->passed_node_cnt == 0)
+			{
+				p_ext ->p_wave ->isDisapper = X_True;
+				INSERT(LogDebug)(WAVE_RELEASE_DEBUG,("**************************node  %d wave release\r\n",p_ext ->p_wave->source_node_num));
+			}
+		} 
 		isLockClock = X_True;
 		return CS_transmation;
 	}
@@ -419,6 +430,7 @@ X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,
 
 	p_wave ->passed_node_cnt = 0;
 	p_wave ->isDisapper               = X_False;
+	p_wave ->source_node_num          = node_num;
 	
 	distance = 0;
 	if(isBackward == X_True)
