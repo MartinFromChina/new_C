@@ -9,6 +9,7 @@
 #include "../../../module/common/x_cross_platform.h"
 #include "DG_terminal.h"
 
+X_Void main_loop_2(X_Void);
 
 
 #ifdef __cplusplus

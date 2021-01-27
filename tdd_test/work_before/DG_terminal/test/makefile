@@ -6,40 +6,55 @@ TARGET = DG
 CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += $(DEFS)
 
-$(TARGET) : node_test.o node_interconnect.o  node.o StateMachine.o InsertLogDebug.o 
+$(TARGET) : DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o hal.o \
+					node_interconnect.o StateMachine.o priority_queues.o bit_operation.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(DLIBS)
 
 bit_operation.o : ../../../../module/common/Math/bit_operation.c ../../../../module/common/Math/bit_operation.h
 	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
-            -c ../../../../module/common/Math/bit_operation.c
+           -c ../../../../module/common/Math/bit_operation.c
             
 priority_queues.o:../../../../module/common/priorityqueue/priority_queues.c   ../../../../module/common/priorityqueue/priority_queues.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
-           -c ../../../../module/common/priorityqueue/priority_queues.c
+          -c ../../../../module/common/priorityqueue/priority_queues.c
 
 InsertLogDebug.o:../../../../module/common/InsertLog/InsertLogDebug.c   ../../../../module/common/InsertLog/InsertLogDebug.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
            -c ../../../../module/common/InsertLog/InsertLogDebug.c
 
-node.o: ../node.c   ../node.h
-	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
-            -c ../node.c
-loop_queues.o:../../../../module/common/loopqueue/loop_queues.c   ../../../../module/common/loopqueue/loop_queues.h 
-	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
-           -c ../../../../module/common/loopqueue/loop_queues.c
+#loop_queues.o:../../../../module/common/loopqueue/loop_queues.c   ../../../../module/common/loopqueue/loop_queues.h 
+#	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
+#           -c ../../../../module/common/loopqueue/loop_queues.c
            
 StateMachine.o:../../../../module/common/StateMachine/StateMachine.c   ../../../../module/common/StateMachine/StateMachine.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
            -c ../../../../module/common/StateMachine/StateMachine.c
             
-node_interconnect.o :../node_interconnect.c   ../node_interconnect.h 	
+DG_terminal.o :../DG_terminal.c   ../DG_terminal.h 	
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
-            -c ../node_interconnect.c
+            -c ../DG_terminal.c
             
-node_test.o : node_test.cc  node_test.h ../node_interconnect.h  #  ../../../common/StateMachine/StateMachine.h 
+terminal1.o :../terminal1.c   ../terminal1.h 	
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
+            -c ../terminal1.c
+            
+node_interconnect.o :../../node_interconnect/node_interconnect.c   ../../node_interconnect/node_interconnect.h 	
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
+            -c ../../node_interconnect/node_interconnect.c
+
+terminal2.o :../terminal2.c   ../terminal2.h 	
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
+            -c ../terminal2.c
+
+hal.o: ../hal.c   ../hal.h   
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
+            -c ../hal.c
+            
+
+DG_test.o : DG_test.cc # ../node_interconnect.h  #  ../../../common/StateMachine/StateMachine.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
-            -c node_test.cc
+            -c DG_test.cc
 						
 clean:
-	rm node_test.o node_interconnect.o  node.o StateMachine.o InsertLogDebug.o \
-			node_trans_test.o priority_queues.o bit_operation.o loop_queues.o mul_trans_test.o trans_response_test.o
+	rm DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o hal.o \
+	node_interconnect.o StateMachine.o priority_queues.o bit_operation.o

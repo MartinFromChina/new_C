@@ -8,12 +8,14 @@
 #endif
 
 #include <iostream>
-#include "../../../../module/common/InsertLog/InsertLogDebug.h"
+#include "../hal.h"
 
 using namespace std;
 
-TEST(node,init)
+TEST(DG,init)
 {
+	HAL_BasicSet();
+	HAL_Run();
 }
 
 
