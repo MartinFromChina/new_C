@@ -62,12 +62,12 @@ static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_
 		return X_True;
 }
 
-#define DISTANCE_BETWEEN_NODE_1_2   2
-#define DISTANCE_BETWEEN_NODE_2_3   3
+#define DISTANCE_BETWEEN_NODE_1_2   11
+#define DISTANCE_BETWEEN_NODE_2_3   9
 #define DISTANCE_BETWEEN_NODE_3_4   5
 #define DISTANCE_BETWEEN_NODE_4_5   8 
-#define DISTANCE_BETWEEN_NODE_5_6   2
-#define DISTANCE_BETWEEN_NODE_6_7   3
+#define DISTANCE_BETWEEN_NODE_5_6   7
+#define DISTANCE_BETWEEN_NODE_6_7   9
 #define DISTANCE_BETWEEN_NODE_7_8   5
 #define DISTANCE_BETWEEN_NODE_8_9   8 
 #define DISTANCE_BETWEEN_NODE_9_10  7
@@ -117,6 +117,10 @@ static s_wave * NodeWaveAdd(s_node *p_node,uint8_t *p_buf,uint16_t length,e_dire
 	}
 	return p_wave;
 }
+static X_Boolean send(uint8_t node_num,uint32_t sent_time,uint8_t *p_buf,uint8_t length)
+{
+	return SendWaveSetForTestModule(node_num,sent_time,p_buf,length,COMMON_WIRELESS_DIRECTION,COMMON_WIRELESS_DISTANCE);
+}
 X_Void HAL_BasicSet(X_Void)
 {
 	X_Boolean isOK;
@@ -164,8 +168,9 @@ X_Void HAL_BasicSet(X_Void)
 	EXPECT_EQ(isOK, X_True);
 
 	p_node_manager = p_manager;
+
+	SentFuncInit(send);
 	isInit = X_True;
-	
 }
 X_Void HAL_Run(X_Void)
 {

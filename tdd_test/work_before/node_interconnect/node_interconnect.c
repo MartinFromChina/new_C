@@ -49,6 +49,7 @@ typedef struct
 	uint16_t 					node_num;
 	uint16_t 					wait_time;
 	s_wave  		*			p_wave;
+	uint16_t                    end_delay_time;
 }sParamExtern;
 
 static sParamExtern sPE;
@@ -166,8 +167,16 @@ static StateNumber CS_node_sendAction(s_StateMachineParam *p_this)
 static StateNumber CS_endAction(s_StateMachineParam *p_this)
 {
 	sParamExtern * p_ext = (sParamExtern *)p_this;
-	p_ext ->isStateRun = X_False;
+	if(p_ext ->end_delay_time > 0)
+	{
+		p_ext ->end_delay_time --;
+	}
+	else
+	{
+		p_ext ->isStateRun = X_False;
+	}
 	return p_this->current_state;
+	
 }
 
 static const StateAction NodeStateAction[] = {
@@ -213,6 +222,7 @@ s_node_manager *WaveTransInit(p_node_handle handle)
 	sPE.p_manager = &manager;
 	sPE.isStateRun = X_True;
 	sPE.node_num   = INVALID_NODE_NUM;
+	sPE.end_delay_time = 1000;
 	mStateMachineStateSet(p_state,CS_Idle);
 	p_queue = BH_PriorityQueueInit(MAX_NODE_NUM*2);
 	//LoopQueueInitialize(p_loop);

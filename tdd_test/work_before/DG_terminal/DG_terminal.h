@@ -10,6 +10,9 @@
 #include "../../../module/common/CommonMarco.h"
 #include "DG_common.h"
 
+#define COMMON_WIRELESS_DIRECTION    ED_bidirection
+#define COMMON_WIRELESS_DISTANCE     23
+
 typedef struct
 {
 	uint8_t terminal_num;
@@ -24,6 +27,9 @@ typedef struct
 			backward,											\
 		}; 															 \
 		static const s_terminal *  p_terminal =  &CONCAT_2(p_terminal,_entry)
+
+typedef X_Boolean (*func_send)(uint8_t node_num,uint32_t sent_time,uint8_t *p_buf,uint8_t length);
+X_Void SentFuncInit(func_send p_src);
 
 
 X_Void MainLoopHandle(const s_terminal * p_terminal,uint32_t current_time);
