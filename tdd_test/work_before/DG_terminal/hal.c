@@ -5,33 +5,33 @@
 
 typedef struct
 {
-	X_Void (*main_loop)(X_Void);
+	X_Void (*main_loop)(uint32_t current_time);
 }s_main_loop;
+
+typedef struct
+{
+	uint8_t node_num;
+	X_Void (*irq)(uint8_t data);
+}s_irq_handle;
 
 static s_main_loop const Mains[] ={
 	main_loop_1,
 	main_loop_2,
 }; 
 
-
+static s_irq_handle const irqs[] ={
+	{1,UartIrqCallBack_1},
+	{2,UartIrqCallBack_2},
+}; 
 
 static X_Void Hal_Main_Loop(X_Void)
 {
 	uint8_t i;
+	uint32_t time = GetSysTime();
 	for(i=0;i<sizeof(Mains)/sizeof(Mains[0]);i++)
 	{
-		Mains[i].main_loop();
+		if(Mains[i].main_loop != X_Null){Mains[i].main_loop(time);}
 	}
-}
-
-static X_Boolean Hal_Irq_And_Wireless(X_Void)
-{
-	X_Boolean isRun = X_True;
-	while(isRun == X_True)
-	{
-		isRun = RunNodeCommunicationProcess();
-	}
-	return X_False;
 }
 
 
@@ -45,6 +45,21 @@ static X_Boolean isInit = X_False;
 static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
 	 INSERT(LogDebug)(1,("node %d receive data %2x at time %d \r\n",current_node_num,p_data[0],(GetSysTime())));
+	 uint8_t i,j;
+		for(i=0;i<sizeof(irqs)/sizeof(irqs[0]);i++)
+		{
+			if(current_node_num == irqs[i].node_num)
+			{
+				if(irqs[i].irq != X_Null) 
+				{
+					for(j=0;j<length;j++)
+					irqs[i].irq(p_data[j]);
+
+				}
+				break;
+			}
+		}
+		return X_True;
 }
 
 #define DISTANCE_BETWEEN_NODE_1_2   2
@@ -159,7 +174,7 @@ X_Void HAL_Run(X_Void)
 	while(isRun == X_True)
 	{		
 		Hal_Main_Loop();
-		isRun = Hal_Irq_And_Wireless();
+		isRun = RunNodeCommunicationProcess();
 	}
 	for(i=0;i<100;i++)
 	{

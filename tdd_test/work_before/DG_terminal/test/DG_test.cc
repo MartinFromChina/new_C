@@ -17,9 +17,8 @@ TEST(DG,init)
 	X_Boolean isOK;
 	uint8_t data[3] = {0x77,9,0};
 	HAL_BasicSet();
-	isOK = SendWaveSetForTestModule(2,0,data,3,ED_bidirection,30);
+	isOK = SendWaveSetForTestModule(5,0,data,3,ED_bidirection,30);
 	EXPECT_EQ(isOK, X_True);
-	
 	
 	HAL_Run();
 }
