@@ -4,6 +4,8 @@
 #include "terminal2.h"
 #include "terminal3.h"
 
+#define HAL_DEDBUG         0
+
 typedef struct
 {
 	X_Void (*main_loop)(uint32_t current_time);
@@ -19,12 +21,27 @@ static s_main_loop const Mains[] ={
 	main_loop_1,
 	main_loop_2,
 	main_loop_3,
+	main_loop_4,
+	main_loop_5,
+	main_loop_6,
+	main_loop_7,
+	main_loop_8,
+	main_loop_9,
+	main_loop_10,
+
 }; 
 
 static s_irq_handle const irqs[] ={
 	{1,UartIrqCallBack_1},
 	{2,UartIrqCallBack_2},
 	{3,UartIrqCallBack_3},
+	{4,UartIrqCallBack_4},
+	{5,UartIrqCallBack_5},
+	{6,UartIrqCallBack_6},
+	{7,UartIrqCallBack_7},
+	{8,UartIrqCallBack_8},
+	{9,UartIrqCallBack_9},
+	{10,UartIrqCallBack_10},
 }; 
 
 static X_Void Hal_Main_Loop(X_Void)
@@ -47,7 +64,7 @@ static s_node_manager * p_node_manager = (s_node_manager *)0;
 static X_Boolean isInit = X_False;
 static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
-	 INSERT(LogDebug)(1,("node %d receive data %2x at time %d \r\n",current_node_num,p_data[0],(GetSysTime())));
+	 INSERT(LogDebug)(HAL_DEDBUG,("node %d receive data %2x at time %d \r\n",current_node_num,p_data[0],(GetSysTime())));
 	 uint8_t i,j;
 		for(i=0;i<sizeof(irqs)/sizeof(irqs[0]);i++)
 		{

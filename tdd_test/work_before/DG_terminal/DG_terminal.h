@@ -11,7 +11,7 @@
 #include "DG_common.h"
 
 #define COMMON_WIRELESS_DIRECTION    ED_bidirection
-#define COMMON_WIRELESS_DISTANCE     100
+#define COMMON_WIRELESS_DISTANCE     20
 
 typedef struct
 {
