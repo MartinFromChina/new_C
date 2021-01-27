@@ -2,6 +2,7 @@
 #include "hal.h"
 #include "terminal1.h"
 #include "terminal2.h"
+#include "terminal3.h"
 
 typedef struct
 {
@@ -17,11 +18,13 @@ typedef struct
 static s_main_loop const Mains[] ={
 	main_loop_1,
 	main_loop_2,
+	main_loop_3,
 }; 
 
 static s_irq_handle const irqs[] ={
 	{1,UartIrqCallBack_1},
 	{2,UartIrqCallBack_2},
+	{3,UartIrqCallBack_3},
 }; 
 
 static X_Void Hal_Main_Loop(X_Void)

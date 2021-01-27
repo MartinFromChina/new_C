@@ -46,6 +46,7 @@ typedef struct
 	s_StateMachineParam 		base;
 	X_Boolean 					isStateRun;
 	s_node_manager *            p_manager;
+	uint16_t                    total_node_num;
 	uint16_t 					node_num;
 	uint16_t 					wait_time;
 	s_wave  		*			p_wave;
@@ -71,7 +72,7 @@ static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 	sParamExtern * p_ext = (sParamExtern *)p_this;
 	isLockClock = X_True;
 	GetNodeNum();
-	if(p_ext ->node_num == 0) {return CS_end;}
+	if(p_ext ->total_node_num == 0) {return CS_end;}
 	
 	#if (NODE_ADD_DEBUG != 0)
 	uint16_t i;
@@ -79,7 +80,7 @@ static StateNumber CS_IdleAction(s_StateMachineParam *p_this)
 	s_node_manager *p_previous;
 	p_next = p_ext ->p_manager;
 	p_previous = p_next ->p_previous;
-	for(i=0 ;i < p_ext ->node_num  ;i++)
+	for(i=0 ;i < p_ext ->total_node_num  ;i++)
 	{
 		
 		if(p_next != X_Null)
@@ -118,7 +119,7 @@ static StateNumber CS_transmationAction(s_StateMachineParam *p_this)
 	s_element_base *p_base;
 	
 	sParamExtern * p_ext = (sParamExtern *)p_this;
-	INSERT(LogDebug)(NODE_NUM_DEBUG,("node num is %d\r\n",p_ext ->node_num));
+	INSERT(LogDebug)(NODE_NUM_DEBUG,("total node num is %d\r\n",p_ext ->total_node_num));
 	isLockClock = X_True;
 	node_priority = BH_PriorityQueueReleaseMin(p_queue,&p_base);
 
@@ -222,6 +223,7 @@ s_node_manager *WaveTransInit(p_node_handle handle)
 	sPE.p_manager = &manager;
 	sPE.isStateRun = X_True;
 	sPE.node_num   = INVALID_NODE_NUM;
+	sPE.total_node_num = INVALID_NODE_NUM;
 	sPE.end_delay_time = 1000;
 	mStateMachineStateSet(p_state,CS_Idle);
 	p_queue = BH_PriorityQueueInit(MAX_NODE_NUM*2);
@@ -319,16 +321,16 @@ uint16_t GetNodeNum(X_Void)
 	uint16_t i;
 	s_node_manager *p_next;
 	
-	if(sPE.node_num != INVALID_NODE_NUM) {return sPE.node_num;}
+	if(sPE.total_node_num != INVALID_NODE_NUM) {return sPE.total_node_num;}
 
-	sPE.node_num = 0;
+	sPE.total_node_num = 0;
 	if( manager.flag == NF_idle)
 	{
-		sPE.node_num = 0;
+		sPE.total_node_num = 0;
 		INSERT(LogDebug)(NODE_NUM_DEBUG,("no node\r\n"));
 		return  0;
 	}
-	sPE.node_num = 1;
+	sPE.total_node_num = 1;
 	if(manager.p_next == X_Null) 
 	{	
 		INSERT(LogDebug)(NODE_NUM_DEBUG,("one node\r\n"));
@@ -338,12 +340,12 @@ uint16_t GetNodeNum(X_Void)
 	
 	for(i=0 ;i < MAX_NODE_NUM  ;i++)
 	{	
-		sPE.node_num ++;
-		INSERT(LogDebug)(NODE_NUM_DEBUG,("another node found ; total node num %d\r\n",sPE.node_num));
+		sPE.total_node_num ++;
+		INSERT(LogDebug)(NODE_NUM_DEBUG,("another node found ; total node num %d\r\n",sPE.total_node_num));
 		if(p_next ->p_next == X_Null) {break;}
 		p_next = p_next ->p_next;
 	}
-	return sPE.node_num;
+	return sPE.total_node_num;
 }
 uint16_t GetDistanceBetweenNode(uint8_t node_num1,uint8_t node_num2)
 {
@@ -431,6 +433,7 @@ X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,
 
 	if(p_manager == X_Null)  {return X_False;}
 	total_node_num = GetNodeNum();
+	///////////////INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" total_node_num %d\r\n",total_node_num));
 	p_current = GetNodePointer(p_manager,node_num);
 	p_current_backup = p_current;
 	if(p_current == X_Null) {return X_False;}
@@ -462,8 +465,8 @@ X_Boolean SendWave(s_node_manager *p_manager,uint32_t sys_time,uint8_t node_num,
 				
 				if(BH_PriorityQueueInsert(p_queue,&s_ee[element_index].base) != INVALID_PRIOQUEUE_PRIORITY)
 				{
-					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" -----insert successed node % d will receive it at time %d ; data[0]: %2x\r\n"
-								,s_ee[element_index].other_info,s_ee[element_index].base.priority/POWER,p_wave ->context[0]));
+					INSERT(LogDebug)(WAVE_TRANS_DEBUG,(" -----insert successed node % d will receive it at time %d ; data[0]: %2x; distance %d, max distance %d\r\n"
+								,s_ee[element_index].other_info,s_ee[element_index].base.priority/POWER,p_wave ->context[0],distance,p_wave ->max_trans_distance));
 					p_wave ->passed_node_cnt ++;
 				}
 				else

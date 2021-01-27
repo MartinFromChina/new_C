@@ -6,7 +6,7 @@ APP_DG_TERMINAL_DEFINE(p_entry,2,1,3);
 
 X_Void main_loop_2(uint32_t current_time)
 {
-   INSERT(LogDebugCounter)(1,p_counter,30,("main2 still alive \r\n"));
+   INSERT(LogDebugCounter)(1,p_counter,100,("main2 still alive \r\n"));
 	MainLoopHandle(p_entry,current_time);
 }
 

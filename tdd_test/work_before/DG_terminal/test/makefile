@@ -6,7 +6,7 @@ TARGET = DG
 CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += $(DEFS)
 
-$(TARGET) : DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o hal.o \
+$(TARGET) : DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o hal.o terminal3.o \
 					node_interconnect.o StateMachine.o priority_queues.o bit_operation.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(DLIBS)
 
@@ -46,6 +46,10 @@ terminal2.o :../terminal2.c   ../terminal2.h
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
             -c ../terminal2.c
 
+terminal3.o :../terminal3.c   ../terminal3.h 	
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
+            -c ../terminal3.c
+
 hal.o: ../hal.c   ../hal.h   
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
             -c ../hal.c
@@ -56,5 +60,5 @@ DG_test.o : DG_test.cc # ../node_interconnect.h  #  ../../../common/StateMachine
             -c DG_test.cc
 						
 clean:
-	rm DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o hal.o \
+	rm DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o terminal3.o \
 	node_interconnect.o StateMachine.o priority_queues.o bit_operation.o
