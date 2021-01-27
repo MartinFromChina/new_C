@@ -1,5 +1,5 @@
-#ifndef __NODE_H
-#define __NODE_H
+#ifndef __TREMINAL2_H
+#define __TREMINAL2_H
 
 
 #ifdef __cplusplus
@@ -7,7 +7,7 @@
 #endif
 
 #include "../../../module/common/x_cross_platform.h"
-
+#include "DG_terminal.h"
 
 
 
