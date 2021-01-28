@@ -7,7 +7,7 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += $(DEFS)
 
 $(TARGET) : DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o hal.o terminal3.o \
-					node_interconnect.o StateMachine.o priority_queues.o bit_operation.o
+					node_interconnect.o StateMachine.o priority_queues.o bit_operation.o test_data.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(DLIBS)
 
 bit_operation.o : ../../../../module/common/Math/bit_operation.c ../../../../module/common/Math/bit_operation.h
@@ -58,7 +58,11 @@ hal.o: ../hal.c   ../hal.h
 DG_test.o : DG_test.cc # ../node_interconnect.h  #  ../../../common/StateMachine/StateMachine.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
             -c DG_test.cc
+
+test_data.o : test_data.cc # ../node_interconnect.h  #  ../../../common/StateMachine/StateMachine.h 
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
+            -c test_data.cc
 						
 clean:
 	rm DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o terminal3.o \
-	node_interconnect.o StateMachine.o priority_queues.o bit_operation.o
+	node_interconnect.o StateMachine.o priority_queues.o bit_operation.o test_data.o

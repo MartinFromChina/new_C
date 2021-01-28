@@ -1,4 +1,5 @@
 #include "DG_terminal.h"
+#include "DG_protocol.h"
 
 #define RECV_DEBUG        1
 
