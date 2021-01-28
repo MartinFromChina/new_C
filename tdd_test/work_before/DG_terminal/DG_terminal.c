@@ -6,6 +6,12 @@
 uint32_t systime_timer = 0;
 static func_send p_send = (func_send)0;
 
+X_DATA_UNIT empty_unit_receive(X_Void){return 0;}
+X_Boolean empty_find_header(X_DATA_UNIT current_data){UNUSED_PARAMETER(current_data);return X_True;}
+e_find_other_process empty_find_others(X_DATA_UNIT current_data,e_find_other_process const *p_fop,X_DATA_UNIT *p_buf)
+{UNUSED_PARAMETER(current_data);UNUSED_PARAMETER(p_fop); UNUSED_PARAMETER(p_buf);return FOP_successed;}
+
+
 X_Void SentFuncInit(func_send p_src)
 {
 	p_send = p_src;

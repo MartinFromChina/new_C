@@ -7,7 +7,7 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += $(DEFS)
 
 $(TARGET) : DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o hal.o terminal3.o \
-					node_interconnect.o StateMachine.o priority_queues.o bit_operation.o test_data.o
+					node_interconnect.o StateMachine.o priority_queues.o bit_operation.o test_data.o loop_queues.o ProtocolRecv.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(DLIBS)
 
 bit_operation.o : ../../../../module/common/Math/bit_operation.c ../../../../module/common/Math/bit_operation.h
@@ -22,9 +22,13 @@ InsertLogDebug.o:../../../../module/common/InsertLog/InsertLogDebug.c   ../../..
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
            -c ../../../../module/common/InsertLog/InsertLogDebug.c
 
-#loop_queues.o:../../../../module/common/loopqueue/loop_queues.c   ../../../../module/common/loopqueue/loop_queues.h 
-#	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
-#           -c ../../../../module/common/loopqueue/loop_queues.c
+loop_queues.o:../../../../module/common/loopqueue/loop_queues.c   ../../../../module/common/loopqueue/loop_queues.h 
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
+           -c ../../../../module/common/loopqueue/loop_queues.c
+
+ProtocolRecv.o:../../../../module/customize/ProtocolRecv/ProtocolRecv.c   ../../../../module/customize/ProtocolRecv/ProtocolRecv.h 
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
+           -c ../../../../module/customize/ProtocolRecv/ProtocolRecv.c
            
 StateMachine.o:../../../../module/common/StateMachine/StateMachine.c   ../../../../module/common/StateMachine/StateMachine.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
@@ -65,4 +69,4 @@ test_data.o : test_data.cc # ../node_interconnect.h  #  ../../../common/StateMac
 						
 clean:
 	rm DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o terminal3.o \
-	node_interconnect.o StateMachine.o priority_queues.o bit_operation.o test_data.o
+	node_interconnect.o StateMachine.o priority_queues.o bit_operation.o test_data.o loop_queues.o ProtocolRecv.o

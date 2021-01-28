@@ -64,6 +64,7 @@ static s_node_manager * p_node_manager = (s_node_manager *)0;
 static X_Boolean isInit = X_False;
 static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
+	 UNUSED_PARAMETER(p_manager);
 	 INSERT(LogDebug)(HAL_DEDBUG,("node %d receive data %2x at time %d \r\n",current_node_num,p_data[0],(GetSysTime())));
 	 uint8_t i,j;
 		for(i=0;i<sizeof(irqs)/sizeof(irqs[0]);i++)
