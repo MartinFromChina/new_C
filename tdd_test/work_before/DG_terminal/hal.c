@@ -3,6 +3,7 @@
 #include "terminal1.h"
 #include "terminal2.h"
 #include "terminal3.h"
+#include "./test/test_common.h"
 
 #define HAL_DEDBUG         0
 
@@ -60,6 +61,8 @@ static X_Void Hal_Main_Loop(X_Void)
 **************************************************************************************************************
 **************************************************************************************************************
 **************************************************************************************************************/
+X_Void Recv_Monitor(uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time){}
+X_Void Send_Monitor(uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time){}
 static s_node_manager * p_node_manager = (s_node_manager *)0;
 static X_Boolean isInit = X_False;
 static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
@@ -80,6 +83,8 @@ static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_
 				break;
 			}
 		}
+		
+		MOCKABLE(Recv_Monitor)(current_node_num,p_data,length,GetSysTime());
 		return X_True;
 }
 
@@ -140,6 +145,7 @@ static s_wave * NodeWaveAdd(s_node *p_node,uint8_t *p_buf,uint16_t length,e_dire
 }
 static X_Boolean send(uint8_t node_num,uint32_t sent_time,uint8_t *p_buf,uint8_t length)
 {
+	MOCKABLE(Send_Monitor)(node_num,p_buf,length,sent_time);
 	return SendWaveSetForTestModule(node_num,sent_time,p_buf,length,COMMON_WIRELESS_DIRECTION,COMMON_WIRELESS_DISTANCE);
 }
 X_Void HAL_BasicSet(X_Void)

@@ -1,5 +1,5 @@
-#ifndef __DG_TREMINAL_H
-#define __DG_TREMINAL_H
+#ifndef __TEST_DATA_H
+#define __TEST_DATA_H
 
 
 #ifdef __cplusplus

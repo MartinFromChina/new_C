@@ -6,8 +6,8 @@ TARGET = DG
 CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += $(DEFS)
 
-$(TARGET) : DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o hal.o terminal3.o \
-					node_interconnect.o StateMachine.o priority_queues.o bit_operation.o test_data.o loop_queues.o ProtocolRecv.o
+$(TARGET) : DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o hal.o terminal3.o DG_terminal_interconnect.o   \
+					node_interconnect.o StateMachine.o priority_queues.o bit_operation.o test_data.o loop_queues.o ProtocolRecv.o test_common.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(DLIBS)
 
 bit_operation.o : ../../../../module/common/Math/bit_operation.c ../../../../module/common/Math/bit_operation.h
@@ -58,7 +58,10 @@ hal.o: ../hal.c   ../hal.h
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
             -c ../hal.c
             
-
+DG_terminal_interconnect.o: ../DG_terminal_interconnect.c    ../DG_terminal_interconnect.h   
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
+            -c ../DG_terminal_interconnect.c
+            
 DG_test.o : DG_test.cc # ../node_interconnect.h  #  ../../../common/StateMachine/StateMachine.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
             -c DG_test.cc
@@ -66,7 +69,11 @@ DG_test.o : DG_test.cc # ../node_interconnect.h  #  ../../../common/StateMachine
 test_data.o : test_data.cc # ../node_interconnect.h  #  ../../../common/StateMachine/StateMachine.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
             -c test_data.cc
+
+test_common.o : test_common.cc test_common.h# ../node_interconnect.h  #  ../../../common/StateMachine/StateMachine.h 
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
+            -c test_common.cc
 						
 clean:
-	rm DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o terminal3.o \
-	node_interconnect.o StateMachine.o priority_queues.o bit_operation.o test_data.o loop_queues.o ProtocolRecv.o
+	rm DG_test.o DG_terminal.o  hal.o InsertLogDebug.o terminal1.o terminal2.o terminal3.o DG_terminal_interconnect.o   \
+	node_interconnect.o StateMachine.o priority_queues.o bit_operation.o test_data.o loop_queues.o ProtocolRecv.o test_common.o

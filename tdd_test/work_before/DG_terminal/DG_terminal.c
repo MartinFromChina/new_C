@@ -1,5 +1,7 @@
 #include "DG_terminal.h"
 #include "DG_protocol.h"
+#include "DG_terminal_interconnect.h"
+
 
 #define RECV_DEBUG        1
 
@@ -7,8 +9,8 @@ static uint32_t systime_timer = 0;
 static func_send p_send = (func_send)0;
 static uint8_t curr_recv = 0;
 static uint8_t header_index = 0, temp_index = 0;
-static uint8_t terminal_backup = 0xff;
-//////////////static X_Boolean isNewFrameHasCome = X_False;
+//static uint8_t terminal_backup = 0xff;
+static uint8_t temp_rec_buf[50],temp_send_buf[50];
 
 
 X_DATA_UNIT 			DG_unit_receive(X_Void) {return curr_recv;}
@@ -103,27 +105,27 @@ X_Void DG_TerminalInit(func_send p_src)
 
 X_Void MainLoopHandle(const s_terminal * p_terminal,uint32_t current_time)
 {
-	X_Boolean isOK;
+	X_Boolean isOK,isNewFrameCome = X_False;
 	uint8_t *p_buf,i;
 	// lock irq
 	isOK = p_terminal ->p_action ->GetFrame(p_terminal ->p_action ->p_manager,&p_buf);
-	if(isOK == X_True && p_buf != X_Null)
+	if(isOK == X_True && p_buf != X_Null && p_buf[2] < 50)
 	{
-		///////////isNewFrameHasCome = X_True;
-		if(terminal_backup != p_terminal ->terminal_num)
-		{
-			terminal_backup = p_terminal ->terminal_num;
-			INSERT(LogDebug)(RECV_DEBUG,("------------------------------------------------ \r\n"));
-		}
-		INSERT(LogDebug)(RECV_DEBUG,("terminal %d receive data ",p_terminal ->terminal_num));
+		isNewFrameCome = X_True;
 		for(i=0;i<p_buf[2];i++)
 		{
-			INSERT(LogDebug)(RECV_DEBUG,("%2x,",p_buf[i]));
+			temp_rec_buf[i] = p_buf[i];
 		}
-		INSERT(LogDebug)(RECV_DEBUG,(" at time %d \r\n",systime_timer));
-		
 	}
-	// un lock irq
+	// unlock irq
+	if(isNewFrameCome == X_True)
+	{
+		isOK = TerminalInterconnectHandle(p_terminal,temp_rec_buf,temp_send_buf);
+		if(isOK == X_True)
+		{
+			if(p_send != X_Null) {p_send(p_terminal ->terminal_num,systime_timer,temp_send_buf,temp_send_buf[2]);}
+		}
+	}
 	systime_timer = current_time;
 }
 
@@ -139,14 +141,5 @@ X_Void UartIrqHandle(const s_terminal * p_terminal,uint8_t data)
 	 }
 	 p_terminal ->p_action ->Process(p_terminal ->p_action ->p_manager);
 	 /////////////////////INSERT(LogDebug)(RECV_DEBUG,("-------------------------terminal %d receive data %2x \r\n",p_terminal ->terminal_num,data));
-	/*
-	
-	if(p_terminal ->terminal_num == 1 && data == 0)
-	{
-		if(p_send != X_Null) 
-		{
-			p_send(p_terminal ->terminal_num,systime_timer,buf,4);
-		}
-	}
-	*/
 }
+
