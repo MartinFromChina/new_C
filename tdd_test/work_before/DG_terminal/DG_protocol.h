@@ -24,11 +24,13 @@
 #define RTC_CONFIG_TYPE 			0x52
 #define DG_INFO_MUL_GET_TYPE 		0x55
 #define DG_TERMINAL_LOST_TYPE 		0x88
+#define IMMEDIATELY_ACK_TYPE        0xfe
+
 
 #pragma pack(1)
 typedef struct
 {
-	uint16_t header;
+	uint16_t header; // 0x55aa
 	uint8_t  length;
 	uint8_t  src;
 	uint8_t  dest;
@@ -81,6 +83,30 @@ typedef struct
 	uint8_t   lost_terminal;
 	uint8_t   check_sum;
 }s_DG_terminal_lost;
+
+
+typedef struct
+{
+	uint16_t header;// 0x66cc
+	uint16_t length;
+	uint8_t  src;
+	uint8_t  dest;
+	uint8_t  type;
+	uint8_t  local_terminal;
+}s_DG_response_common;
+
+typedef struct
+{
+	uint16_t header;// 0x66cc
+	uint16_t length;//10
+	uint8_t  src;
+	uint8_t  dest;
+	uint8_t  type;//0xfe
+	uint8_t  data_or_command_type; 
+	uint8_t checksum;
+}s_DG_immedicate_ack;
+
+
 #pragma pack()
 
 

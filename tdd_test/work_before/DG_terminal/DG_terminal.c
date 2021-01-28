@@ -10,7 +10,7 @@ static func_send p_send = (func_send)0;
 static uint8_t curr_recv = 0;
 static uint8_t header_index = 0, temp_index = 0;
 //static uint8_t terminal_backup = 0xff;
-static uint8_t temp_rec_buf[50],temp_send_buf[50];
+static uint8_t temp_rec_buf[MAX_DG_FRAME_LENGTH],temp_send_buf[MAX_DG_FRAME_LENGTH];
 
 
 X_DATA_UNIT 			DG_unit_receive(X_Void) {return curr_recv;}
@@ -38,6 +38,19 @@ static X_Boolean CheckSum(uint8_t *p_buf,uint8_t length)
 	if(sum == p_buf[length - 1]) {return X_True;}
 	return X_False;
 }
+static X_Boolean LoadCheckSum(uint8_t *p_buf,uint8_t length)
+{
+	uint8_t i;
+	uint8_t sum = 0;
+	if(length == 0 || length == 255) {return X_False;}
+	for(i=0;i<length - 1;i++)
+	{
+		sum += p_buf[i];
+	}
+	p_buf[length - 1] = sum;
+	return X_True;
+}
+
 
 e_find_other_process 	DG_find_others(X_DATA_UNIT current_data,e_find_other_process const *p_fop,X_DATA_UNIT *p_buf)
 {
@@ -106,10 +119,12 @@ X_Void DG_TerminalInit(func_send p_src)
 X_Void MainLoopHandle(const s_terminal * p_terminal,uint32_t current_time)
 {
 	X_Boolean isOK,isNewFrameCome = X_False;
-	uint8_t *p_buf,i;
+	uint8_t *p_buf,i,data_or_command_type,src;
+	s_DG_immedicate_ack ime_ack,*p;
+	p = &ime_ack;
 	// lock irq
 	isOK = p_terminal ->p_action ->GetFrame(p_terminal ->p_action ->p_manager,&p_buf);
-	if(isOK == X_True && p_buf != X_Null && p_buf[2] < 50)
+	if(isOK == X_True && p_buf != X_Null && p_buf[2] < MAX_DG_FRAME_LENGTH)
 	{
 		isNewFrameCome = X_True;
 		for(i=0;i<p_buf[2];i++)
@@ -120,6 +135,21 @@ X_Void MainLoopHandle(const s_terminal * p_terminal,uint32_t current_time)
 	// unlock irq
 	if(isNewFrameCome == X_True)
 	{
+		data_or_command_type = GetType(temp_rec_buf);
+		src                  = GetSrc(temp_rec_buf);
+		if(p_send != X_Null && (data_or_command_type != IMMEDIATELY_ACK_TYPE) 
+				&&(src == p_terminal ->forward_num || src == p_terminal ->backward_num) )  // immediately ack
+		{
+			ime_ack.header = 0x66cc;
+			ime_ack.length = 10;
+			ime_ack.src    = p_terminal ->terminal_num;
+			ime_ack.dest   = src;
+			ime_ack.type   = IMMEDIATELY_ACK_TYPE;
+			ime_ack.data_or_command_type = data_or_command_type;
+
+			LoadCheckSum((uint8_t *)p,sizeof(ime_ack)/sizeof(uint8_t));
+			p_send(p_terminal ->terminal_num,systime_timer,(uint8_t *)p,sizeof(ime_ack)/sizeof(uint8_t));
+		}
 		isOK = TerminalInterconnectHandle(p_terminal,temp_rec_buf,temp_send_buf);
 		if(isOK == X_True)
 		{
