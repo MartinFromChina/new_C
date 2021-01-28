@@ -3,6 +3,10 @@
 
 //INSERT(LOG_COUNTER_ENTRY_DEF)(p_counter,0);
 APP_DG_TERMINAL_DEFINE(p_entry,2,1,3);
+X_Void Terminal2Init(X_Void)
+{
+	p_entry ->p_action -> Init(p_entry ->p_action ->p_manager);
+}
 
 X_Void main_loop_2(uint32_t current_time)
 {

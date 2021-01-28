@@ -32,12 +32,12 @@ typedef struct
 	const s_ProtocolAction *p_action;
 }s_terminal;
 
-X_DATA_UNIT empty_unit_receive(X_Void);
-X_Boolean empty_find_header(X_DATA_UNIT current_data);
-e_find_other_process empty_find_others(X_DATA_UNIT current_data,e_find_other_process const *p_fop,X_DATA_UNIT *p_buf);
+X_DATA_UNIT 			DG_unit_receive(X_Void);
+X_Boolean 				DG_find_header(X_DATA_UNIT current_data);
+e_find_other_process 	DG_find_others(X_DATA_UNIT current_data,e_find_other_process const *p_fop,X_DATA_UNIT *p_buf);
 
 #define APP_DG_TERMINAL_DEFINE(p_terminal,cur,forward,backward)   \
-		PROTOCOL_RECV_DATA_BUF_DEF(CONCAT_2(p_terminal,_action),40,5,empty_unit_receive,empty_find_header,empty_find_others);\
+		PROTOCOL_RECV_DATA_BUF_DEF(CONCAT_2(p_terminal,_action),40,5,DG_unit_receive,DG_find_header,DG_find_others);\
 		static const s_ProtocolAction CONCAT_2(p_terminal,_action_entry) = {		\
 			CONCAT_2(p_terminal,_action),											\
 			ProtocolRecvInit,														\
@@ -54,7 +54,7 @@ e_find_other_process empty_find_others(X_DATA_UNIT current_data,e_find_other_pro
 		static const s_terminal *  p_terminal =  &CONCAT_2(p_terminal,_entry)
 
 typedef X_Boolean (*func_send)(uint8_t node_num,uint32_t sent_time,uint8_t *p_buf,uint8_t length);
-X_Void SentFuncInit(func_send p_src);
+X_Void DG_TerminalInit(func_send p_src);
 
 X_Void MainLoopHandle(const s_terminal * p_terminal,uint32_t current_time);
 X_Void UartIrqHandle(const s_terminal * p_terminal,uint8_t data);

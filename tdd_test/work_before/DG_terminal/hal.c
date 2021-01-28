@@ -190,7 +190,17 @@ X_Void HAL_BasicSet(X_Void)
 
 	p_node_manager = p_manager;
 
-	SentFuncInit(send);
+	DG_TerminalInit(send);
+	Terminal1Init();
+	Terminal2Init();
+	Terminal3Init();
+	Terminal4Init();
+	Terminal5Init();
+	Terminal6Init();
+	Terminal7Init();
+	Terminal8Init();
+	Terminal9Init();
+	Terminal10Init();
 	isInit = X_True;
 }
 X_Void HAL_Run(X_Void)
