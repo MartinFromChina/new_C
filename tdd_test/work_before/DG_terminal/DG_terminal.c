@@ -8,6 +8,7 @@ static func_send p_send = (func_send)0;
 static uint8_t curr_recv = 0;
 static uint8_t header_index = 0, temp_index = 0;
 static uint8_t terminal_backup = 0xff;
+//////////////static X_Boolean isNewFrameHasCome = X_False;
 
 
 X_DATA_UNIT 			DG_unit_receive(X_Void) {return curr_recv;}
@@ -38,7 +39,7 @@ static X_Boolean CheckSum(uint8_t *p_buf,uint8_t length)
 
 e_find_other_process 	DG_find_others(X_DATA_UNIT current_data,e_find_other_process const *p_fop,X_DATA_UNIT *p_buf)
 {
-
+	///////////uint8_t i;
 	if(*p_fop == FOP_idle)
 	{
 		if(current_data < 5) {return FOP_idle;}
@@ -69,13 +70,14 @@ e_find_other_process 	DG_find_others(X_DATA_UNIT current_data,e_find_other_proce
 				return FOP_successed;
 			}
 			else
-			{				
-				/*printf("receive failed length %d ;",p_buf[3]);
+			{	
+			/*
+				INSERT(LogDebug)(RECV_DEBUG,("receive failed length %d ;",p_buf[3]));
 				for(i = 0;i<=p_buf[3];i++)
 				{
-					printf(" %2x",p_buf[i]);
+					INSERT(LogDebug)(RECV_DEBUG,(" %2x",p_buf[i]));
 				}
-				printf("\r\n");
+				INSERT(LogDebug)(RECV_DEBUG,("\r\n"));
 				*/
 				return FOP_idle;
 			}
@@ -96,6 +98,7 @@ X_Void DG_TerminalInit(func_send p_src)
 	curr_recv = 0;
 	header_index = 0;
 	temp_index = 0;
+	///////////isNewFrameHasCome = X_False;
 }
 
 X_Void MainLoopHandle(const s_terminal * p_terminal,uint32_t current_time)
@@ -106,6 +109,7 @@ X_Void MainLoopHandle(const s_terminal * p_terminal,uint32_t current_time)
 	isOK = p_terminal ->p_action ->GetFrame(p_terminal ->p_action ->p_manager,&p_buf);
 	if(isOK == X_True && p_buf != X_Null)
 	{
+		///////////isNewFrameHasCome = X_True;
 		if(terminal_backup != p_terminal ->terminal_num)
 		{
 			terminal_backup = p_terminal ->terminal_num;
@@ -134,8 +138,8 @@ X_Void UartIrqHandle(const s_terminal * p_terminal,uint8_t data)
 		p_terminal_backup = p_terminal;
 	 }
 	 p_terminal ->p_action ->Process(p_terminal ->p_action ->p_manager);
+	 /////////////////////INSERT(LogDebug)(RECV_DEBUG,("-------------------------terminal %d receive data %2x \r\n",p_terminal ->terminal_num,data));
 	/*
-	
 	
 	if(p_terminal ->terminal_num == 1 && data == 0)
 	{

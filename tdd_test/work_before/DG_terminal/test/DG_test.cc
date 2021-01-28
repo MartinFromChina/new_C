@@ -16,14 +16,17 @@ using namespace std;
 
 TEST(DG,init)
 {	
-	uint8_t *p_data,length;
+	uint8_t *p_data,length,error_data[6] = {0xaa,0x55,06,0,0,05};
 	X_Boolean isOK;
 	HAL_BasicSet();
+	
 	length = GenerateBasicInfSet(&p_data,0xff,1,1,0,0,2,3);
 	isOK = SendWaveSetForTestModule(5,0,p_data,length,ED_bidirection,50);
 	
 	length = GenerateBasicInfGet(&p_data,0xff,1,1);
 	isOK = SendWaveSetForTestModule(5,200,p_data,length,ED_bidirection,9);
+
+	isOK = SendWaveSetForTestModule(5,250,error_data,6,ED_bidirection,9); // length bigger than 5 , if not the fun_find_other will not take it
 	EXPECT_EQ(isOK, X_True);
 	
 	HAL_Run();
