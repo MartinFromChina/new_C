@@ -68,6 +68,22 @@ static const s_monitor_table table1 []=  {
 		13,
 		22,
 	},
+	/*******************************************************/
+	{	
+		X_False,
+		2,
+		{0xaa,0x55, 0xd, 0x2, 0x3,0xf0, 3, 1, 2, 4, 5, 0, 16,0,0},
+		13,
+		34,
+	},
+	/*******************************************************/
+	{	
+		X_False,
+		2,
+		{0xcc,0x66, 9, 0, 2, 1,0x88, 3,0xc9},
+		9,
+		57,
+	},
 };
 
 static X_Void data_monitor_1(X_Boolean isRecv,uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time)

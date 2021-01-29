@@ -6,6 +6,7 @@
 #include "./test/test_common.h"
 
 #define HAL_DEDBUG         0
+#define HAL_RUN_DEBUG      1
 
 typedef struct
 {
@@ -68,7 +69,8 @@ uint16_t GetDistance(X_Void)
 	return COMMON_WIRELESS_DISTANCE;
 }
 static s_node_manager * p_node_manager = (s_node_manager *)0;
-static X_Boolean isInit = X_False;
+static X_Boolean isInit = X_False,iStillRun = X_True;
+static uint32_t time_backup = 0;
 static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_num,uint8_t *p_data,uint16_t length)
 {
 	 UNUSED_PARAMETER(p_manager);
@@ -215,25 +217,44 @@ X_Void HAL_BasicSet(X_Void)
 	Terminal9Init();
 	Terminal10Init();
 	isInit = X_True;
+	iStillRun = X_True;
+	time_backup = 0;
 }
 X_Void HAL_Run(X_Void)
 {
 	uint8_t i;
+	uint16_t delay = 1000,cnt = 0;
 	X_Boolean isRun = X_True;
 	while(isRun == X_True)
 	{		
 		Hal_Main_Loop();
 		isRun = RunNodeCommunicationProcess();
+		iStillRun = isRun;
+		if(isRun == X_False)
+		{
+			if(delay > 0)
+			{
+				delay --;
+				isRun = X_True;
+			}
+		}
+		cnt ++;
 	}
 	for(i=0;i<100;i++)
 	{
 		Hal_Main_Loop();
 	}
+	INSERT(LogDebug)(HAL_RUN_DEBUG,("HAL stop  run %d cycle \r\n",cnt));
 	WaveTransDeInit();
 }
 
 uint32_t GetSysTime(X_Void)
 {
+	if(iStillRun == X_False)
+	{
+		return time_backup ++;
+	}
+	time_backup = GetTime();
 	return GetTime();
 }
 

@@ -171,6 +171,7 @@ static StateNumber CS_endAction(s_StateMachineParam *p_this)
 	if(p_ext ->end_delay_time > 0)
 	{
 		p_ext ->end_delay_time --;
+		return CS_transmation;
 	}
 	else
 	{

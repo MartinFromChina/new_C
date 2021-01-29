@@ -87,6 +87,7 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
 		p_wait->wait_type          = type;
 		p_wait->wait_times         = 1;
 		CopyFrame(p_ext ->p_send,p_wait->resend_buf);
+		///////////////////INSERT(LogDebug)(IMME_ACK_DEBUG,("terminal %d wait ack begin ;time %d \r\n",p_ext ->p_terminal ->terminal_num,p_ext ->sys_time));
 		return S_End;
    }
    else if(me < src && me > dest) // trans up
