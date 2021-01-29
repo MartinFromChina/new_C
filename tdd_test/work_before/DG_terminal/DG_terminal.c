@@ -4,6 +4,10 @@
 
 
 #define RECV_DEBUG        1
+#define FIND_HEADER_DEBUG        0
+#define CHECK_SUM_DEBUG        0
+
+
 
 static uint32_t systime_timer = 0;
 static func_send p_send = (func_send)0;
@@ -16,11 +20,17 @@ static uint8_t temp_rec_buf[MAX_DG_FRAME_LENGTH],temp_send_buf[MAX_DG_FRAME_LENG
 X_DATA_UNIT 			DG_unit_receive(X_Void) {return curr_recv;}
 X_Boolean 				DG_find_header(X_DATA_UNIT current_data)
 {
-	if(header_index == 0 && current_data == 0xaa) {header_index = 1;return X_False;} // there is a problem : mul entry all use one header_index !!! 
-
+	if((header_index == 0 || header_index == 0x30)  && current_data == 0xaa) {header_index = 0x01;return X_False;} // there is a problem : mul entry all use one header_index !!! 
+	else if((header_index == 0 || header_index == 0x30)&& current_data == 0xcc){header_index = 0x11;return X_False;}
 	if(header_index == 1 && current_data == 0x55)
 	{
 		header_index = 0;
+		return X_True;
+	}
+	else if (header_index == 0x11 && current_data == 0x66)
+	{
+		INSERT(LogDebug)(FIND_HEADER_DEBUG,("*****************************************find header 0x66cc ;\r\n"));
+		header_index = 0x30;
 		return X_True;
 	}
 	header_index = 0;
@@ -30,36 +40,55 @@ static X_Boolean CheckSum(uint8_t *p_buf,uint8_t length)
 {
 	uint16_t i;
 	uint8_t sum = 0;
-	if(length == 0 || length == 255) {return X_False;}
+	if(length < 5 || length == 255) {return X_False;}
 	for(i=0;i<length - 1;i++)
 	{
 		sum += p_buf[i];
 	}
 	if(sum == p_buf[length - 1]) {return X_True;}
+	else
+	{
+		INSERT(LogDebug)(FIND_HEADER_DEBUG,("xxxxxxxxxxxx sum %2x != %2x;\r\n",sum,p_buf[length - 1]));
+	}
 	return X_False;
 }
 
 e_find_other_process 	DG_find_others(X_DATA_UNIT current_data,e_find_other_process const *p_fop,X_DATA_UNIT *p_buf)
 {
-	///////////uint8_t i;
+	uint16_t *p_length,length;
 	if(*p_fop == FOP_idle)
 	{
 		if(current_data < 5) {return FOP_idle;}
-		p_buf[1] = 0xaa;
-		p_buf[2] = 0x55;
-		p_buf[3] = current_data;
-		temp_index = 4;
+
+		if(header_index == 0x30)
+		{
+			p_buf[1] = 0xcc;
+			p_buf[2] = 0x66;
+			p_buf[3] = current_data; // fix it later
+			temp_index = 4;//!!!! very important
+			INSERT(LogDebug)(FIND_HEADER_DEBUG,("*****************************************find others %d length %d ;\r\n",current_data,GetLength(&p_buf[1])));
+		}
+		else
+		{
+			p_buf[1] = 0xaa;
+			p_buf[2] = 0x55;
+			p_buf[3] = current_data;
+			temp_index = 4;
+		}
+		
 		return FOP_inprocess;
 	}
 
 	if(*p_fop == FOP_inprocess)
 	{
 		p_buf[temp_index] = current_data;
-		//printf("---------p_buf[%d]=  %2x\r\n",temp_index,p_buf[temp_index]);
+		//////////////if(header_index == 0x30) printf("---------p_buf[%d]=  %2x\r\n",temp_index,p_buf[temp_index]);
 		temp_index++;
-		if(temp_index == (p_buf[3] + 1)) 
+		/////////////if(header_index == 0x30){INSERT(LogDebug)(FIND_HEADER_DEBUG,("*****find complete index %d;length %d ;\r\n",temp_index,GetLength(&p_buf[1])));}
+		length = GetLength(&p_buf[1]);
+		if(temp_index >= (length + 1)) 
 		{
-			if(CheckSum(&p_buf[1],p_buf[3]) == X_True)// check sum OK
+			if(CheckSum(&p_buf[1],GetLength(&p_buf[1])) == X_True)// check sum OK
 			{
 				/*
 				printf("receive successed length %d ;",p_buf[3]);
@@ -69,6 +98,7 @@ e_find_other_process 	DG_find_others(X_DATA_UNIT current_data,e_find_other_proce
 				}
 				printf("\r\n");
 				*/
+				/////////////if(header_index == 0x30){INSERT(LogDebug)(FIND_HEADER_DEBUG,("************************find complete %d ;\r\n",GetLength(&p_buf[1])));}
 				return FOP_successed;
 			}
 			else
@@ -81,6 +111,7 @@ e_find_other_process 	DG_find_others(X_DATA_UNIT current_data,e_find_other_proce
 				}
 				INSERT(LogDebug)(RECV_DEBUG,("\r\n"));
 				*/
+				//////////////if(header_index == 0x30){INSERT(LogDebug)(FIND_HEADER_DEBUG,("************************find complete check sum failed; %d ;\r\n",GetLength(&p_buf[1])));}
 				return FOP_idle;
 			}
 		}

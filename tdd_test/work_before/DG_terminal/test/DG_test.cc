@@ -26,6 +26,7 @@ TEST(DG,init)
 	EXPECT_EQ(isOK, X_True);
 	
 	HAL_Run();
+	TestCommonDeInit();
 }
 
 static uint8_t table_index= 0;
@@ -61,10 +62,10 @@ static X_Void data_monitor_1(X_Boolean isRecv,uint8_t current_node_num,uint8_t *
 	if(current_node_num != 3 && current_node_num != 4)
 	{
 	
-	EXPECT_EQ(table1[table_index].isRecv, isRecv);
-	EXPECT_EQ(table1[table_index].current_node_num, current_node_num);
-	EXPECT_EQ(table1[table_index].time, time);
-	EXPECT_EQ(table1[table_index].length, length);
+		EXPECT_EQ(table1[table_index].isRecv, isRecv);
+		EXPECT_EQ(table1[table_index].current_node_num, current_node_num);
+		EXPECT_EQ(table1[table_index].time, time);
+		EXPECT_EQ(table1[table_index].length, length);
 
 	for(i=0;i<length;i++)
 	{
@@ -178,10 +179,10 @@ static X_Void data_monitor_2(X_Boolean isRecv,uint8_t current_node_num,uint8_t *
 	if( current_node_num != 4 && current_node_num != 5 && current_node_num != 6)
 	{
 	
-	EXPECT_EQ(table2[table_index].isRecv, isRecv);
-	EXPECT_EQ(table2[table_index].current_node_num, current_node_num);
-	EXPECT_EQ(table2[table_index].time, time);
-	EXPECT_EQ(table2[table_index].length, length);
+		EXPECT_EQ(table2[table_index].isRecv, isRecv);
+		EXPECT_EQ(table2[table_index].current_node_num, current_node_num);
+		EXPECT_EQ(table2[table_index].time, time);
+		EXPECT_EQ(table2[table_index].length, length);
 
 	for(i=0;i<length;i++)
 	{
@@ -215,7 +216,10 @@ TEST(DG,1_to_3_terminal_2_trans_down)
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------DG_mul_terminal_test from DG_test.cc \r\n";
   testing::InitGoogleTest(&argc, argv);
-  //testing::FLAGS_gtest_filter = "trans.init";
+  //testing::FLAGS_gtest_filter = "DG.1_to_3_terminal_2_trans_down";
+  //testing::FLAGS_gtest_filter = "DG.init";
+  //testing::FLAGS_gtest_filter = "DG.1_to_2_basic_set";
+  
   return RUN_ALL_TESTS();
 }
 

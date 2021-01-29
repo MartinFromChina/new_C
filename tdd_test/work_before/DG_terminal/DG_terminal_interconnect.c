@@ -80,7 +80,7 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
 		SetSrcDest(p_ext ->p_send,me,dest);
 		p_wait->isExpectAckHasCome     = X_False;
 		p_wait->isReSend            = X_False;
-		p_wait->wait_counter 		= MAX_ADJACENT_TERMINAL_DISTANCE;
+		p_wait->wait_counter 		= MAX_ADJACENT_TERMINAL_DISTANCE * 2;
 		p_wait->wait_source  		= p_ext ->p_terminal ->backward_num;
 		p_wait->command_start_terminal = src;
 		p_wait->start_wait_time 	= p_ext ->sys_time;
