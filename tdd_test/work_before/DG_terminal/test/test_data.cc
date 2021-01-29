@@ -14,19 +14,6 @@
 #include "../hal.h"
 
 //#define DG_TERMINAL_LOST_TYPE 		0x88
-
-static X_Boolean LoadCheckSum(uint8_t *p_buf,uint8_t length)
-{
-	uint8_t i;
-	uint8_t sum = 0;
-	if(length == 0 || length == 255) {return X_False;}
-	for(i=0;i<length - 1;i++)
-	{
-		sum += p_buf[i];
-	}
-	p_buf[length - 1] = sum;
-	return X_True;
-}
 uint8_t GenerateBasicInfSet(uint8_t **p_buf,uint8_t src,uint8_t dest,uint8_t terminal,
 								uint8_t forward,uint8_t double_forward,uint8_t backward,uint8_t double_backward)
 {

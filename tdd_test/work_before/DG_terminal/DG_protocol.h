@@ -109,6 +109,24 @@ typedef struct
 
 #pragma pack()
 
+typedef enum
+{
+	efm_for_me,
+	efm_pass_me_up,
+	efm_pass_me_down,
+	efm_not_my_business,
+}e_frame_and_me;
+
+
+uint8_t GetType(uint8_t *p_buf);
+uint16_t GetLength(uint8_t *p_buf);
+uint8_t GetSrc(uint8_t *p_buf);
+uint8_t GetDest(uint8_t *p_buf);
+X_Boolean CopyFrame(uint8_t *p_src,uint8_t *p_dest);
+X_Boolean SetSrcDest(uint8_t *p_buf,uint8_t src,uint8_t dest);
+X_Boolean LoadCheckSum(uint8_t *p_buf,uint8_t length);
+X_Boolean DoesItAboutMe(uint8_t me,uint8_t src,uint8_t dest);
+
 
 #ifdef __cplusplus
 		}

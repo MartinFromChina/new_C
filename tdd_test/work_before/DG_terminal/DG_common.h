@@ -8,6 +8,7 @@
 
 #include "../../../module/common/x_cross_platform.h"
 #include "DG_terminal.h"
+#include "DG_protocol.h"
 #include "../../../module/common/InsertLog/InsertLogDebug.h"
 
 
@@ -19,6 +20,7 @@
 	#define INSERT(log_method)  remove_##log_method
 #endif
 
+#define MAX_DG_FRAME_LENGTH       (50)
 
 
 #ifdef __cplusplus

@@ -18,8 +18,10 @@ typedef X_Void (*p_data_monitor)(X_Boolean isRecv,uint8_t current_node_num,uint8
 X_Void TestCommonInit(p_data_monitor p_m);
 X_Void TestCommonDeInit(X_Void);
 X_Void DisableLogDebug(X_Void); // called it after TestCommonInit
+X_Void SetTemporaryDistance(uint16_t distance);
 X_Void mockable_Recv_Monitor(uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time);
 X_Void mockable_Send_Monitor(uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time);
+uint16_t mockable_GetDistance(X_Void);
 
 #ifdef __cplusplus
 		}
