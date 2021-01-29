@@ -35,14 +35,6 @@ TEST(DG,init)
 }
 
 static uint8_t table_index= 0;
-typedef struct 
-{
-	X_Boolean isRecv;
-	uint8_t current_node_num;
-	uint8_t data[15];
-	uint16_t length;
-	uint32_t time;
-}s_monitor_table;
 
 static const s_monitor_table table1 []=  {
 	{

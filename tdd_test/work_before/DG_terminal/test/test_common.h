@@ -13,6 +13,15 @@
 	#define MOCKABLE(method)  method
 #endif
 
+typedef struct 
+{
+	X_Boolean isRecv;
+	uint8_t current_node_num;
+	uint8_t data[15];
+	uint16_t length;
+	uint32_t time;
+}s_monitor_table;
+
 typedef X_Void (*p_data_monitor)(X_Boolean isRecv,uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time);
 
 X_Void TestCommonInit(p_data_monitor p_m);
