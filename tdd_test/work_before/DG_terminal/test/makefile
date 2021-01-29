@@ -70,7 +70,7 @@ $(TARGET) : ./obj/DG_test.o 					./obj/DG_terminal.o  	./obj/hal.o 	./obj/Insert
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
             -c ../DG_protocol.c -o $@
             
-./obj/DG_test.o : DG_test.cc # ../node_interconnect.h  #  ../../../common/StateMachine/StateMachine.h 
+./obj/DG_test.o : DG_test.cc ../DG_common.h# ../node_interconnect.h  #  ../../../common/StateMachine/StateMachine.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
             -c DG_test.cc -o $@
 

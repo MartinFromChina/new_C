@@ -1,5 +1,5 @@
-#ifndef __DG_common_H
-#define __DG_common_H
+#ifndef __DG_COMMON_H
+#define __DG_COMMON_H
 
 
 #ifdef __cplusplus

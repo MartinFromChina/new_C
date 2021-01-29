@@ -1,12 +1,6 @@
 #include "../../../google_test/include/gtest/include/gtest/gtest.h"
 #include "../../../google_test/include/include/gmock/gmock.h"
 #include "test_data.h"
-#if (USE_TDD_MOCK != 0)
-	#define MOCKABLE(method)  mockable_##method
-#else
-	#define MOCKABLE(method)  method
-#endif
-
 #include <iostream>
 #include "../hal.h"
 #include "test_common.h"

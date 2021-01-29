@@ -24,9 +24,10 @@ typedef struct
 
  }s_ProtocolAction;
 
+#define MAX_DG_FRAME_LENGTH  (50)
  typedef struct
  {
-	 X_Boolean					 isExpectAckCome;
+	 X_Boolean					 isExpectAckHasCome;
 	 X_Boolean					 isReSend;
 	 uint8_t					 wait_times;
 	 uint16_t					 wait_counter;
@@ -44,6 +45,7 @@ typedef struct
 	uint8_t forward_num;
 	uint8_t backward_num;
 	const s_ProtocolAction *p_action;
+	s_wait_ack *p_wait_ack;
 }s_terminal;
 
 X_DATA_UNIT 			DG_unit_receive(X_Void);
@@ -59,11 +61,17 @@ e_find_other_process 	DG_find_others(X_DATA_UNIT current_data,e_find_other_proce
 			ProtocolRecvGetFrame,													\
 			DoesProtocolRecvInitOK,													\
 		};																	\
+		static s_wait_ack CONCAT_2(p_terminal,_wait_ack_entry) ={					\
+			X_True,X_True,0,												\
+			0,0,0,0,0,														\
+			{0},															\
+		};															\
 		static const s_terminal CONCAT_2(p_terminal,_entry) = {	\
 			cur,												\
 			forward,											\
 			backward,											\
 			&CONCAT_2(p_terminal,_action_entry),				\
+			&CONCAT_2(p_terminal,_wait_ack_entry),					\
 		}; 															 \
 		static const s_terminal *  p_terminal =  &CONCAT_2(p_terminal,_entry)
 
