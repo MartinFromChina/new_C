@@ -141,7 +141,7 @@ X_Void MainLoopHandle(const s_terminal * p_terminal,uint32_t current_time)
 				&&(src == p_terminal ->forward_num || src == p_terminal ->backward_num) )  // immediately ack
 		{
 			ime_ack.header = 0x66cc;
-			ime_ack.length = 10;
+			ime_ack.length = sizeof(ime_ack)/sizeof(uint8_t);
 			ime_ack.src    = p_terminal ->terminal_num;
 			ime_ack.dest   = src;
 			ime_ack.type   = IMMEDIATELY_ACK_TYPE;
