@@ -100,12 +100,12 @@ X_Void DG_TerminalInit(func_send p_src)
 	curr_recv = 0;
 	header_index = 0;
 	temp_index = 0;
-	///////////isNewFrameHasCome = X_False;
+	DG_InterconnectInit();
 }
 
 X_Void MainLoopHandle(const s_terminal * p_terminal,uint32_t current_time)
 {
-	X_Boolean isOK,isNewFrameCome = X_False;
+	X_Boolean isOK,isNewFrameCome = X_False,isStillWaitAck;
 	uint8_t *p_buf,i,data_or_command_type,src;
 	s_DG_immedicate_ack ime_ack,*p;
 	p = &ime_ack;
@@ -120,6 +120,7 @@ X_Void MainLoopHandle(const s_terminal * p_terminal,uint32_t current_time)
 		}
 	}
 	// unlock irq
+	isStillWaitAck = ImmediatelyAckWaiting(p_terminal,p_send,isNewFrameCome,temp_rec_buf,current_time); 
 	if(isNewFrameCome == X_True)
 	{
 		data_or_command_type = GetType(temp_rec_buf);
@@ -135,11 +136,17 @@ X_Void MainLoopHandle(const s_terminal * p_terminal,uint32_t current_time)
 			ime_ack.data_or_command_type = data_or_command_type;
 			p_send(p_terminal ->terminal_num,systime_timer,(uint8_t *)p,sizeof(ime_ack)/sizeof(uint8_t));
 		}
-		isOK = TerminalInterconnectHandle(p_terminal,temp_rec_buf,temp_send_buf);
-		if(isOK == X_True)
+		
+		
+		if(isStillWaitAck == X_False) // means ack finished or no need to wait ack
 		{
-			if(p_send != X_Null) {p_send(p_terminal ->terminal_num,systime_timer,temp_send_buf,temp_send_buf[2]);}
+			isOK = TerminalInterconnectHandle(p_terminal,temp_rec_buf,temp_send_buf,current_time);
+			if(isOK == X_True)
+			{
+				if(p_send != X_Null) {p_send(p_terminal ->terminal_num,systime_timer,temp_send_buf,temp_send_buf[2]);}
+			}
 		}
+		
 	}
 	systime_timer = current_time;
 }

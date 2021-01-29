@@ -24,6 +24,20 @@ typedef struct
 
  }s_ProtocolAction;
 
+ typedef struct
+ {
+	 X_Boolean					 isExpectAckCome;
+	 X_Boolean					 isReSend;
+	 uint8_t					 wait_times;
+	 uint16_t					 wait_counter;
+	 uint8_t					 command_start_terminal;
+	 uint8_t					 wait_source;
+	 uint8_t					 wait_type;
+	 uint32_t					 start_wait_time;
+	 uint8_t					 resend_buf[MAX_DG_FRAME_LENGTH];
+ }s_wait_ack;
+ 
+
 typedef struct
 {
 	uint8_t terminal_num;

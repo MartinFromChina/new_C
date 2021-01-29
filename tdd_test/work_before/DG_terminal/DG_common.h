@@ -21,7 +21,7 @@
 #endif
 
 #define MAX_DG_FRAME_LENGTH       (50)
-
+#define MAX_ADJACENT_TERMINAL_DISTANCE     (11)
 
 #ifdef __cplusplus
 		}

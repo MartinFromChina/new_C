@@ -25,7 +25,7 @@
 #define DG_INFO_MUL_GET_TYPE 		0x55
 #define DG_TERMINAL_LOST_TYPE 		0x88
 #define IMMEDIATELY_ACK_TYPE        0xfe
-
+#define ERROR_REPORT_TYPE           0x88
 
 #pragma pack(1)
 typedef struct
@@ -106,6 +106,16 @@ typedef struct
 	uint8_t checksum;
 }s_DG_immedicate_ack;
 
+typedef struct
+{
+	uint16_t header;// 0x66cc
+	uint16_t length;//10
+	uint8_t  src;
+	uint8_t  dest;
+	uint8_t  type;//0xfe
+	uint8_t  lost_terminal; 
+	uint8_t checksum;
+}s_ERR_report;
 
 #pragma pack()
 
@@ -126,6 +136,7 @@ X_Boolean CopyFrame(uint8_t *p_src,uint8_t *p_dest);
 X_Boolean SetSrcDest(uint8_t *p_buf,uint8_t src,uint8_t dest);
 X_Boolean LoadCheckSum(uint8_t *p_buf,uint8_t length);
 X_Boolean DoesItAboutMe(uint8_t me,uint8_t src,uint8_t dest);
+X_Boolean DoesImediatelyAckForMe(uint8_t *p_buf,uint8_t me,uint8_t src,uint8_t expect_type);
 
 
 #ifdef __cplusplus

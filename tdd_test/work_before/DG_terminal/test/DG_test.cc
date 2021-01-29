@@ -60,7 +60,7 @@ static const s_monitor_table table1 []=  {
 	},
 
 };
-X_Void data_monitor_1(X_Boolean isRecv,uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time)
+static X_Void data_monitor_1(X_Boolean isRecv,uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time)
 {	
 	uint16_t i;
 
@@ -177,7 +177,7 @@ static const s_monitor_table table2 []=  {
 	},
 };
 
-X_Void data_monitor_2(X_Boolean isRecv,uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time)
+static X_Void data_monitor_2(X_Boolean isRecv,uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time)
 {	
 	uint16_t i;
 

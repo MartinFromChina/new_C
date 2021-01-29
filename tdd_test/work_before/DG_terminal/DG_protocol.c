@@ -117,5 +117,17 @@ X_Boolean DoesItAboutMe(uint8_t me,uint8_t src,uint8_t dest)
    if((me <= dest && me >= src) || (me <= src && me >= dest)) {return X_True;}
    return X_False;
 }
+X_Boolean DoesImediatelyAckForMe(uint8_t *p_buf,uint8_t me,uint8_t src,uint8_t expect_type)
+{
+	s_DG_immedicate_ack *p_response = (s_DG_immedicate_ack *)p_buf; 
+	if(p_response ->header != 0x66cc) {return X_False;}
+	if(p_response ->length != 9){return X_False;}
+	if(p_response ->src != src){return X_False;}
+	if(p_response ->dest != me){return X_False;}
+	if(p_response ->type != IMMEDIATELY_ACK_TYPE){return X_False;}
+	if(p_response ->data_or_command_type != expect_type){return X_False;}
+	// check sum has been checked by protocol_recv module
+	return X_True;
+}
 
 
