@@ -525,4 +525,62 @@ TEST(DG_ack,4_to_1_ack_terminal1_lost)
 
 
 
+static X_Void data_monitor_4(X_Boolean isRecv,uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time)
+{	
+	uint16_t i;
+
+	if( current_node_num != 7 && current_node_num != 5 && current_node_num != 6 && table3[table_index].current_node_num != 0xff)
+	{
+	
+		//PECT_EQ(table3[table_index].isRecv, isRecv);
+		//PECT_EQ(table3[table_index].current_node_num, current_node_num);
+		//PECT_EQ(table3[table_index].time, time);
+		//PECT_EQ(table3[table_index].length, length);
+
+		for(i=0;i<length;i++)
+		{
+			//PECT_EQ(table3[table_index].data[i], p_data[i]);
+		}
+
+		if(isRecv == X_True && current_node_num == 4 && p_data[0] == 0xaa && p_data[3] == 3 && p_data[4] == 4)
+		{
+			SetTemporaryDistance(2); // so that the terminal 1's ack can not reach terminal 2; which cause an ack timeout for terminal 2
+		}
+		else
+		{
+			if(time >= 26) {SetTemporaryDistance(11);}
+		}
+	}
+
+	if(table3[table_index].current_node_num == 0xff)
+	{
+		INSERT(LogDebug)(0,("nore it !!!\r\n"));
+	}
+
+	if(current_node_num != 7 && current_node_num != 5 && current_node_num != 6 )
+	{
+		if((table_index + 1) < (  (uint8_t)(  sizeof(table3)/sizeof(table3[0])      )     )) {table_index ++;}
+		else {table_index = 0;}
+	}
+	
+}
+
+TEST(DG_ack,1_to_4_ack_terminal4_lost) // no check ,just see the log by real person
+{	
+	uint8_t *p_data,length;
+	X_Boolean isOK;
+	table_index= 0;
+	HAL_BasicSet(4);
+	TestCommonInit(data_monitor_4);
+	DisableLogDebug();// called it after TestCommonInit
+	
+	length = GenerateBasicInfSet(&p_data,1,4,4,3,2,5,6);
+	isOK = SendWaveSetForTestModule(1,0,p_data,length,ED_bidirection,12);
+	EXPECT_EQ(isOK, X_True);
+	
+	HAL_Run();
+	TestCommonDeInit();
+}
+
+
 

@@ -6,7 +6,7 @@
 #include "./test/test_common.h"
 
 #define HAL_DEDBUG         0
-#define HAL_RUN_DEBUG      1
+#define HAL_RUN_DEBUG      0
 
 typedef struct
 {
@@ -81,8 +81,11 @@ static X_Void Hal_Main_Loop(X_Void)
 **************************************************************************************************************
 **************************************************************************************************************
 **************************************************************************************************************/
-X_Void Recv_Monitor(uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time){}
-X_Void Send_Monitor(uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time){}
+X_Void Recv_Monitor(uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time)
+{UNUSED_PARAMETER(current_node_num);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);UNUSED_PARAMETER(time);}
+X_Void Send_Monitor(uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time)
+{UNUSED_PARAMETER(current_node_num);UNUSED_PARAMETER(p_data);UNUSED_PARAMETER(length);UNUSED_PARAMETER(time);}
+
 uint16_t GetDistance(X_Void)
 {
 	return COMMON_WIRELESS_DISTANCE;

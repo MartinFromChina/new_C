@@ -55,7 +55,7 @@ static X_Boolean CheckSum(uint8_t *p_buf,uint8_t length)
 
 e_find_other_process 	DG_find_others(X_DATA_UNIT current_data,e_find_other_process const *p_fop,X_DATA_UNIT *p_buf)
 {
-	uint16_t *p_length,length;
+	uint16_t length;
 	if(*p_fop == FOP_idle)
 	{
 		if(current_data < 5) {return FOP_idle;}

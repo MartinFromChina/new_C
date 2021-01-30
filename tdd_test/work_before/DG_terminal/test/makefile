@@ -11,7 +11,8 @@ $(TARGET) : ./obj/DG_test.o 					./obj/DG_terminal.o  	./obj/hal.o 	./obj/Insert
 			./obj/DG_terminal_interconnect.o  	./obj/DG_protocol.o  											\
 			./obj/node_interconnect.o 			./obj/StateMachine.o 	./obj/priority_queues.o 				\
 			./obj/bit_operation.o 				./obj/test_data.o 		./obj/loop_queues.o 					\
-			./obj/ProtocolRecv.o 				./obj/test_common.o     ./obj/Imediately_Ack_test.o
+			./obj/ProtocolRecv.o 				./obj/test_common.o     ./obj/Imediately_Ack_test.o				\
+			./obj/Multicast_test.o
 	$(CXX) $(CXXFLAGS) -o $@  $^ $(DLIBS)
 
 ./obj/bit_operation.o : ../../../../module/common/Math/bit_operation.c ../../../../module/common/Math/bit_operation.h
@@ -85,6 +86,10 @@ $(TARGET) : ./obj/DG_test.o 					./obj/DG_terminal.o  	./obj/hal.o 	./obj/Insert
 ./obj/Imediately_Ack_test.o : Imediately_Ack_test.cc test_common.h# ../node_interconnect.h  #  ../../../common/StateMachine/StateMachine.h 
 	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
            -c Imediately_Ack_test.cc -o $@
+
+./obj/Multicast_test.o : Multicast_test.cc test_common.h# ../node_interconnect.h  #  ../../../common/StateMachine/StateMachine.h 
+	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
+           -c Multicast_test.cc -o $@
 						
 clean:
 	rm 		./obj/DG_test.o 					./obj/DG_terminal.o  	./obj/hal.o 	./obj/InsertLogDebug.o 	\
@@ -92,4 +97,5 @@ clean:
 			./obj/DG_terminal_interconnect.o  	./obj/DG_protocol.o  											\
 			./obj/node_interconnect.o 			./obj/StateMachine.o 	./obj/priority_queues.o 				\
 			./obj/bit_operation.o 				./obj/test_data.o 		./obj/loop_queues.o 					\
-			./obj/ProtocolRecv.o 				./obj/test_common.o     ./obj/Imediately_Ack_test.o
+			./obj/ProtocolRecv.o 				./obj/test_common.o     ./obj/Imediately_Ack_test.o             \
+			./obj/Multicast_test.o
