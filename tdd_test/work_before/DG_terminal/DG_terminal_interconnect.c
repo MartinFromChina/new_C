@@ -5,7 +5,7 @@
 #define STATE_MACHINE_DEBUG  0
 #define IMME_ACK_DEBUG       0
 #define TRANS_DEBUG          0
-#define ERROR_REPORT_DEBUG   1
+#define ERROR_REPORT_DEBUG   0
 
 
 INSERT(LOG_ONCE_ENTRY_DEF)(p_once,100);
@@ -77,7 +77,7 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
    type = GetType(p_ext ->p_recv);
    CopyFrame(p_ext ->p_recv,p_ext ->p_send);
    if(me == dest)  // for me
-   {	
+   {	INSERT(LogDebug)(ERROR_REPORT_DEBUG & (p_ext ->p_terminal ->p_wait_ack ->isStartPoint == X_True) ,(" : ************************************meet touch point*********************************************;\r\n"));
    		if(src == p_ext ->p_terminal ->backward_num )
    		{
 			INSERT(LogDebug)(TRANS_DEBUG | ERROR_REPORT_DEBUG,(" : for me from backward!!!!!!;\r\n"));
