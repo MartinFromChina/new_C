@@ -12,7 +12,7 @@ TEST(DG,init)
 {	
 	uint8_t *p_data,length,error_data[6] = {0xaa,0x55,06,0,0,05};
 	X_Boolean isOK;
-	HAL_BasicSet();
+	HAL_BasicSet(5);
 	DisableLogDebug();
 	length = GenerateBasicInfSet(&p_data,0xff,1,1,0,0,2,3);
 	isOK = SendWaveSetForTestModule(5,0,p_data,length,ED_bidirection,50);
@@ -82,7 +82,7 @@ TEST(DG,1_to_2_basic_set)
 	uint8_t *p_data,length;
 	X_Boolean isOK;
 	table_index= 0;
-	HAL_BasicSet();
+	HAL_BasicSet(1);
 	TestCommonInit(data_monitor_1);
 	DisableLogDebug();// called it after TestCommonInit
 	
@@ -199,7 +199,7 @@ TEST(DG,1_to_3_terminal_2_trans_down)
 	uint8_t *p_data,length;
 	X_Boolean isOK;
 	table_index= 0;
-	HAL_BasicSet();
+	HAL_BasicSet(1);
 	TestCommonInit(data_monitor_2);
 	DisableLogDebug();// called it after TestCommonInit
 	

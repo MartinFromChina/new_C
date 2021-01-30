@@ -15,6 +15,8 @@
 #define NODE_DISTANCE_DEBUG 		0
 #define WAVE_SEND_DEBUG 			0
 #define WAVE_RELEASE_DEBUG 			0
+#define STATE_MACHINE_STOP_DEBUG    1
+
 
 #define POWER  100
 
@@ -171,11 +173,15 @@ static StateNumber CS_endAction(s_StateMachineParam *p_this)
 	if(p_ext ->end_delay_time > 0)
 	{
 		p_ext ->end_delay_time --;
+		//INSERT(LogDebug)(STATE_MACHINE_STOP_DEBUG,("alive cnt %d \r\n",p_ext ->end_delay_time));
+		isLockClock = X_False;
 		return CS_transmation;
 	}
 	else
 	{
 		p_ext ->isStateRun = X_False;
+		INSERT(LogDebug)(STATE_MACHINE_STOP_DEBUG,("state machine stop forever !!!!!!!\r\n"));
+		
 	}
 	return p_this->current_state;
 	

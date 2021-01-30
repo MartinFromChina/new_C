@@ -27,6 +27,7 @@ typedef struct
 #define MAX_DG_FRAME_LENGTH  (50)
  typedef struct
  {
+ 	 X_Boolean                   isStartPoint;  // not suit here ,but seem doesn't metter
 	 X_Boolean					 isExpectAckHasCome;
 	 X_Boolean					 isReSend;
 	 uint8_t					 wait_times;
@@ -62,7 +63,7 @@ e_find_other_process 	DG_find_others(X_DATA_UNIT current_data,e_find_other_proce
 			DoesProtocolRecvInitOK,													\
 		};																	\
 		static s_wait_ack CONCAT_2(p_terminal,_wait_ack_entry) ={					\
-			X_True,X_True,0,												\
+			X_False,X_True,X_True,0,												\
 			0,0,0,0,0,														\
 			{0},															\
 		};															\

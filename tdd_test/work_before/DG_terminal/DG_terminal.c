@@ -156,7 +156,7 @@ X_Void MainLoopHandle(const s_terminal * p_terminal,uint32_t current_time)
 	{
 		data_or_command_type = GetType(temp_rec_buf);
 		src                  = GetSrc(temp_rec_buf);
-		if(p_send != X_Null && (data_or_command_type != IMMEDIATELY_ACK_TYPE) 
+		if(p_send != X_Null && (data_or_command_type != IMMEDIATELY_ACK_TYPE && data_or_command_type != ERROR_REPORT_TYPE)
 				&&(DoesItAboutMeAndComeFromAdjcent(p_terminal -> terminal_num,p_terminal ->forward_num,p_terminal -> backward_num,src,GetDest(temp_rec_buf) ) == X_True ))  // immediately ack
 		{
 			ime_ack.header = 0x66cc;

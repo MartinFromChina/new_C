@@ -5,6 +5,8 @@
 #define STATE_MACHINE_DEBUG  0
 #define IMME_ACK_DEBUG       0
 #define TRANS_DEBUG          0
+#define ERROR_REPORT_DEBUG   1
+
 
 INSERT(LOG_ONCE_ENTRY_DEF)(p_once,100);
 typedef struct
@@ -76,11 +78,26 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
    CopyFrame(p_ext ->p_recv,p_ext ->p_send);
    if(me == dest)  // for me
    {	
-   		if(src == p_ext ->p_terminal ->backward_num || src == p_ext ->p_terminal ->forward_num)
+   		if(src == p_ext ->p_terminal ->backward_num )
    		{
-			INSERT(LogDebug)(TRANS_DEBUG,(" : for me !!!!!!;\r\n"));
+			INSERT(LogDebug)(TRANS_DEBUG | ERROR_REPORT_DEBUG,(" : for me from backward!!!!!!;\r\n"));
+			if(type == ERROR_REPORT_TYPE && p_ext ->p_terminal ->p_wait_ack ->isStartPoint == X_False)
+   			{
+				p_ext ->isSendData = X_True;
+				SetSrcDest(p_ext ->p_send,me,p_ext ->p_terminal ->forward_num);
+			}
 			return S_End;
    		}
+		else if(src == p_ext ->p_terminal ->forward_num)
+		{
+			INSERT(LogDebug)(TRANS_DEBUG | ERROR_REPORT_DEBUG ,(" : for me from forward!!!!!!;\r\n"));
+			if(type == ERROR_REPORT_TYPE && p_ext ->p_terminal ->p_wait_ack ->isStartPoint == X_False)
+   			{
+				p_ext ->isSendData = X_True;
+				SetSrcDest(p_ext ->p_send,me,p_ext ->p_terminal ->backward_num);
+			}
+			return S_End;
+		}
    		INSERT(LogDebug)(TRANS_DEBUG,(" :for me but not from neighbour terminal ,ignore it !!!!!!;\r\n"));
 		return S_End;
    }
@@ -100,9 +117,7 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
    		if(src != p_ext ->p_terminal ->backward_num) {INSERT(LogDebug)(TRANS_DEBUG,(" : ignore it !!!!!!\r\n"));return S_End;} // only accept adjacent terminal trans down
    		p_ext ->isSendData = X_True;
    		SetSrcDest(p_ext ->p_send,me,dest);
-		
 		WaitAckParamLoad(p_wait,p_ext ->p_terminal ->forward_num,type,src,p_ext ->sys_time,p_ext ->p_send);
-		
 		INSERT(LogDebug)(TRANS_DEBUG,("!!!!!!terminal %d trans up at time %d :\r\n",p_ext ->p_terminal ->terminal_num,p_ext ->sys_time));
 		return S_End;
    }
@@ -147,7 +162,7 @@ X_Boolean ImmediatelyAckWaiting(const s_terminal * p_terminal,func_send p_send_f
 	{
 		if(p_wait->isReSend == X_False)// first timeout ,resend 
 		{
-			INSERT(LogDebug)(IMME_ACK_DEBUG,("terminal %d first timeout ,resend ;time %d\r\n",p_terminal ->terminal_num,time));
+			INSERT(LogDebug)(IMME_ACK_DEBUG | ERROR_REPORT_DEBUG ,("terminal %d first timeout ,resend ;time %d\r\n",p_terminal ->terminal_num,time));
 			if(p_send_func != X_Null) {p_send_func(p_terminal ->terminal_num,time,p_wait->resend_buf,GetLength(p_wait->resend_buf));}
 			p_wait->isReSend = X_True;
 			p_wait->start_wait_time = time;
@@ -164,7 +179,7 @@ X_Boolean ImmediatelyAckWaiting(const s_terminal * p_terminal,func_send p_send_f
 			p_error ->dest   = p_wait->command_start_terminal;
 			p_error ->type   = ERROR_REPORT_TYPE;
 			p_error ->lost_terminal = p_wait->wait_source;
-			INSERT(LogDebug)(IMME_ACK_DEBUG,("terminal %d second time timeout ; send error report ;time %d \r\n",p_terminal ->terminal_num,time));
+			INSERT(LogDebug)(IMME_ACK_DEBUG | ERROR_REPORT_DEBUG,("terminal %d second time timeout ; send error report ;time %d \r\n",p_terminal ->terminal_num,time));
 			if(p_send_func != X_Null) {p_send_func(p_terminal ->terminal_num,time,p_wait->resend_buf,sizeof(s_err)/sizeof(uint8_t));}
 			return X_True;
 		}

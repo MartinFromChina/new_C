@@ -10,6 +10,11 @@
 
 typedef struct
 {
+	X_Void (*init)(X_Boolean isStartPoint);
+}s_init;
+
+typedef struct
+{
 	X_Void (*main_loop)(uint32_t current_time);
 }s_main_loop;
 
@@ -18,6 +23,20 @@ typedef struct
 	uint8_t node_num;
 	X_Void (*irq)(uint8_t data);
 }s_irq_handle;
+
+static s_init const Inits[] ={
+	Terminal1Init,
+	Terminal2Init,
+	Terminal3Init,
+	Terminal4Init,
+	Terminal5Init,
+	Terminal6Init,
+	Terminal7Init,
+	Terminal8Init,
+	Terminal9Init,
+	Terminal10Init,
+
+}; 
 
 static s_main_loop const Mains[] ={
 	main_loop_1,
@@ -109,6 +128,27 @@ static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_
 static s_node_manager node_1,node_2,node_3,node_4,node_5,node_6,node_7,node_8,node_9,node_10;
 static s_node         node1,node2,node3,node4,node5,node6,node7,node8,node9,node10;
 
+typedef struct
+{
+	s_node_manager *p_manager;
+	s_node         *p_node;
+	uint16_t       forward_distance;
+}s_terminal_node_list;
+static  s_terminal_node_list List[] = {
+	{&node_1,&node1,INVALID_NODE_DISTANCE},
+	{&node_2,&node2,DISTANCE_BETWEEN_NODE_1_2},
+	{&node_3,&node3,DISTANCE_BETWEEN_NODE_2_3},
+	{&node_4,&node4,DISTANCE_BETWEEN_NODE_3_4},
+	{&node_5,&node5,DISTANCE_BETWEEN_NODE_4_5},
+	{&node_6,&node6,DISTANCE_BETWEEN_NODE_5_6},
+	{&node_7,&node7,DISTANCE_BETWEEN_NODE_6_7},
+	{&node_8,&node8,DISTANCE_BETWEEN_NODE_7_8},
+	{&node_9,&node9,DISTANCE_BETWEEN_NODE_8_9},
+	{&node_10,&node10,DISTANCE_BETWEEN_NODE_9_10},
+
+};
+	
+	
 static s_node * NodeBasicInit(s_node *p_node,uint8_t mode_num,uint16_t forward_distance)
 {
 	if(p_node == X_Null) {return (s_node *)0;}
@@ -157,65 +197,30 @@ static X_Boolean send(uint8_t node_num,uint32_t sent_time,uint8_t *p_buf,uint8_t
 	distance = MOCKABLE(GetDistance)();
 	return SendWaveSetForTestModule(node_num,sent_time,p_buf,length,COMMON_WIRELESS_DIRECTION,distance);
 }
-X_Void HAL_BasicSet(X_Void)
+
+X_Void HAL_BasicSet(uint8_t start_point)
 {
-	X_Boolean isOK;
+	uint8_t i;
+	X_Boolean isOK,isStart;
 	s_node_manager *p_manager;
 	p_manager = WaveTransInit(NodeRecvHandle);
-	
-	node_1.p_node = NodeBasicInit(&node1,1,INVALID_NODE_DISTANCE);
-	isOK = NodeAdd(p_manager,&node_1);
-	EXPECT_EQ(isOK, X_True);
 
-	node_2.p_node = NodeBasicInit(&node2,2,DISTANCE_BETWEEN_NODE_1_2);
-	isOK = NodeAdd(p_manager,&node_2);
-	EXPECT_EQ(isOK, X_True);
-	
-	node_3.p_node = NodeBasicInit(&node3,3,DISTANCE_BETWEEN_NODE_2_3);
-	isOK = NodeAdd(p_manager,&node_3);
-	EXPECT_EQ(isOK, X_True);
+	for(i=0;i<(sizeof(List)/sizeof(List[0]));i++)
+	{
+		List[i].p_manager ->p_node = NodeBasicInit(List[i].p_node,i+1,List[i].forward_distance);
+		isOK = NodeAdd(p_manager,List[i].p_manager);
+		EXPECT_EQ(isOK, X_True);
 
-	node_4.p_node = NodeBasicInit(&node4,4,DISTANCE_BETWEEN_NODE_3_4);
-	isOK = NodeAdd(p_manager,&node_4);
-	EXPECT_EQ(isOK, X_True);
-
-	node_5.p_node = NodeBasicInit(&node5,5,DISTANCE_BETWEEN_NODE_4_5);
-	isOK = NodeAdd(p_manager,&node_5);
-	EXPECT_EQ(isOK, X_True);
-
-	node_6.p_node = NodeBasicInit(&node6,6,DISTANCE_BETWEEN_NODE_5_6);
-	isOK = NodeAdd(p_manager,&node_6);
-	EXPECT_EQ(isOK, X_True);
-
-	node_7.p_node = NodeBasicInit(&node7,7,DISTANCE_BETWEEN_NODE_6_7);
-	isOK = NodeAdd(p_manager,&node_7);
-	EXPECT_EQ(isOK, X_True);
-	
-	node_8.p_node = NodeBasicInit(&node8,8,DISTANCE_BETWEEN_NODE_7_8);
-	isOK = NodeAdd(p_manager,&node_8);
-	EXPECT_EQ(isOK, X_True);
-
-	node_9.p_node = NodeBasicInit(&node9,9,DISTANCE_BETWEEN_NODE_8_9);
-	isOK = NodeAdd(p_manager,&node_9);
-	EXPECT_EQ(isOK, X_True);
-
-	node_10.p_node = NodeBasicInit(&node10,10,DISTANCE_BETWEEN_NODE_9_10);
-	isOK = NodeAdd(p_manager,&node_10);
-	EXPECT_EQ(isOK, X_True);
-
+	}
 	p_node_manager = p_manager;
-
+	for(i=0;i<(sizeof(Inits)/sizeof(Inits[0]));i++)
+	{
+		if((i+1) == start_point) {isStart = X_True;}
+		else {isStart = X_False;}
+		Inits[i].init(isStart);
+	}
 	DG_TerminalInit(send);
-	Terminal1Init();
-	Terminal2Init();
-	Terminal3Init();
-	Terminal4Init();
-	Terminal5Init();
-	Terminal6Init();
-	Terminal7Init();
-	Terminal8Init();
-	Terminal9Init();
-	Terminal10Init();
+	
 	isInit = X_True;
 	iStillRun = X_True;
 	time_backup = 0;
@@ -223,21 +228,12 @@ X_Void HAL_BasicSet(X_Void)
 X_Void HAL_Run(X_Void)
 {
 	uint8_t i;
-	uint16_t delay = 1000,cnt = 0;
+	uint16_t cnt = 0;
 	X_Boolean isRun = X_True;
 	while(isRun == X_True)
 	{		
 		Hal_Main_Loop();
 		isRun = RunNodeCommunicationProcess();
-		iStillRun = isRun;
-		if(isRun == X_False)
-		{
-			if(delay > 0)
-			{
-				delay --;
-				isRun = X_True;
-			}
-		}
 		cnt ++;
 	}
 	for(i=0;i<100;i++)
