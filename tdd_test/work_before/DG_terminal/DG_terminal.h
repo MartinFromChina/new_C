@@ -38,7 +38,12 @@ typedef struct
 	 uint32_t					 start_wait_time;
 	 uint8_t					 resend_buf[MAX_DG_FRAME_LENGTH];
  }s_wait_ack;
- 
+
+ typedef struct
+ {
+ 	uint8_t temperature_threshold;
+	uint16_t DG_wave_speed;
+ }s_terminal_inf;
 
 typedef struct
 {
@@ -47,6 +52,7 @@ typedef struct
 	uint8_t backward_num;
 	const s_ProtocolAction *p_action;
 	s_wait_ack *p_wait_ack;
+	s_terminal_inf *p_info;
 }s_terminal;
 
 X_DATA_UNIT 			DG_unit_receive(X_Void);
@@ -67,12 +73,16 @@ e_find_other_process 	DG_find_others(X_DATA_UNIT current_data,e_find_other_proce
 			0,0,0,0,0,														\
 			{0},															\
 		};															\
+		static s_terminal_inf CONCAT_2(p_terminal,_dg_info) ={		\
+		0,0,														\
+		};													\
 		static const s_terminal CONCAT_2(p_terminal,_entry) = {	\
 			cur,												\
 			forward,											\
 			backward,											\
 			&CONCAT_2(p_terminal,_action_entry),				\
 			&CONCAT_2(p_terminal,_wait_ack_entry),					\
+			&CONCAT_2(p_terminal,_dg_info),						\
 		}; 															 \
 		static const s_terminal *  p_terminal =  &CONCAT_2(p_terminal,_entry)
 

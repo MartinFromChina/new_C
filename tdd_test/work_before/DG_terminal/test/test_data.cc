@@ -94,13 +94,5 @@ uint8_t GenerateInfoMulGet(uint8_t **p_buf,uint8_t src,uint8_t dest,uint8_t   st
 	*p_buf = (uint8_t *)(p);
 	return sizeof(mget)/sizeof(uint8_t);
 }
-/*
-typedef struct
-{
-	s_DG_data_common common;
-	uint8_t   lost_terminal;
-	uint8_t   check_sum;
-}s_DG_terminal_lost;
-*/
 
 

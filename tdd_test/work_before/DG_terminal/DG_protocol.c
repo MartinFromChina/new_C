@@ -136,4 +136,12 @@ X_Boolean DoesImediatelyAckForMe(uint8_t *p_buf,uint8_t me,uint8_t src,uint8_t e
 	return X_True;
 }
 
+X_Boolean DoesMultiCastType(uint8_t type)
+{
+	return ((MULTICAST_MASK & type) == MULTICAST_PREFIX);
+}
+X_Boolean DG_CommandHandle(uint8_t type,uint8_t *p_recv,uint8_t *p_send) // return true means need response;
+{
+	return X_False;
+}
 

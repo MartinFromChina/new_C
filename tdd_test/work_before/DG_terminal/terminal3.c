@@ -12,6 +12,9 @@ X_Void Terminal3Init(X_Boolean isStartPoint)
 	p_entry3 ->p_wait_ack -> wait_times         = 0;
 
 	p_entry3 ->p_wait_ack -> isStartPoint       =  isStartPoint;
+
+	p_entry3 ->p_info ->temperature_threshold   = 0;
+	p_entry3 ->p_info ->DG_wave_speed   		   = 0;
 }
 
 X_Void main_loop_3(uint32_t current_time)
@@ -38,6 +41,9 @@ X_Void Terminal4Init(X_Boolean isStartPoint)
 	p_entry4 ->p_wait_ack -> wait_times         = 0;
 
 	p_entry4 ->p_wait_ack -> isStartPoint       =  isStartPoint;
+
+	p_entry4 ->p_info ->temperature_threshold   = 0;
+	p_entry4 ->p_info ->DG_wave_speed   		   = 0;
 }
 
 X_Void main_loop_4(uint32_t current_time)
@@ -64,6 +70,9 @@ X_Void Terminal5Init(X_Boolean isStartPoint)
 	p_entry5 ->p_wait_ack -> wait_times         = 0;
 
 	p_entry5 ->p_wait_ack -> isStartPoint       =  isStartPoint;
+
+	p_entry5 ->p_info ->temperature_threshold   = 0;
+	p_entry5 ->p_info ->DG_wave_speed   		   = 0;
 }
 
 X_Void main_loop_5(uint32_t current_time)
@@ -90,6 +99,9 @@ X_Void Terminal6Init(X_Boolean isStartPoint)
 	p_entry6 ->p_wait_ack -> wait_times         = 0;
 
 	p_entry6 ->p_wait_ack -> isStartPoint       =  isStartPoint;
+
+	p_entry6 ->p_info ->temperature_threshold   = 0;
+	p_entry6 ->p_info ->DG_wave_speed   		   = 0;
 }
 
 X_Void main_loop_6(uint32_t current_time)
@@ -116,6 +128,9 @@ X_Void Terminal7Init(X_Boolean isStartPoint)
 	p_entry7 ->p_wait_ack -> wait_times         = 0;
 
 	p_entry7 ->p_wait_ack -> isStartPoint       =  isStartPoint;
+
+	p_entry7 ->p_info ->temperature_threshold   = 0;
+	p_entry7 ->p_info ->DG_wave_speed   		   = 0;
 }
 
 X_Void main_loop_7(uint32_t current_time)
@@ -142,6 +157,9 @@ X_Void Terminal8Init(X_Boolean isStartPoint)
 	p_entry8 ->p_wait_ack -> wait_times         = 0;
 
 	p_entry8 ->p_wait_ack -> isStartPoint       =  isStartPoint;
+
+	p_entry8 ->p_info ->temperature_threshold   = 0;
+	p_entry8 ->p_info ->DG_wave_speed   		   = 0;
 }
 
 X_Void main_loop_8(uint32_t current_time)
@@ -168,6 +186,9 @@ X_Void Terminal9Init(X_Boolean isStartPoint)
 	p_entry9 ->p_wait_ack -> wait_times         = 0;
 
 	p_entry9 ->p_wait_ack -> isStartPoint       =  isStartPoint;
+
+	p_entry9 ->p_info ->temperature_threshold   = 0;
+	p_entry9 ->p_info ->DG_wave_speed   		   = 0;
 }
 
 X_Void main_loop_9(uint32_t current_time)
@@ -194,6 +215,9 @@ X_Void Terminal10Init(X_Boolean isStartPoint)
 	p_entry10 ->p_wait_ack -> wait_times         = 0;
 
 	p_entry10 ->p_wait_ack -> isStartPoint       =  isStartPoint;
+
+	p_entry10 ->p_info ->temperature_threshold   = 0;
+	p_entry10 ->p_info ->DG_wave_speed   		   = 0;
 }
 
 X_Void main_loop_10(uint32_t current_time)

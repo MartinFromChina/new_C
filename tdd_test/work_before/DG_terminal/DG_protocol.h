@@ -27,6 +27,11 @@
 #define IMMEDIATELY_ACK_TYPE        0xfe
 #define ERROR_REPORT_TYPE           0x88
 
+#define MULTICAST_PREFIX            (0x50)
+#define MULTICAST_MASK           	(0xf0)
+#define MULTICAST_GET_INFO          0x55
+
+
 #pragma pack(1)
 typedef struct
 {
@@ -73,16 +78,9 @@ typedef struct
 {
 	s_DG_data_common common;
 	uint8_t   start_terminal;
-	uint8_t   reserve;
+	uint8_t   reserve;  //0
 	uint8_t   check_sum;
 }s_DG_info_mul_get;
-
-typedef struct
-{
-	s_DG_data_common common;
-	uint8_t   lost_terminal;
-	uint8_t   check_sum;
-}s_DG_terminal_lost;
 
 
 typedef struct
@@ -137,6 +135,8 @@ X_Boolean SetSrcDest(uint8_t *p_buf,uint8_t src,uint8_t dest);
 X_Boolean LoadCheckSum(uint8_t *p_buf,uint8_t length);
 X_Boolean DoesItAboutMeAndComeFromAdjcent(uint8_t me,uint8_t foreward,uint8_t backward,uint8_t src,uint8_t dest);
 X_Boolean DoesImediatelyAckForMe(uint8_t *p_buf,uint8_t me,uint8_t src,uint8_t expect_type);
+X_Boolean DoesMultiCastType(uint8_t type);
+X_Boolean DG_CommandHandle(uint8_t type,uint8_t *p_recv,uint8_t *p_send);
 
 
 #ifdef __cplusplus

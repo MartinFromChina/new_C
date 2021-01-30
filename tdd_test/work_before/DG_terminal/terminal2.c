@@ -11,6 +11,9 @@ X_Void Terminal2Init(X_Boolean isStartPoint)
 	p_entry ->p_wait_ack -> wait_times         = 0;
 
 	p_entry ->p_wait_ack -> isStartPoint       =  isStartPoint;
+
+	p_entry ->p_info ->temperature_threshold   = 0;
+	p_entry ->p_info ->DG_wave_speed   		   = 0;
 }
 
 X_Void main_loop_2(uint32_t current_time)

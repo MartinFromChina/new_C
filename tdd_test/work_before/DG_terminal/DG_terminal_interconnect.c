@@ -4,9 +4,8 @@
 
 #define STATE_MACHINE_DEBUG  0
 #define IMME_ACK_DEBUG       0
-#define TRANS_DEBUG          0
+#define TRANS_DEBUG          1
 #define ERROR_REPORT_DEBUG   0
-
 
 INSERT(LOG_ONCE_ENTRY_DEF)(p_once,100);
 typedef struct
@@ -85,8 +84,9 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
    			{
 				p_ext ->isSendData = X_True;
 				SetSrcDest(p_ext ->p_send,me,p_ext ->p_terminal ->forward_num);
+				return S_End;
 			}
-			return S_End;
+			p_ext ->isSendData = DG_CommandHandle(type,p_ext ->p_recv,p_ext ->p_send);
    		}
 		else if(src == p_ext ->p_terminal ->forward_num)
 		{
@@ -95,8 +95,9 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
    			{
 				p_ext ->isSendData = X_True;
 				SetSrcDest(p_ext ->p_send,me,p_ext ->p_terminal ->backward_num);
+				return S_End;
 			}
-			return S_End;
+			p_ext ->isSendData = DG_CommandHandle(type,p_ext ->p_recv,p_ext ->p_send);
 		}
    		INSERT(LogDebug)(TRANS_DEBUG,(" :for me but not from neighbour terminal ,ignore it !!!!!!;\r\n"));
 		return S_End;
@@ -104,21 +105,40 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
    else if(me < dest && me > src) // trans down
    {
    		if(src != p_ext ->p_terminal ->forward_num) {INSERT(LogDebug)(TRANS_DEBUG,(" : ignore it !!!!!!\r\n"));return S_End;} // only accept adjacent terminal trans down
-		p_ext ->isSendData = X_True;
-		SetSrcDest(p_ext ->p_send,me,dest);
+		if(DoesMultiCastType(type) == X_False)
+		{
+			p_ext ->isSendData = X_True;
+			SetSrcDest(p_ext ->p_send,me,dest);
 
-		WaitAckParamLoad(p_wait,p_ext ->p_terminal ->backward_num,type,src,p_ext ->sys_time,p_ext ->p_send);
-		INSERT(LogDebug)(TRANS_DEBUG,("!!!!!!terminal %d trans down at time %d :\r\n",p_ext ->p_terminal ->terminal_num,p_ext ->sys_time));
+			WaitAckParamLoad(p_wait,p_ext ->p_terminal ->backward_num,type,src,p_ext ->sys_time,p_ext ->p_send);
+			INSERT(LogDebug)(TRANS_DEBUG,("!!!!!!terminal %d trans down at time %d :\r\n",p_ext ->p_terminal ->terminal_num,p_ext ->sys_time));
+		}
+		else
+		{
+			p_ext ->isSendData = DG_CommandHandle(type,p_ext ->p_recv,p_ext ->p_send);
+			WaitAckParamLoad(p_wait,p_ext ->p_terminal ->backward_num,type,src,p_ext ->sys_time,p_ext ->p_send);
+		}
 		///////////////////INSERT(LogDebug)(IMME_ACK_DEBUG,("terminal %d wait ack begin ;time %d \r\n",p_ext ->p_terminal ->terminal_num,p_ext ->sys_time));
 		return S_End;
    }
    else if(me < src && me > dest) // trans up
    {
    		if(src != p_ext ->p_terminal ->backward_num) {INSERT(LogDebug)(TRANS_DEBUG,(" : ignore it !!!!!!\r\n"));return S_End;} // only accept adjacent terminal trans down
-   		p_ext ->isSendData = X_True;
-   		SetSrcDest(p_ext ->p_send,me,dest);
-		WaitAckParamLoad(p_wait,p_ext ->p_terminal ->forward_num,type,src,p_ext ->sys_time,p_ext ->p_send);
-		INSERT(LogDebug)(TRANS_DEBUG,("!!!!!!terminal %d trans up at time %d :\r\n",p_ext ->p_terminal ->terminal_num,p_ext ->sys_time));
+		if(DoesMultiCastType(type) == X_False)
+		{
+			p_ext ->isSendData = X_True;
+	   		SetSrcDest(p_ext ->p_send,me,dest);
+			WaitAckParamLoad(p_wait,p_ext ->p_terminal ->forward_num,type,src,p_ext ->sys_time,p_ext ->p_send);
+			INSERT(LogDebug)(TRANS_DEBUG,("!!!!!!terminal %d trans up at time %d :\r\n",p_ext ->p_terminal ->terminal_num,p_ext ->sys_time));
+		}
+		else
+		{
+			p_ext ->isSendData = DG_CommandHandle(type,p_ext ->p_recv,p_ext ->p_send);
+			WaitAckParamLoad(p_wait,p_ext ->p_terminal ->forward_num,type,src,p_ext ->sys_time,p_ext ->p_send);
+		}
+
+
+		
 		return S_End;
    }
    else // not for me 
@@ -134,10 +154,7 @@ static StateNumber S_EndAction(s_StateMachineParam *p_this){
 	 return S_Idle;
 }
 
-X_Void DG_InterconnectInit(X_Void)
-{
-	sPE.state_remain = MAX_STATE_NUMBER;// used it as invalid flag
-}
+X_Void DG_InterconnectInit(X_Void){sPE.state_remain = MAX_STATE_NUMBER;}
 X_Boolean TerminalInterconnectHandle(const s_terminal * p_terminal,uint8_t *p_recv,uint8_t *p_send,uint32_t time)
 {
 	sPE.isStateRun = X_True;
@@ -156,7 +173,7 @@ X_Boolean TerminalInterconnectHandle(const s_terminal * p_terminal,uint8_t *p_re
 
 X_Boolean ImmediatelyAckWaiting(const s_terminal * p_terminal,func_send p_send_func,X_Boolean isNewFrame,uint8_t *p_recv,uint32_t time)
 {
-	 s_wait_ack   *p_wait = p_terminal ->p_wait_ack;
+	s_wait_ack   *p_wait = p_terminal ->p_wait_ack;
 	if(p_wait->wait_times == 0 && p_wait->isReSend == X_True && p_wait->isExpectAckHasCome == X_True) {return X_False;}
 	if((time - p_wait->start_wait_time) > p_wait->wait_counter) // time out
 	{
