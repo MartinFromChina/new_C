@@ -25,8 +25,6 @@ typedef enum
 {
 	S_Idle = 0,
 	S_CommandAnalysis,
-	//S_AboutMe,
-	//S_ForMe,
 	S_End,
 }s_state;
 

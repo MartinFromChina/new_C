@@ -13,7 +13,7 @@ static const s_monitor_table table1 []=  {
 	{
 		X_True,
 		2,
-		{0xaa,0x55, 0xd, 0x1, 0x3,0xf0, 3, 1, 2, 4, 5, 0, 15,0,0},
+		{0xaa,0x55, 0xd, 0x1, 0x3,0xf0, 3, 1, 2, 4, 5, 0, 15,0,0}, // used string compare maybe more suitable
 		13,
 		11,
 	},
@@ -61,5 +61,23 @@ TEST(multicast,start_1_get_from_4_9)
 	HAL_Run();
 	TestCommonDeInit();
 }
+
+TEST(multicast,start_8_get_from_5_2)
+{
+}
+
+TEST(multicast,start_8_get_from_8_2)
+{
+}
+
+TEST(multicast,start_8_get_from_2_2)
+{
+}
+
+TEST(multicast,start_5_get_from_6_8)
+{
+}
+
+
 
 

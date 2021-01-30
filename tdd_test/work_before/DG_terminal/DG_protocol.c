@@ -1,5 +1,7 @@
 #include "DG_protocol.h"
 
+#define MULTICAST_DEBUG   1
+
 uint8_t GetType(uint8_t *p_buf)
 {
 	if(p_buf[0] == 0x66 || p_buf[0] == 0xcc)
@@ -149,6 +151,10 @@ X_Boolean DG_CommandHandle(const s_terminal *p_terminal,e_frame_type frame_type,
 	  p_command ->src = p_terminal ->terminal_num;
       return X_True;
 	}
+
+	s_DG_response_common *p_response 	= (s_DG_response_common *)p_send;
+	s_DG_info_mul_get     *p_recv_command = (s_DG_info_mul_get *)p_recv;
+	
 	switch (direct)
 	{
 		case efd_for_me:
@@ -156,9 +162,6 @@ X_Boolean DG_CommandHandle(const s_terminal *p_terminal,e_frame_type frame_type,
 			{
 				if(type == MULTICAST_GET_INFO)
 				{
-					s_DG_response_common *p_response 	= (s_DG_response_common *)p_send;
-					s_DG_info_mul_get     *p_recv_command = (s_DG_info_mul_get *)p_recv;
-					
 					p_response ->header 				= 0x66cc;
 					p_response ->length 				= 12;
 					p_response ->src					= p_terminal ->terminal_num;
@@ -170,13 +173,47 @@ X_Boolean DG_CommandHandle(const s_terminal *p_terminal,e_frame_type frame_type,
 					uint16_t *p_speed                 	= (uint16_t *)(&p_send[9]);
 					*p_temp      						= p_terminal ->p_info ->temperature_threshold;
 					*p_speed							= p_terminal ->p_info ->DG_wave_speed;
-					isUpload = X_True;
+					
+					isUpload 							= X_True;
+				}
+			}
+			else
+			{
+				if(p_terminal ->p_wait_ack ->isStartPoint == X_True) 
+				{
+					INSERT(LogDebug)( MULTICAST_DEBUG,("****************meet touch point ; report the data to the host\r\n"));
+					return X_False;
+				}
+				s_DG_response_common * p_recv_response = (s_DG_response_common *)p_recv;
+				uint8_t start_terminal = p_recv_response ->local_terminal;
+				if(type == MULTICAST_GET_INFO)
+				{
+					p_response ->src = p_terminal ->terminal_num;
+					p_response ->dest = (p_recv_command ->common.src == p_terminal ->forward_num) ? p_terminal ->backward_num : p_terminal ->forward_num;
+					if(start_terminal > p_terminal ->terminal_num) // just trans up 
+					{
+		  				isUpload = X_True;
+						INSERT(LogDebug)( MULTICAST_DEBUG,("******************just trans up start terminal %d \r\n",start_terminal));
+					}
+					else  // add local info then trans up
+					{
+						p_response ->length 				= p_response ->length + 3;
+						//p_response ->local_terminal         = unchange
+
+						uint8_t * p_temp 					= (uint8_t *)(&p_send[p_response ->length - 4]);
+						uint16_t *p_speed                 	= (uint16_t *)(&p_send[p_response ->length - 3]);
+						*p_temp      						= p_terminal ->p_info ->temperature_threshold;
+						*p_speed							= p_terminal ->p_info ->DG_wave_speed;
+						
+						 isUpload = X_True;
+						 INSERT(LogDebug)( MULTICAST_DEBUG,("******************add local info then trans up\r\n"));
+					}
 				}
 			}
 			break;
-		case efd_trans_down:
+		case efd_trans_down: // must be response data type , and must be multicast type
 			break;
-		case efd_trans_up:
+		case efd_trans_up:   // must be response data type   and must be multicast type
 			break;
 		default:
 			 break;
