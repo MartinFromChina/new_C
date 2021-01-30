@@ -75,6 +75,7 @@ static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_
 {
 	 UNUSED_PARAMETER(p_manager);
 	 INSERT(LogDebug)(HAL_DEDBUG,("node %d receive data %2x at time %d \r\n",current_node_num,p_data[0],(GetSysTime())));
+	 MOCKABLE(Recv_Monitor)(current_node_num,p_data,length,GetSysTime());
 	 uint8_t i,j;
 		for(i=0;i<sizeof(irqs)/sizeof(irqs[0]);i++)
 		{
@@ -90,7 +91,6 @@ static X_Boolean NodeRecvHandle(_s_node_manager *p_manager,uint8_t current_node_
 			}
 		}
 		
-		MOCKABLE(Recv_Monitor)(current_node_num,p_data,length,GetSysTime());
 		return X_True;
 }
 

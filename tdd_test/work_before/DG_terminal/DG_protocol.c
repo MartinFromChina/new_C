@@ -112,9 +112,15 @@ X_Boolean LoadCheckSum(uint8_t *p_buf,uint8_t length)
 	p_buf[length - 1] = sum;
 	return X_True;
 }
-X_Boolean DoesItAboutMe(uint8_t me,uint8_t src,uint8_t dest)
+X_Boolean DoesItAboutMeAndComeFromAdjcent(uint8_t me,uint8_t foreward,uint8_t backward,uint8_t src,uint8_t dest)
 {
-   if((me <= dest && me >= src) || (me <= src && me >= dest)) {return X_True;}
+   if((me >= dest && me <= src) || (me >= src && me <= dest))
+   {
+		if(src == foreward || src == backward)
+		{
+			return X_True;
+		}
+   }
    return X_False;
 }
 X_Boolean DoesImediatelyAckForMe(uint8_t *p_buf,uint8_t me,uint8_t src,uint8_t expect_type)

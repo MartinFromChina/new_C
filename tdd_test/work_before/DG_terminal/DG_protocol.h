@@ -135,7 +135,7 @@ uint8_t GetDest(uint8_t *p_buf);
 X_Boolean CopyFrame(uint8_t *p_src,uint8_t *p_dest);
 X_Boolean SetSrcDest(uint8_t *p_buf,uint8_t src,uint8_t dest);
 X_Boolean LoadCheckSum(uint8_t *p_buf,uint8_t length);
-X_Boolean DoesItAboutMe(uint8_t me,uint8_t src,uint8_t dest);
+X_Boolean DoesItAboutMeAndComeFromAdjcent(uint8_t me,uint8_t foreward,uint8_t backward,uint8_t src,uint8_t dest);
 X_Boolean DoesImediatelyAckForMe(uint8_t *p_buf,uint8_t me,uint8_t src,uint8_t expect_type);
 
 
