@@ -17,7 +17,7 @@ typedef struct
 {
 	X_Boolean isRecv;
 	uint8_t current_node_num;
-	uint8_t data[15];
+	uint8_t data[50];
 	uint16_t length;
 	uint32_t time;
 }s_monitor_table;

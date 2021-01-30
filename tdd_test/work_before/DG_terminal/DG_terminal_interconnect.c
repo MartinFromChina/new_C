@@ -4,7 +4,7 @@
 
 #define STATE_MACHINE_DEBUG  0
 #define IMME_ACK_DEBUG       0
-#define TRANS_DEBUG          1
+#define TRANS_DEBUG          0
 #define ERROR_REPORT_DEBUG   0
 
 INSERT(LOG_ONCE_ENTRY_DEF)(p_once,100);

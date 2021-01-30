@@ -570,7 +570,7 @@ TEST(DG_ack,1_to_4_ack_terminal4_lost) // no check ,just see the log by real per
 	uint8_t *p_data,length;
 	X_Boolean isOK;
 	table_index= 0;
-	HAL_BasicSet(4);
+	HAL_BasicSet(1);
 	TestCommonInit(data_monitor_4);
 	DisableLogDebug();// called it after TestCommonInit
 	

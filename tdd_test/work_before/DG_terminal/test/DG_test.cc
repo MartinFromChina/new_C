@@ -84,7 +84,7 @@ TEST(DG,1_to_2_basic_set)
 	table_index= 0;
 	HAL_BasicSet(1);
 	TestCommonInit(data_monitor_1);
-	//DisableLogDebug();// called it after TestCommonInit
+	DisableLogDebug();// called it after TestCommonInit
 	
 	length = GenerateBasicInfSet(&p_data,1,2,2,1,0,3,4);
 	isOK = SendWaveSetForTestModule(1,0,p_data,length,ED_bidirection,20);
