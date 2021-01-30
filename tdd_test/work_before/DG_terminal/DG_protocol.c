@@ -157,19 +157,19 @@ X_Boolean DG_CommandHandle(const s_terminal *p_terminal,e_frame_type frame_type,
 				if(type == MULTICAST_GET_INFO)
 				{
 					s_DG_response_common *p_response 	= (s_DG_response_common *)p_send;
-					s_DG_data_common     *p_recv_command = (s_DG_data_common *)p_recv;
+					s_DG_info_mul_get     *p_recv_command = (s_DG_info_mul_get *)p_recv;
 					
 					p_response ->header 				= 0x66cc;
 					p_response ->length 				= 12;
 					p_response ->src					= p_terminal ->terminal_num;
-					p_response ->dest					= p_recv_command ->src;
+					p_response ->dest					= p_recv_command ->common.src;
 					p_response ->type                   = type;
-					p_response ->local_terminal         = p_terminal ->terminal_num;
+					p_response ->local_terminal         = p_recv_command ->start_terminal;
 
-					s_terminal_inf * p_info 			= (s_terminal_inf *)(&p_send[8]);
-					p_info ->temperature_threshold      = p_terminal ->p_info ->temperature_threshold;
-					p_info ->DG_wave_speed				= p_terminal ->p_info ->DG_wave_speed;
-
+					uint8_t * p_temp 					= (uint8_t *)(&p_send[8]);
+					uint16_t *p_speed                 	= (uint16_t *)(&p_send[9]);
+					*p_temp      						= p_terminal ->p_info ->temperature_threshold;
+					*p_speed							= p_terminal ->p_info ->DG_wave_speed;
 					isUpload = X_True;
 				}
 			}
