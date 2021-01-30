@@ -3,11 +3,10 @@
 #include "../../../module/common/StateMachine/StateMachine.h"
 
 #define STATE_MACHINE_DEBUG  0
-#define IMME_ACK_DEBUG       1
-#define TRANS_DEBUG          1
+#define IMME_ACK_DEBUG       0
+#define TRANS_DEBUG          0
 
 INSERT(LOG_ONCE_ENTRY_DEF)(p_once,100);
-
 typedef struct
 {
 	s_StateMachineParam 		base;
@@ -19,18 +18,29 @@ typedef struct
 	StateNumber                 state_remain;
 	uint32_t                    sys_time;
 }sParamExtern;
-
 static sParamExtern sPE;
 
 typedef enum
 {
 	S_Idle = 0,
 	S_CommandAnalysis,
-	//S_TansDown,
-	//S_TransUp,
+	//S_AboutMe,
 	//S_ForMe,
 	S_End,
 }s_state;
+
+static X_Void WaitAckParamLoad(s_wait_ack *p_wait,uint8_t wait_src,uint8_t wait_type,uint8_t src,uint32_t time,uint8_t *p_buf)
+{
+	p_wait->isExpectAckHasCome     = X_False;
+	p_wait->isReSend            = X_False;
+	p_wait->wait_counter 		= MAX_ADJACENT_TERMINAL_DISTANCE * 2;
+	p_wait->wait_source  		= wait_src;
+	p_wait->command_start_terminal = src;
+	p_wait->start_wait_time 	= time;
+	p_wait->wait_type          = wait_type;
+	p_wait->wait_times         = 1;
+	CopyFrame(p_buf,p_wait->resend_buf);
+}
 	
 static StateNumber S_IdleAction(s_StateMachineParam *p_this);
 static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this);
@@ -47,18 +57,10 @@ APP_STATE_MACHINE_DEF(p_state
 								,&TerminalStateAction[0]);
 
 typedef X_Void (*state_record)(StateNumber state_going_to_leave,StateNumber state_going_to_enter);
-
-
 static StateNumber S_IdleAction(s_StateMachineParam *p_this){
 
 	sParamExtern * p_ext= (sParamExtern*)p_this;
 	p_ext ->isSendData = X_False;
-	
-	/*if(p_ext ->state_remain <= S_End)
-	{
-		p_ext ->state_remain = MAX_STATE_NUMBER;
-		return p_ext ->state_remain;
-	}*/
 	return S_CommandAnalysis;
 }
 static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
@@ -79,7 +81,7 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
 			INSERT(LogDebug)(TRANS_DEBUG,(" : for me !!!!!!;\r\n"));
 			return S_End;
    		}
-   		INSERT(LogDebug)(TRANS_DEBUG,(" :for me but not from adjcent terminal ,ignore it !!!!!!;\r\n"));
+   		INSERT(LogDebug)(TRANS_DEBUG,(" :for me but not from neighbour terminal ,ignore it !!!!!!;\r\n"));
 		return S_End;
    }
    else if(me < dest && me > src) // trans down
@@ -87,16 +89,8 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
    		if(src != p_ext ->p_terminal ->forward_num) {INSERT(LogDebug)(TRANS_DEBUG,(" : ignore it !!!!!!\r\n"));return S_End;} // only accept adjacent terminal trans down
 		p_ext ->isSendData = X_True;
 		SetSrcDest(p_ext ->p_send,me,dest);
-		
-		p_wait->isExpectAckHasCome     = X_False;
-		p_wait->isReSend            = X_False;
-		p_wait->wait_counter 		= MAX_ADJACENT_TERMINAL_DISTANCE * 2;
-		p_wait->wait_source  		= p_ext ->p_terminal ->backward_num;
-		p_wait->command_start_terminal = src;
-		p_wait->start_wait_time 	= p_ext ->sys_time;
-		p_wait->wait_type          = type;
-		p_wait->wait_times         = 1;
-		CopyFrame(p_ext ->p_send,p_wait->resend_buf);
+
+		WaitAckParamLoad(p_wait,p_ext ->p_terminal ->backward_num,type,src,p_ext ->sys_time,p_ext ->p_send);
 		INSERT(LogDebug)(TRANS_DEBUG,("!!!!!!terminal %d trans down at time %d :\r\n",p_ext ->p_terminal ->terminal_num,p_ext ->sys_time));
 		///////////////////INSERT(LogDebug)(IMME_ACK_DEBUG,("terminal %d wait ack begin ;time %d \r\n",p_ext ->p_terminal ->terminal_num,p_ext ->sys_time));
 		return S_End;
@@ -107,15 +101,7 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
    		p_ext ->isSendData = X_True;
    		SetSrcDest(p_ext ->p_send,me,dest);
 		
-		p_wait->isExpectAckHasCome     = X_False;
-		p_wait->isReSend            = X_False;
-		p_wait->wait_counter 		= MAX_ADJACENT_TERMINAL_DISTANCE * 2;
-		p_wait->wait_source  		= p_ext ->p_terminal ->forward_num;
-		p_wait->command_start_terminal = src;
-		p_wait->start_wait_time 	= p_ext ->sys_time;
-		p_wait->wait_type          = type;
-		p_wait->wait_times         = 1;
-		CopyFrame(p_ext ->p_send,p_wait->resend_buf);
+		WaitAckParamLoad(p_wait,p_ext ->p_terminal ->forward_num,type,src,p_ext ->sys_time,p_ext ->p_send);
 		
 		INSERT(LogDebug)(TRANS_DEBUG,("!!!!!!terminal %d trans up at time %d :\r\n",p_ext ->p_terminal ->terminal_num,p_ext ->sys_time));
 		return S_End;

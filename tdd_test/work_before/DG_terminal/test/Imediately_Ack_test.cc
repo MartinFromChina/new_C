@@ -134,47 +134,162 @@ static const s_monitor_table table2 []=  {
 	/***********************************************/
 	{
 		X_True,
-		2,
-		{0xaa,0x55, 0xd, 0x1, 0x3,0xf0, 3, 1, 2, 4, 5, 0, 15,0,0},
+		3,
+		{0xaa,0x55, 0xd, 0x4, 0x1,0xf0, 1, 0, 0, 2, 3, 0, 7,0,0},
 		13,
-		11,
+		5,
 	},
+	{
+		X_False,
+		3,
+		{0xcc,0x66, 9, 0, 3, 4,0xfe,0xf0,0x30,},
+		9,
+		5,
+	},
+	{
+		X_False,
+		3,
+		{0xaa,0x55, 0xd, 0x3, 0x1,0xf0, 1, 0, 0, 2, 3, 0, 6,0,0},
+		13,
+		5,
+	},
+	/***********************************************/
+	{
+		X_True,
+		4,
+		{0xcc,0x66, 9, 0, 3, 4,0xfe,0xf0,0x30,},
+		9,
+		10,
+	},
+	{
+		X_True,
+		4,
+		{0xaa,0x55, 0xd, 0x3, 0x1,0xf0, 1, 0, 0, 2, 3, 0, 6,0,0},
+		13,
+		10,
+	},
+	/***********************************************/
+	{
+		X_True,
+		2,
+		{0xcc,0x66, 9, 0, 3, 4,0xfe,0xf0,0x30,},
+		9,
+		14,
+	},
+	{
+		X_True,
+		2,
+		{0xaa,0x55, 0xd, 0x3, 0x1,0xf0, 1, 0, 0, 2, 3, 0, 6,0,0},
+		13,
+		14,
+	},
+	{
+		X_False,
+		2,
+		{0xcc,0x66, 9, 0, 2, 3,0xfe,0xf0,0x2e,},
+		9,
+		14,
+	},
+	{
+		X_False,
+		2,
+		{0xaa,0x55, 0xd, 0x2, 0x1,0xf0, 1, 0, 0, 2, 3, 0, 5,0,0},
+		13,
+		14,
+	},
+	/***********************************************/
+	{
+		X_True,
+		3,
+		{0xcc,0x66, 9, 0, 2, 3,0xfe,0xf0,0x2e,},
+		9,
+		23,
+	},
+	{
+		X_True,
+		3,
+		{0xaa,0x55, 0xd, 0x2, 0x1,0xf0, 1, 0, 0, 2, 3, 0, 5,0,0},
+		13,
+		23,
+	},
+	/***********************************************/
+	{
+		X_True,
+		1,
+		{0xcc,0x66, 9, 0, 3, 4,0xfe,0xf0,0x30,},
+		9,
+		25,
+	},
+	{
+		X_True,
+		1,
+		{0xaa,0x55, 0xd, 0x3, 0x1,0xf0, 1, 0, 0, 2, 3, 0, 6,0,0},
+		13,
+		25,
+	},
+	{
+		X_True,
+		1,
+		{0xcc,0x66, 9, 0, 2, 3,0xfe,0xf0,0x2e,},
+		9,
+		25,
+	},
+	{
+		X_True,
+		1,
+		{0xaa,0x55, 0xd, 0x2, 0x1,0xf0, 1, 0, 0, 2, 3, 0, 5,0,0},
+		13,
+		25,
+	},
+	/***********************************************/
+	{
+		X_False,
+		1,
+		{0xcc,0x66, 9, 0, 1, 2,0xfe,0xf0,0x2c,},
+		9,
+		25,
+	},
+	/***********************************************/
+
+		{X_False,0xff,{0xcc,0x66, 9, 0, 1, 2,0xfe,0xf0,0x2c,},9,25,},
+		{X_False,0xff,{0xcc,0x66, 9, 0, 1, 2,0xfe,0xf0,0x2c,},9,25,},
+		{X_False,0xff,{0xcc,0x66, 9, 0, 1, 2,0xfe,0xf0,0x2c,},9,25,},
+		{X_False,0xff,{0xcc,0x66, 9, 0, 1, 2,0xfe,0xf0,0x2c,},9,25,},
+		{X_False,0xff,{0xcc,0x66, 9, 0, 1, 2,0xfe,0xf0,0x2c,},9,25,},
+		{X_False,0xff,{0xcc,0x66, 9, 0, 1, 2,0xfe,0xf0,0x2c,},9,25,},
+		{X_False,0xff,{0xcc,0x66, 9, 0, 1, 2,0xfe,0xf0,0x2c,},9,25,},
 };
 
 static X_Void data_monitor_2(X_Boolean isRecv,uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time)
 {	
 	uint16_t i;
 
-	if( current_node_num != 4 && current_node_num != 5 && current_node_num != 6)
+	if( current_node_num != 7 && current_node_num != 5 && current_node_num != 6 && table2[table_index].current_node_num != 0xff)
 	{
 	
-		//EXPECT_EQ(table2[table_index].isRecv, isRecv);
-		//EXPECT_EQ(table2[table_index].current_node_num, current_node_num);
-		//EXPECT_EQ(table2[table_index].time, time);
-		//EXPECT_EQ(table2[table_index].length, length);
+		EXPECT_EQ(table2[table_index].isRecv, isRecv);
+		EXPECT_EQ(table2[table_index].current_node_num, current_node_num);
+		EXPECT_EQ(table2[table_index].time, time);
+		EXPECT_EQ(table2[table_index].length, length);
 
 		for(i=0;i<length;i++)
 		{
-			//EXPECT_EQ(table2[table_index].data[i], p_data[i]);
+			EXPECT_EQ(table2[table_index].data[i], p_data[i]);
 		}
 		
 		if((table_index + 1) < (  (uint8_t)(  sizeof(table2)/sizeof(table2[0])      )     )) {table_index ++;}
 		else {table_index = 0;}
 	}
-	if(isRecv == X_False && current_node_num == 3 && p_data[0] == 0xcc)
-	{
-		//SetTemporaryDistance(8); // so that the terminal 3's ack can not reach terminal 2; which cause an ack timeout for terminal 1
-	}
 }
 
-TEST(DG_ack,4_to_1_ack_timeout2)
+TEST(DG_ack,4_to_1_ack)
 {	
 	uint8_t *p_data,length;
 	X_Boolean isOK;
 	table_index= 0;
 	HAL_BasicSet();
 	TestCommonInit(data_monitor_2);
-	//DisableLogDebug();// called it after TestCommonInit
+	DisableLogDebug();// called it after TestCommonInit
 	
 	length = GenerateBasicInfSet(&p_data,4,1,1,0,0,2,3);
 	isOK = SendWaveSetForTestModule(4,0,p_data,length,ED_bidirection,12);
