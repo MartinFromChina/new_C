@@ -65,9 +65,8 @@ static StateNumber S_IdleAction(s_StateMachineParam *p_this){
 	return S_CommandAnalysis;
 }
 static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
-
+	e_frame_type frame_type;
 	uint8_t src,dest,me,type;
-   //	if not for me ,return idle and stop state
    sParamExtern * p_ext= (sParamExtern*)p_this;
    s_wait_ack   *p_wait = p_ext ->p_terminal ->p_wait_ack;
    src 	= GetSrc(p_ext ->p_recv);
@@ -75,6 +74,9 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
    me   = p_ext ->p_terminal ->terminal_num;
    type = GetType(p_ext ->p_recv);
    CopyFrame(p_ext ->p_recv,p_ext ->p_send);
+
+   if(p_ext ->p_recv[0] == 0xaa || p_ext ->p_recv[0] == 0x55) {frame_type = eft_command;}
+   else {frame_type = eft_data;}
    if(me == dest)  // for me
    {	INSERT(LogDebug)(ERROR_REPORT_DEBUG & (p_ext ->p_terminal ->p_wait_ack ->isStartPoint == X_True) ,(" : ************************************meet touch point*********************************************;\r\n"));
    		if(src == p_ext ->p_terminal ->backward_num )
@@ -86,7 +88,7 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
 				SetSrcDest(p_ext ->p_send,me,p_ext ->p_terminal ->forward_num);
 				return S_End;
 			}
-			p_ext ->isSendData = DG_CommandHandle(type,p_ext ->p_recv,p_ext ->p_send);
+			p_ext ->isSendData = DG_CommandHandle(p_ext ->p_terminal,frame_type,efd_for_me,type,p_ext ->p_recv,p_ext ->p_send);
    		}
 		else if(src == p_ext ->p_terminal ->forward_num)
 		{
@@ -97,9 +99,10 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
 				SetSrcDest(p_ext ->p_send,me,p_ext ->p_terminal ->backward_num);
 				return S_End;
 			}
-			p_ext ->isSendData = DG_CommandHandle(type,p_ext ->p_recv,p_ext ->p_send);
+			p_ext ->isSendData = DG_CommandHandle(p_ext ->p_terminal,frame_type,efd_for_me,type,p_ext ->p_recv,p_ext ->p_send);
 		}
-   		INSERT(LogDebug)(TRANS_DEBUG,(" :for me but not from neighbour terminal ,ignore it !!!!!!;\r\n"));
+		else {INSERT(LogDebug)(TRANS_DEBUG,(" :for me but not from neighbour terminal ,ignore it !!!!!!;\r\n"));}
+
 		return S_End;
    }
    else if(me < dest && me > src) // trans down
@@ -115,8 +118,8 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
 		}
 		else
 		{
-			p_ext ->isSendData = DG_CommandHandle(type,p_ext ->p_recv,p_ext ->p_send);
-			WaitAckParamLoad(p_wait,p_ext ->p_terminal ->backward_num,type,src,p_ext ->sys_time,p_ext ->p_send);
+			p_ext ->isSendData = DG_CommandHandle(p_ext ->p_terminal,frame_type,efd_trans_down,type,p_ext ->p_recv,p_ext ->p_send);
+			if(p_ext ->isSendData == X_True) {WaitAckParamLoad(p_wait,p_ext ->p_terminal ->backward_num,type,src,p_ext ->sys_time,p_ext ->p_send);}
 		}
 		///////////////////INSERT(LogDebug)(IMME_ACK_DEBUG,("terminal %d wait ack begin ;time %d \r\n",p_ext ->p_terminal ->terminal_num,p_ext ->sys_time));
 		return S_End;
@@ -133,8 +136,8 @@ static StateNumber S_CommandAnalysisAction(s_StateMachineParam *p_this){
 		}
 		else
 		{
-			p_ext ->isSendData = DG_CommandHandle(type,p_ext ->p_recv,p_ext ->p_send);
-			WaitAckParamLoad(p_wait,p_ext ->p_terminal ->forward_num,type,src,p_ext ->sys_time,p_ext ->p_send);
+			p_ext ->isSendData = DG_CommandHandle(p_ext ->p_terminal,frame_type,efd_trans_up,type,p_ext ->p_recv,p_ext ->p_send);
+			if(p_ext ->isSendData == X_True) {WaitAckParamLoad(p_wait,p_ext ->p_terminal ->forward_num,type,src,p_ext ->sys_time,p_ext ->p_send);}
 		}
 
 

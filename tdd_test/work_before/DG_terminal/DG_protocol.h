@@ -7,8 +7,8 @@
 #endif
 
 #include "../../../module/common/x_cross_platform.h"
-#include "DG_terminal.h"
 #include "../../../module/common/InsertLog/InsertLogDebug.h"
+#include "DG_terminal.h"
 
 
 #define USE_INSERT_DEBUG 1
@@ -119,11 +119,16 @@ typedef struct
 
 typedef enum
 {
-	efm_for_me,
-	efm_pass_me_up,
-	efm_pass_me_down,
-	efm_not_my_business,
-}e_frame_and_me;
+	efd_for_me,
+	efd_trans_up,
+	efd_trans_down,
+}e_frame_direction;
+
+typedef enum
+{
+	eft_data,
+	eft_command,
+}e_frame_type;
 
 
 uint8_t GetType(uint8_t *p_buf);
@@ -136,7 +141,7 @@ X_Boolean LoadCheckSum(uint8_t *p_buf,uint8_t length);
 X_Boolean DoesItAboutMeAndComeFromAdjcent(uint8_t me,uint8_t foreward,uint8_t backward,uint8_t src,uint8_t dest);
 X_Boolean DoesImediatelyAckForMe(uint8_t *p_buf,uint8_t me,uint8_t src,uint8_t expect_type);
 X_Boolean DoesMultiCastType(uint8_t type);
-X_Boolean DG_CommandHandle(uint8_t type,uint8_t *p_recv,uint8_t *p_send);
+X_Boolean DG_CommandHandle(const s_terminal *p_terminal,e_frame_type frame_type,e_frame_direction direct,uint8_t type,uint8_t *p_recv,uint8_t *p_send);
 
 
 #ifdef __cplusplus

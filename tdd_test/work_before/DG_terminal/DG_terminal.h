@@ -24,7 +24,6 @@ typedef struct
 
  }s_ProtocolAction;
 
-#define MAX_DG_FRAME_LENGTH  (50)
  typedef struct
  {
  	 X_Boolean                   isStartPoint;  // not suit here ,but seem doesn't metter

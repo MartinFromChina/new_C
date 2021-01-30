@@ -4,6 +4,7 @@
 #include "terminal2.h"
 #include "terminal3.h"
 #include "./test/test_common.h"
+#include "DG_protocol.h"
 
 #define HAL_DEDBUG         0
 #define HAL_RUN_DEBUG      0

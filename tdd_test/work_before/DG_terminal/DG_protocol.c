@@ -140,8 +140,47 @@ X_Boolean DoesMultiCastType(uint8_t type)
 {
 	return ((MULTICAST_MASK & type) == MULTICAST_PREFIX);
 }
-X_Boolean DG_CommandHandle(uint8_t type,uint8_t *p_recv,uint8_t *p_send) // return true means need response;
+X_Boolean DG_CommandHandle(const s_terminal *p_terminal,e_frame_type frame_type,e_frame_direction direct,uint8_t type,uint8_t *p_recv,uint8_t *p_send) // return true means need response;
 {
-	return X_False;
+	X_Boolean isUpload = X_False;
+	if(frame_type == eft_command && direct != efd_for_me)
+	{
+	  s_DG_data_common *p_command  = (s_DG_data_common *)p_send;// p_recv have been copy to p_send
+	  p_command ->src = p_terminal ->terminal_num;
+      return X_True;
+	}
+	switch (direct)
+	{
+		case efd_for_me:
+			if(frame_type == eft_command)
+			{
+				if(type == MULTICAST_GET_INFO)
+				{
+					s_DG_response_common *p_response 	= (s_DG_response_common *)p_send;
+					s_DG_data_common     *p_recv_command = (s_DG_data_common *)p_recv;
+					
+					p_response ->header 				= 0x66cc;
+					p_response ->length 				= 12;
+					p_response ->src					= p_terminal ->terminal_num;
+					p_response ->dest					= p_recv_command ->src;
+					p_response ->type                   = type;
+					p_response ->local_terminal         = p_terminal ->terminal_num;
+
+					s_terminal_inf * p_info 			= (s_terminal_inf *)(&p_send[8]);
+					p_info ->temperature_threshold      = p_terminal ->p_info ->temperature_threshold;
+					p_info ->DG_wave_speed				= p_terminal ->p_info ->DG_wave_speed;
+
+					isUpload = X_True;
+				}
+			}
+			break;
+		case efd_trans_down:
+			break;
+		case efd_trans_up:
+			break;
+		default:
+			 break;
+	}
+	return isUpload;
 }
 

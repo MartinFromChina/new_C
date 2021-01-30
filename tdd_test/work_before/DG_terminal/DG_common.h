@@ -7,8 +7,6 @@
 #endif
 
 #include "../../../module/common/x_cross_platform.h"
-#include "DG_terminal.h"
-#include "DG_protocol.h"
 #include "../../../module/common/InsertLog/InsertLogDebug.h"
 
 
@@ -22,6 +20,8 @@
 
 #define MAX_DG_FRAME_LENGTH       (50)
 #define MAX_ADJACENT_TERMINAL_DISTANCE     (11)
+
+#include "DG_terminal.h"
 
 #ifdef __cplusplus
 		}
