@@ -422,4 +422,40 @@ TEST(multicast,start_1_set_4_7_get_3_8)
 	TestCommonDeInit();
 }
 
+static X_Void MonitorListInit8(X_Void)
+{
+	s_monitor_list src_no_matter;
+	MonitorListInit(MoniotorList,sizeof(MoniotorList)/sizeof(MoniotorList[0]));
+
+	MonitorListAdd(MoniotorList,&src_no_matter,138);
+	
+	s_monitor_list back10 = {0,{X_True,10,{0xcc,0x66,0x21, 0, 9, 0xa,0x55, 8, 0, 0, 0, 0, 0, 0, 0,0x66,0x99, 0,0x66,0x99, 0,0x66,0x99, 0,0x66,0x99, 0,0x66,0x99, 0, 0, 0,0xbe,}, 0x21,288}};
+	MonitorListAdd(MoniotorList,&back10,0);
+}
+
+
+TEST(multicast,start_10_set_7_3_get_8_1) 
+{
+	uint8_t start_point = 10;
+	uint8_t *p_data,length;
+	X_Boolean isOK;
+	table_index= 0;
+	log_flag = 0;
+	HAL_BasicSet(start_point);
+	TestCommonInit(data_monitor_1,MonitorListInit8);
+	DisableLogDebug();// called it after TestCommonInit
+	SetTemporaryDistance(11); 
+
+	length = GenerateSpeedMulSet(&p_data,start_point,3,7,0x9966);
+	isOK = SendWaveSetForTestModule(start_point,0,p_data,length,ED_bidirection,12);
+	EXPECT_EQ(isOK, X_True);
+	
+	length = GenerateInfoMulGet(&p_data,start_point,1,8);
+	isOK = SendWaveSetForTestModule(start_point,150,p_data,length,ED_bidirection,12);
+	EXPECT_EQ(isOK, X_True);
+	
+	HAL_Run();
+	TestCommonDeInit();
+}
+
 
