@@ -1,6 +1,6 @@
 #include "DG_protocol.h"
 
-#define MULTICAST_DEBUG   1
+#define MULTICAST_DEBUG   0
 
 uint8_t GetType(uint8_t *p_buf)
 {

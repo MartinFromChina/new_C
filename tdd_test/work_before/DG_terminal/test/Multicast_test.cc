@@ -136,6 +136,14 @@ static X_Void MonitorListInit2(X_Void)
 	MonitorListAdd(MoniotorList,&back3,0);
 
 	MonitorListAdd(MoniotorList,&src_no_matter,5);
+
+	s_monitor_list back4 = {0,{X_False,4,{0xcc,0x66,0x12, 0, 4, 5,0x55, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0,0xa7},18,57}};
+	MonitorListAdd(MoniotorList,&back4,0);
+
+	MonitorListAdd(MoniotorList,&src_no_matter,21);
+
+	s_monitor_list back8 = {0,{X_True,8,{0xcc,0x66,0x15, 0, 7, 8,0x55, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0xb0},21,86}};
+	MonitorListAdd(MoniotorList,&back8,0);
 	
 }
 
@@ -145,10 +153,10 @@ TEST(multicast,start_8_get_from_5_2)
 	uint8_t *p_data,length;
 	X_Boolean isOK;
 	table_index= 0;
-	log_flag = 1;
+	log_flag = 0;
 	HAL_BasicSet(start_point);
 	TestCommonInit(data_monitor_1,MonitorListInit2);
-	//DisableLogDebug();// called it after TestCommonInit
+	DisableLogDebug();// called it after TestCommonInit
 	SetTemporaryDistance(11); 
 	
 	length = GenerateInfoMulGet(&p_data,start_point,2,5);
