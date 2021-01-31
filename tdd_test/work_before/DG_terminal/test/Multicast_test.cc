@@ -7,7 +7,7 @@
 #include "test_common.h"
 
 using namespace std;
-static uint8_t table_index = 0;
+static uint8_t table_index = 0,log_flag = 0;
 
 static s_monitor_list MoniotorList[MAX_MONITOR_LIST_SIZE];
 
@@ -63,7 +63,7 @@ static X_Void data_monitor_1(X_Boolean isRecv,uint8_t current_node_num,uint8_t *
 	s_monitor_list *p_table = MoniotorList;
 	if(p_table[table_index].ignore_times == 0)
 	{
-		INSERT(LogDebug)(0,("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:check it !!!~~~~~~~~~~~~~~~~~~~~~~~~\r\n"));
+		INSERT(LogDebug)(log_flag,("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:check it !!!~~~~~~~~~~~~~~~~~~~~~~~~\r\n"));
 		EXPECT_EQ(p_table[table_index].table.isRecv, isRecv);
 		EXPECT_EQ(p_table[table_index].table.current_node_num, current_node_num);
 		EXPECT_EQ(p_table[table_index].table.time, time);
@@ -79,7 +79,7 @@ static X_Void data_monitor_1(X_Boolean isRecv,uint8_t current_node_num,uint8_t *
 	}
 	else 
 	{
-		INSERT(LogDebug)(0,(":ignore it !!!\r\n"));
+		INSERT(LogDebug)(log_flag,(":ignore it !!!\r\n"));
 		p_table[table_index].ignore_times --;
 		if(p_table[table_index].ignore_times == 0)
 		{
@@ -95,6 +95,7 @@ TEST(multicast,start_1_get_from_4_9)
 	uint8_t *p_data,length;
 	X_Boolean isOK;
 	table_index= 0;
+	log_flag = 0;
 	HAL_BasicSet(1);
 	TestCommonInit(data_monitor_1,MonitorListInit1);
 	DisableLogDebug();// called it after TestCommonInit
@@ -108,8 +109,55 @@ TEST(multicast,start_1_get_from_4_9)
 	TestCommonDeInit();
 }
 
+static X_Void MonitorListInit2(X_Void)
+{
+	MonitorListInit(MoniotorList,sizeof(MoniotorList)/sizeof(MoniotorList[0]));
+
+	s_monitor_list src_no_matter,src7 = {0,{X_True,7,{0xaa,0x55, 9, 8, 2,0x55, 5, 0,0x6c}, 9,5,}};
+	s_monitor_list src77 = {0,{X_False,7,{0xcc,0x66, 9, 0, 7, 8,0xfe,0x55,0x9d}, 9,5,}};
+	s_monitor_list src777 = {0,{X_False,7,{0xaa,0x55, 9, 7, 2,0x55, 5, 0,0x6b}, 9,5,}};
+	MonitorListAdd(MoniotorList,&src7,0);
+	MonitorListAdd(MoniotorList,&src77,0);
+	MonitorListAdd(MoniotorList,&src777,0);
+
+	MonitorListAdd(MoniotorList,&src_no_matter,1);
+
+	s_monitor_list src8 = {0,{X_True,8,{0xcc,0x66, 9, 0, 7, 8,0xfe,0x55,0x9d}, 9,10,}};
+	MonitorListAdd(MoniotorList,&src8,0);
+
+	MonitorListAdd(MoniotorList,&src_no_matter,28);
+
+	s_monitor_list back2 = {0,{X_False,2,{0xcc,0x66, 0xc, 0, 2, 3,0x55, 5, 0, 0, 0,0x9d}, 12,43,}};
+	MonitorListAdd(MoniotorList,&back2,0);
+
+	MonitorListAdd(MoniotorList,&src_no_matter,3);
+
+	s_monitor_list back3 = {0,{X_False,3,{0xcc,0x66, 0xf, 0, 3, 4,0x55, 5, 0, 0, 0,0, 0, 0,0xa2}, 15,52,}};
+	MonitorListAdd(MoniotorList,&back3,0);
+
+	MonitorListAdd(MoniotorList,&src_no_matter,5);
+	
+}
+
 TEST(multicast,start_8_get_from_5_2)
 {
+	uint8_t start_point = 8;
+	uint8_t *p_data,length;
+	X_Boolean isOK;
+	table_index= 0;
+	log_flag = 1;
+	HAL_BasicSet(start_point);
+	TestCommonInit(data_monitor_1,MonitorListInit2);
+	//DisableLogDebug();// called it after TestCommonInit
+	SetTemporaryDistance(11); 
+	
+	length = GenerateInfoMulGet(&p_data,start_point,2,5);
+	isOK = SendWaveSetForTestModule(start_point,0,p_data,length,ED_bidirection,12);
+	EXPECT_EQ(isOK, X_True);
+	
+	HAL_Run();
+	TestCommonDeInit();
+
 }
 
 TEST(multicast,start_8_get_from_8_2)

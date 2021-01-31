@@ -1,6 +1,6 @@
 #include "DG_protocol.h"
 
-#define MULTICAST_DEBUG   0
+#define MULTICAST_DEBUG   1
 
 uint8_t GetType(uint8_t *p_buf)
 {
@@ -144,7 +144,7 @@ X_Boolean DoesMultiCastType(uint8_t type)
 }
 X_Boolean DG_CommandHandle(const s_terminal *p_terminal,e_frame_type frame_type,e_frame_direction direct,uint8_t type,uint8_t *p_recv,uint8_t *p_send) // return true means need response;
 {
-	X_Boolean isUpload = X_False;
+	X_Boolean isUpload = X_False,isTransToBigNumDirefction;
 	if(frame_type == eft_command && direct != efd_for_me)
 	{
 	  s_DG_data_common *p_command  = (s_DG_data_common *)p_send;// p_recv have been copy to p_send
@@ -188,12 +188,18 @@ X_Boolean DG_CommandHandle(const s_terminal *p_terminal,e_frame_type frame_type,
 				uint8_t start_terminal = p_recv_response ->local_terminal;
 				if(type == MULTICAST_GET_INFO)
 				{
+					isTransToBigNumDirefction = (p_response ->src == p_terminal ->forward_num);
+				
 					p_response ->src = p_terminal ->terminal_num;
-					p_response ->dest = (p_recv_command ->common.src == p_terminal ->forward_num) ? p_terminal ->backward_num : p_terminal ->forward_num;
-					if(start_terminal > p_terminal ->terminal_num) // just trans up 
+				    
+					if(isTransToBigNumDirefction == X_True) {p_response ->dest = p_terminal ->backward_num;}
+					else {p_response ->dest = p_terminal ->forward_num;}
+			
+					if((start_terminal > p_terminal ->terminal_num &&  isTransToBigNumDirefction == X_False)
+						|| (start_terminal < p_terminal ->terminal_num && isTransToBigNumDirefction == X_True))// just trans up 
 					{
 		  				isUpload = X_True;
-						INSERT(LogDebug)( MULTICAST_DEBUG,("******************just trans up start terminal %d \r\n",start_terminal));
+						INSERT(LogDebug)( MULTICAST_DEBUG,("******************just trans up start terminal %d ; to big num %s\r\n",start_terminal,(isTransToBigNumDirefction == X_True) ? "yes": "no"));
 					}
 					else  // add local info then trans up
 					{
