@@ -118,7 +118,7 @@ TEST(DG_ack,3_to_2_ack_timeout1)
 	X_Boolean isOK;
 	table_index= 0;
 	HAL_BasicSet(1);
-	TestCommonInit(data_monitor_1);
+	TestCommonInit(data_monitor_1,(p_monitor_list_init)0);
 	DisableLogDebug();// called it after TestCommonInit
 	
 	length = GenerateBasicInfSet(&p_data,1,3,3,2,1,4,5);
@@ -288,7 +288,7 @@ TEST(DG_ack,4_to_1_ack)
 	X_Boolean isOK;
 	table_index= 0;
 	HAL_BasicSet(4);
-	TestCommonInit(data_monitor_2);
+	TestCommonInit(data_monitor_2,(p_monitor_list_init)0);
 	DisableLogDebug();// called it after TestCommonInit
 	
 	length = GenerateBasicInfSet(&p_data,4,1,1,0,0,2,3);
@@ -512,7 +512,7 @@ TEST(DG_ack,4_to_1_ack_terminal1_lost)
 	X_Boolean isOK;
 	table_index= 0;
 	HAL_BasicSet(4);
-	TestCommonInit(data_monitor_3);
+	TestCommonInit(data_monitor_3,(p_monitor_list_init)0);
 	DisableLogDebug();// called it after TestCommonInit
 	
 	length = GenerateBasicInfSet(&p_data,4,1,1,0,0,2,3);
@@ -571,7 +571,7 @@ TEST(DG_ack,1_to_4_ack_terminal4_lost) // no check ,just see the log by real per
 	X_Boolean isOK;
 	table_index= 0;
 	HAL_BasicSet(1);
-	TestCommonInit(data_monitor_4);
+	TestCommonInit(data_monitor_4,(p_monitor_list_init)0);
 	DisableLogDebug();// called it after TestCommonInit
 	
 	length = GenerateBasicInfSet(&p_data,1,4,4,3,2,5,6);

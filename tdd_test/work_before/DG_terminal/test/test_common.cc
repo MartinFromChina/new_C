@@ -7,16 +7,19 @@ static uint8_t recv_node_backup = 0xff,send_node_backup = 0xff;
 static p_data_monitor p_monitor = (p_data_monitor)0;
 static uint8_t Recv_debug_Flag = 0;
 static uint16_t temporary_distance = 0;
+static uint8_t MonitorListSize = 0,MonitorListIndex = 0;
 
 
 
-X_Void TestCommonInit(p_data_monitor p_m)
+
+X_Void TestCommonInit(p_data_monitor p_m,p_monitor_list_init init)
 {
 	p_monitor = p_m;
 	recv_node_backup = 0xff;
 	send_node_backup = 0xff;
 	Recv_debug_Flag = 1;
 	temporary_distance = 0;
+	if(init != X_Null) {init();}
 }
 X_Void TestCommonDeInit(X_Void)
 {
@@ -73,4 +76,48 @@ uint16_t mockable_GetDistance(X_Void)
 	return (temporary_distance != 0)? temporary_distance : COMMON_WIRELESS_DISTANCE;
 }
 
+X_Void MonitorListInit(s_monitor_list *p_monitor,uint8_t size)
+{
+	uint8_t i;
+	if(size > MAX_MONITOR_LIST_SIZE) {return;}
+	if(p_monitor != X_Null)
+	{
+		for(i=0;i<size;i++)
+		{
+			p_monitor[i].ignore_times = 0xffff;
+		}
+	}
+	MonitorListSize = size;
+	MonitorListIndex = 0;
+}
+X_Boolean MonitorListAdd(s_monitor_list *p_monitor,s_monitor_list *p_src,uint16_t ignore_times)
+{
+	if(p_monitor == X_Null ) {return X_False;}
+	if(ignore_times == 0 && p_src == X_Null) {return X_False;}
+
+	if(MonitorListIndex < MonitorListSize)
+	{
+		if(ignore_times > 0)
+		{
+			p_monitor[MonitorListIndex].ignore_times = ignore_times;
+			MonitorListIndex ++;
+			return X_True;
+		}
+		else
+		{
+			p_monitor[MonitorListIndex].ignore_times 			= 0;
+			p_monitor[MonitorListIndex].table.current_node_num 	= p_src ->table.current_node_num;
+			p_monitor[MonitorListIndex].table.isRecv			= p_src ->table.isRecv;
+			p_monitor[MonitorListIndex].table.length			= p_src ->table.length;
+			p_monitor[MonitorListIndex].table.time				= p_src ->table.time;
+			for(uint8_t i = 0 ;i<p_src ->table.length;i++)
+			{
+				p_monitor[MonitorListIndex].table.data[i] = p_src ->table.data[i];
+			}
+			MonitorListIndex ++;
+			return X_True;
+		}
+	}
+	return X_False;
+}
 

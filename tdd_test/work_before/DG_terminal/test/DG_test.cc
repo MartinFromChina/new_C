@@ -83,7 +83,7 @@ TEST(DG,1_to_2_basic_set)
 	X_Boolean isOK;
 	table_index= 0;
 	HAL_BasicSet(1);
-	TestCommonInit(data_monitor_1);
+	TestCommonInit(data_monitor_1,(p_monitor_list_init)0);
 	DisableLogDebug();// called it after TestCommonInit
 	
 	length = GenerateBasicInfSet(&p_data,1,2,2,1,0,3,4);
@@ -200,7 +200,7 @@ TEST(DG,1_to_3_terminal_2_trans_down)
 	X_Boolean isOK;
 	table_index= 0;
 	HAL_BasicSet(1);
-	TestCommonInit(data_monitor_2);
+	TestCommonInit(data_monitor_2,(p_monitor_list_init)0);
 	DisableLogDebug();// called it after TestCommonInit
 	
 	length = GenerateBasicInfSet(&p_data,1,3,3,2,1,4,5);
