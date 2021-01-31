@@ -180,7 +180,7 @@ static StateNumber CS_endAction(s_StateMachineParam *p_this)
 	else
 	{
 		p_ext ->isStateRun = X_False;
-		INSERT(LogDebug)(STATE_MACHINE_STOP_DEBUG,("state machine stop forever !!!!!!!\r\n"));
+		INSERT(LogDebug)(STATE_MACHINE_STOP_DEBUG,("state machine stop forever at time %d !!!!!!!\r\n",time_cnt));
 		
 	}
 	return p_this->current_state;

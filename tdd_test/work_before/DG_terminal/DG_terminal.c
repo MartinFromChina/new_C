@@ -6,8 +6,8 @@
 #define RECV_DEBUG        1
 #define FIND_HEADER_DEBUG        0
 #define CHECK_SUM_DEBUG        0
-
-
+#define SYSTIME_DEBUG          0
+INSERT(LOG_COUNTER_ENTRY_DEF)(p_count,0);
 
 static uint32_t systime_timer = 0;
 static func_send p_send = (func_send)0;
@@ -151,6 +151,7 @@ X_Void MainLoopHandle(const s_terminal * p_terminal,uint32_t current_time)
 		}
 	}
 	// unlock irq
+	INSERT(LogDebugCounter)(SYSTIME_DEBUG,p_count,500,(":current_time %d\r\n",current_time));         
 	isStillWaitAck = ImmediatelyAckWaiting(p_terminal,p_send,isNewFrameCome,temp_rec_buf,current_time); 
 	if(isNewFrameCome == X_True)
 	{

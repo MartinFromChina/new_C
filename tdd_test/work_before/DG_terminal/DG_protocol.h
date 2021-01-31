@@ -29,7 +29,8 @@
 
 #define MULTICAST_PREFIX            (0x50)
 #define MULTICAST_MASK           	(0xf0)
-#define MULTICAST_GET_INFO          0x55
+#define MULTICAST_GET_INFO           0x55
+#define MULTICAST_SET_SPEED          0x56
 
 
 #pragma pack(1)
@@ -81,6 +82,15 @@ typedef struct
 	uint8_t   reserve;  //0
 	uint8_t   check_sum;
 }s_DG_info_mul_get;
+
+typedef struct
+{
+	s_DG_data_common common;
+	uint8_t   start_terminal;
+	uint16_t   speed;  
+	uint8_t   check_sum;
+}s_DG_speed_mul_set;
+
 
 
 typedef struct

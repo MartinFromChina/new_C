@@ -1,6 +1,8 @@
 #include "DG_protocol.h"
 
 #define MULTICAST_DEBUG   0
+#define MULTICAST_SPEED_SET_DEBUG   0
+
 
 uint8_t GetType(uint8_t *p_buf)
 {
@@ -145,15 +147,31 @@ X_Boolean DoesMultiCastType(uint8_t type)
 X_Boolean DG_CommandHandle(const s_terminal *p_terminal,e_frame_type frame_type,e_frame_direction direct,uint8_t type,uint8_t *p_recv,uint8_t *p_send) // return true means need response;
 {
 	X_Boolean isUpload = X_False,isTransToBigNumDirefction;
+	s_DG_response_common *p_response 	= (s_DG_response_common *)p_send;
+	s_DG_info_mul_get     *p_recv_command = (s_DG_info_mul_get *)p_recv;
+
+	
+	
 	if(frame_type == eft_command && direct != efd_for_me)
 	{
 	  s_DG_data_common *p_command  = (s_DG_data_common *)p_send;// p_recv have been copy to p_send
 	  p_command ->src = p_terminal ->terminal_num;
+	  if(type == MULTICAST_SET_SPEED)
+	  {
+	  	s_DG_speed_mul_set * p_speed = (s_DG_speed_mul_set *)p_recv;
+		isTransToBigNumDirefction = (p_speed ->common.src == p_terminal ->forward_num);
+	  	if((p_speed ->start_terminal <= p_terminal ->terminal_num &&  isTransToBigNumDirefction == X_True)
+						|| (p_speed ->start_terminal >= p_terminal ->terminal_num && isTransToBigNumDirefction == X_False))
+	  	{
+			INSERT(LogDebug)( MULTICAST_SPEED_SET_DEBUG,("***********terminal %d speed set ; start terrminal % d ; direct big %s\r\n"
+								,p_terminal ->terminal_num,p_speed ->start_terminal
+								,(isTransToBigNumDirefction == X_True) ? "yes": "no"));
+			s_DG_speed_mul_set * p_speed_set = (s_DG_speed_mul_set *)p_recv;
+			p_terminal ->p_info ->DG_wave_speed = p_speed_set ->speed;
+		}		
+	  }
       return X_True;
 	}
-
-	s_DG_response_common *p_response 	= (s_DG_response_common *)p_send;
-	s_DG_info_mul_get     *p_recv_command = (s_DG_info_mul_get *)p_recv;
 	
 	switch (direct)
 	{
@@ -176,6 +194,11 @@ X_Boolean DG_CommandHandle(const s_terminal *p_terminal,e_frame_type frame_type,
 					
 					isUpload 							= X_True;
 				}
+				else if(type == MULTICAST_SET_SPEED)
+				{
+					s_DG_speed_mul_set * p_speed_set = (s_DG_speed_mul_set *)p_recv;
+					p_terminal ->p_info ->DG_wave_speed = p_speed_set ->speed;
+				}
 			}
 			else
 			{
@@ -184,12 +207,11 @@ X_Boolean DG_CommandHandle(const s_terminal *p_terminal,e_frame_type frame_type,
 					INSERT(LogDebug)( MULTICAST_DEBUG,("****************meet touch point ; report the data to the host\r\n"));
 					return X_False;
 				}
-				s_DG_response_common * p_recv_response = (s_DG_response_common *)p_recv;
-				uint8_t start_terminal = p_recv_response ->local_terminal;
-				if(type == MULTICAST_GET_INFO)
-				{
-					isTransToBigNumDirefction = (p_response ->src == p_terminal ->forward_num);
 				
+				if(type == MULTICAST_GET_INFO)
+				{	
+					uint8_t start_terminal = p_response ->local_terminal;
+					isTransToBigNumDirefction = (p_response ->src == p_terminal ->forward_num);
 					p_response ->src = p_terminal ->terminal_num;
 				    
 					if(isTransToBigNumDirefction == X_True) {p_response ->dest = p_terminal ->backward_num;}

@@ -95,4 +95,20 @@ uint8_t GenerateInfoMulGet(uint8_t **p_buf,uint8_t src,uint8_t dest,uint8_t   st
 	return sizeof(mget)/sizeof(uint8_t);
 }
 
+uint8_t GenerateSpeedMulSet(uint8_t **p_buf,uint8_t src,uint8_t dest,uint8_t   start_terminal,uint16_t speed)
+{
+	static s_DG_speed_mul_set mset,*p;
+	p = &mset;
+	mset.common.header = 0x55aa;
+	mset.common.length = sizeof(mset)/sizeof(uint8_t);
+	mset.common.src    = src;
+	mset.common.dest   = dest;
+	mset.common.type   = MULTICAST_SET_SPEED;
+	mset.start_terminal =  start_terminal;
+	mset.speed          = speed;
+	LoadCheckSum((uint8_t *)p,sizeof(mset)/sizeof(uint8_t));
+	*p_buf = (uint8_t *)(p);
+	return sizeof(mset)/sizeof(uint8_t);
+}
+
 

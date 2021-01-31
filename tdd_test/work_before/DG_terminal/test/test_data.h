@@ -15,6 +15,7 @@ uint8_t GenerateBasicInfGet(uint8_t **p_buf,uint8_t src,uint8_t dest,uint8_t ter
 uint8_t GenerateRTC_Config(uint8_t **p_buf,uint8_t src,uint8_t dest,uint8_t   start_terminal,
 									uint16_t  year,uint8_t   mounth,uint8_t   day,uint8_t   hour,uint8_t   minute,uint8_t   second);
 uint8_t GenerateInfoMulGet(uint8_t **p_buf,uint8_t src,uint8_t dest,uint8_t   start_terminal);
+uint8_t GenerateSpeedMulSet(uint8_t **p_buf,uint8_t src,uint8_t dest,uint8_t   start_terminal,uint16_t speed);
 
 #ifdef __cplusplus
 		}
