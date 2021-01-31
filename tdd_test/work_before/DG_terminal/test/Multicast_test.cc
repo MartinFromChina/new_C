@@ -230,10 +230,78 @@ TEST(multicast,start_4_get_from_2_2)
 	TestCommonDeInit();
 
 }
+static X_Void MonitorListInit5(X_Void)
+{
+	s_monitor_list src_no_matter;
+	MonitorListInit(MoniotorList,sizeof(MoniotorList)/sizeof(MoniotorList[0]));
+
+	MonitorListAdd(MoniotorList,&src_no_matter,21);
+	
+	s_monitor_list back1 = {0,{X_False,1,{0xcc,0x66, 0xc, 0, 1, 2,0x55, 3, 0, 0, 0,0x99}, 12,33}};
+	MonitorListAdd(MoniotorList,&back1,0);
+
+	MonitorListAdd(MoniotorList,&src_no_matter,9);
+
+	s_monitor_list back5 = {0,{X_True,5,{0xcc,0x66, 9, 0, 4, 5,0x88, 1,0xcd}, 9,90}};
+	MonitorListAdd(MoniotorList,&back5,0);
+}
+
+static X_Void data_monitor_5(X_Boolean isRecv,uint8_t current_node_num,uint8_t *p_data,uint16_t length,uint32_t time)
+{	
+	uint16_t i;
+	s_monitor_list *p_table = MoniotorList;
+	if(p_table[table_index].ignore_times == 0)
+	{
+		INSERT(LogDebug)(log_flag,("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:check it !!!~~~~~~~~~~~~~~~~~~~~~~~~\r\n"));
+		EXPECT_EQ(p_table[table_index].table.isRecv, isRecv);
+		EXPECT_EQ(p_table[table_index].table.current_node_num, current_node_num);
+		EXPECT_EQ(p_table[table_index].table.time, time);
+		EXPECT_EQ(p_table[table_index].table.length, length);
+
+		for(i=0;i<length;i++)
+		{
+			EXPECT_EQ(p_table[table_index].table.data[i], p_data[i]);
+		}
+
+		if((table_index + 1) < (  (uint8_t)(  sizeof(MoniotorList)/sizeof(MoniotorList[0])      )     )) {table_index ++;}
+		else {table_index = 0;}
+	}
+	else 
+	{
+		INSERT(LogDebug)(log_flag,(":ignore it !!!\r\n"));
+		p_table[table_index].ignore_times --;
+		if(p_table[table_index].ignore_times == 0)
+		{
+			if((table_index + 1) < (  (uint8_t)(  sizeof(MoniotorList)/sizeof(MoniotorList[0])      )     )) {table_index ++;}
+			else {table_index = 0;}
+		}
+	}
+
+	if(time >= 33)
+	{
+		SetTemporaryDistance(10); 
+	}
+}
+
 
 TEST(multicast,start_5_get_from_3_1_termenical1_lost)
 {
-
+	uint8_t start_point = 5;
+	uint8_t *p_data,length;
+	X_Boolean isOK;
+	table_index= 0;
+	log_flag = 0;
+	HAL_BasicSet(start_point);
+	TestCommonInit(data_monitor_5,MonitorListInit5);
+	DisableLogDebug();// called it after TestCommonInit
+	SetTemporaryDistance(11); 
+	
+	length = GenerateInfoMulGet(&p_data,start_point,1,3);
+	isOK = SendWaveSetForTestModule(start_point,0,p_data,length,ED_bidirection,12);
+	EXPECT_EQ(isOK, X_True);
+	
+	HAL_Run();
+	TestCommonDeInit();
 }
 
 
