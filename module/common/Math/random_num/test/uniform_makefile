@@ -1,0 +1,33 @@
+DLIBS = ../../../../google_test/lib/libgmock.a
+DEFS = -DUSE_TDD_MOCK=1 -DLOG_DEBUG_METHOD=printf
+TARGET = random
+
+# Flags passed to the C++ compiler.
+CXXFLAGS += -g -Wall -Wextra -pthread
+CXXFLAGS += $(DEFS)
+
+$(TARGET) : ./obj/uniform_distribute_test.o ./obj/InsertLogDebug.o ./obj/uniform_distribution.o ./obj/rw_by_line.o
+	$(CXX) $(CXXFLAGS) -o $@  $^ $(DLIBS)
+
+#./obj/bit_operation.o : ../../../../module/common/Math/bit_operation.c ../../../../module/common/Math/bit_operation.h
+#	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
+#           -c ../../../../module/common/Math/bit_operation.c -o $@
+
+./obj/uniform_distribute_test.o : uniform_distribute_test.cc 
+	$(CXX) $(CXXFLAGS) -I../../../../../module/common    \
+       -c uniform_distribute_test.cc -o $@
+            
+./obj/InsertLogDebug.o : ../../../InsertLog/InsertLogDebug.c ../../../InsertLog/InsertLogDebug.h
+	$(CXX) $(CXXFLAGS) -I../../../../../module/common    \
+       -c ../../../InsertLog/InsertLogDebug.c -o $@
+
+./obj/rw_by_line.o : ../../../FileOperation/rw_by_line.c ../../../FileOperation/rw_by_line.h
+	$(CXX) $(CXXFLAGS) -I../../../../../module/common    \
+       -c ../../../FileOperation/rw_by_line.c -o $@
+
+./obj/uniform_distribution.o : ../uniform_distribution.c ../uniform_distribution.h
+	$(CXX) $(CXXFLAGS) -I../../../../../module/common    \
+       -c ../uniform_distribution.c -o $@
+						
+clean:
+	rm 		./obj/uniform_distribute_test.o ./obj/InsertLogDebug.o ./obj/uniform_distribution.o ./obj/rw_by_line.o
