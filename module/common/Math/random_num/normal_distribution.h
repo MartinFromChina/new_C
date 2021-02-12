@@ -7,7 +7,7 @@
 
 #include "../../x_cross_platform.h" 
 
-
+X_Float64 GaussGenerator(X_Float64 mean,X_Float64 sigma,int *seed);
 
 #ifdef __cplusplus
  	}

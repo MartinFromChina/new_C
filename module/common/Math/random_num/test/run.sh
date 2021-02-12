@@ -1,6 +1,6 @@
 echo "the first param is ": $1
 if [ $# == 0 ]; then
-echo "please enter param such as uniform ; normal"
+echo "please enter param such as uniform ; normal ; all "
 exit
 fi
 
@@ -12,7 +12,7 @@ case $command in
 make -f uniform_makefile
 ;;
 (normal)
-make -f nothing
+make -f normal_makefile
 ;;
 (*)
 echo "wrong param "
