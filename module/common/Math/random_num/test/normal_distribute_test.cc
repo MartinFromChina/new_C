@@ -27,8 +27,14 @@ int compare(const void *value1, const void *value2) {
 	}
 	
 }
-#define BASIC_MOUNT 100
-#define SCAN  (50)
+
+TEST(comare,float)
+{
+
+}
+
+#define BASIC_MOUNT 500
+#define SCAN  (200)
 
 TEST(normal,distribution)
 {
@@ -36,15 +42,14 @@ TEST(normal,distribution)
 	X_Float64 result = 0,result_sum = 0,result_buf[BASIC_MOUNT];
 	int seed =  13579;
 	char temp[320];
- 	const char *filename = "./text/display.txt";
-	//const char *gauss_file = "./text/gauss_sort.txt";
-	FileClear(filename);
-	//FileClear(gauss_file);
+	char buf1[MAX_LENGTH_OF_FILE_NAME],buf2[MAX_LENGTH_OF_FILE_NAME];
+	char *filename = ConvFileStrToChar("./text/display.txt",buf1);
+	char *gauss_file = ConvFileStrToChar("./text/gauss_sort.txt",buf2);
 	
 	for(i=0;i<BASIC_MOUNT;i++)
 	{
 		result = GaussGenerator(0.0,1.0,&seed);
-		insert_LogDebug(1,("result is %.7f \r\n",result));
+		/////////////insert_LogDebug(1,("result is %.7f \r\n",result));
 		result_sum += result;
 		result_buf[i] = result;
 	}
@@ -53,12 +58,13 @@ TEST(normal,distribution)
 
 	qsort(result_buf, BASIC_MOUNT, sizeof(X_Float64)/sizeof(uint8_t), compare);
 	insert_LogDebug(1,("min is %.7f ; max is %.7f\r\n",result_buf[0],result_buf[BASIC_MOUNT - 1]));
-	/*
+
+	FileClear(gauss_file);
 	for(i=0;i<BASIC_MOUNT;i++)
 	{
 		snprintf(temp,320,"%.7f",result_buf[i]);
 		WriteFileByLine(gauss_file,i,temp);
-	}*/
+	}
 
 	X_Float64 min = result_buf[0] ,max = result_buf[BASIC_MOUNT - 1],seg;
     uint8_t mount_buf[SCAN],cnt;
@@ -66,13 +72,14 @@ TEST(normal,distribution)
 
 	seg  = (max - min)/SCAN;
 	temp_max = min + seg;
-	insert_LogDebug(1,("seg is %.7f ; temp_max is %.7f\r\n",seg,temp_max));
+	/////////////////////insert_LogDebug(1,("seg is %.7f ; temp_max is %.7f\r\n",seg,temp_max));
 	for(j=0;j<SCAN;j++)
 	{
 		cnt = 0;
 		for(i=0;i<100;i++)
 		{
-			if(result_buf[i] > min &&  result_buf[i] < temp_max)
+			//if(result_buf[i] >= min &&  result_buf[i] <= temp_max)
+			if(compare(&result_buf[i],&min) >= 0 && compare(&result_buf[i],&temp_max) <= 0)
 			{/*
 				insert_LogDebug(1,("result_buf[%d] : %.7f is between : min is %.7f ; temp_max is %.7f ; cnt %d\r\n"
 						,i,result_buf[i],min,temp_max,cnt)); */
@@ -85,10 +92,17 @@ TEST(normal,distribution)
 		temp_max = min + seg;
 	}
 	
-	
+	FileClear(filename);
 	for(i=0;i<SCAN;i++)
 	{
-		insert_LogDebug(1,("mount_buf[%d] is %d \r\n",i,mount_buf[i]));
+		////////////insert_LogDebug(1,("mount_buf[%d] is %d \r\n",i,mount_buf[i]));
+		/*
+		if(i == 0 && mount_buf[i] == 0) {mount_buf[i] = 1;}
+		else if(mount_buf[i] == 0)
+		{
+			mount_buf[i] = mount_buf[i - 1];
+		}
+		*/
 		snprintf(temp,320,"%2x",mount_buf[i]);
 		WriteFileByLine(filename,i,temp);
 	}
