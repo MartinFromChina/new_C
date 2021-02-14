@@ -1,0 +1,2254 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="origin">
+    <meta name="description" content="通过前面两篇文章, 我们已经解决了在手写笔迹中的平滑问题. 本篇将讲解如何让手写笔迹能够有笔锋效果. 想要让笔迹能够有笔锋的效果, 那么整个笔迹肯定不可能是等宽的.也就是说, 要让我们绘制出来的笔迹线">
+    <meta property="og:description" content="通过前面两篇文章, 我们已经解决了在手写笔迹中的平滑问题. 本篇将讲解如何让手写笔迹能够有笔锋效果. 想要让笔迹能够有笔锋的效果, 那么整个笔迹肯定不可能是等宽的.也就是说, 要让我们绘制出来的笔迹线">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>原笔迹手写实现平滑和笔锋效果之:笔锋效果(三)[完结篇] - 88911562 - 博客园</title>
+    <link id="favicon" rel="shortcut icon" href="https://common.cnblogs.com/favicon.svg" type="image/svg+xml">
+    
+    <link rel="stylesheet" href="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/blog-common.css">
+    <link id="MainCss" rel="stylesheet" href="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/bundle-blue.css">
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/bundle-blue-mobile.css">
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/zl03jsj/rss">
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/zl03jsj/rsd.xml">
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/zl03jsj/wlwmanifest.xml">
+    <script src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/osd.js"></script><script async="" src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/analytics.js"></script><script type="text/javascript" src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/encoder.js"></script><script>
+        var currentBlogId = 346505;
+        var currentBlogApp = 'zl03jsj';
+        var cb_enable_mathjax = true;
+        var isLogined = false;
+        var isBlogOwner = false;
+        var skinName = 'blue';
+        var visitorUserId = '';
+    </script>
+        <script>
+            var currentPostDateAdded = '2017-12-19 01:50';
+        </script>
+    <script src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/jquery-2.js"></script>
+    <script src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/blog-common.js"></script>
+    <script type="text/x-mathjax-config;executed=true">
+        MathJax.Hub.Config({
+        tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']], processClass: 'math', processEscapes: true },
+        TeX: {
+        equationNumbers: { autoNumber: ['AMS'], useLabelIds: true },
+        extensions: ['extpfeil.js', 'mediawiki-texvc.js'],
+        Macros: {bm: "\\boldsymbol"}
+        },
+        'HTML-CSS': { linebreaks: { automatic: true } },
+        SVG: { linebreaks: { automatic: true } }
+        });
+    </script>
+    <script src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/MathJax.js"></script>
+    
+<style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1px; bottom: 2px; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover, .MJXp-munder {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > *, .MJXp-munder > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><meta http-equiv="origin-trial" content="A9ZgbRtm4pU3oZiuNzOsKcC8ppFSZdcjP2qYcdQrFKVzkmiWH1kdYY1Mi9x7G8+PS8HV9Ha9Cz0gaMdKsiVZIgMAAAB7eyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiVHJ1c3RUb2tlbnMiLCJleHBpcnkiOjE2MjYyMjA3OTksImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A3HucHUo1oW9s+9kIKz8mLkbcmdaj5lxt3eiIMp1Nh49dkkBlg1Fhg4Fd/r0vL69mRRA36YutI9P/lJUfL8csQoAAACFeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiQ29udmVyc2lvbk1lYXN1cmVtZW50IiwiZXhwaXJ5IjoxNjI2MjIwNzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><script src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/pubads_impl_2021020901.js" async=""></script><link rel="preload" href="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/integrator.js" as="script"><script type="text/javascript" src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/integrator.js"></script></head>
+<body class="has-navbar"><div id="MathJax_Message" style="display: none;"></div>
+    <a name="top"></a>
+    <div id="top_nav" class="navbar forpc">
+        <nav id="nav_main" class="navbar-main">
+            <ul id="nav_left" class="navbar-list navbar-left">
+                <li class="navbar-branding"><a href="https://www.cnblogs.com/" title="开发者的网上家园"><img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/logo.svg" alt="博客园Logo"></a></li>
+                <li><a href="https://www.cnblogs.com/" onclick="ga('send', 'event', 'Link', 'click', 'skin-navbar-sitehome')">首页</a></li>
+                <li><a href="https://news.cnblogs.com/" onclick="ga('send', 'event', 'Link', 'click', 'skin-navbar-news')">新闻</a></li>
+                <li><a href="https://q.cnblogs.com/" onclick="ga('send', 'event', 'Link', 'click', 'skin-navbar-q')">博问</a></li>
+                <li><a id="nav_brandzone" href="https://brands.cnblogs.com/" onclick="ga('send', 'event', 'Link', 'click', 'skin-navbar-brands')">专区</a></li>
+                <li><a href="https://ing.cnblogs.com/" onclick="ga('send', 'event', 'Link', 'click', 'skin-navbar-ing')">闪存</a></li>
+                <li><a href="https://edu.cnblogs.com/" onclick="ga('send', 'event', 'Link', 'click', 'skin-navbar-edu')">班级</a></li>
+            </ul>
+            <ul id="nav_right" class="navbar-list navbar-right">
+                <li>
+                    <form id="zzk_search" class="navbar-search" action="https://zzk.cnblogs.com/s" method="get">
+                        <input name="w" id="zzk_search_input" placeholder="代码改变世界" type="text" tabindex="3">
+                        <button type="submit" id="zzk_search_button">
+                            <img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/search.svg" alt="搜索">
+                        </button>
+                    </form>
+                </li>
+                <li id="navbar_login_status" class="navbar-list">
+                    <a id="navblog-myblog-icon" class="navbar-user-info navbar-blog" href="https://passport.cnblogs.com/GetBlogApplyStatus.aspx" alt="我的博客" title="我的博客" style="display: none;">
+                        <img id="myblog_icon" class="navbar-icon" src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/myblog.svg" alt="我的博客">
+                    </a>
+                    <a class="navbar-user-info navbar-message navbar-icon-wrapper" href="https://msg.cnblogs.com/" alt="短消息" title="短消息" style="display: none;">
+                        <img id="msg_icon" class="navbar-icon" src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/message.svg" alt="短消息">
+                        <span id="msg_count" style="display: none"></span>
+                    </a>
+                    <div id="user_info" class="navbar-user-info dropdown" style="display: none;">
+                        <a class="dropdown-button" href="https://home.cnblogs.com/">
+                            <img id="user_icon" class="navbar-avatar" src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/avatar-default.svg" alt="用户头像">
+                        </a>
+                        <div class="dropdown-menu">
+                            <a id="navblog-myblog-text" href="https://passport.cnblogs.com/GetBlogApplyStatus.aspx">我的博客</a>
+                            <a href="https://home.cnblogs.com/">我的园子</a>
+                            <a href="https://account.cnblogs.com/settings/account">账号设置</a>
+                            <a href="javascript:void(0)" onclick="logout();">退出登录</a>
+                        </div>
+                    </div>
+                    <a class="navbar-anonymous" href="https://account.cnblogs.com/signup/" style="display: inline;">注册</a>
+                    <a class="navbar-anonymous" href="javascript:void(0);" onclick="login()" style="display: inline;">登录</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div id="page_begin_html">
+        <link type="text/css" rel="stylesheet" href="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/shCoreRDark.css">
+<link type="text/css" rel="stylesheet" href="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/shThemeRDark.css">
+    </div>
+    <div class="pagelayout">
+    
+<div class="header">
+	<div>
+		<a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/zl03jsj/">88911562</a>
+
+	</div>
+	<div>
+		
+	</div>
+</div>
+
+
+    <div id="leftmenu" class="leftcolumn">
+        
+            
+<h1 class="listtitle">导航</h1>
+<ul class="list">
+			<li class="listitem"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+			<li class="listitem">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/zl03jsj/">
+首页</a>
+</li>
+			<li class="listitem">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+			<li class="listitem">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/88911562">
+联系</a></li>
+			<li class="listitem">
+<a id="blog_nav_rss" class="menu" href="javascript:void(0)" data-rss="https://www.cnblogs.com/zl03jsj/rss/">
+订阅</a>
+<a id="blog_nav_rss_image" href="https://www.cnblogs.com/zl03jsj/rss/">
+    <img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/xml.gif" alt="订阅">
+</a></li>
+			<li class="listitem">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+
+            <div id="blog-calendar" style="">
+
+<table id="blogCalendar" class="Cal" title="Calendar" cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td colspan="7">
+                <table class="CalTitle" cellspacing="0" border="0">
+                    <tbody>
+                        <tr>
+                            <td class="CalNextPrev">
+                                <a href="javascript:void(0);" onclick="loadBlogCalendar('2021/01/14'); return false;">&lt;</a>
+                            </td>
+                            <td align="center">2021年2月</td>
+                            <td class="CalNextPrev" align="right">
+                                <a href="javascript:void(0);" onclick="loadBlogCalendar('2021/03/14'); return false;">&gt;</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    <tr>
+        <th class="CalDayHeader" abbr="日" scope="col" align="center">日</th>
+        <th class="CalDayHeader" abbr="一" scope="col" align="center">一</th>
+        <th class="CalDayHeader" abbr="二" scope="col" align="center">二</th>
+        <th class="CalDayHeader" abbr="三" scope="col" align="center">三</th>
+        <th class="CalDayHeader" abbr="四" scope="col" align="center">四</th>
+        <th class="CalDayHeader" abbr="五" scope="col" align="center">五</th>
+        <th class="CalDayHeader" abbr="六" scope="col" align="center">六</th>
+    </tr>
+            <tr>
+                            <td class="CalOtherMonthDay" align="center">31</td>
+                        <td class="" align="center">
+                            1
+                        </td>
+                        <td class="" align="center">
+                            2
+                        </td>
+                        <td class="" align="center">
+                            3
+                        </td>
+                        <td class="" align="center">
+                            4
+                        </td>
+                        <td class="" align="center">
+                            5
+                        </td>
+                    <td class="CalWeekendDay" align="center">
+                        6
+                    </td>
+            </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            7
+                        </td>
+                            <td class="" align="center">
+                                8
+                            </td>
+                            <td class="" align="center">
+                                9
+                            </td>
+                            <td class="" align="center">
+                                10
+                            </td>
+                            <td class="" align="center">
+                                11
+                            </td>
+                            <td class="" align="center">
+                                12
+                            </td>
+                        <td class="CalWeekendDay" align="center">
+                            13
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalTodayDay" align="center">
+                            14
+                        </td>
+                            <td class="" align="center">
+                                15
+                            </td>
+                            <td class="" align="center">
+                                16
+                            </td>
+                            <td class="" align="center">
+                                17
+                            </td>
+                            <td class="" align="center">
+                                18
+                            </td>
+                            <td class="" align="center">
+                                19
+                            </td>
+                        <td class="CalWeekendDay" align="center">
+                            20
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            21
+                        </td>
+                            <td class="" align="center">
+                                22
+                            </td>
+                            <td class="" align="center">
+                                23
+                            </td>
+                            <td class="" align="center">
+                                24
+                            </td>
+                            <td class="" align="center">
+                                25
+                            </td>
+                            <td class="" align="center">
+                                26
+                            </td>
+                        <td class="CalWeekendDay" align="center">
+                            27
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            28
+                        </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                1
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                2
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                3
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                4
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                5
+                            </td>
+                        <td class="CalOtherMonthDay" align="center">
+                            6
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalOtherMonthDay" align="center">
+                            7
+                        </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                8
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                9
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                10
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                11
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                12
+                            </td>
+                        <td class="CalOtherMonthDay" align="center">
+                            13
+                        </td>
+                </tr>
+    </tbody>
+</table></div><script>loadBlogDefaultCalendar();</script>
+            <div class="listtitle">统计</div>
+<ul class="list">
+	<li class="listitem">随笔 - 9</li>
+	<li class="listitem">文章 - 0</li>
+	<li class="listitem">评论 - 94</li>
+	<li class="listitem">阅读 - 
+<span title="总阅读数: 101319">
+10万</span></li>
+</ul>
+
+
+            <div id="sidebar_news" class="newsItem"><div class="listtitle">公告</div>
+	<ul class="list">
+		<li class="listitem">
+			
+<div id="blog-news">
+    
+    <div id="profile_block">
+        昵称：
+        <a href="https://home.cnblogs.com/u/zl03jsj/">
+            88911562
+        </a>
+        <br>
+        园龄：
+        <a href="https://home.cnblogs.com/u/zl03jsj/" title="入园时间：2014-07-18">
+            6年6个月
+        </a>
+        <br>
+        粉丝：
+        <a href="https://home.cnblogs.com/u/zl03jsj/followers/">
+            42
+        </a>
+        <br>
+        关注：
+        <a href="https://home.cnblogs.com/u/zl03jsj/followees/">
+            0
+        </a>
+        <div id="p_b_follow">
+<a href="javascript:void(0)" onclick="follow('59fd289b-5f0e-e411-8d02-90b11c0b17d6')">+加关注</a></div>
+        <script>getFollowStatus('59fd289b-5f0e-e411-8d02-90b11c0b17d6');</script>
+    </div>
+</div>
+	</li>
+</ul>
+
+</div>
+<div id="sidebar_c3"></div>
+            <div id="blog-sidecolumn"><!-- 搜索 -->
+<div id="sidebar_search" class="sidebar-block">
+    <div id="sidebar_search" class="mySearch">
+        <h3 class="catListTitle">搜索</h3>
+        <div id="sidebar_search_box">
+            <div id="widget_my_zzk" class="div_my_zzk">
+                <input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk">
+            </div>
+            <div id="widget_my_google" class="div_my_zzk">
+                <input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="谷歌搜索" class="btn_my_zzk">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 常用链接 -->
+<div id="sidebar_shortcut" class="sidebar-block">
+<h3 class="catListTitle">
+常用链接
+</h3>
+<ul>
+    
+<li><a href="https://www.cnblogs.com/zl03jsj/p/" title="我的博客的随笔列表">我的随笔</a></li>
+<li><a href="https://www.cnblogs.com/zl03jsj/MyComments.html" title="我的发表过的评论列表">我的评论</a></li>
+<li><a href="https://www.cnblogs.com/zl03jsj/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li>
+<li><a href="https://www.cnblogs.com/zl03jsj/RecentComments.html" title="我的博客的评论列表">最新评论</a></li>
+<li><a href="https://www.cnblogs.com/zl03jsj/tag/" title="我的博客的标签列表">我的标签</a></li>
+
+</ul>
+</div>
+
+<!-- 最新随笔 -->
+
+
+<!-- 我的标签 -->
+<div id="sidebar_toptags" class="sidebar-block">
+<h3>我的标签</h3>
+<div id="MyTag">
+    <ul>
+                <li>
+            <a href="https://www.cnblogs.com/zl03jsj/tag/Bezier%E6%9B%B2%E7%BA%BF/">Bezier曲线<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/zl03jsj/tag/blockchain/">blockchain<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/zl03jsj/tag/c%2B%2B/">c++<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/zl03jsj/tag/python/">python<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/zl03jsj/tag/truffle/">truffle<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/zl03jsj/tag/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/zl03jsj/tag/%E6%89%8B%E5%86%99%E7%AC%94%E8%BF%B9/">手写笔迹<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/zl03jsj/tag/%E6%89%8B%E5%86%99%E7%AD%BE%E5%90%8D/">手写签名<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/zl03jsj/tag/%E7%AC%94%E8%BF%B9/">笔迹<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/zl03jsj/tag/%E7%AE%97%E6%B3%95/">算法<span class="tag-count">(3)</span></a>
+        </li>
+    <li>
+        <a href="https://www.cnblogs.com/zl03jsj/tag/">更多</a>
+    </li>
+
+    </ul>
+</div>
+</div>
+
+<!-- 积分与排名 -->
+
+
+<!-- 随笔分类、随笔档案、文章分类、新闻分类、相册、链接 -->
+<div id="sidebar_categories">
+
+    <h1 class="listtitle">
+        
+随笔分类
+
+
+
+    </h1>
+    <ul class="list">
+            <li class="listitem" data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/zl03jsj/category/997608.html" rel="" target="">
+    blockchian(5)
+</a>
+ 
+
+            </li>            
+            <li class="listitem" data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/zl03jsj/category/1128948.html" rel="" target="">
+    机器学习,数据分析,Machine-Learning(1)
+</a>
+ 
+
+            </li>            
+            <li class="listitem" data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/zl03jsj/category/1128950.html" rel="" target="">
+    计算机图形及算法(3)
+</a>
+ 
+
+            </li>            
+        
+    </ul>
+    <h1 class="listtitle">
+        
+随笔档案
+
+
+
+    </h1>
+    <ul class="list">
+            <li class="listitem" data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/zl03jsj/archive/2018/01.html" rel="" target="">
+    2018年1月(1)
+</a>
+ 
+
+            </li>            
+            <li class="listitem" data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/zl03jsj/archive/2017/12.html" rel="" target="">
+    2017年12月(3)
+</a>
+ 
+
+            </li>            
+            <li class="listitem" data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/zl03jsj/archive/2017/06.html" rel="" target="">
+    2017年6月(2)
+</a>
+ 
+
+            </li>            
+            <li class="listitem" data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/zl03jsj/archive/2017/05.html" rel="" target="">
+    2017年5月(3)
+</a>
+ 
+
+            </li>            
+        
+    </ul>
+</div>
+
+<!-- 最新评论 -->
+<div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap" class="RecentComment">
+    <h3 class="catListTitle">最新评论</h3>
+    <div class="RecentCommentBlock">
+        <ul>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/zl03jsj/p/6876064.html">1. Re:区块链入门(3):在以太坊私有网络中建立节点集群,并发生交易</a></li>
+                    <li class="recent_comment_body"><p>师傅的文章太棒了，感动到流泪✨</p>
+</li>
+                    <li class="recent_comment_author">--soowin</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/zl03jsj/p/8048102.html">2. Re:原笔迹手写实现平滑和笔锋效果之:笔迹的平滑(二)</a></li>
+                    <li class="recent_comment_body"><p>能否通过某种补充，把笔迹点B向相反方向移动，使贝塞尔曲线能更靠近B点？</p>
+</li>
+                    <li class="recent_comment_author">--peerless2012</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/zl03jsj/p/8048102.html">3. Re:原笔迹手写实现平滑和笔锋效果之:笔迹的平滑(二)</a></li>
+                    <li class="recent_comment_body"><p>不经过关键点，总觉得怪怪的，即使有部分线段是完全拟合的。</p>
+</li>
+                    <li class="recent_comment_author">--peerless2012</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/zl03jsj/p/8047259.html">4. Re:原笔迹手写实现平滑和笔锋效果之:笔迹的平滑(一)</a></li>
+                    <li class="recent_comment_body"><p>控制点图解的图，图上说从左到右是b' c' t, 实际哈桑应该是b' t c'  吧？</p>
+</li>
+                    <li class="recent_comment_author">--peerless2012</li>
+                    <li class="recent_comment_title"><a href="https://www.cnblogs.com/zl03jsj/p/8048102.html">5. Re:原笔迹手写实现平滑和笔锋效果之:笔迹的平滑(二)</a></li>
+                    <li class="recent_comment_body"><p>大佬牛逼</p>
+</li>
+                    <li class="recent_comment_author">--是江南呀</li>
+        </ul>
+    </div>
+</div></div>
+
+
+<!-- 阅读排行榜 -->
+<div id="sidebar_topviewedposts" class="sidebar-block">
+<div id="topview_posts_wrap">
+    <h3 class="catListTitle">阅读排行榜</h3>
+    <div id="TopViewPostsBlock">
+        <ul style="word-break:break-all">
+                    <li>
+                        <a href="https://www.cnblogs.com/zl03jsj/p/6858928.html">
+                            1. 区块链入门(2):搭建以太坊私有链,执行挖矿.(26687)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zl03jsj/p/7074435.html">
+                            2. 区块链入门(5)Truffle 项目实战,Solidity IDE, 智能合约部署(19858)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zl03jsj/p/6876064.html">
+                            3. 区块链入门(3):在以太坊私有网络中建立节点集群,并发生交易(17820)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zl03jsj/p/7012178.html">
+                            4. 区块链入门(4)Truffle创建项目,编译,及项目部署(9889)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zl03jsj/p/8047259.html">
+                            5. 原笔迹手写实现平滑和笔锋效果之:笔迹的平滑(一)(8370)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div></div>
+
+<!-- 评论排行榜 -->
+<div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+    <h3 class="catListTitle">评论排行榜</h3>
+    <div id="TopFeedbackPostsBlock">
+        <ul style="word-break:break-all">
+                    <li>
+                        <a href="https://www.cnblogs.com/zl03jsj/p/6876064.html">
+                            1. 区块链入门(3):在以太坊私有网络中建立节点集群,并发生交易(21)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zl03jsj/p/7074435.html">
+                            2. 区块链入门(5)Truffle 项目实战,Solidity IDE, 智能合约部署(18)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zl03jsj/p/8051912.html">
+                            3. 原笔迹手写实现平滑和笔锋效果之:笔锋效果(三)[完结篇](16)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zl03jsj/p/6858928.html">
+                            4. 区块链入门(2):搭建以太坊私有链,执行挖矿.(16)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/zl03jsj/p/7012178.html">
+                            5. 区块链入门(4)Truffle创建项目,编译,及项目部署(11)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div></div>
+
+<!-- 推荐排行榜 -->
+<div id="sidebar_topdiggedposts" class="sidebar-block">
+<div id="topdigg_posts_wrap">
+    <div class="catListView">
+        <h3 class="catListTitle">推荐排行榜</h3>
+        <div id="TopDiggPostsBlock">
+            <ul style="word-break: break-all">
+                        <li>
+                            <a href="https://www.cnblogs.com/zl03jsj/p/8047259.html">
+                                1. 原笔迹手写实现平滑和笔锋效果之:笔迹的平滑(一)(4)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/zl03jsj/p/8048102.html">
+                                2. 原笔迹手写实现平滑和笔锋效果之:笔迹的平滑(二)(3)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/zl03jsj/p/8051912.html">
+                                3. 原笔迹手写实现平滑和笔锋效果之:笔锋效果(三)[完结篇](2)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/zl03jsj/p/6858928.html">
+                                4. 区块链入门(2):搭建以太坊私有链,执行挖矿.(2)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/zl03jsj/p/8151508.html">
+                                5. 机器学习基础[1]]: 理解如何训练计算机进行学习(1)
+                            </a>
+                        </li>
+            </ul>
+        </div>
+    </div>
+</div></div></div>
+                    <script>loadBlogSideColumn();</script>
+        
+        <div class="spacer">
+            &nbsp;</div>
+    </div>
+    <div class="centercolumn">
+        <div id="post_detail">
+    <div class="singlepost">
+        <div class="posttitle">
+            
+<a id="cb_post_title_url" class="postTitle2 vertical-middle" href="https://www.cnblogs.com/zl03jsj/p/8051912.html">
+    <span>原笔迹手写实现平滑和笔锋效果之:笔锋效果(三)[完结篇]</span>
+    
+
+
+</a>
+
+        </div>
+        <div class="postbody">
+            
+<div id="cnblogs_post_body" class="blogpost-body">
+    <p>通过<a href="http://www.cnblogs.com/zl03jsj/p/8047259.html" target="_blank"><span style="text-decoration: underline">前面两篇文章</span></a>, 我们已经解决了在手写笔迹中的平滑问题. 本篇将讲解如何<span style="background-color: rgba(255, 0, 255, 1)">让手写笔迹能够有笔锋效果</span>.</p>
+<p>想要让笔迹能够有笔锋的效果, 那么整个笔迹肯定不可能是等宽的.也就是说, 要让我们绘制出来的<span style="background-color: rgba(255, 0, 255, 1)">笔迹线条必须要有一定的粗细变化</span>.</p>
+<p>所有人都能够很自然的想到 粗细变化的原理:<span style="background-color: rgba(255, 0, 255, 1)"><strong> 运动快的地方肯定线条应该更细, 运动慢的的地方细条应该更粗</strong></span>.是的, 这是最基本的原理, 这个想法完全正确.</p>
+<p>说点题外话, 最近在看机器学习, 神经网络模型里面有一个叫<span style="background-color: rgba(255, 0, 255, 1)"><strong>:激活函数</strong></span>的东西, 它的作用就是为了让神经网络具有分层的非线性映射学习的能力,<br>如果完全是线性的, 在处理某些复杂情况时,得到的结果会很糟糕.</p>
+<p>同样,<span style="background-color: rgba(255, 0, 255, 1)"> 我们在处理手写笔迹的时候, 线条的粗细也不应该完全和速度是一种线性的变化关系,.</span></p>
+<p><span style="background-color: rgba(255, 0, 255, 1)">事实上, 如果完全按照一种线性的变化关系, 绘制出来的线条会看起来非常奇怪</span>(亲测完全如此).</p>
+<p>所以, 在计算线条粗细的时候, 在<span style="background-color: rgba(255, 0, 255, 1)">遵循"速度越快的地方,线条更细; 速度慢的地方,线条更粗" 这一条基本准则</span>的前提下,<br>也应该根据一些具体情况, <span style="background-color: rgba(255, 0, 255, 1)">让线条的粗细变化具有"非线性"的能力</span>.</p>
+<p>&nbsp;</p>
+<p><strong>下面我基于手写的实际情况,提出一些问题, 大家可以稍微思考一下:</strong></p>
+<p><span style="color: rgba(51, 204, 204, 1)"><strong>1) 假设我们的计算线条笔宽的函数就是: <span style="background-color: rgba(255, 0, 255, 1)">W_current = k * s</span>, 其中s为当前线段笔迹点移动的速度, k为将速度映射为笔宽的一个固定系数.</strong></span><br><span style="color: rgba(51, 204, 204, 1)"><strong>用户移动时, 得到了3个相邻的点依次分别为:a,b,c, 在ab线段, 移动速度接近无限大, 而在bc段移动的速度无限接近0, </strong></span><br><span style="color: rgba(51, 204, 204, 1)"><strong>事实上, 在手写笔迹的时候,完全有可能 前一段移动速度非常快, 到下一段距离的时候, 移动速度就立刻变得非常慢了.</strong></span><br><span style="color: rgba(51, 204, 204, 1)"><strong>我只是把可能遇到的情况进行了夸张, 那么, 在这种情况下,我们应该如何处理线条的粗细呢?</strong></span></p>
+<p><span style="color: rgba(51, 204, 204, 1)"><strong>2) 同样假设3个点, 两条线段ab, bc, cd, 并且假设ab, bc有足够的长度, 使得我们计算出来的宽度变化看起来也是比较合理的, 这样说可能不太容易理解.</strong></span><br><span style="color: rgba(51, 204, 204, 1)"><strong>举个栗子: ab, bc的线段长度都为100个像素, 计算出ab线段线条的宽度应该是5, bc线段的线条宽度该是10,</strong></span><br><span style="color: rgba(51, 204, 204, 1)"><strong>从真实手写的情况来看, 200个像素长度的笔迹, 只有5个像素的宽度变化,这是完全合理的. </strong></span><br><span style="color: rgba(51, 204, 204, 1)"><strong>那么,如果我们用宽度5来绘制线段ab, 然后用宽度10来绘制线段bc, 我们绘制出来的笔迹是什么样子的? (发挥一下想象力)</strong></span></p>
+<p><span style="color: rgba(51, 204, 204, 1)"><strong>3) 在真实手写的情况下, 文字的笔迹的笔锋主要体现在文字的哪些部位?</strong></span></p>
+<p><strong>下面我们分别讨论这3个问题.</strong><br><span style="font-size: 16px"><strong>问题一:</strong> </span><br><strong><span style="color: rgba(51, 204, 204, 1)">如果完全按照线性函数W_current = k * s 来计算宽度, 相邻两端线条的笔宽变化有可能非常大, 大到超出了我们可以的接受范围. </span></strong><br><strong><span style="color: rgba(51, 204, 204, 1)">所以我们考虑通过某种方式来限制这种突然的变化, 让线条宽度的变化看起来更自然.</span></strong><br><strong><span style="color: rgba(51, 204, 204, 1)">下面是我修正以后的计算线条宽度的函数:</span></strong><br><span style="background-color: rgba(255, 255, 153, 1); color: rgba(255, 0, 0, 1)">W_current = </span><br><span style="background-color: rgba(255, 255, 153, 1); color: rgba(255, 0, 0, 1)">　　W_previous + min( abs(k*s - W_previous), distance * K_width_unit_change) <span style="color: rgba(0, 0, 0, 1)"><strong>(k * s-W_previous) &gt;= 0</strong></span></span><br><span style="background-color: rgba(255, 255, 153, 1); color: rgba(255, 0, 0, 1)">　　W_previous - min( abs(k*s - W_previous), distance * K_width_unit_change) <strong><span style="color: rgba(0, 0, 0, 1)">(k * s-W_previous) &lt; 0</span></strong></span><br><span style="background-color: rgba(255, 255, 153, 1); color: rgba(255, 0, 0, 1)">　　<span style="color: rgba(51, 153, 102, 1)">W_current 　　　　&nbsp; 当前线段的宽度</span></span><br><span style="background-color: rgba(255, 255, 153, 1); color: rgba(51, 153, 102, 1)">　　W_previous　　　　与当前线条相邻的前一条线段的宽度</span><br><span style="background-color: rgba(255, 255, 153, 1); color: rgba(51, 153, 102, 1)">　　distance 　　	　　&nbsp; &nbsp; 当前线条的长度</span><br><span style="background-color: rgba(255, 255, 153, 1); color: rgba(51, 153, 102, 1)">　　w_k 　　　　　　　		设定的一个固定阈值,表示:单位距离内, 笔迹的线条宽度可以变化的最大量. </span><br><span style="background-color: rgba(255, 255, 153, 1); color: rgba(51, 153, 102, 1)">　　distance * w_k 　　&nbsp; 即为当前线段的长度内, 笔宽可以相对于前一条线段笔宽的基础上, 最多能够变宽或者可以变窄多少.</span><br>这个函数<span style="background-color: rgba(255, 0, 255, 1)"><strong>多引入了2个变量</strong></span>(<span style="background-color: rgba(255, 204, 153, 1)">前一条线段的宽度, 还有当前的线段的距离</span>), <span style="background-color: rgba(255, 0, 255, 1)"><strong>在计算线条宽度时, 考虑了更多的可能性</strong></span>. <br>还<span style="background-color: rgba(255, 0, 255, 1)"><strong>增加了一种非线性的变化机制, min.这个min就是我们的"激活函数".让我们的线宽不再只具有线性的变化了.</strong></span><br>现在, 这个计算线宽的函数,看起来已经比较完美了.</p>
+<p><span style="font-size: 16px"><strong>问题二:</strong></span><br>我们直接看一个我故意做得比较不好的示范图:</p>
+<p><img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/652177-20171218233914834-1852975976.png" alt="" width="255" height="131"></p>
+<p>虽然这个效果大致看起来看还行, 作为一名追求完美的程序员, 始终觉得什么地方不对劲.</p>
+<p>那么我们再把这个问题放大到一种极端的情况:</p>
+<p>&nbsp;</p>
+<p><img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/652177-20171218235725834-1415728016.png" alt="" width="243" height="120"></p>
+<p>这样问题就很明显了.</p>
+<p>我解决这个问题的方式是:<span style="color: rgba(51, 204, 204, 1); background-color: rgba(255, 255, 255, 1)"><strong>利用微分的思想, 把线段再次细分成多条子线段, 宽度的变化均匀的分布在这些细分的子线段上.</strong></span></p>
+<p>这样, 我们的线条宽度变化看起来就更加自然了.</p>
+<p>&nbsp;</p>
+<p><strong>问题三:</strong></p>
+<p><strong><span style="color: rgba(51, 204, 204, 1); background-color: rgba(255, 255, 255, 1)">在平时的书写过程中, <span style="background-color: rgba(204, 255, 255, 1)">笔锋主要体现在笔画的起始位置, 转角位置, 和笔画结束的位置.</span></span></strong></p>
+<p><span style="background-color: rgba(204, 255, 255, 1)"><strong><span style="color: rgba(51, 204, 204, 1)">在笔迹转角的位置体现出笔锋看起来比较困难, 但是在笔迹开始和结束的地方做一些文章还是比较容易.</span></strong></span></p>
+<p><strong><span style="color: rgba(51, 204, 204, 1); background-color: rgba(255, 255, 255, 1)">我的具体做法是这样,<span style="background-color: rgba(204, 255, 255, 1)"> 在笔迹开始的前5个点(这个'5', 是我随便想出来的, 也可4,6,7,8), 让笔迹的宽细变化更加明显</span></span></strong></p>
+<p><span style="background-color: rgba(204, 255, 255, 1)"><strong><span style="color: rgba(51, 204, 204, 1)">在笔迹的结束位置, 不管之前的线段宽度是多少, 都让其在最后位置收缩为最小笔宽.&nbsp;</span></strong></span></p>
+<p><strong><span style="color: rgba(51, 204, 204, 1); background-color: rgba(255, 255, 255, 1)">更好的理由我也说不出来为什么,应该是属于程序员的第七感吧, 感觉这样做会比较好. 而且事实证明效果的确不错.</span></strong></p>
+<p><strong><span style="color: rgba(51, 204, 204, 1); background-color: rgba(255, 255, 255, 1)">其实这里也体现了<span style="background-color: rgba(204, 255, 255, 1)">"非线性"</span>变化的思想, 因为我觉得这一点比较重要, 所以单独提出来.</span></strong></p>
+<p>&nbsp;</p>
+<p>解决以上3个问题, 离这个算法的成功, 就还差一些细节的问题了.(虽然是细节问题, 但是以下这几个需要注意的细节<span style="background-color: rgba(255, 0, 0, 1); font-size: 18px"><strong>非常非常非常重要</strong></span>, 说三遍!!!!!!!)</p>
+<p><strong>下面我就不买关子, 直接告诉大家需要注意的地方:</strong></p>
+<p><strong><span style="color: rgba(51, 204, 204, 1)">1)&nbsp; 在实际的情况中, 移动 定位设备(鼠标,手写笔,或者触摸屏)时, 设备发送给我们的mouse_move消息会非常的多, 需要设立一个</span></strong></p>
+<p><strong><span style="color: rgba(51, 204, 204, 1)">　　时间阈值, 比如前一次消息到这一次消息的间隔时间小于30毫秒, 就把这个点废弃掉. 否则, 点太多, 每个都处理, 基本上都是多余的计算..</span></strong></p>
+<p><strong><span style="color: rgba(51, 204, 204, 1)">2) 在实际情况中, 需要设立一个距离阈值, 当本次得到的点, 到上一个点的距离小于这个阈值时, 把这个点舍弃掉, 距离太近,&nbsp;也是多余的计算.</span></strong></p>
+<p><strong><span style="color: rgba(51, 204, 204, 1)">以上内容,&nbsp; 差不多就是手写笔迹算法中所有技术难点和需要注意的细节了.</span></strong></p>
+<p><strong><span style="color: rgba(51, 204, 204, 1)">&nbsp;</span></strong></p>
+<p>下面把C++实现的源代码分享给大家, 其中<span style="background-color: rgba(255, 0, 0, 1)"><strong>z_math.h, z_math.c使用纯c实现,除了c标准库,没有其它任何依赖,可以毫无压力的移植到各个支持c/c++语言的任何平台.</strong></span></p>
+<p><span style="color: rgba(255, 0, 255, 1); font-size: 18pt"><strong>z_math是算法的核心实现部分:</strong></span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgba(0, 128, 128, 1)">  1</span> <span style="color: rgba(0, 128, 0, 1)">/*</span>
+<span style="color: rgba(0, 128, 128, 1)">  2</span> <span style="color: rgba(0, 128, 0, 1)">=====================================================================================
+</span><span style="color: rgba(0, 128, 128, 1)">  3</span> <span style="color: rgba(0, 128, 0, 1)"> *       Filename:  z_math.h
+</span><span style="color: rgba(0, 128, 128, 1)">  4</span> <span style="color: rgba(0, 128, 0, 1)"> *    Description:  
+</span><span style="color: rgba(0, 128, 128, 1)">  5</span> <span style="color: rgba(0, 128, 0, 1)"> *        Version:  2.0
+</span><span style="color: rgba(0, 128, 128, 1)">  6</span> <span style="color: rgba(0, 128, 0, 1)"> *        Created:  06/23/2016 14:53:43
+</span><span style="color: rgba(0, 128, 128, 1)">  7</span> <span style="color: rgba(0, 128, 0, 1)"> *       Revision:  none
+</span><span style="color: rgba(0, 128, 128, 1)">  8</span> <span style="color: rgba(0, 128, 0, 1)"> *       Compiler:  gcc
+</span><span style="color: rgba(0, 128, 128, 1)">  9</span> <span style="color: rgba(0, 128, 0, 1)"> *         Author:  zl(88911562@qq.com), 
+</span><span style="color: rgba(0, 128, 128, 1)"> 10</span> <span style="color: rgba(0, 128, 0, 1)"> *   Organization:  
+</span><span style="color: rgba(0, 128, 128, 1)"> 11</span> <span style="color: rgba(0, 128, 0, 1)"> * =====================================================================================
+</span><span style="color: rgba(0, 128, 128, 1)"> 12</span>  <span style="color: rgba(0, 128, 0, 1)">*/</span>
+<span style="color: rgba(0, 128, 128, 1)"> 13</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">_________________________________
+</span><span style="color: rgba(0, 128, 128, 1)"> 14</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> stl on mac location is:
+</span><span style="color: rgba(0, 128, 128, 1)"> 15</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1
+</span><span style="color: rgba(0, 128, 128, 1)"> 16</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> Mac OS X 10.9+ no longer uses GCC/libstdc++ but uses libc++ and Clang.
+</span><span style="color: rgba(0, 128, 128, 1)"> 17</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">---------------------------------
+</span><span style="color: rgba(0, 128, 128, 1)"> 18</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">td c++ (STL, streams, ...) : Modified libstdc++ headers for use with ctags 
+</span><span style="color: rgba(0, 128, 128, 1)"> 19</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">use ctags for c++(stl,streams....)
+</span><span style="color: rgba(0, 128, 128, 1)"> 20</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">www.vim.org/scripts/script.php?script_id=2358
+</span><span style="color: rgba(0, 128, 128, 1)"> 21</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">ctags -R --c++-kinds=+p --fields=+ias --extra=+q --language-force=c++ cpp_src 
+</span><span style="color: rgba(0, 128, 128, 1)"> 22</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">sudo ctags -R --c++-kinds=+p --fields=+ias --extra=+q --language-force=c++ ./
+</span><span style="color: rgba(0, 128, 128, 1)"> 23</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">================================= */</span>
+<span style="color: rgba(0, 128, 128, 1)"> 24</span> <span style="color: rgba(0, 0, 0, 1)">#ifndef z_math_h_
+</span><span style="color: rgba(0, 128, 128, 1)"> 25</span> <span style="color: rgba(0, 0, 255, 1)">#define</span> z_math_h_
+<span style="color: rgba(0, 128, 128, 1)"> 26</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 27</span> <span style="color: rgba(0, 0, 0, 1)">#ifdef __cplusplus
+</span><span style="color: rgba(0, 128, 128, 1)"> 28</span> <span style="color: rgba(0, 0, 255, 1)">extern</span> <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">C</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)"> {
+</span><span style="color: rgba(0, 128, 128, 1)"> 29</span> <span style="color: rgba(0, 0, 255, 1)">#endif</span>
+<span style="color: rgba(0, 128, 128, 1)"> 30</span>     
+<span style="color: rgba(0, 128, 128, 1)"> 31</span> #include &lt;stdint.h&gt;
+<span style="color: rgba(0, 128, 128, 1)"> 32</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 33</span> typedef <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_point_s  z_point;
+</span><span style="color: rgba(0, 128, 128, 1)"> 34</span> typedef <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_fpoint_s z_fpoint;
+</span><span style="color: rgba(0, 128, 128, 1)"> 35</span> typedef <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_ipoint_s z_ipoint;
+</span><span style="color: rgba(0, 128, 128, 1)"> 36</span> typedef <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_fpoint_array_s z_fpoint_array;
+</span><span style="color: rgba(0, 128, 128, 1)"> 37</span> typedef <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_fpoint_arraylist_node_s  z_fpoint_arraylist_node;
+</span><span style="color: rgba(0, 128, 128, 1)"> 38</span> typedef <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_fpoint_arraylist_s z_fpoint_arraylist;
+</span><span style="color: rgba(0, 128, 128, 1)"> 39</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 40</span> <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_point_s {
+</span><span style="color: rgba(0, 128, 128, 1)"> 41</span>     <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> x, y;
+</span><span style="color: rgba(0, 128, 128, 1)"> 42</span> <span style="color: rgba(0, 0, 0, 1)">};
+</span><span style="color: rgba(0, 128, 128, 1)"> 43</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 44</span> <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_fpoint_s{
+</span><span style="color: rgba(0, 128, 128, 1)"> 45</span> <span style="color: rgba(0, 0, 0, 1)">    z_point p;
+</span><span style="color: rgba(0, 128, 128, 1)"> 46</span>     <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> w;
+</span><span style="color: rgba(0, 128, 128, 1)"> 47</span> <span style="color: rgba(0, 0, 0, 1)">};
+</span><span style="color: rgba(0, 128, 128, 1)"> 48</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 49</span> <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_ipoint_s {
+</span><span style="color: rgba(0, 128, 128, 1)"> 50</span> <span style="color: rgba(0, 0, 0, 1)">    z_point p;
+</span><span style="color: rgba(0, 128, 128, 1)"> 51</span> <span style="color: rgba(0, 0, 0, 1)">    int64_t t;
+</span><span style="color: rgba(0, 128, 128, 1)"> 52</span> <span style="color: rgba(0, 0, 0, 1)">};
+</span><span style="color: rgba(0, 128, 128, 1)"> 53</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 54</span> <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_fpoint_array_s {
+</span><span style="color: rgba(0, 128, 128, 1)"> 55</span>     z_fpoint *<span style="color: rgba(0, 0, 0, 1)">point;
+</span><span style="color: rgba(0, 128, 128, 1)"> 56</span>     <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> maxwidth;
+</span><span style="color: rgba(0, 128, 128, 1)"> 57</span>     <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> minwidth;
+</span><span style="color: rgba(0, 128, 128, 1)"> 58</span>     <span style="color: rgba(0, 0, 255, 1)">int</span> <span style="color: rgba(0, 0, 255, 1)">ref</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)"> 59</span>     <span style="color: rgba(0, 0, 255, 1)">int</span><span style="color: rgba(0, 0, 0, 1)"> len;
+</span><span style="color: rgba(0, 128, 128, 1)"> 60</span>     <span style="color: rgba(0, 0, 255, 1)">int</span><span style="color: rgba(0, 0, 0, 1)"> cap;
+</span><span style="color: rgba(0, 128, 128, 1)"> 61</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 62</span> <span style="color: rgba(0, 0, 0, 1)">    z_point last_point;
+</span><span style="color: rgba(0, 128, 128, 1)"> 63</span>     <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> last_width;
+</span><span style="color: rgba(0, 128, 128, 1)"> 64</span> <span style="color: rgba(0, 0, 0, 1)">    int64_t last_ms;
+</span><span style="color: rgba(0, 128, 128, 1)"> 65</span> <span style="color: rgba(0, 0, 0, 1)">};
+</span><span style="color: rgba(0, 128, 128, 1)"> 66</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 67</span> <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_fpoint_arraylist_node_s {
+</span><span style="color: rgba(0, 128, 128, 1)"> 68</span>     z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a;
+</span><span style="color: rgba(0, 128, 128, 1)"> 69</span>     z_fpoint_arraylist_node *<span style="color: rgba(0, 0, 0, 1)">n;
+</span><span style="color: rgba(0, 128, 128, 1)"> 70</span> <span style="color: rgba(0, 0, 0, 1)">};
+</span><span style="color: rgba(0, 128, 128, 1)"> 71</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 72</span> <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_fpoint_arraylist_s {
+</span><span style="color: rgba(0, 128, 128, 1)"> 73</span>     <span style="color: rgba(0, 0, 255, 1)">int</span> <span style="color: rgba(0, 0, 255, 1)">ref</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)"> 74</span>     z_fpoint_arraylist_node *<span style="color: rgba(0, 0, 0, 1)">first;
+</span><span style="color: rgba(0, 128, 128, 1)"> 75</span>     z_fpoint_arraylist_node *<span style="color: rgba(0, 0, 0, 1)">end;
+</span><span style="color: rgba(0, 128, 128, 1)"> 76</span>     z_fpoint_arraylist_node *<span style="color: rgba(0, 0, 0, 1)">cur;
+</span><span style="color: rgba(0, 128, 128, 1)"> 77</span> <span style="color: rgba(0, 0, 0, 1)">};
+</span><span style="color: rgba(0, 128, 128, 1)"> 78</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 79</span> z_fpoint_array *z_keep_fpoint_array(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a);
+</span><span style="color: rgba(0, 128, 128, 1)"> 80</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_drop_fpoint_array(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a);
+</span><span style="color: rgba(0, 128, 128, 1)"> 81</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 82</span> z_fpoint_arraylist* z_keep_fpoint_arraylist(z_fpoint_arraylist *<span style="color: rgba(0, 0, 0, 1)">l);
+</span><span style="color: rgba(0, 128, 128, 1)"> 83</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_drop_fpoint_arraylist(z_fpoint_arraylist *<span style="color: rgba(0, 0, 0, 1)">l);
+</span><span style="color: rgba(0, 128, 128, 1)"> 84</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 85</span> z_fpoint_array *z_new_fpoint_array(<span style="color: rgba(0, 0, 255, 1)">int</span> initsize, <span style="color: rgba(0, 0, 255, 1)">float</span> maxwidth, <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> minwidth);
+</span><span style="color: rgba(0, 128, 128, 1)"> 86</span> z_fpoint_array *z_resize_fpoints_array(z_fpoint_array* a, <span style="color: rgba(0, 0, 255, 1)">int</span><span style="color: rgba(0, 0, 0, 1)"> size);
+</span><span style="color: rgba(0, 128, 128, 1)"> 87</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 88</span> z_fpoint_arraylist *<span style="color: rgba(0, 0, 0, 1)">z_new_fpoint_arraylist();
+</span><span style="color: rgba(0, 128, 128, 1)"> 89</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_fpoint_arraylist_append(z_fpoint_arraylist *l, z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a);
+</span><span style="color: rgba(0, 128, 128, 1)"> 90</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> must be drop after used</span>
+<span style="color: rgba(0, 128, 128, 1)"> 91</span> z_fpoint_array *z_fpoint_arraylist_append_new(z_fpoint_arraylist *l, <span style="color: rgba(0, 0, 255, 1)">float</span> maxwidth, <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> minwidth);
+</span><span style="color: rgba(0, 128, 128, 1)"> 92</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_fpoint_arraylist_removelast(z_fpoint_arraylist *<span style="color: rgba(0, 0, 0, 1)">l);
+</span><span style="color: rgba(0, 128, 128, 1)"> 93</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 94</span> <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> z_movespeed(z_ipoint s, z_ipoint e);
+</span><span style="color: rgba(0, 128, 128, 1)"> 95</span> <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> z_distance(z_point s, z_point e);
+</span><span style="color: rgba(0, 128, 128, 1)"> 96</span> <span style="color: rgba(0, 0, 255, 1)">void</span>  z_fpoint_add_xyw(z_fpoint_array *a, <span style="color: rgba(0, 0, 255, 1)">float</span> x, <span style="color: rgba(0, 0, 255, 1)">float</span> y, <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> w);
+</span><span style="color: rgba(0, 128, 128, 1)"> 97</span> <span style="color: rgba(0, 0, 255, 1)">void</span>  z_fpoint_add(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a, z_fpoint p);
+</span><span style="color: rgba(0, 128, 128, 1)"> 98</span> <span style="color: rgba(0, 0, 255, 1)">void</span>  z_fpoint_differential_add(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a, z_fpoint p);
+</span><span style="color: rgba(0, 128, 128, 1)"> 99</span> <span style="color: rgba(0, 0, 255, 1)">void</span>  z_square_bezier(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a, z_fpoint b, z_point c, z_fpoint e);
+</span><span style="color: rgba(0, 128, 128, 1)">100</span> <span style="color: rgba(0, 0, 255, 1)">float</span> z_linewidth(z_ipoint b, z_ipoint e, <span style="color: rgba(0, 0, 255, 1)">float</span> w, <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> step);
+</span><span style="color: rgba(0, 128, 128, 1)">101</span> 
+<span style="color: rgba(0, 128, 128, 1)">102</span> <span style="color: rgba(0, 0, 255, 1)">float</span> z_insert_point(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">arr, z_point point);
+</span><span style="color: rgba(0, 128, 128, 1)">103</span> <span style="color: rgba(0, 0, 255, 1)">void</span>  z_insert_last_point(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">arr, z_point e);
+</span><span style="color: rgba(0, 128, 128, 1)">104</span> 
+<span style="color: rgba(0, 128, 128, 1)">105</span> 
+<span style="color: rgba(0, 128, 128, 1)">106</span> typedef <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_list_node_s z_list_node;
+</span><span style="color: rgba(0, 128, 128, 1)">107</span> <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_list_node_s {
+</span><span style="color: rgba(0, 128, 128, 1)">108</span>     <span style="color: rgba(0, 0, 255, 1)">void</span> *<span style="color: rgba(0, 0, 0, 1)">data; 
+</span><span style="color: rgba(0, 128, 128, 1)">109</span>     z_list_node *<span style="color: rgba(0, 0, 0, 1)">n;
+</span><span style="color: rgba(0, 128, 128, 1)">110</span>     z_list_node *<span style="color: rgba(0, 0, 0, 1)">p;
+</span><span style="color: rgba(0, 128, 128, 1)">111</span> <span style="color: rgba(0, 0, 0, 1)">}; 
+</span><span style="color: rgba(0, 128, 128, 1)">112</span> typedef <span style="color: rgba(0, 0, 255, 1)">void</span>*(*<span style="color: rgba(0, 0, 0, 1)">z_list_node_alloc_fun)();
+</span><span style="color: rgba(0, 128, 128, 1)">113</span> typedef <span style="color: rgba(0, 0, 255, 1)">void</span>(*z_list_node_drop_fun) (<span style="color: rgba(0, 0, 255, 1)">void</span> *<span style="color: rgba(0, 0, 0, 1)">data);
+</span><span style="color: rgba(0, 128, 128, 1)">114</span> 
+<span style="color: rgba(0, 128, 128, 1)">115</span> 
+<span style="color: rgba(0, 128, 128, 1)">116</span> <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_list_s {
+</span><span style="color: rgba(0, 128, 128, 1)">117</span> <span style="color: rgba(0, 0, 0, 1)">    z_list_node_alloc_fun alloc;
+</span><span style="color: rgba(0, 128, 128, 1)">118</span> <span style="color: rgba(0, 0, 0, 1)">    z_list_node_drop_fun  drop;
+</span><span style="color: rgba(0, 128, 128, 1)">119</span>     z_list_node *<span style="color: rgba(0, 0, 0, 1)">first;
+</span><span style="color: rgba(0, 128, 128, 1)">120</span>     z_list_node *<span style="color: rgba(0, 0, 0, 1)">last;
+</span><span style="color: rgba(0, 128, 128, 1)">121</span> <span style="color: rgba(0, 0, 0, 1)">};
+</span><span style="color: rgba(0, 128, 128, 1)">122</span> typedef <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_list_s z_list;
+</span><span style="color: rgba(0, 128, 128, 1)">123</span> 
+<span style="color: rgba(0, 128, 128, 1)">124</span> z_list *<span style="color: rgba(0, 0, 0, 1)">z_list_new(z_list_node_alloc_fun allocfun, z_list_node_drop_fun dropfun);
+</span><span style="color: rgba(0, 128, 128, 1)">125</span> <span style="color: rgba(0, 0, 255, 1)">void</span> *z_list_append_new(z_list *<span style="color: rgba(0, 0, 0, 1)">zlist);
+</span><span style="color: rgba(0, 128, 128, 1)">126</span> <span style="color: rgba(0, 0, 255, 1)">void</span> *z_list_remove_last(z_list *<span style="color: rgba(0, 0, 0, 1)">zlist);
+</span><span style="color: rgba(0, 128, 128, 1)">127</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_list_clear(z_list *<span style="color: rgba(0, 0, 0, 1)">zlist);
+</span><span style="color: rgba(0, 128, 128, 1)">128</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_list_free(z_list *<span style="color: rgba(0, 0, 0, 1)">zlist);
+</span><span style="color: rgba(0, 128, 128, 1)">129</span> 
+<span style="color: rgba(0, 128, 128, 1)">130</span> <span style="color: rgba(0, 128, 0, 1)">/*</span><span style="color: rgba(0, 128, 0, 1)"> digest must be 33 char size  </span><span style="color: rgba(0, 128, 0, 1)">*/</span>
+<span style="color: rgba(0, 128, 128, 1)">131</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> void z_text_md5(const char* str, char *digest);</span>
+<span style="color: rgba(0, 128, 128, 1)">132</span> 
+<span style="color: rgba(0, 128, 128, 1)">133</span> <span style="color: rgba(0, 0, 0, 1)">#ifdef __cplusplus
+</span><span style="color: rgba(0, 128, 128, 1)">134</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">135</span> <span style="color: rgba(0, 0, 255, 1)">#endif</span>
+<span style="color: rgba(0, 128, 128, 1)">136</span> 
+<span style="color: rgba(0, 128, 128, 1)">137</span> <span style="color: rgba(0, 0, 255, 1)">#endif</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: rgba(0, 128, 128, 1)">  1</span> <span style="color: rgba(0, 128, 0, 1)">/*</span>
+<span style="color: rgba(0, 128, 128, 1)">  2</span> <span style="color: rgba(0, 128, 0, 1)">=====================================================================================
+</span><span style="color: rgba(0, 128, 128, 1)">  3</span> <span style="color: rgba(0, 128, 0, 1)"> *       Filename:  z_math.c
+</span><span style="color: rgba(0, 128, 128, 1)">  4</span> <span style="color: rgba(0, 128, 0, 1)"> *    Description:
+</span><span style="color: rgba(0, 128, 128, 1)">  5</span> <span style="color: rgba(0, 128, 0, 1)"> *        Version:  1.0
+</span><span style="color: rgba(0, 128, 128, 1)">  6</span> <span style="color: rgba(0, 128, 0, 1)"> *        Created:  06/23/2016 14:53:43
+</span><span style="color: rgba(0, 128, 128, 1)">  7</span> <span style="color: rgba(0, 128, 0, 1)"> *       Revision:  none
+</span><span style="color: rgba(0, 128, 128, 1)">  8</span> <span style="color: rgba(0, 128, 0, 1)"> *       Compiler:  gcc
+</span><span style="color: rgba(0, 128, 128, 1)">  9</span> <span style="color: rgba(0, 128, 0, 1)"> *         Author:  zl(88911562@qq.com), 
+</span><span style="color: rgba(0, 128, 128, 1)"> 10</span> <span style="color: rgba(0, 128, 0, 1)"> *   Organization:  
+</span><span style="color: rgba(0, 128, 128, 1)"> 11</span> <span style="color: rgba(0, 128, 0, 1)"> * =====================================================================================
+</span><span style="color: rgba(0, 128, 128, 1)"> 12</span>  <span style="color: rgba(0, 128, 0, 1)">*/</span>
+<span style="color: rgba(0, 128, 128, 1)"> 13</span> #include &lt;math.h&gt;
+<span style="color: rgba(0, 128, 128, 1)"> 14</span> #include &lt;stdio.h&gt;
+<span style="color: rgba(0, 128, 128, 1)"> 15</span> #include &lt;<span style="color: rgba(0, 0, 255, 1)">string</span>.h&gt;
+<span style="color: rgba(0, 128, 128, 1)"> 16</span> #include &lt;stdlib.h&gt;
+<span style="color: rgba(0, 128, 128, 1)"> 17</span> #include &lt;time.h&gt; 
+<span style="color: rgba(0, 128, 128, 1)"> 18</span> #include <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">z_math.h</span><span style="color: rgba(128, 0, 0, 1)">"</span>
+<span style="color: rgba(0, 128, 128, 1)"> 19</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 20</span> <span style="color: rgba(0, 0, 255, 1)">#define</span> z_malloc_struct(t) (t*)calloc(1, sizeof(t))
+<span style="color: rgba(0, 128, 128, 1)"> 21</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">void</span>* z_malloc_array(unsigned <span style="color: rgba(0, 0, 255, 1)">int</span> count, unsigned <span style="color: rgba(0, 0, 255, 1)">int</span><span style="color: rgba(0, 0, 0, 1)"> size);
+</span><span style="color: rgba(0, 128, 128, 1)"> 22</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">void</span>* z_resize_array(<span style="color: rgba(0, 0, 255, 1)">void</span> *<span style="color: rgba(0, 0, 0, 1)">p, size_t count, size_t size);
+</span><span style="color: rgba(0, 128, 128, 1)"> 23</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 24</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_fpoint_array_set_last_info(z_fpoint_array *arr, z_point last_point, <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> last_width);
+</span><span style="color: rgba(0, 128, 128, 1)"> 25</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 26</span> <span style="color: rgba(0, 128, 0, 1)">/*</span><span style="color: rgba(0, 128, 0, 1)">**************************** mac stdlib location:
+</span><span style="color: rgba(0, 128, 128, 1)"> 27</span> <span style="color: rgba(0, 128, 0, 1)">Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include/stdio.h
+</span><span style="color: rgba(0, 128, 128, 1)"> 28</span> <span style="color: rgba(0, 128, 0, 1)">*/</span>
+<span style="color: rgba(0, 128, 128, 1)"> 29</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">float</span> z_square(<span style="color: rgba(0, 0, 255, 1)">float</span> f){ <span style="color: rgba(0, 0, 255, 1)">return</span> (<span style="color: rgba(0, 0, 255, 1)">float</span>)f*<span style="color: rgba(0, 0, 0, 1)">f; };
+</span><span style="color: rgba(0, 128, 128, 1)"> 30</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">float</span> z_cubic_(<span style="color: rgba(0, 0, 255, 1)">float</span> f){ <span style="color: rgba(0, 0, 255, 1)">return</span> (<span style="color: rgba(0, 0, 255, 1)">float</span>)powf(f, <span style="color: rgba(128, 0, 128, 1)">3</span><span style="color: rgba(0, 0, 0, 1)">); };
+</span><span style="color: rgba(0, 128, 128, 1)"> 31</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 32</span> typedef <span style="color: rgba(0, 0, 255, 1)">struct</span><span style="color: rgba(0, 0, 0, 1)"> z_bezier_factors_s {
+</span><span style="color: rgba(0, 128, 128, 1)"> 33</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> bezier_step;      <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> must be divisible by 1.0f</span>
+<span style="color: rgba(0, 128, 128, 1)"> 34</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> max_width_diff;   <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> max width diff between two near lines</span>
+<span style="color: rgba(0, 128, 128, 1)"> 35</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> max_move_speed;   <span style="color: rgba(0, 128, 0, 1)">//</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 36</span>     <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> max_linewith;     
+</span><span style="color: rgba(0, 128, 128, 1)"> 37</span> <span style="color: rgba(0, 0, 0, 1)">} z_bezier_factors ;
+</span><span style="color: rgba(0, 128, 128, 1)"> 38</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 39</span> <span style="color: rgba(0, 0, 255, 1)">int</span> z_point_equals(z_point *p1, z_point *<span style="color: rgba(0, 0, 0, 1)">p2) {
+</span><span style="color: rgba(0, 128, 128, 1)"> 40</span>     <span style="color: rgba(0, 0, 255, 1)">return</span> (p1-&gt;x==p2-&gt;x&amp;&amp;p1-&gt;y==p2-&gt;y) ? <span style="color: rgba(128, 0, 128, 1)">1</span> : <span style="color: rgba(128, 0, 128, 1)">0</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)"> 41</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)"> 42</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 43</span> z_fpoint_array *z_keep_fpoint_array(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a) {
+</span><span style="color: rgba(0, 128, 128, 1)"> 44</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(a) a-&gt;<span style="color: rgba(0, 0, 255, 1)">ref</span>++<span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)"> 45</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> a;
+</span><span style="color: rgba(0, 128, 128, 1)"> 46</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)"> 47</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 48</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_drop_fpoint_array(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a) {
+</span><span style="color: rgba(0, 128, 128, 1)"> 49</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(!a) <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)"> 50</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 51</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>( !(--(a-&gt;<span style="color: rgba(0, 0, 255, 1)">ref</span><span style="color: rgba(0, 0, 0, 1)">)) ) {
+</span><span style="color: rgba(0, 128, 128, 1)"> 52</span>         <span style="color: rgba(0, 0, 255, 1)">free</span><span style="color: rgba(0, 0, 0, 1)">(a);
+</span><span style="color: rgba(0, 128, 128, 1)"> 53</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)"> 54</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)"> 55</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 56</span> z_fpoint_arraylist *z_keep_fpoint_arraylist(z_fpoint_arraylist *<span style="color: rgba(0, 0, 0, 1)">l) {
+</span><span style="color: rgba(0, 128, 128, 1)"> 57</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(!l) <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)"> 58</span>     l-&gt;<span style="color: rgba(0, 0, 255, 1)">ref</span>++<span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)"> 59</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> l;
+</span><span style="color: rgba(0, 128, 128, 1)"> 60</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)"> 61</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 62</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_drop_fpoint_arraylist(z_fpoint_arraylist *<span style="color: rgba(0, 0, 0, 1)">l) {
+</span><span style="color: rgba(0, 128, 128, 1)"> 63</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(!l) <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)"> 64</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 65</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>( !(--(l-&gt;<span style="color: rgba(0, 0, 255, 1)">ref</span><span style="color: rgba(0, 0, 0, 1)">)) ) {
+</span><span style="color: rgba(0, 128, 128, 1)"> 66</span>         z_fpoint_arraylist_node *c = l-&gt;<span style="color: rgba(0, 0, 0, 1)">first;
+</span><span style="color: rgba(0, 128, 128, 1)"> 67</span>         z_fpoint_arraylist_node *<span style="color: rgba(0, 0, 0, 1)">n;
+</span><span style="color: rgba(0, 128, 128, 1)"> 68</span>         <span style="color: rgba(0, 0, 255, 1)">while</span><span style="color: rgba(0, 0, 0, 1)">(c) {
+</span><span style="color: rgba(0, 128, 128, 1)"> 69</span>             z_drop_fpoint_array(c-&gt;<span style="color: rgba(0, 0, 0, 1)">a);
+</span><span style="color: rgba(0, 128, 128, 1)"> 70</span>             n = c-&gt;<span style="color: rgba(0, 0, 0, 1)">n;
+</span><span style="color: rgba(0, 128, 128, 1)"> 71</span>             <span style="color: rgba(0, 0, 255, 1)">free</span><span style="color: rgba(0, 0, 0, 1)">(c);
+</span><span style="color: rgba(0, 128, 128, 1)"> 72</span>             c =<span style="color: rgba(0, 0, 0, 1)"> n;
+</span><span style="color: rgba(0, 128, 128, 1)"> 73</span> <span style="color: rgba(0, 0, 0, 1)">        }
+</span><span style="color: rgba(0, 128, 128, 1)"> 74</span> <span style="color: rgba(0, 0, 0, 1)">    } 
+</span><span style="color: rgba(0, 128, 128, 1)"> 75</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)"> 76</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 77</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">const</span> <span style="color: rgba(0, 0, 255, 1)">float</span> defualt_max_width = <span style="color: rgba(128, 0, 128, 1)">5.0f</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)"> 78</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">const</span> <span style="color: rgba(0, 0, 255, 1)">float</span> default_min_width = <span style="color: rgba(128, 0, 128, 1)">1.0f</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)"> 79</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 80</span> z_fpoint_array *z_new_fpoint_array(<span style="color: rgba(0, 0, 255, 1)">int</span> initsize, <span style="color: rgba(0, 0, 255, 1)">float</span> maxwidth, <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> minwidth) {
+</span><span style="color: rgba(0, 128, 128, 1)"> 81</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(initsize&lt;=<span style="color: rgba(128, 0, 128, 1)">0</span>) <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)"> 82</span>     z_fpoint_array *a = <span style="color: rgba(0, 0, 255, 1)">malloc</span>(<span style="color: rgba(0, 0, 255, 1)">sizeof</span><span style="color: rgba(0, 0, 0, 1)">(z_fpoint_array));
+</span><span style="color: rgba(0, 128, 128, 1)"> 83</span>     a-&gt;point = z_malloc_array(initsize, <span style="color: rgba(0, 0, 255, 1)">sizeof</span><span style="color: rgba(0, 0, 0, 1)">(z_fpoint));
+</span><span style="color: rgba(0, 128, 128, 1)"> 84</span>     a-&gt;<span style="color: rgba(0, 0, 255, 1)">ref</span> = <span style="color: rgba(128, 0, 128, 1)">1</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)"> 85</span>     a-&gt;len = <span style="color: rgba(128, 0, 128, 1)">0</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)"> 86</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 87</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(maxwidth&lt;<span style="color: rgba(128, 0, 128, 1)">0</span> || minwidth&lt;<span style="color: rgba(128, 0, 128, 1)">0</span> || maxwidth&lt;<span style="color: rgba(0, 0, 0, 1)">minwidth ){
+</span><span style="color: rgba(0, 128, 128, 1)"> 88</span>         maxwidth =<span style="color: rgba(0, 0, 0, 1)"> defualt_max_width;
+</span><span style="color: rgba(0, 128, 128, 1)"> 89</span>         minwidth =<span style="color: rgba(0, 0, 0, 1)"> default_min_width;
+</span><span style="color: rgba(0, 128, 128, 1)"> 90</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)"> 91</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 92</span>     a-&gt;maxwidth =<span style="color: rgba(0, 0, 0, 1)"> maxwidth;
+</span><span style="color: rgba(0, 128, 128, 1)"> 93</span>     a-&gt;minwidth =<span style="color: rgba(0, 0, 0, 1)"> minwidth;
+</span><span style="color: rgba(0, 128, 128, 1)"> 94</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 95</span>     a-&gt;cap =<span style="color: rgba(0, 0, 0, 1)"> initsize;
+</span><span style="color: rgba(0, 128, 128, 1)"> 96</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> a;
+</span><span style="color: rgba(0, 128, 128, 1)"> 97</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)"> 98</span> 
+<span style="color: rgba(0, 128, 128, 1)"> 99</span> z_fpoint_array *z_resize_fpoints_array(z_fpoint_array* a, <span style="color: rgba(0, 0, 255, 1)">int</span><span style="color: rgba(0, 0, 0, 1)"> count){
+</span><span style="color: rgba(0, 128, 128, 1)">100</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(!a || count&lt;=<span style="color: rgba(128, 0, 128, 1)">0</span>) <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">101</span> 
+<span style="color: rgba(0, 128, 128, 1)">102</span>     a-&gt;point = (z_fpoint*)z_resize_array(a-&gt;point, count, <span style="color: rgba(0, 0, 255, 1)">sizeof</span><span style="color: rgba(0, 0, 0, 1)">(z_fpoint));
+</span><span style="color: rgba(0, 128, 128, 1)">103</span>     a-&gt;cap =<span style="color: rgba(0, 0, 0, 1)"> count;
+</span><span style="color: rgba(0, 128, 128, 1)">104</span>     a-&gt;len = min(a-&gt;cap, a-&gt;<span style="color: rgba(0, 0, 0, 1)">len);
+</span><span style="color: rgba(0, 128, 128, 1)">105</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> a;
+</span><span style="color: rgba(0, 128, 128, 1)">106</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">107</span> 
+<span style="color: rgba(0, 128, 128, 1)">108</span> z_fpoint_arraylist *<span style="color: rgba(0, 0, 0, 1)">z_new_fpoint_arraylist() {
+</span><span style="color: rgba(0, 128, 128, 1)">109</span>     z_fpoint_arraylist *l =<span style="color: rgba(0, 0, 0, 1)"> z_malloc_struct(z_fpoint_arraylist);
+</span><span style="color: rgba(0, 128, 128, 1)">110</span>     l-&gt;<span style="color: rgba(0, 0, 255, 1)">ref</span> = <span style="color: rgba(128, 0, 128, 1)">1</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">111</span>     l-&gt;first = l-&gt;end =<span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">112</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> l;
+</span><span style="color: rgba(0, 128, 128, 1)">113</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">114</span> 
+<span style="color: rgba(0, 128, 128, 1)">115</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_fpoint_arraylist_append(z_fpoint_arraylist *l, z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a) {
+</span><span style="color: rgba(0, 128, 128, 1)">116</span>     z_fpoint_arraylist_node *node =<span style="color: rgba(0, 0, 0, 1)"> z_malloc_struct(z_fpoint_arraylist_node);
+</span><span style="color: rgba(0, 128, 128, 1)">117</span>     node-&gt;a =<span style="color: rgba(0, 0, 0, 1)"> z_keep_fpoint_array(a);
+</span><span style="color: rgba(0, 128, 128, 1)">118</span>     node-&gt;n =<span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">119</span> 
+<span style="color: rgba(0, 128, 128, 1)">120</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(!l-&gt;<span style="color: rgba(0, 0, 0, 1)">first) {
+</span><span style="color: rgba(0, 128, 128, 1)">121</span>         l-&gt;first =<span style="color: rgba(0, 0, 0, 1)"> node;
+</span><span style="color: rgba(0, 128, 128, 1)">122</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">123</span>     <span style="color: rgba(0, 0, 255, 1)">else</span><span style="color: rgba(0, 0, 0, 1)"> {
+</span><span style="color: rgba(0, 128, 128, 1)">124</span>         l-&gt;end-&gt;n =<span style="color: rgba(0, 0, 0, 1)"> node;
+</span><span style="color: rgba(0, 128, 128, 1)">125</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">126</span> 
+<span style="color: rgba(0, 128, 128, 1)">127</span>     l-&gt;end =<span style="color: rgba(0, 0, 0, 1)"> node;
+</span><span style="color: rgba(0, 128, 128, 1)">128</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">129</span> 
+<span style="color: rgba(0, 128, 128, 1)">130</span> z_fpoint_array *z_fpoint_arraylist_append_new(z_fpoint_arraylist *l, <span style="color: rgba(0, 0, 255, 1)">float</span> max, <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> min) {
+</span><span style="color: rgba(0, 128, 128, 1)">131</span>     z_fpoint_array *a = z_new_fpoint_array(<span style="color: rgba(128, 0, 128, 1)">24</span><span style="color: rgba(0, 0, 0, 1)">, max, min);
+</span><span style="color: rgba(0, 128, 128, 1)">132</span> <span style="color: rgba(0, 0, 0, 1)">    z_fpoint_arraylist_append(l, a);
+</span><span style="color: rgba(0, 128, 128, 1)">133</span>     printf(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">append new points array\n</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+</span><span style="color: rgba(0, 128, 128, 1)">134</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> a; 
+</span><span style="color: rgba(0, 128, 128, 1)">135</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">136</span> 
+<span style="color: rgba(0, 128, 128, 1)">137</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_fpoint_arraylist_removelast(z_fpoint_arraylist *<span style="color: rgba(0, 0, 0, 1)">l) {
+</span><span style="color: rgba(0, 128, 128, 1)">138</span>     
+<span style="color: rgba(0, 128, 128, 1)">139</span>     z_fpoint_arraylist_node *c = l-&gt;<span style="color: rgba(0, 0, 0, 1)">first;
+</span><span style="color: rgba(0, 128, 128, 1)">140</span> 
+<span style="color: rgba(0, 128, 128, 1)">141</span>     z_drop_fpoint_array(l-&gt;end-&gt;<span style="color: rgba(0, 0, 0, 1)">a);
+</span><span style="color: rgba(0, 128, 128, 1)">142</span>     <span style="color: rgba(0, 0, 255, 1)">free</span>(l-&gt;<span style="color: rgba(0, 0, 0, 1)">end);
+</span><span style="color: rgba(0, 128, 128, 1)">143</span> 
+<span style="color: rgba(0, 128, 128, 1)">144</span>     <span style="color: rgba(0, 0, 255, 1)">while</span>(c-&gt;n != l-&gt;end) { c = c-&gt;<span style="color: rgba(0, 0, 0, 1)">n; }
+</span><span style="color: rgba(0, 128, 128, 1)">145</span> 
+<span style="color: rgba(0, 128, 128, 1)">146</span>     c-&gt;n =<span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">147</span>     l-&gt;end =<span style="color: rgba(0, 0, 0, 1)"> c; 
+</span><span style="color: rgba(0, 128, 128, 1)">148</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">149</span> 
+<span style="color: rgba(0, 128, 128, 1)">150</span> z_fpoint_array *z_auto_increase_fpoints_array(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a) {
+</span><span style="color: rgba(0, 128, 128, 1)">151</span>     <span style="color: rgba(0, 0, 255, 1)">int</span> cap = a-&gt;cap + (a-&gt;cap+<span style="color: rgba(128, 0, 128, 1)">3</span>)/<span style="color: rgba(128, 0, 128, 1)">4</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">152</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> z_resize_fpoints_array(a, cap);
+</span><span style="color: rgba(0, 128, 128, 1)">153</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">154</span> 
+<span style="color: rgba(0, 128, 128, 1)">155</span> <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> z_movespeed(z_ipoint s, z_ipoint e) {
+</span><span style="color: rgba(0, 128, 128, 1)">156</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> d =<span style="color: rgba(0, 0, 0, 1)"> z_distance(s.p, e.p);
+</span><span style="color: rgba(0, 128, 128, 1)">157</span>     <span style="color: rgba(0, 0, 255, 1)">return</span> (<span style="color: rgba(128, 0, 128, 1)">0</span>==d) ? <span style="color: rgba(128, 0, 128, 1)">0</span> : d/(e.t-<span style="color: rgba(0, 0, 0, 1)">s.t);
+</span><span style="color: rgba(0, 128, 128, 1)">158</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">159</span> 
+<span style="color: rgba(0, 128, 128, 1)">160</span> <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> z_distance(z_point b, z_point e){
+</span><span style="color: rgba(0, 128, 128, 1)">161</span>     <span style="color: rgba(0, 0, 255, 1)">return</span> (<span style="color: rgba(0, 0, 255, 1)">float</span>)sqrtf( z_square(e.x-b.x) + z_square(e.y-<span style="color: rgba(0, 0, 0, 1)">b.y) );
+</span><span style="color: rgba(0, 128, 128, 1)">162</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">163</span> 
+<span style="color: rgba(0, 128, 128, 1)">164</span> <span style="color: rgba(0, 0, 255, 1)">void</span>  z_fpoint_add_xyw(z_fpoint_array *a, <span style="color: rgba(0, 0, 255, 1)">float</span> x, <span style="color: rgba(0, 0, 255, 1)">float</span> y, <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> w)  {
+</span><span style="color: rgba(0, 128, 128, 1)">165</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>( !a || (a-&gt;point[a-&gt;len-<span style="color: rgba(128, 0, 128, 1)">1</span>].p.x==x &amp;&amp; a-&gt;point[a-&gt;len-<span style="color: rgba(128, 0, 128, 1)">1</span>].p.y==y) ) <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">166</span>     
+<span style="color: rgba(0, 128, 128, 1)">167</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(a-&gt;len==a-&gt;<span style="color: rgba(0, 0, 0, 1)">cap) 
+</span><span style="color: rgba(0, 128, 128, 1)">168</span> <span style="color: rgba(0, 0, 0, 1)">        z_auto_increase_fpoints_array(a);
+</span><span style="color: rgba(0, 128, 128, 1)">169</span> 
+<span style="color: rgba(0, 128, 128, 1)">170</span>     z_fpoint *p = a-&gt;point + (a-&gt;len++<span style="color: rgba(0, 0, 0, 1)">);
+</span><span style="color: rgba(0, 128, 128, 1)">171</span>     p-&gt;p.x = x; p-&gt;p.y = y; p-&gt;w =<span style="color: rgba(0, 0, 0, 1)"> w;
+</span><span style="color: rgba(0, 128, 128, 1)">172</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">173</span> 
+<span style="color: rgba(0, 128, 128, 1)">174</span> <span style="color: rgba(0, 0, 255, 1)">void</span>  z_fpoint_add(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a, z_fpoint p) {
+</span><span style="color: rgba(0, 128, 128, 1)">175</span> <span style="color: rgba(0, 0, 0, 1)">    z_fpoint_add_xyw(a, p.p.x, p.p.y, p.w);
+</span><span style="color: rgba(0, 128, 128, 1)">176</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">177</span> 
+<span style="color: rgba(0, 128, 128, 1)">178</span> <span style="color: rgba(0, 0, 255, 1)">void</span>  z_fpoint_differential_add(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a, z_fpoint p) {
+</span><span style="color: rgba(0, 128, 128, 1)">179</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(!a) <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)">; 
+</span><span style="color: rgba(0, 128, 128, 1)">180</span> 
+<span style="color: rgba(0, 128, 128, 1)">181</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>( a-&gt;len==<span style="color: rgba(128, 0, 128, 1)">0</span><span style="color: rgba(0, 0, 0, 1)"> ) {
+</span><span style="color: rgba(0, 128, 128, 1)">182</span> <span style="color: rgba(0, 0, 0, 1)">        z_fpoint_add(a, p);
+</span><span style="color: rgba(0, 128, 128, 1)">183</span>         <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">184</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">185</span> 
+<span style="color: rgba(0, 128, 128, 1)">186</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> #define bad_show</span>
+<span style="color: rgba(0, 128, 128, 1)">187</span> <span style="color: rgba(0, 0, 0, 1)">#ifdef bad_show
+</span><span style="color: rgba(0, 128, 128, 1)">188</span> <span style="color: rgba(0, 0, 0, 1)">    z_fpoint_add(a, p);
+</span><span style="color: rgba(0, 128, 128, 1)">189</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">190</span> <span style="color: rgba(0, 0, 255, 1)">#endif</span>
+<span style="color: rgba(0, 128, 128, 1)">191</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> max_diff = <span style="color: rgba(128, 0, 128, 1)">0.1f</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">192</span>     z_fpoint *last = a-&gt;point + (a-&gt;len-<span style="color: rgba(128, 0, 128, 1)">1</span><span style="color: rgba(0, 0, 0, 1)">);
+</span><span style="color: rgba(0, 128, 128, 1)">193</span>     z_point sp = last-&gt;<span style="color: rgba(0, 0, 0, 1)">p;
+</span><span style="color: rgba(0, 128, 128, 1)">194</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> sw = last-&gt;<span style="color: rgba(0, 0, 0, 1)">w;
+</span><span style="color: rgba(0, 128, 128, 1)">195</span>     
+<span style="color: rgba(0, 128, 128, 1)">196</span>     <span style="color: rgba(0, 0, 255, 1)">int</span> n = (<span style="color: rgba(0, 0, 255, 1)">int</span>)((fabsf(p.w - last-&gt;w) / max_diff) + <span style="color: rgba(128, 0, 128, 1)">1</span><span style="color: rgba(0, 0, 0, 1)">);
+</span><span style="color: rgba(0, 128, 128, 1)">197</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> x_step = (p.p.x - sp.x) /<span style="color: rgba(0, 0, 0, 1)"> n;
+</span><span style="color: rgba(0, 128, 128, 1)">198</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> y_step = (p.p.y - sp.y) /<span style="color: rgba(0, 0, 0, 1)"> n;
+</span><span style="color: rgba(0, 128, 128, 1)">199</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> w_step = (p.w - sw)      /<span style="color: rgba(0, 0, 0, 1)"> n;
+</span><span style="color: rgba(0, 128, 128, 1)">200</span>     
+<span style="color: rgba(0, 128, 128, 1)">201</span>     <span style="color: rgba(0, 0, 255, 1)">int</span><span style="color: rgba(0, 0, 0, 1)"> i;
+</span><span style="color: rgba(0, 128, 128, 1)">202</span>     <span style="color: rgba(0, 0, 255, 1)">for</span>(i=<span style="color: rgba(128, 0, 128, 1)">0</span>; i&lt;(n-<span style="color: rgba(128, 0, 128, 1)">1</span>); i++<span style="color: rgba(0, 0, 0, 1)"> ){
+</span><span style="color: rgba(0, 128, 128, 1)">203</span>         sp.x +=<span style="color: rgba(0, 0, 0, 1)"> x_step;
+</span><span style="color: rgba(0, 128, 128, 1)">204</span>         sp.y +=<span style="color: rgba(0, 0, 0, 1)"> y_step;
+</span><span style="color: rgba(0, 128, 128, 1)">205</span>         sw +=<span style="color: rgba(0, 0, 0, 1)"> w_step;
+</span><span style="color: rgba(0, 128, 128, 1)">206</span> <span style="color: rgba(0, 0, 0, 1)">        z_fpoint_add_xyw(a, sp.x, sp.y, sw);
+</span><span style="color: rgba(0, 128, 128, 1)">207</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">208</span> <span style="color: rgba(0, 0, 0, 1)">    z_fpoint_add(a, p);
+</span><span style="color: rgba(0, 128, 128, 1)">209</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">210</span> 
+<span style="color: rgba(0, 128, 128, 1)">211</span> <span style="color: rgba(0, 0, 255, 1)">void</span>  z_square_bezier(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">a, z_fpoint b, z_point c, z_fpoint e){
+</span><span style="color: rgba(0, 128, 128, 1)">212</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(!a) <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">213</span>     <span style="color: rgba(0, 0, 255, 1)">const</span> <span style="color: rgba(0, 0, 255, 1)">float</span> f = <span style="color: rgba(128, 0, 128, 1)">0.1f</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">214</span>     <span style="color: rgba(0, 0, 255, 1)">for</span>(<span style="color: rgba(0, 0, 255, 1)">float</span> t=f; t&lt;=<span style="color: rgba(128, 0, 128, 1)">1.0</span>; t+=<span style="color: rgba(0, 0, 0, 1)">f ) {
+</span><span style="color: rgba(0, 128, 128, 1)">215</span>         <span style="color: rgba(0, 0, 255, 1)">float</span> x1 = z_square(<span style="color: rgba(128, 0, 128, 1)">1</span>-t)*b.p.x + <span style="color: rgba(128, 0, 128, 1)">2</span>*t*(<span style="color: rgba(128, 0, 128, 1)">1</span>-t)*c.x + z_square(t)*<span style="color: rgba(0, 0, 0, 1)">e.p.x;
+</span><span style="color: rgba(0, 128, 128, 1)">216</span>         <span style="color: rgba(0, 0, 255, 1)">float</span> y1 = z_square(<span style="color: rgba(128, 0, 128, 1)">1</span>-t)*b.p.y + <span style="color: rgba(128, 0, 128, 1)">2</span>*t*(<span style="color: rgba(128, 0, 128, 1)">1</span>-t)*c.y + z_square(t)*<span style="color: rgba(0, 0, 0, 1)">e.p.y;
+</span><span style="color: rgba(0, 128, 128, 1)">217</span>         <span style="color: rgba(0, 0, 255, 1)">float</span> w = b.w + (t* (e.w-<span style="color: rgba(0, 0, 0, 1)">b.w));
+</span><span style="color: rgba(0, 128, 128, 1)">218</span>         z_fpoint pw =<span style="color: rgba(0, 0, 0, 1)"> { {x1, y1}, w};
+</span><span style="color: rgba(0, 128, 128, 1)">219</span> <span style="color: rgba(0, 0, 0, 1)">        z_fpoint_differential_add(a, pw);
+</span><span style="color: rgba(0, 128, 128, 1)">220</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">221</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">222</span> 
+<span style="color: rgba(0, 128, 128, 1)">223</span> <span style="color: rgba(0, 0, 255, 1)">float</span> z_linewidth(z_ipoint b, z_ipoint e, <span style="color: rgba(0, 0, 255, 1)">float</span> bwidth, <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> step) {
+</span><span style="color: rgba(0, 128, 128, 1)">224</span>     <span style="color: rgba(0, 0, 255, 1)">const</span> <span style="color: rgba(0, 0, 255, 1)">float</span> max_speed = <span style="color: rgba(128, 0, 128, 1)">2.0f</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">225</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> d =<span style="color: rgba(0, 0, 0, 1)"> z_distance(b.p, e.p);
+</span><span style="color: rgba(0, 128, 128, 1)">226</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> s = d / (e.t - b.t); s = s &gt; max_speed ?<span style="color: rgba(0, 0, 0, 1)"> max_speed : s;
+</span><span style="color: rgba(0, 128, 128, 1)">227</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> w = (max_speed-s) /<span style="color: rgba(0, 0, 0, 1)"> max_speed;
+</span><span style="color: rgba(0, 128, 128, 1)">228</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> max_dif = d *<span style="color: rgba(0, 0, 0, 1)"> step;
+</span><span style="color: rgba(0, 128, 128, 1)">229</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>( w&lt;<span style="color: rgba(128, 0, 128, 1)">0.05f</span> ) w = <span style="color: rgba(128, 0, 128, 1)">0.05f</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">230</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>( fabs( w-bwidth ) &gt;<span style="color: rgba(0, 0, 0, 1)"> max_dif ) {
+</span><span style="color: rgba(0, 128, 128, 1)">231</span>         <span style="color: rgba(0, 0, 255, 1)">if</span>( w &gt;<span style="color: rgba(0, 0, 0, 1)"> bwidth )
+</span><span style="color: rgba(0, 128, 128, 1)">232</span>             w = bwidth +<span style="color: rgba(0, 0, 0, 1)"> max_dif;
+</span><span style="color: rgba(0, 128, 128, 1)">233</span>         <span style="color: rgba(0, 0, 255, 1)">else</span>
+<span style="color: rgba(0, 128, 128, 1)">234</span>             w = bwidth -<span style="color: rgba(0, 0, 0, 1)"> max_dif;
+</span><span style="color: rgba(0, 128, 128, 1)">235</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">236</span>     <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> printf("d:%.4f, time_diff:%lld, speed:%.4f, width:%.4f\n", d, e.t-b.t, s, w);</span>
+<span style="color: rgba(0, 128, 128, 1)">237</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> w;
+</span><span style="color: rgba(0, 128, 128, 1)">238</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">239</span> 
+<span style="color: rgba(0, 128, 128, 1)">240</span> 
+<span style="color: rgba(0, 128, 128, 1)">241</span> <span style="color: rgba(0, 0, 255, 1)">float</span> z_insert_point(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">arr, z_point point) {
+</span><span style="color: rgba(0, 128, 128, 1)">242</span> 
+<span style="color: rgba(0, 128, 128, 1)">243</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(!arr) <span style="color: rgba(0, 0, 255, 1)">return</span> <span style="color: rgba(128, 0, 128, 1)">0</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">244</span>     <span style="color: rgba(0, 0, 255, 1)">int</span> len = arr-&gt;<span style="color: rgba(0, 0, 0, 1)">len;
+</span><span style="color: rgba(0, 128, 128, 1)">245</span> 
+<span style="color: rgba(0, 128, 128, 1)">246</span>     z_point zp =<span style="color: rgba(0, 0, 0, 1)"> {point.x, point.y};
+</span><span style="color: rgba(0, 128, 128, 1)">247</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>( <span style="color: rgba(128, 0, 128, 1)">0</span>==<span style="color: rgba(0, 0, 0, 1)">len ){
+</span><span style="color: rgba(0, 128, 128, 1)">248</span>         z_fpoint p = {zp, <span style="color: rgba(128, 0, 128, 1)">0.4f</span><span style="color: rgba(0, 0, 0, 1)">};
+</span><span style="color: rgba(0, 128, 128, 1)">249</span> <span style="color: rgba(0, 0, 0, 1)">        z_fpoint_add(arr, p); 
+</span><span style="color: rgba(0, 128, 128, 1)">250</span> <span style="color: rgba(0, 0, 0, 1)">        z_fpoint_array_set_last_info(arr, point, p.w);
+</span><span style="color: rgba(0, 128, 128, 1)">251</span>         <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> p.w;
+</span><span style="color: rgba(0, 128, 128, 1)">252</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">253</span> 
+<span style="color: rgba(0, 128, 128, 1)">254</span>     int64_t cur_ms =<span style="color: rgba(0, 0, 0, 1)"> clock();
+</span><span style="color: rgba(0, 128, 128, 1)">255</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> last_width = arr-&gt;<span style="color: rgba(0, 0, 0, 1)">last_width;
+</span><span style="color: rgba(0, 128, 128, 1)">256</span>     int64_t last_ms = arr-&gt;<span style="color: rgba(0, 0, 0, 1)">last_ms;
+</span><span style="color: rgba(0, 128, 128, 1)">257</span>     z_point last_point = arr-&gt;<span style="color: rgba(0, 0, 0, 1)">last_point;
+</span><span style="color: rgba(0, 128, 128, 1)">258</span> 
+<span style="color: rgba(0, 128, 128, 1)">259</span>     printf(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">cur_ms - last_ms = 0x%llx\n</span><span style="color: rgba(128, 0, 0, 1)">"</span>, cur_ms -<span style="color: rgba(0, 0, 0, 1)"> last_ms);
+</span><span style="color: rgba(0, 128, 128, 1)">260</span>     <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> 两次采样时间小于25毫秒, 或者距离小于2个像素, 不采样计算!!!  </span>
+<span style="color: rgba(0, 128, 128, 1)">261</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> distance =<span style="color: rgba(0, 0, 0, 1)"> z_distance(point, last_point);
+</span><span style="color: rgba(0, 128, 128, 1)">262</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>( (cur_ms-last_ms) &lt; <span style="color: rgba(128, 0, 128, 1)">50</span> || distance &lt; <span style="color: rgba(128, 0, 128, 1)">3</span><span style="color: rgba(0, 0, 0, 1)">) {
+</span><span style="color: rgba(0, 128, 128, 1)">263</span>         <span style="color: rgba(0, 0, 255, 1)">return</span> <span style="color: rgba(128, 0, 128, 1)">0</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">264</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">265</span> 
+<span style="color: rgba(0, 128, 128, 1)">266</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> step = arr-&gt;len &gt; <span style="color: rgba(128, 0, 128, 1)">4</span> ? <span style="color: rgba(128, 0, 128, 1)">0.05f</span> : <span style="color: rgba(128, 0, 128, 1)">0.2f</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">267</span>     z_ipoint bt =<span style="color: rgba(0, 0, 0, 1)"> { {last_point.x,last_point.y}, last_ms};
+</span><span style="color: rgba(0, 128, 128, 1)">268</span>     z_ipoint et =<span style="color: rgba(0, 0, 0, 1)"> { zp, cur_ms};
+</span><span style="color: rgba(0, 128, 128, 1)">269</span>     <span style="color: rgba(0, 0, 255, 1)">float</span> w = (z_linewidth(bt, et, last_width, step) + last_width) / <span style="color: rgba(128, 0, 128, 1)">2</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">270</span>     z_fpoint_array *points = z_new_fpoint_array(<span style="color: rgba(128, 0, 128, 1)">51</span>, arr-&gt;maxwidth, arr-&gt;<span style="color: rgba(0, 0, 0, 1)">minwidth);
+</span><span style="color: rgba(0, 128, 128, 1)">271</span>     z_fpoint tmppoint = arr-&gt;point[len-<span style="color: rgba(128, 0, 128, 1)">1</span><span style="color: rgba(0, 0, 0, 1)">];
+</span><span style="color: rgba(0, 128, 128, 1)">272</span> <span style="color: rgba(0, 0, 0, 1)">    z_fpoint_add(points, tmppoint);
+</span><span style="color: rgba(0, 128, 128, 1)">273</span> 
+<span style="color: rgba(0, 128, 128, 1)">274</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>( <span style="color: rgba(128, 0, 128, 1)">1</span>==<span style="color: rgba(0, 0, 0, 1)">len ) {
+</span><span style="color: rgba(0, 128, 128, 1)">275</span>         z_fpoint p = { {(bt.p.x + et.p.x + <span style="color: rgba(128, 0, 128, 1)">1</span>) / <span style="color: rgba(128, 0, 128, 1)">2</span>, (bt.p.y + et.p.y +<span style="color: rgba(128, 0, 128, 1)">1</span>) / <span style="color: rgba(128, 0, 128, 1)">2</span><span style="color: rgba(0, 0, 0, 1)">}, w};
+</span><span style="color: rgba(0, 128, 128, 1)">276</span> <span style="color: rgba(0, 0, 0, 1)">        z_fpoint_differential_add(points, p);
+</span><span style="color: rgba(0, 128, 128, 1)">277</span>         w =<span style="color: rgba(0, 0, 0, 1)"> p.w;
+</span><span style="color: rgba(0, 128, 128, 1)">278</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">279</span>     <span style="color: rgba(0, 0, 255, 1)">else</span><span style="color: rgba(0, 0, 0, 1)"> {
+</span><span style="color: rgba(0, 128, 128, 1)">280</span>         z_fpoint bw =<span style="color: rgba(0, 0, 0, 1)"> tmppoint;
+</span><span style="color: rgba(0, 128, 128, 1)">281</span>         z_point c =<span style="color: rgba(0, 0, 0, 1)">  {last_point.x,last_point.y};
+</span><span style="color: rgba(0, 128, 128, 1)">282</span>         z_fpoint ew = {{(last_point.x + point.x)/<span style="color: rgba(128, 0, 128, 1)">2</span>, (last_point.y + point.y)/<span style="color: rgba(128, 0, 128, 1)">2</span><span style="color: rgba(0, 0, 0, 1)">}, w};
+</span><span style="color: rgba(0, 128, 128, 1)">283</span> <span style="color: rgba(0, 0, 0, 1)">        z_square_bezier(points, bw, c, ew);
+</span><span style="color: rgba(0, 128, 128, 1)">284</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">285</span>     
+<span style="color: rgba(0, 128, 128, 1)">286</span>     <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> escape the first point</span>
+<span style="color: rgba(0, 128, 128, 1)">287</span>     <span style="color: rgba(0, 0, 255, 1)">int</span><span style="color: rgba(0, 0, 0, 1)"> i;
+</span><span style="color: rgba(0, 128, 128, 1)">288</span>     <span style="color: rgba(0, 0, 255, 1)">for</span>(i=<span style="color: rgba(128, 0, 128, 1)">1</span>; i&lt;points-&gt;len; i++<span style="color: rgba(0, 0, 0, 1)">) {
+</span><span style="color: rgba(0, 128, 128, 1)">289</span>         z_fpoint_add(arr, points-&gt;<span style="color: rgba(0, 0, 0, 1)">point[i]);
+</span><span style="color: rgba(0, 128, 128, 1)">290</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">291</span> 
+<span style="color: rgba(0, 128, 128, 1)">292</span> <span style="color: rgba(0, 0, 0, 1)">    z_drop_fpoint_array(points); 
+</span><span style="color: rgba(0, 128, 128, 1)">293</span> <span style="color: rgba(0, 0, 0, 1)">    z_fpoint_array_set_last_info(arr, point, w);
+</span><span style="color: rgba(0, 128, 128, 1)">294</span> 
+<span style="color: rgba(0, 128, 128, 1)">295</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> w;
+</span><span style="color: rgba(0, 128, 128, 1)">296</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">297</span> 
+<span style="color: rgba(0, 128, 128, 1)">298</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_insert_last_point(z_fpoint_array *<span style="color: rgba(0, 0, 0, 1)">arr, z_point e) {
+</span><span style="color: rgba(0, 128, 128, 1)">299</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(!arr) <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">300</span>     <span style="color: rgba(0, 0, 255, 1)">long</span> len= arr-&gt;<span style="color: rgba(0, 0, 0, 1)">len;
+</span><span style="color: rgba(0, 128, 128, 1)">301</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(len==<span style="color: rgba(128, 0, 128, 1)">0</span> ) <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">302</span>     z_fpoint_array *points = z_new_fpoint_array(<span style="color: rgba(128, 0, 128, 1)">51</span>, arr-&gt;maxwidth, arr-&gt;<span style="color: rgba(0, 0, 0, 1)">minwidth);
+</span><span style="color: rgba(0, 128, 128, 1)">303</span>     z_fpoint zb = arr-&gt;point[len-<span style="color: rgba(128, 0, 128, 1)">1</span><span style="color: rgba(0, 0, 0, 1)">];
+</span><span style="color: rgba(0, 128, 128, 1)">304</span> <span style="color: rgba(0, 0, 0, 1)">    z_fpoint_add(points, zb);
+</span><span style="color: rgba(0, 128, 128, 1)">305</span>     
+<span style="color: rgba(0, 128, 128, 1)">306</span>     z_fpoint ze = { {e.x, e.y}, <span style="color: rgba(128, 0, 128, 1)">0.1f</span><span style="color: rgba(0, 0, 0, 1)">};
+</span><span style="color: rgba(0, 128, 128, 1)">307</span> <span style="color: rgba(0, 0, 0, 1)">    z_fpoint_differential_add(points, ze);
+</span><span style="color: rgba(0, 128, 128, 1)">308</span>     <span style="color: rgba(0, 0, 255, 1)">int</span><span style="color: rgba(0, 0, 0, 1)"> i;
+</span><span style="color: rgba(0, 128, 128, 1)">309</span>     <span style="color: rgba(0, 0, 255, 1)">for</span>(i=<span style="color: rgba(128, 0, 128, 1)">1</span>; i&lt;points-&gt;len; i++<span style="color: rgba(0, 0, 0, 1)">) {
+</span><span style="color: rgba(0, 128, 128, 1)">310</span>         z_fpoint_add(arr, points-&gt;<span style="color: rgba(0, 0, 0, 1)">point[i]);
+</span><span style="color: rgba(0, 128, 128, 1)">311</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">312</span> <span style="color: rgba(0, 0, 0, 1)">    z_drop_fpoint_array(points);
+</span><span style="color: rgba(0, 128, 128, 1)">313</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">314</span> 
+<span style="color: rgba(0, 128, 128, 1)">315</span> z_list *<span style="color: rgba(0, 0, 0, 1)">z_list_new(z_list_node_alloc_fun allocfun, z_list_node_drop_fun dropfun)
+</span><span style="color: rgba(0, 128, 128, 1)">316</span> <span style="color: rgba(0, 0, 0, 1)">{
+</span><span style="color: rgba(0, 128, 128, 1)">317</span>     z_list *l =<span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">318</span>     l =<span style="color: rgba(0, 0, 0, 1)"> z_malloc_struct(z_list);
+</span><span style="color: rgba(0, 128, 128, 1)">319</span>     l-&gt;alloc =<span style="color: rgba(0, 0, 0, 1)"> allocfun;
+</span><span style="color: rgba(0, 128, 128, 1)">320</span>     l-&gt;drop =<span style="color: rgba(0, 0, 0, 1)"> dropfun;
+</span><span style="color: rgba(0, 128, 128, 1)">321</span>     l-&gt;first = l-&gt;last =<span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">322</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> l;
+</span><span style="color: rgba(0, 128, 128, 1)">323</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">324</span> 
+<span style="color: rgba(0, 128, 128, 1)">325</span> <span style="color: rgba(0, 0, 255, 1)">void</span> *z_list_append_new(z_list *<span style="color: rgba(0, 0, 0, 1)">zlist) 
+</span><span style="color: rgba(0, 128, 128, 1)">326</span> <span style="color: rgba(0, 0, 0, 1)">{
+</span><span style="color: rgba(0, 128, 128, 1)">327</span>     z_list_node *node =<span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">328</span>     <span style="color: rgba(0, 0, 255, 1)">void</span> *data =<span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">329</span> 
+<span style="color: rgba(0, 128, 128, 1)">330</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(!zlist-&gt;alloc || !zlist-&gt;<span style="color: rgba(0, 0, 0, 1)">drop) 
+</span><span style="color: rgba(0, 128, 128, 1)">331</span>         <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">332</span> 
+<span style="color: rgba(0, 128, 128, 1)">333</span>     node =<span style="color: rgba(0, 0, 0, 1)"> z_malloc_struct(z_list_node);
+</span><span style="color: rgba(0, 128, 128, 1)">334</span>     node-&gt;data = zlist-&gt;<span style="color: rgba(0, 0, 0, 1)">alloc();
+</span><span style="color: rgba(0, 128, 128, 1)">335</span>     node-&gt;n =<span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">336</span>     node-&gt;p =<span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">337</span> 
+<span style="color: rgba(0, 128, 128, 1)">338</span>     <span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)">(node) {
+</span><span style="color: rgba(0, 128, 128, 1)">339</span>         <span style="color: rgba(0, 0, 255, 1)">if</span>(!zlist-&gt;<span style="color: rgba(0, 0, 0, 1)">first) {
+</span><span style="color: rgba(0, 128, 128, 1)">340</span>             zlist-&gt;first = zlist-&gt;last =<span style="color: rgba(0, 0, 0, 1)"> node;
+</span><span style="color: rgba(0, 128, 128, 1)">341</span> <span style="color: rgba(0, 0, 0, 1)">        }
+</span><span style="color: rgba(0, 128, 128, 1)">342</span>         <span style="color: rgba(0, 0, 255, 1)">else</span><span style="color: rgba(0, 0, 0, 1)"> {
+</span><span style="color: rgba(0, 128, 128, 1)">343</span>             node-&gt;n =<span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">344</span>             node-&gt;p = zlist-&gt;<span style="color: rgba(0, 0, 0, 1)">last;
+</span><span style="color: rgba(0, 128, 128, 1)">345</span>             zlist-&gt;last-&gt;n =<span style="color: rgba(0, 0, 0, 1)"> node; 
+</span><span style="color: rgba(0, 128, 128, 1)">346</span>             zlist-&gt;last =<span style="color: rgba(0, 0, 0, 1)"> node;
+</span><span style="color: rgba(0, 128, 128, 1)">347</span> <span style="color: rgba(0, 0, 0, 1)">        } 
+</span><span style="color: rgba(0, 128, 128, 1)">348</span>         data = node-&gt;<span style="color: rgba(0, 0, 0, 1)">data;
+</span><span style="color: rgba(0, 128, 128, 1)">349</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">350</span> 
+<span style="color: rgba(0, 128, 128, 1)">351</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> data;
+</span><span style="color: rgba(0, 128, 128, 1)">352</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">353</span> <span style="color: rgba(0, 0, 255, 1)">void</span> *z_list_remove_last(z_list *<span style="color: rgba(0, 0, 0, 1)">zlist) 
+</span><span style="color: rgba(0, 128, 128, 1)">354</span> <span style="color: rgba(0, 0, 0, 1)">{
+</span><span style="color: rgba(0, 128, 128, 1)">355</span>     <span style="color: rgba(0, 0, 255, 1)">void</span> *data =<span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">356</span>     z_list_node *tmp = zlist-&gt;<span style="color: rgba(0, 0, 0, 1)">last;
+</span><span style="color: rgba(0, 128, 128, 1)">357</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(zlist-&gt;<span style="color: rgba(0, 0, 0, 1)">last) {
+</span><span style="color: rgba(0, 128, 128, 1)">358</span>         tmp = zlist-&gt;<span style="color: rgba(0, 0, 0, 1)">last;
+</span><span style="color: rgba(0, 128, 128, 1)">359</span>         <span style="color: rgba(0, 0, 255, 1)">if</span>(zlist-&gt;last==zlist-&gt;<span style="color: rgba(0, 0, 0, 1)">first){
+</span><span style="color: rgba(0, 128, 128, 1)">360</span>             zlist-&gt;last = zlist-&gt;first =<span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">361</span> <span style="color: rgba(0, 0, 0, 1)">        }
+</span><span style="color: rgba(0, 128, 128, 1)">362</span>         <span style="color: rgba(0, 0, 255, 1)">else</span><span style="color: rgba(0, 0, 0, 1)"> {
+</span><span style="color: rgba(0, 128, 128, 1)">363</span>             zlist-&gt;last = tmp-&gt;<span style="color: rgba(0, 0, 0, 1)">p;
+</span><span style="color: rgba(0, 128, 128, 1)">364</span>             zlist-&gt;last-&gt;n =<span style="color: rgba(0, 0, 0, 1)"> NULL;
+</span><span style="color: rgba(0, 128, 128, 1)">365</span> <span style="color: rgba(0, 0, 0, 1)">        }
+</span><span style="color: rgba(0, 128, 128, 1)">366</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">367</span> 
+<span style="color: rgba(0, 128, 128, 1)">368</span>     <span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)">(tmp) {
+</span><span style="color: rgba(0, 128, 128, 1)">369</span>         data = tmp-&gt;<span style="color: rgba(0, 0, 0, 1)">data; 
+</span><span style="color: rgba(0, 128, 128, 1)">370</span>         <span style="color: rgba(0, 0, 255, 1)">free</span><span style="color: rgba(0, 0, 0, 1)">(tmp);
+</span><span style="color: rgba(0, 128, 128, 1)">371</span> <span style="color: rgba(0, 0, 0, 1)">    }
+</span><span style="color: rgba(0, 128, 128, 1)">372</span> 
+<span style="color: rgba(0, 128, 128, 1)">373</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> data; 
+</span><span style="color: rgba(0, 128, 128, 1)">374</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">375</span> 
+<span style="color: rgba(0, 128, 128, 1)">376</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_list_clear(z_list *<span style="color: rgba(0, 0, 0, 1)">zlist) 
+</span><span style="color: rgba(0, 128, 128, 1)">377</span> <span style="color: rgba(0, 0, 0, 1)">{
+</span><span style="color: rgba(0, 128, 128, 1)">378</span>     <span style="color: rgba(0, 0, 255, 1)">while</span> (zlist-&gt;<span style="color: rgba(0, 0, 0, 1)">first)
+</span><span style="color: rgba(0, 128, 128, 1)">379</span>         zlist-&gt;<span style="color: rgba(0, 0, 0, 1)">drop(z_list_remove_last(zlist));
+</span><span style="color: rgba(0, 128, 128, 1)">380</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">381</span> 
+<span style="color: rgba(0, 128, 128, 1)">382</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_list_free(z_list *<span style="color: rgba(0, 0, 0, 1)">zlist) 
+</span><span style="color: rgba(0, 128, 128, 1)">383</span> <span style="color: rgba(0, 0, 0, 1)">{
+</span><span style="color: rgba(0, 128, 128, 1)">384</span> <span style="color: rgba(0, 0, 0, 1)">    z_list_clear(zlist);
+</span><span style="color: rgba(0, 128, 128, 1)">385</span>     <span style="color: rgba(0, 0, 255, 1)">free</span><span style="color: rgba(0, 0, 0, 1)">(zlist);
+</span><span style="color: rgba(0, 128, 128, 1)">386</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">387</span> 
+<span style="color: rgba(0, 128, 128, 1)">388</span> <span style="color: rgba(0, 128, 0, 1)">/*</span><span style="color: rgba(0, 128, 0, 1)"> digest must be 33 char size  </span><span style="color: rgba(0, 128, 0, 1)">*/</span>
+<span style="color: rgba(0, 128, 128, 1)">389</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> void
+</span><span style="color: rgba(0, 128, 128, 1)">390</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> z_text_md5(const char* str, char *digest)
+</span><span style="color: rgba(0, 128, 128, 1)">391</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> {
+</span><span style="color: rgba(0, 128, 128, 1)">392</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">     int len = strlen(str);
+</span><span style="color: rgba(0, 128, 128, 1)">393</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">     unsigned char d[16];
+</span><span style="color: rgba(0, 128, 128, 1)">394</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">     fz_md5 state;
+</span><span style="color: rgba(0, 128, 128, 1)">395</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">     fz_md5_init(&amp;state);
+</span><span style="color: rgba(0, 128, 128, 1)">396</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">     fz_md5_update(&amp;state, (const unsigned char*)str, len);
+</span><span style="color: rgba(0, 128, 128, 1)">397</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">     fz_md5_final(&amp;state, d);
+</span><span style="color: rgba(0, 128, 128, 1)">398</span> <span style="color: rgba(0, 128, 0, 1)">//</span> 
+<span style="color: rgba(0, 128, 128, 1)">399</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">     int i;
+</span><span style="color: rgba(0, 128, 128, 1)">400</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">     for(i=0; i&lt;(int)sizeof(d); i++) {
+</span><span style="color: rgba(0, 128, 128, 1)">401</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">         sprintf(digest, "%02x", d[i]);
+</span><span style="color: rgba(0, 128, 128, 1)">402</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">         digest+=2;
+</span><span style="color: rgba(0, 128, 128, 1)">403</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">     }
+</span><span style="color: rgba(0, 128, 128, 1)">404</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">     *digest = '\0';
+</span><span style="color: rgba(0, 128, 128, 1)">405</span> <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> }</span>
+<span style="color: rgba(0, 128, 128, 1)">406</span> 
+<span style="color: rgba(0, 128, 128, 1)">407</span> <span style="color: rgba(0, 0, 255, 1)">void</span>* z_malloc_array(unsigned <span style="color: rgba(0, 0, 255, 1)">int</span> count, unsigned <span style="color: rgba(0, 0, 255, 1)">int</span><span style="color: rgba(0, 0, 0, 1)"> size) { 
+</span><span style="color: rgba(0, 128, 128, 1)">408</span>     unsigned <span style="color: rgba(0, 0, 255, 1)">int</span> totalsize = count *<span style="color: rgba(0, 0, 0, 1)"> size;
+</span><span style="color: rgba(0, 128, 128, 1)">409</span>     <span style="color: rgba(0, 0, 255, 1)">if</span> (totalsize &lt;= <span style="color: rgba(128, 0, 128, 1)">0</span>) <span style="color: rgba(0, 0, 255, 1)">return</span> <span style="color: rgba(128, 0, 128, 1)">0</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">410</span> 
+<span style="color: rgba(0, 128, 128, 1)">411</span>     <span style="color: rgba(0, 0, 255, 1)">void</span> *buffer = <span style="color: rgba(0, 0, 255, 1)">malloc</span>(count *<span style="color: rgba(0, 0, 0, 1)"> size);
+</span><span style="color: rgba(0, 128, 128, 1)">412</span>     <span style="color: rgba(0, 0, 255, 1)">if</span>(buffer) memset(buffer, <span style="color: rgba(128, 0, 128, 1)">0</span>, count *<span style="color: rgba(0, 0, 0, 1)"> size);
+</span><span style="color: rgba(0, 128, 128, 1)">413</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> buffer;
+</span><span style="color: rgba(0, 128, 128, 1)">414</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">415</span> 
+<span style="color: rgba(0, 128, 128, 1)">416</span> <span style="color: rgba(0, 0, 255, 1)">void</span>* z_resize_array(<span style="color: rgba(0, 0, 255, 1)">void</span> *<span style="color: rgba(0, 0, 0, 1)">p, size_t count, size_t size) {
+</span><span style="color: rgba(0, 128, 128, 1)">417</span>     <span style="color: rgba(0, 0, 255, 1)">void</span> *np = <span style="color: rgba(128, 0, 128, 1)">0</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">418</span>     size_t total_size = count *<span style="color: rgba(0, 0, 0, 1)"> size;
+</span><span style="color: rgba(0, 128, 128, 1)">419</span> 
+<span style="color: rgba(0, 128, 128, 1)">420</span>     <span style="color: rgba(0, 0, 255, 1)">if</span> (total_size &lt;= <span style="color: rgba(128, 0, 128, 1)">0</span><span style="color: rgba(0, 0, 0, 1)">) 
+</span><span style="color: rgba(0, 128, 128, 1)">421</span>         <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> np; 
+</span><span style="color: rgba(0, 128, 128, 1)">422</span> 
+<span style="color: rgba(0, 128, 128, 1)">423</span>     np = <span style="color: rgba(0, 0, 255, 1)">realloc</span><span style="color: rgba(0, 0, 0, 1)">(p, total_size);
+</span><span style="color: rgba(0, 128, 128, 1)">424</span> 
+<span style="color: rgba(0, 128, 128, 1)">425</span>     <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> np;
+</span><span style="color: rgba(0, 128, 128, 1)">426</span> <span style="color: rgba(0, 0, 0, 1)">}
+</span><span style="color: rgba(0, 128, 128, 1)">427</span> 
+<span style="color: rgba(0, 128, 128, 1)">428</span> <span style="color: rgba(0, 0, 255, 1)">void</span> z_fpoint_array_set_last_info(z_fpoint_array *arr, z_point last_point, <span style="color: rgba(0, 0, 255, 1)">float</span><span style="color: rgba(0, 0, 0, 1)"> last_width) {
+</span><span style="color: rgba(0, 128, 128, 1)">429</span>     <span style="color: rgba(0, 0, 255, 1)">if</span> (!arr) <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)">;
+</span><span style="color: rgba(0, 128, 128, 1)">430</span>     arr-&gt;last_point =<span style="color: rgba(0, 0, 0, 1)"> last_point;
+</span><span style="color: rgba(0, 128, 128, 1)">431</span>     arr-&gt;last_ms =<span style="color: rgba(0, 0, 0, 1)"> clock();
+</span><span style="color: rgba(0, 128, 128, 1)">432</span>     arr-&gt;last_width =<span style="color: rgba(0, 0, 0, 1)"> last_width; 
+</span><span style="color: rgba(0, 128, 128, 1)">433</span>     printf(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">reset last ms to 0x%llx\n</span><span style="color: rgba(128, 0, 0, 1)">"</span>, arr-&gt;<span style="color: rgba(0, 0, 0, 1)">last_ms);
+</span><span style="color: rgba(0, 128, 128, 1)">434</span> }</pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><strong style="color: rgba(0, 0, 255, 1)"><span style="text-decoration: underline"><a title="演示程序下载" href="https://files.cnblogs.com/files/zl03jsj/%E7%9C%9F%E5%AE%9E%E6%89%8B%E5%86%99%E7%AC%94%E8%BF%B9%E6%A8%A1%E6%8B%9F.zip" target="_blank"><span style="color: rgba(0, 0, 255, 1); text-decoration: underline">&nbsp;演示程序下载</span></a></span>&nbsp;<a href="https://github.com/zl03jsj/hand-draw-algorithm" target="_blank"><span style="text-decoration: underline; color: rgba(0, 0, 255, 1)"><br></span></a></strong></p>
+<p>前几天有个公司让我优化一下我的算法, 我又优化了一下, 提供出了一个 :</p>
+<p><a title="optmized_handdraw_smaple" href="https://files.cnblogs.com/files/zl03jsj/optmized_handdraw_smaple.zip" target="_blank"><span style="text-decoration: underline"><strong style="color: rgba(0, 0, 255, 1); text-decoration: underline">新的演示程序下载</strong></span></a></p>
+<p><span style="background-color: rgba(255, 255, 255, 1); color: rgba(0, 128, 0, 1); font-size: 18px"><strong>快乐的时光总是过得那么快, 留下的总是无尽的唏嘘和感叹, 又到时间和朋友们讲拜拜了!!!</strong></span></p>
+<p><span style="background-color: rgba(255, 255, 255, 1); color: rgba(0, 128, 0, 1); font-size: 18px"><strong><span style="font-size: 13px">最后展示一张在解决这些问题时,留下的真迹</span>:</strong></span></p>
+<p><span style="background-color: rgba(255, 255, 255, 1); color: rgba(0, 128, 0, 1); font-size: 18px"><strong><img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/652177-20171219073736725-1154264250.jpg" alt="" width="405" height="285"></strong></span></p>
+<p>手写笔迹这一个系列总算是写完了.在这几篇原创文章中, 我有很多地方没有办法完全把自己的想法表达清楚,这可能也是很多程序员攻城狮的通病, 表达能力不怎么样.</p>
+<p><span style="color: rgba(51, 153, 102, 1)"><strong><span style="color: rgba(255, 0, 0, 1)">如果大家有什么不清楚或者我说得有问题的地方, 可以在留言区留言.我会尽量回答</span>.</strong></span></p>
+<p><span style="background-color: rgba(255, 255, 255, 1); color: rgba(255, 0, 255, 1)"><span style="font-size: 18pt"><strong>下面!!!!!!!!</strong></span><strong>我不得不再次提起一件很让我气愤的事情!!!!!!!</strong></span></p>
+<p><span style="background-color: rgba(255, 255, 255, 1); color: rgba(255, 0, 255, 1)"><strong>无良公司老板拖欠两个月工资了,&nbsp; 穷得叮当响<strong>,我靠!!!!!!!!现在</strong>每天吃8块钱的蛋炒饭, 早上点一份,中午吃一半, 晚上吃一半, 日子真实苦啊..</strong></span></p>
+<p><span style="background-color: rgba(255, 255, 255, 1); color: rgba(255, 0, 255, 1)"><strong>大家如果大家觉得这篇文章对您有帮助, 又愿意打赏一些银两, 请拿起你的手机, 打开你的微信, 扫一扫下方二维码,&nbsp;作为一个有骨气的程序员攻城狮, 我非常愿意接受大家的支助...哈哈哈!!!</strong></span></p>
+<p><strong><img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/652177-20171216185836671-1193536974.jpg" alt="" width="238" height="244"></strong></p>
+<p>&nbsp;</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="EntryTag">
+    标签: 
+            <a href="https://www.cnblogs.com/zl03jsj/tag/Bezier%E6%9B%B2%E7%BA%BF/">Bezier曲线</a>,             <a href="https://www.cnblogs.com/zl03jsj/tag/%E7%AC%94%E8%BF%B9/">笔迹</a>,             <a href="https://www.cnblogs.com/zl03jsj/tag/%E6%89%8B%E5%86%99%E7%AD%BE%E5%90%8D/">手写签名</a>,             <a href="https://www.cnblogs.com/zl03jsj/tag/%E7%AE%97%E6%B3%95/">算法</a>,             <a href="https://www.cnblogs.com/zl03jsj/tag/c%2B%2B/">c++</a>,             <a href="https://www.cnblogs.com/zl03jsj/tag/python/">python</a>,             <a href="https://www.cnblogs.com/zl03jsj/tag/%E6%89%8B%E5%86%99%E7%AC%94%E8%BF%B9/">手写笔迹</a>,             <a href="https://www.cnblogs.com/zl03jsj/tag/%E7%AC%94%E9%94%8B/">笔锋</a></div>
+
+    <div id="blog_post_info">
+<div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(8051912,cb_blogId,1);green_channel_success(this,'谢谢推荐！');">好文要顶</a>
+        <a id="green_channel_follow" onclick="follow('59fd289b-5f0e-e411-8d02-90b11c0b17d6');" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/zl03jsj/" target="_blank"><img src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/20170406221836.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/zl03jsj/">88911562</a><br>
+            <a href="https://home.cnblogs.com/u/zl03jsj/followees/">关注 - 0</a><br>
+            <a href="https://home.cnblogs.com/u/zl03jsj/followers/">粉丝 - 42</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow('59fd289b-5f0e-e411-8d02-90b11c0b17d6');return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(8051912,'Digg')">
+        <span class="diggnum" id="digg_count">2</span>
+    </div>
+    <div class="buryit" onclick="votePost(8051912,'Bury')">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+
+<script type="text/javascript">
+    currentDiggType = 0;
+</script></div>
+    <div class="clear"></div>
+    <div id="post_next_prev">
+
+    <a href="https://www.cnblogs.com/zl03jsj/p/8048102.html" class="p_n_p_prefix">« </a> 上一篇：    <a href="https://www.cnblogs.com/zl03jsj/p/8048102.html" title="发布于 2017-12-17 13:24">原笔迹手写实现平滑和笔锋效果之:笔迹的平滑(二)</a>
+    <br>
+    <a href="https://www.cnblogs.com/zl03jsj/p/8151508.html" class="p_n_p_prefix">» </a> 下一篇：    <a href="https://www.cnblogs.com/zl03jsj/p/8151508.html" title="发布于 2018-01-21 15:17">机器学习基础[1]]: 理解如何训练计算机进行学习</a>
+
+</div>
+</div>
+        </div>
+        <div class="itemdesc">
+            posted on 
+<span id="post-date">2017-12-19 01:50</span>&nbsp;
+<a href="https://www.cnblogs.com/zl03jsj/">88911562</a>&nbsp;
+阅读(<span id="post_view_count">6551</span>)&nbsp;
+评论(<span id="post_comment_count">16</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=8051912" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(8051912);return false;">收藏</a>
+        </div>
+    </div>
+</div>
+
+
+<script src="%E5%8E%9F%E7%AC%94%E8%BF%B9%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0%E5%B9%B3%E6%BB%91%E5%92%8C%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C%E4%B9%8B%20%E7%AC%94%E9%94%8B%E6%95%88%E6%9E%9C(%E4%B8%89)[%E5%AE%8C%E7%BB%93%E7%AF%87]%20-%2088911562%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/highlight.js"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 346505, cb_blogApp = 'zl03jsj', cb_blogUserGuid = '59fd289b-5f0e-e411-8d02-90b11c0b17d6';
+    var cb_entryId = 8051912, cb_entryCreatedDate = '2017-12-19 01:50', cb_postType = 1;
+    updatePostStats(
+        [cb_entryId],
+        function(id, count) { $("#post_view_count").text(count) },
+        function(id, count) { $("#post_comment_count").text(count) })
+</script>
+<a name="!comments"></a>
+<div id="blog-comments-placeholder">
+
+<div id="comment_pager_top">
+    
+</div>
+
+<a name="评论"></a>
+<div class="moreinfo">
+    <div class="moreinfotitle">
+        Comments
+    </div>
+    <div class="feedbackNoItems"></div>
+    <ul class="morelist">
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#3931176" class="layer">#1楼</a>
+<a name="3931176" id="comment_anchor_3931176"></a>
+
+                </div>
+                
+        <a id="a_comment_author_3931176" href="https://www.cnblogs.com/aegina/" target="_blank">Aegina</a>
+<br>
+                Posted @ 
+<span class="comment_date">2018-03-23 14:55</span>
+
+<br>
+                
+<div id="comment_body_3931176" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    楼主 不好意思打扰你一下 你这个控制点的坐标是怎么算的呢 前端菜鸟一枚 求指导
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3931176, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(3931176, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_3931176_avatar" style="display:none">
+            https://pic.cnblogs.com/face/1237009/20170911174557.png
+        </span>
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#3971859" class="layer">#2楼</a>
+<a name="3971859" id="comment_anchor_3971859"></a>
+[<span class="louzhu">楼主</span>]
+                </div>
+                
+        <a id="a_comment_author_3971859" href="https://www.cnblogs.com/zl03jsj/" target="_blank">88911562</a>
+<br>
+                Posted @ 
+<span class="comment_date">2018-05-10 22:38</span>
+
+<br>
+                
+<div id="comment_body_3971859" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    <a href="#3931176" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3931176);">@</a>
+Aegina<br>文章里面已经讲的很清楚啊. 不清楚就再读一篇. 我这几个字的回复也说不完啊. <br>文章里面是最清楚的@Aegina<br><fieldset class="comment_quote"><legend><a href="#3931176" title="查看引用原文">引用</a></legend><br>楼主 不好意思打扰你一下 你这个控制点的坐标是怎么算的呢 前端菜鸟一枚 求指导<br></fieldset>
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3971859, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(3971859, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_3971859_avatar" style="display:none">
+            https://pic.cnblogs.com/face/652177/20170406221836.png
+        </span>
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4172755" class="layer">#3楼</a>
+<a name="4172755" id="comment_anchor_4172755"></a>
+
+                </div>
+                
+        <a id="a_comment_author_4172755" href="https://www.cnblogs.com/lindexi/" target="_blank">lindexi</a>
+<br>
+                Posted @ 
+<span class="comment_date">2019-01-28 14:19</span>
+
+<br>
+                
+<div id="comment_body_4172755" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    博主写的不错，除了看到代码之外，思路很好，于是请了博主喝一杯5元的咖啡，期望博主找到一个好的公司
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4172755, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4172755, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4173146" class="layer">#4楼</a>
+<a name="4173146" id="comment_anchor_4173146"></a>
+[<span class="louzhu">楼主</span>]
+                </div>
+                
+        <a id="a_comment_author_4173146" href="https://www.cnblogs.com/zl03jsj/" target="_blank">88911562</a>
+<br>
+                Posted @ 
+<span class="comment_date">2019-01-28 22:22</span>
+
+<br>
+                
+<div id="comment_body_4173146" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    <a href="#4172755" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,4172755);">@</a>
+lindexi<br><fieldset class="comment_quote"><legend><a href="#4172755" title="查看引用原文">引用</a></legend><br>博主写的不错，除了看到代码之外，思路很好，于是请了博主喝一杯5元的咖啡，期望博主找到一个好的公司<br></fieldset><br>哈哈, 谢谢老板..<br>您是说代码有什么地方就可以改进的吗??<br>我们可以深入交流哦.
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4173146, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4173146, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4173146_avatar" style="display:none">
+            https://pic.cnblogs.com/face/652177/20170406221836.png
+        </span>
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4173751" class="layer">#5楼</a>
+<a name="4173751" id="comment_anchor_4173751"></a>
+
+                </div>
+                
+        <a id="a_comment_author_4173751" href="https://www.cnblogs.com/lindexi/" target="_blank">lindexi</a>
+<br>
+                Posted @ 
+<span class="comment_date">2019-01-29 17:42</span>
+
+<br>
+                
+<div id="comment_body_4173751" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    <a href="#4173146" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,4173146);">@</a>
+88911562<br>啊哈，我发现博主的变量命名很有趣
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4173751, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4173751, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4257530" class="layer">#6楼</a>
+<a name="4257530" id="comment_anchor_4257530"></a>
+
+                </div>
+                
+        <a id="a_comment_author_4257530" href="https://www.cnblogs.com/zzr-stdio/" target="_blank">这种人</a>
+<br>
+                Posted @ 
+<span class="comment_date">2019-05-16 16:46</span>
+
+<br>
+                
+<div id="comment_body_4257530" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    博主能否发一份源码给我？
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4257530, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4257530, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4257530_avatar" style="display:none">
+            https://pic.cnblogs.com/face/912656/20180128214530.png
+        </span>
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4300320" class="layer">#7楼</a>
+<a name="4300320" id="comment_anchor_4300320"></a>
+
+                </div>
+                
+        <a id="a_comment_author_4300320" href="https://home.cnblogs.com/u/1741195/" target="_blank">lyc900818</a>
+<br>
+                Posted @ 
+<span class="comment_date">2019-07-15 09:12</span>
+
+<br>
+                
+<div id="comment_body_4300320" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    想问下楼主，通过您的算法计算出点以后，是需要按照z_fpoint_s.w作为宽度画点？还是要把这些点用三阶贝塞尔曲线连接起来？这个z_fpoint_s.w什么时候用的
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4300320, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4300320, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4447234" class="layer">#8楼</a>
+<a name="4447234" id="comment_anchor_4447234"></a>
+
+                </div>
+                
+        <a id="a_comment_author_4447234" href="https://home.cnblogs.com/u/1887306/" target="_blank">油炸的兔子</a>
+<br>
+                Posted @ 
+<span class="comment_date">2019-12-02 16:00</span>
+
+<br>
+                
+<div id="comment_body_4447234" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    楼主最后画线，是以点组线吗
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4447234, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4447234, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4447405" class="layer">#9楼</a>
+<a name="4447405" id="comment_anchor_4447405"></a>
+[<span class="louzhu">楼主</span>]
+                </div>
+                
+        <a id="a_comment_author_4447405" href="https://www.cnblogs.com/zl03jsj/" target="_blank">88911562</a>
+<br>
+                Posted @ 
+<span class="comment_date">2019-12-02 18:20</span>
+
+<br>
+                
+<div id="comment_body_4447405" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    <a href="#4447234" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,4447234);">@</a>
+油炸的兔子<br>是滴哟
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4447405, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4447405, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4447405_avatar" style="display:none">
+            https://pic.cnblogs.com/face/652177/20170406221836.png
+        </span>
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4447408" class="layer">#10楼</a>
+<a name="4447408" id="comment_anchor_4447408"></a>
+[<span class="louzhu">楼主</span>]
+                </div>
+                
+        <a id="a_comment_author_4447408" href="https://www.cnblogs.com/zl03jsj/" target="_blank">88911562</a>
+<br>
+                Posted @ 
+<span class="comment_date">2019-12-02 18:21</span>
+
+<br>
+                
+<div id="comment_body_4447408" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    <a href="#4300320" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,4300320);">@</a>
+lyc900818<br>那个w就是线宽,用这个线宽来绘制
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4447408, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4447408, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4447408_avatar" style="display:none">
+            https://pic.cnblogs.com/face/652177/20170406221836.png
+        </span>
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4447409" class="layer">#11楼</a>
+<a name="4447409" id="comment_anchor_4447409"></a>
+[<span class="louzhu">楼主</span>]
+                </div>
+                
+        <a id="a_comment_author_4447409" href="https://www.cnblogs.com/zl03jsj/" target="_blank">88911562</a>
+<br>
+                Posted @ 
+<span class="comment_date">2019-12-02 18:22</span>
+
+<br>
+                
+<div id="comment_body_4447409" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    <a href="#4300320" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,4300320);">@</a>
+lyc900818<br>直接连起来就行了,已经拟合过了
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4447409, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4447409, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4447409_avatar" style="display:none">
+            https://pic.cnblogs.com/face/652177/20170406221836.png
+        </span>
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4447410" class="layer">#12楼</a>
+<a name="4447410" id="comment_anchor_4447410"></a>
+[<span class="louzhu">楼主</span>]
+                </div>
+                
+        <a id="a_comment_author_4447410" href="https://www.cnblogs.com/zl03jsj/" target="_blank">88911562</a>
+<br>
+                Posted @ 
+<span class="comment_date">2019-12-02 18:23</span>
+
+<br>
+                
+<div id="comment_body_4447410" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    <a href="#4257530" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,4257530);">@</a>
+这种人<br>晕,代码在博客上了
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4447410, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4447410, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4447410_avatar" style="display:none">
+            https://pic.cnblogs.com/face/652177/20170406221836.png
+        </span>
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4447434" class="layer">#13楼</a>
+<a name="4447434" id="comment_anchor_4447434"></a>
+
+                </div>
+                
+        <a id="a_comment_author_4447434" href="https://home.cnblogs.com/u/1887306/" target="_blank">油炸的兔子</a>
+<br>
+                Posted @ 
+<span class="comment_date">2019-12-02 18:40</span>
+
+<br>
+                
+<div id="comment_body_4447434" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    楼主可以展示下，新的优化代码么
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4447434, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4447434, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4453570" class="layer">#14楼</a>
+<a name="4453570" id="comment_anchor_4453570"></a>
+
+                </div>
+                
+        <a id="a_comment_author_4453570" href="https://www.cnblogs.com/lsq6/" target="_blank">Dotnet9</a>
+<br>
+                Posted @ 
+<span class="comment_date">2019-12-09 14:43</span>
+
+<br>
+                
+<div id="comment_body_4453570" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    谢谢作者，已转载本文： <a href="https://dotnet9.com/?p=2790" target="_blank">https://dotnet9.com/?p=2790</a> 
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4453570, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4453570, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4453570_avatar" style="display:none">
+            https://pic.cnblogs.com/face/1663243/20191124121029.png
+        </span>
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4468079" class="layer">#15楼</a>
+<a name="4468079" id="comment_anchor_4468079"></a>
+
+                </div>
+                
+        <a id="a_comment_author_4468079" href="https://home.cnblogs.com/u/1907061/" target="_blank">liyoung1992</a>
+<br>
+                Posted @ 
+<span class="comment_date">2019-12-24 20:58</span>
+
+<br>
+                
+<div id="comment_body_4468079" data-format-type="Ubb" class="blog_comment_body cnblogs-ubb">
+    说的好精彩，就是这个不是太会用~~
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4468079, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4468079, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+            <li class="morelistitem">
+                <div class="moreinfotitle">
+                    
+<a href="#4577019" class="layer">#16楼</a>
+<a name="4577019" id="comment_anchor_4577019"></a>
+[<span class="louzhu">楼主</span>]    <span id="comment-maxId" style="display: none">4577019</span>
+    <span id="comment-maxDate" style="display: none">2020/5/14 上午11:24:45</span>
+
+                </div>
+                
+        <a id="a_comment_author_4577019" href="https://www.cnblogs.com/zl03jsj/" target="_blank">88911562</a>
+<br>
+                Posted @ 
+<span class="comment_date">2020-05-14 11:24</span>
+
+<br>
+                
+<div id="comment_body_4577019" data-format-type="Markdown" class="blog_comment_body cnblogs-markdown">
+    <p><a href="#4300320" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,4300320);">@</a>lyc900818<br>
+w是线宽, 具体绘制的时候使用的.</p>
+
+</div>
+        <div class="comment_vote">
+            <span class="comment_error" style="color: red"></span>
+            <a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(4577019, 'Digg', this.parentElement, false);">
+                支持(0)
+            </a>
+            <a href="javascript:void(0);" class="comment_burry" onclick="return voteComment(4577019, 'Bury', this.parentElement, false);">
+                反对(0)
+            </a>
+        </div>
+        <span id="comment_4577019_avatar" style="display:none">
+            https://pic.cnblogs.com/face/652177/20170406221836.png
+        </span>
+
+                &nbsp;&nbsp;
+
+<span class="comment_actions">
+    
+    
+    
+    
+</span>
+
+
+            </li>
+    </ul>
+</div>
+
+
+<div id="comment_pager_bottom">
+    
+</div>
+
+</div>
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+    <div id="comment_form_container" style="visibility: visible;"><div class="login_tips">
+    登录后才能发表评论，立即 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login('commentform');">登录</a> 或
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，
+    <a href="https://www.cnblogs.com/">访问</a> 网站首页
+</div>
+</div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"><a href="https://amazonaws-china.com/cn/campaigns/signup-credit-contact-us_ext/?sc_channel=el&amp;sc_campaign=cnholiday&amp;sc_country=cn&amp;sc_geo=chna&amp;sc_category=mult&amp;sc_outcome=field&amp;trkCampaign=new-signup-credit-glb&amp;trk=cnblogs" target="_blank" onclick="ga('send', 'event', 'Link', 'click', 'T2-AWS-出海大礼包')">【推荐】价值200美元Amazon Web Services(AWS)出海大礼包，新用户专享</a><br><a href="http://www.softbam.com/index.htm" target="_blank" onclick="ga('send', 'event', 'Link', 'click', 'T2-ucancode')">【推荐】大型组态、工控、仿真、CADGIS 50万行VC++源码免费下载</a><br><a href="https://brands.cnblogs.com/huawei/topic/harmonyos-development-tutorial" target="_blank" onclick="ga('send', 'event', 'Link', 'click', 'T2-华为专区')">【推荐】万物互联的时代，由你的代码定义，创建HarmonyOS应用</a><br><a href="https://brands.cnblogs.com/agora/p/2037" target="_blank" onclick="ga('send', 'event', 'Link', 'click', 'T2-声网专区')">【推荐】Agora 教程 | 使用Agora SDK进行直播，在flutter中打造实时聊天功能</a><br></div>
+    <div id="opt_under_post"></div>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1592365906576-0" style="width: 300px; height: 250px; min-width: 300px; min-height: 250px;" data-google-query-id="CMn9woqz6e4CFYtJvAodBj0DxQ"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C1_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="1" data-load-complete="true" width="300" height="250" frameborder="0"></iframe></div></div>
+    </div>
+    <div id="under_post_news"><div class="recomm-block"><b>相关博文：</b><br>·  <a title="asp.netcore中间件工作原理" href="https://www.cnblogs.com/tey023/p/12026607.html" target="_blank" onclick="clickRecomItmem(12026607)">asp.netcore中间件工作原理</a><br>·  <a title="hdu3400两重三分" href="https://www.cnblogs.com/csnd/p/12063160.html" target="_blank" onclick="clickRecomItmem(12063160)">hdu3400两重三分</a><br>·  <a title="Hadoopmapreduce原理学习" href="https://www.cnblogs.com/huoyuer/p/12068496.html" target="_blank" onclick="clickRecomItmem(12068496)">Hadoopmapreduce原理学习</a><br>·  <a title="原型对象原型链" href="https://www.cnblogs.com/bamboopanders/p/12047304.html" target="_blank" onclick="clickRecomItmem(12047304)">原型对象原型链</a><br>·  <a title="Web地图呈现原理" href="https://www.cnblogs.com/Yi-Xiu/p/12092051.html" target="_blank" onclick="clickRecomItmem(12092051)">Web地图呈现原理</a><br>»  <a target="_blank" href="https://recomm.cnblogs.com/blogpost/8051912">更多推荐...</a></div></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1592366332455-0" style="width: 468px; height: 60px; min-width: 468px; min-height: 60px;" data-google-query-id="CI3tw4qz6e4CFYtJvAodBj0DxQ"><div id="google_ads_iframe_/1090369/C2_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C2_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C2_0" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" srcdoc="" data-google-container-id="2" data-load-complete="true" width="468" height="60" frameborder="0"></iframe></div></div>
+    </div>
+    <div id="under_post_kb">
+<div class="itnews c_ad_block">
+    <b>最新 IT 新闻</b>:
+    <br>
+ ·          <a href="https://news.cnblogs.com/n/688251/" target="_blank">电影吸金，爱优腾“抢食”春节档</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/688250/" target="_blank">疯狂的Clubhouse，暴露了国内社交网络的倒退</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/688249/" target="_blank">Python软件基金会欢迎谷歌成为首位“远见卓识”顶级赞助商</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/688242/" target="_blank">特斯拉将推出更便宜车型：针对中国市场，售价约16万</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/688248/" target="_blank">NASA宣布派往SpaceX Crew-4任务的宇航员名单</a>
+        <br>
+    » <a href="https://news.cnblogs.com/" title="IT 新闻" target="_blank">更多新闻...</a>
+</div></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+       var commentManager = new blogCommentManager();
+       commentManager.renderComments(0);
+       fixPostBody();
+       deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);       deliverT2();
+       deliverC1C2();
+       loadNewsAndKb();
+       loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);       LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+       GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+       loadOptUnderPost();
+       GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+   </script>
+</div>
+
+
+
+        <div class="spacer">
+            &nbsp;</div>
+    </div>
+    <div class="footer">
+	Powered by: 
+	<br>
+	
+	<a href="https://www.cnblogs.com/" id="footer_site_link">博客园</a>
+	<br>
+	Copyright © 2021 88911562
+<br><span id="poweredby">Powered by .NET 5.0 on Kubernetes</span>
+
+</div>
+
+
+</div>
+
+
+    
+
+
+<iframe id="google_osd_static_frame_6033413911281" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;"></iframe></body></html>
