@@ -24,11 +24,15 @@ TEST(pentip,init)
 		WriteFileByLine(filename,i,tem);
 	}
 	
-
 	//EXPECT_GT(result_sum, 0.49);
-		//EXPECT_LT(result_sum, 0.51);
+	//EXPECT_LT(result_sum, 0.51);
 
 }
+
+ TEST(pentip,monitor)
+ {
+ 
+ }
 
  GTEST_API_ int main(int argc, char **argv) {
    cout<<"------------pressure_test from pressure_test.cc \r\n";
