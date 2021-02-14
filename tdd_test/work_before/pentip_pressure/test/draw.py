@@ -27,17 +27,17 @@ ax1 = fig.add_subplot(2,1,1)
 ax1.scatter(X, Y,s = 1)
 plt.grid()
 
-x = np.arange(-3.0,3.0,0.1)
+x = np.arange(1650,1750,1)
 
 """
-sigema n = 0 ~ 无穷 0.1*f(-∞ + 0.1*n) = 1
-sigema n = 0 ~ 无穷 k*f(-∞ + 0.1*n) = 500
-=> k = 50
+sigema n = 0 ~ 无穷 1*f(-∞ + 1*n) = 1
+sigema n = 0 ~ 无穷 k*f(-∞ + 1*n) = 500
+=> k = 500
 """
-y = normfun(x,0.0,1.0) * 50
+y = normfun(x,1700.0,15.0) * 500
 
 ax2 = fig.add_subplot(2,1,2)
-ax2.hist(Y,bins = 60,rwidth=0.8) # 60 = (3 - (-3 ))/0.1
+ax2.hist(Y,bins = 100,rwidth=0.8) # 100 = (100)/1
 ax2.plot(x,y)
 plt.grid()
 

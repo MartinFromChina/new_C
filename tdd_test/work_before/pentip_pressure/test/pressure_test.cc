@@ -19,7 +19,7 @@ TEST(pentip,init)
 	
 	for(i=0;i<500;i++)
 	{
-		result = GaussGenerator(0.0,1.0,&seed);
+		result = GaussGenerator(1700.0,15.0,&seed);
 		snprintf(tem,320,"%.7f",result);
 		WriteFileByLine(filename,i,tem);
 	}
