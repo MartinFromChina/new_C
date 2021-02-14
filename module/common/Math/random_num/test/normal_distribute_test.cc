@@ -39,7 +39,7 @@ TEST(normal,distribution)
 	char temp[320];
 	char buf1[MAX_LENGTH_OF_FILE_NAME],buf2[MAX_LENGTH_OF_FILE_NAME];
 	char *filename = ConvFileStrToChar("./text/display.txt",buf1);
-	char *gauss_file = ConvFileStrToChar("./text/gauss_sort.txt",buf2);
+	char *gauss_file = ConvFileStrToChar("./text/gauss_sort.txt",buf2); 
 
 	filename = filename;
 	
