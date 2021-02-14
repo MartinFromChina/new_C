@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 print("draw.py start")
-filename = './text/gauss_sort.txt'
+filename = './text/gauss.txt'
 X,Y = [],[]
 with open(filename, 'r') as f:#1
     lines = f.readlines()#2
