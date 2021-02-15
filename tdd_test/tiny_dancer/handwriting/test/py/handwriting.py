@@ -150,6 +150,8 @@ COLOR_RGB_Red                  =    0xFF0000
 
 
 def DrawCircle(img,x,y,radius,rgb_color_and_transparency):
+    x = int(x)
+    y = int(y)
     x_min = x - radius
     x_max = x + radius
     y_min = y - radius
@@ -167,7 +169,7 @@ def DrawCircle(img,x,y,radius,rgb_color_and_transparency):
                 #print("write pixel x %d  y %d "%(i,j))
     
 
-def DotWrite(img,x,y,width,color,transparency):
+def DotDraw(img,x,y,width,color,transparency):
     radius = width/2
     radius = int(radius)
     if x - radius < 0 or x + radius >img.size[0]:
@@ -176,13 +178,30 @@ def DotWrite(img,x,y,width,color,transparency):
     if y - radius < 0 or y + radius > img.size[1]:
         print("wrong y param")
         return
-    DrawCircle(img,x,y,radius,((color << 8) | (0x000000ff & transparency) ))  # 
-    img.save('dest.png')
-    print("finished")
+    DrawCircle(img,x,y,radius,((color << 8) | (0x000000ff & transparency) )) 
+    #print("finished")
 
 
 im = Image.open('white.png')
 im = im.convert("RGBA")
-DotWrite(im,700,120,70,COLOR_RGB_Red,125)
+
+filename = '../text/handwriting.txt'
+X,Y,Z= [],[],[]
+
+with open(filename, 'r') as f:
+    lines = f.readlines()
+    for line in lines:
+        value = [float(s) for s in line.split()]
+        X.append(value[0])
+        Y.append(value[1])
+        Z.append(value[2])
+        DotDraw(im,value[0],value[1],value[2],COLOR_RGB_Red,255)
+
+#print(L) 
+#print(X)  
+#print(Y) 
+#print(Z) 
+im.save('dest.png')
+im.show('dest.png');
 im.close()
 
