@@ -58,7 +58,7 @@ struct z_fpoint_array_s {
     int ref;
     int len;
     int cap;
-
+ 
     z_point last_point;
     float last_width;
     int64_t last_ms;
