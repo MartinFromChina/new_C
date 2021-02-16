@@ -17,12 +17,6 @@
 #include <time.h>
 #include "z_math.h"
 
-#define min(x, y) ({                  \
-			const typeof(x) _x = (x);             \
-		        const typeof(y) _y = (y);             \
-		        (void) (&_x == &_y);                  \
-			_x < _y ? _x : _y; })  
-
 #define z_malloc_struct(t) (t*)calloc(1, sizeof(t))
 static void* z_malloc_array(unsigned int count, unsigned int size);
 static void* z_resize_array(void *p, size_t count, size_t size);

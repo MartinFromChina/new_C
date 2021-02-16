@@ -179,7 +179,7 @@ def DotDraw(img,x,y,width,color,transparency):
         print("wrong y param")
         return
     DrawCircle(img,x,y,radius,((color << 8) | (0x000000ff & transparency) ))  
-    #print("finished")
+    print("finished")
 
 import matplotlib.pyplot as plt
 
@@ -188,6 +188,10 @@ im = Image.open('white.png')
 im = im.convert("RGBA")
 
 filename = '../text/handwriting.txt'
+filename1 = '../text/handwriting1.txt'
+filename2 = '../text/handwriting2.txt'
+
+
 X,Y,Z= [],[],[]
 
 with open(filename, 'r') as f:
@@ -195,14 +199,30 @@ with open(filename, 'r') as f:
     for line in lines:
         value = [float(s) for s in line.split()]
         X.append(value[0])
-        Y.append(value[1])
-        Z.append(value[2])
-        DotDraw(im,value[0],value[1],value[2],COLOR_RGB_Red,255)
+        
+with open(filename1, 'r') as f:
+    lines = f.readlines()
+    for line in lines:
+        value = [float(s) for s in line.split()]
+        Y.append(value[0])
 
-#print(L) 
-#print(X)  
-#print(Y) 
-#print(Z) 
+cnt = 0
+with open(filename2, 'r') as f:
+    lines = f.readlines()
+    for line in lines:
+        value = [float(s) for s in line.split()]
+        Z.append(value[0])
+        cnt = cnt + 1
+
+
+for i in range(0,cnt,1):
+    DotDraw(im,X[i],Y[i],Z[i],COLOR_RGB_Red,255)
+"""
+print(X)  
+print(Y) 
+print(Z) 
+"""
+
 im.save('dest.png')
 plt.imshow(im)
 plt.pause(5)  # 该句显示图片15秒

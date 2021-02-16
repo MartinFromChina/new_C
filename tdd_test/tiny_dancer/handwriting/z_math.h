@@ -30,6 +30,13 @@ extern "C" {
 
 #include <stdint.h>
 
+
+#define min(x, y) ({                  \
+			const typeof(x) _x = (x);             \
+		        const typeof(y) _y = (y);             \
+		        (void) (&_x == &_y);                  \
+			_x < _y ? _x : _y; })  
+
 typedef struct z_point_s  z_point;
 typedef struct z_fpoint_s z_fpoint;
 typedef struct z_ipoint_s z_ipoint;
