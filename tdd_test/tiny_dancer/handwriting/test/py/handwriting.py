@@ -178,8 +178,10 @@ def DotDraw(img,x,y,width,color,transparency):
     if y - radius < 0 or y + radius > img.size[1]:
         print("wrong y param")
         return
-    DrawCircle(img,x,y,radius,((color << 8) | (0x000000ff & transparency) )) 
+    DrawCircle(img,x,y,radius,((color << 8) | (0x000000ff & transparency) ))  
     #print("finished")
+
+import matplotlib.pyplot as plt
 
 
 im = Image.open('white.png')
@@ -202,6 +204,10 @@ with open(filename, 'r') as f:
 #print(Y) 
 #print(Z) 
 im.save('dest.png')
-im.show('dest.png');
+plt.imshow(im)
+plt.pause(5)  # 该句显示图片15秒
+plt.ioff()  # 显示完后一定要配合使用plt.ioff()关闭交互模式，否则可能出奇怪的问题
+plt.clf()  # 清空图片
+
 im.close()
 
