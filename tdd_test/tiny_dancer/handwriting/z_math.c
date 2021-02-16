@@ -16,6 +16,25 @@
 #include <stdlib.h>
 #include <time.h>
 #include "z_math.h"
+#include "../../../module/common/InsertLog/InsertLogDebug.h"
+
+
+#define USE_INSERT_DEBUG 1
+
+#if (USE_INSERT_DEBUG != 0)
+	#define INSERT(method)  insert_##method
+#else
+	#define INSERT(method)  method
+#endif
+
+#define I_FLAG   0
+#define ADD_FLAG 1
+#define FINAL_ADD_FLAG  0
+#define LAST_POINT_FLAG 0
+#define MIDDLE_POINT_FLAG 1
+
+
+
 
 #define z_malloc_struct(t) (t*)calloc(1, sizeof(t))
 static void* z_malloc_array(unsigned int count, unsigned int size);
@@ -169,6 +188,7 @@ void  z_fpoint_add_xyw(z_fpoint_array *a, float x, float y, float w)  {
 
     z_fpoint *p = a->point + (a->len++);
     p->p.x = x; p->p.y = y; p->w = w;
+	INSERT(LogDebug)(FINAL_ADD_FLAG,("~~~~~~~~~~~~~~~ add new point x %f ;y %f ; length become : %d \r\n ",x,y,a->len));
 }
 
 void  z_fpoint_add(z_fpoint_array *a, z_fpoint p) {
@@ -184,10 +204,10 @@ void  z_fpoint_differential_add(z_fpoint_array *a, z_fpoint p) {
     }
 
 // #define bad_show
-#ifdef bad_show
-    z_fpoint_add(a, p);
-    return;
-#endif
+//#ifdef bad_show
+//    z_fpoint_add(a, p);
+//    return;
+//#endif
     float max_diff = 0.1f;
     z_fpoint *last = a->point + (a->len-1);
     z_point sp = last->p;
@@ -210,6 +230,10 @@ void  z_fpoint_differential_add(z_fpoint_array *a, z_fpoint p) {
 
 void  z_square_bezier(z_fpoint_array *a, z_fpoint b, z_point c, z_fpoint e){
     if(!a) return;
+	INSERT(LogDebug)(I_FLAG,("a length %d ; cap %d x : %f ; y :%f\r\n",a ->len,a->cap,b.p.x ,b.p.y));
+	INSERT(LogDebug)(ADD_FLAG,("____________________ bx : %f ; by :%f\r\n",b.p.x ,b.p.y));
+	INSERT(LogDebug)(I_FLAG,("____________________ cx : %f ; cy :%f\r\n",c.x ,c.y));
+	INSERT(LogDebug)(I_FLAG,("____________________ ex : %f ; ey :%f\r\n",e.p.x ,e.p.y));
     const float f = 0.1f;
     for(float t=f; t<=1.0; t+=f ) {
         float x1 = z_square(1-t)*b.p.x + 2*t*(1-t)*c.x + z_square(t)*e.p.x;
@@ -218,6 +242,7 @@ void  z_square_bezier(z_fpoint_array *a, z_fpoint b, z_point c, z_fpoint e){
         z_fpoint pw = { {x1, y1}, w};
         z_fpoint_differential_add(a, pw);
     }
+	INSERT(LogDebug)(I_FLAG,("a length %d ; cap %d \r\n",a ->len));
 }
 
 float z_linewidth(z_ipoint b, z_ipoint e, float bwidth, float step) {
@@ -250,12 +275,14 @@ float z_insert_point(z_fpoint_array *arr, z_point point) {
         z_fpoint_array_set_last_info(arr, point, p.w);
         return p.w;
     }
-
+	
     int64_t cur_ms = clock();
     float last_width = arr->last_width;
     int64_t last_ms = arr->last_ms;
     z_point last_point = arr->last_point;
 
+	INSERT(LogDebug)(LAST_POINT_FLAG,("-----!!!!!!------last point x %f ; y %f \r\n",last_point.x,last_point.y));
+	
     printf("cur_ms - last_ms = 0x%llx\n", cur_ms - last_ms);
     // 两次采样时间小于25毫秒, 或者距离小于2个像素, 不采样计算!!!
     float distance = z_distance(point, last_point);
@@ -269,6 +296,7 @@ float z_insert_point(z_fpoint_array *arr, z_point point) {
     float w = (z_linewidth(bt, et, last_width, step) + last_width) / 2;
     z_fpoint_array *points = z_new_fpoint_array(51, arr->maxwidth, arr->minwidth);
     z_fpoint tmppoint = arr->point[len-1];
+	INSERT(LogDebug)(ADD_FLAG,("------------------tmppoint x %f ; tmppoint y %f \r\n",tmppoint.p.x,tmppoint.p.y));
     z_fpoint_add(points, tmppoint);
 
     if( 1==len ) {

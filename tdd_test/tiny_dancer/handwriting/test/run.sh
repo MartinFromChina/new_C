@@ -9,4 +9,4 @@ fi
 ./handwriting
 
 cd py
-sleep 6 && ps ux | grep -E 'python' | grep -v grep |awk '{print $2}' |xargs kill -s 9 & python handwriting.py
+sleep 35 && ps ux | grep -E 'python' | grep -v grep |awk '{print $2}' |xargs kill -s 9 & python handwriting.py

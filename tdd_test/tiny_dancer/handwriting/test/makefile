@@ -21,7 +21,7 @@ $(TARGET) : ./obj/handwriting_test.o ./obj/InsertLogDebug.o ./obj/z_math.o ./obj
 	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
        -c ../../../../module/common/FileOperation/rw_by_line.c -o $@
 
-./obj/z_math.o : ../z_math.c ../z_math.h
+./obj/z_math.o : ../z_math.c ../z_math.h  ../../../../module/common/InsertLog/InsertLogDebug.h
 	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
        -c ../z_math.c -o $@
 						

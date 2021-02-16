@@ -225,7 +225,7 @@ print(Z)
 
 im.save('dest.png')
 plt.imshow(im)
-plt.pause(5)  # 该句显示图片15秒
+plt.pause(30)  # 该句显示图片15秒
 plt.ioff()  # 显示完后一定要配合使用plt.ioff()关闭交互模式，否则可能出奇怪的问题
 plt.clf()  # 清空图片
 

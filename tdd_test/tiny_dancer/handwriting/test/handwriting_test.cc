@@ -29,25 +29,25 @@ TEST(pentip,init)
 	
 	p_array = z_new_fpoint_array(200,15.0,15.0);
 	
-	point.x = 20 ; point.y = 20;
+	point.x = 100 ; point.y = 100;
 	z_insert_point(p_array,point);
 
 	SleepMilliseconds(4000);
-	point.x = 200 ; point.y = 60;
+	point.x = 200 ; point.y = 100;
 	z_insert_point(p_array,point);
 
 	SleepMilliseconds(4000);
-	point.x = 300 ; point.y = 200;
+	point.x = 200 ; point.y = 200;
 	z_insert_point(p_array,point);
 
+/*
 	SleepMilliseconds(4000);
 	point.x = 400 ; point.y = 300;
 
 	SleepMilliseconds(4000);
 	point.x = 420 ; point.y = 250;
-	
 	z_insert_point(p_array,point);
-
+*/
 	size = min(p_array ->cap,p_array->len);
 	INSERT(LogDebug)(1,("size is %d\r\n",size));
 
@@ -64,7 +64,7 @@ TEST(pentip,init)
 		snprintf(&temp[0],100,"%d",param);
 		param = p_array->point[i].p.y * 2;
 		snprintf(&temp[100],100,"%d",param);
-		param = p_array->point[i].w * 70;
+		param = p_array->point[i].w * 30;
 		snprintf(&temp[200],100,"%d",param);
 /*
 		INSERT(LogDebug)(1,("temp %s \r\n",temp));
