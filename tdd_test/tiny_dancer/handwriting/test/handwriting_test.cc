@@ -27,17 +27,25 @@ TEST(pentip,init)
 	p_file_name1 = ConvFileStrToChar("./text/handwriting1.txt",buf1);
 	p_file_name2 = ConvFileStrToChar("./text/handwriting2.txt",buf2);
 	
-	p_array = z_new_fpoint_array(200,100.0,100.0);
+	p_array = z_new_fpoint_array(200,15.0,15.0);
 	
 	point.x = 20 ; point.y = 20;
 	z_insert_point(p_array,point);
 
-	SleepMilliseconds(2000);
-	point.x = 60 ; point.y = 60;
+	SleepMilliseconds(4000);
+	point.x = 200 ; point.y = 60;
 	z_insert_point(p_array,point);
 
-	SleepMilliseconds(8000);
-	point.x = 200 ; point.y = 200;
+	SleepMilliseconds(4000);
+	point.x = 300 ; point.y = 200;
+	z_insert_point(p_array,point);
+
+	SleepMilliseconds(4000);
+	point.x = 400 ; point.y = 300;
+
+	SleepMilliseconds(4000);
+	point.x = 420 ; point.y = 250;
+	
 	z_insert_point(p_array,point);
 
 	size = min(p_array ->cap,p_array->len);
@@ -56,7 +64,7 @@ TEST(pentip,init)
 		snprintf(&temp[0],100,"%d",param);
 		param = p_array->point[i].p.y * 2;
 		snprintf(&temp[100],100,"%d",param);
-		param = p_array->point[i].w * 50;
+		param = p_array->point[i].w * 70;
 		snprintf(&temp[200],100,"%d",param);
 /*
 		INSERT(LogDebug)(1,("temp %s \r\n",temp));

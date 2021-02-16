@@ -179,7 +179,7 @@ def DotDraw(img,x,y,width,color,transparency):
         print("wrong y param")
         return
     DrawCircle(img,x,y,radius,((color << 8) | (0x000000ff & transparency) ))  
-    print("finished")
+    #print("finished")
 
 import matplotlib.pyplot as plt
 
