@@ -42,4 +42,33 @@ uint8_t HexCharTo_8bit(char hexchar_H,char hexchar_L,X_Boolean *isOK)
 	if(isOK != X_Null){*isOK = X_True;}
 	return result;
 }
+//////////////#include <stdio.h>
+uint32_t DecCharTo_32bit(char *p_string,uint8_t length,X_Boolean *isOK)
+{
+	uint8_t i;
+	uint32_t sum = 0,power = 1;
+	uint8_t temp;
+	
+	if(p_string == X_Null ) {return 0;}
+	
+	for(i=0;i<length;i++)
+	{
+		temp = p_string[length - i - 1];
+		if(temp < 48 || temp >102 )
+		{
+			if(isOK != X_Null){*isOK = X_False;}
+			return 0;
+		}
+		temp = temp - 48;
+		temp = CharToHexTable[temp];
+		if(temp > 9 ) 
+		{
+			if(isOK != X_Null){*isOK = X_False;}
+			return 0;
+		}
+		sum += temp*power;
+		power = power * 10;
+	}
+	return sum;
+}
 

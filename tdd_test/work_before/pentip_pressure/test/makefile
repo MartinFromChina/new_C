@@ -6,7 +6,7 @@ TARGET = pentip
 CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += $(DEFS)
 
-$(TARGET) : ./obj/pressure_test.o ./obj/InsertLogDebug.o ./obj/pentip_pressure.o ./obj/rw_by_line.o ./obj/normal_distribution.o ./obj/uniform_distribution.o
+$(TARGET) : ./obj/pressure_test.o ./obj/InsertLogDebug.o ./obj/pentip_pressure.o ./obj/rw_by_line.o ./obj/normal_distribution.o ./obj/uniform_distribution.o ./obj/char_to_num.o
 	$(CXX) $(CXXFLAGS) -o $@  $^ $(DLIBS)
 
 ./obj/pressure_test.o : pressure_test.cc 
@@ -20,6 +20,10 @@ $(TARGET) : ./obj/pressure_test.o ./obj/InsertLogDebug.o ./obj/pentip_pressure.o
 ./obj/rw_by_line.o : ../../../../module/common/FileOperation/rw_by_line.c ../../../../module/common/FileOperation/rw_by_line.h
 	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
        -c ../../../../module/common/FileOperation/rw_by_line.c -o $@
+
+./obj/char_to_num.o : ../../../../module/common/CharToNum/char_to_num.c ../../../../module/common/CharToNum/char_to_num.h
+	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
+       -c ../../../../module/common/CharToNum/char_to_num.c -o $@
 
 ./obj/normal_distribution.o : ../../../../module/common/Math/random_num/normal_distribution.c  \
 								../../../../module/common/Math/random_num/normal_distribution.h 
@@ -35,4 +39,4 @@ $(TARGET) : ./obj/pressure_test.o ./obj/InsertLogDebug.o ./obj/pentip_pressure.o
        -c ../pentip_pressure.c -o $@
 						
 clean:
-	rm 		./obj/pressure_test.o ./obj/InsertLogDebug.o ./obj/pentip_pressure.o ./obj/rw_by_line.o ./obj/normal_distribution.o ./obj/uniform_distribution.o
+	rm 		./obj/pressure_test.o ./obj/InsertLogDebug.o ./obj/pentip_pressure.o ./obj/rw_by_line.o ./obj/normal_distribution.o ./obj/uniform_distribution.o ./obj/char_to_num.o

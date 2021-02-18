@@ -9,6 +9,8 @@
 
 uint16_t GetStringLength(char *p_strings);
 uint8_t HexCharTo_8bit(char hexchar_H,char hexchar_L,X_Boolean *isOK);
+uint32_t DecCharTo_32bit(char *p_string,uint8_t length,X_Boolean *isOK);
+
 
 #ifdef __cplusplus
 		}

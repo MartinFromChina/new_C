@@ -5,9 +5,28 @@ using namespace std;
 #include "../pentip_pressure.h"
 #include "../../../../module/common/FileOperation/rw_by_line.h"
 #include "../../../../module/common/Math/random_num/normal_distribution.h"
+#include "../../../../module/common/CharToNum/char_to_num.h"
 
 
-TEST(pentip,init)
+static uint16_t raw_index = 0;
+X_Void TestInit(X_Void)
+{
+	raw_index = 0;
+}
+
+uint16_t mockable_PentipGetRaw(X_Void)
+{
+	X_Boolean isOK;
+	uint16_t data;
+	char temp[100];
+	ReadFileByLine("./text/gauss.txt",raw_index,temp);
+	data = (uint16_t)DecCharTo_32bit(temp,4,&isOK);
+	if(raw_index >= SAMPLE_CNT ){raw_index = 0;}
+	else {raw_index ++;}
+	return data;
+}
+
+TEST(pentip,base)
 {
 	uint16_t i;
 	X_Float64 result;
@@ -23,15 +42,16 @@ TEST(pentip,init)
 		snprintf(tem,320,"%.7f",result);
 		WriteFileByLine(filename,i,tem);
 	}
-	
+
 	//EXPECT_GT(result_sum, 0.49);
 	//EXPECT_LT(result_sum, 0.51);
 
 }
 
- TEST(pentip,monitor)
+ TEST(pentip,init)
  {
- 
+ 	TestInit();
+ 	PentipInit(mockable_PentipGetRaw);
  }
 
  GTEST_API_ int main(int argc, char **argv) {

@@ -217,6 +217,7 @@ void  z_fpoint_differential_add(z_fpoint_array *a, z_fpoint p) {
     float x_step = (p.p.x - sp.x) / n;
     float y_step = (p.p.y - sp.y) / n;
     float w_step = (p.w - sw)      / n;
+	INSERT(LogDebug)(1,("___________~~~~_________ n :%2x ;p.w %f ;last->w %f ;max_diff  %f;\r\n",n,p.w,last->w,max_diff));
 
     int i;
     for(i=0; i<(n-1); i++ ){
