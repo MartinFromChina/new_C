@@ -5,7 +5,7 @@
 	extern "C"{
 #endif
 
-#define SAMPLE_CNT   (0xff)
+#define SAMPLE_CNT   (500)//(0xff)
 
 
 #include "../../../module/common/x_cross_platform.h"
