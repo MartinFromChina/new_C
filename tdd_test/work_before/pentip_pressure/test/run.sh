@@ -7,4 +7,7 @@ exit
 fi
 
 ./pentip
-sleep 6 && ps ux | grep -E 'python' | grep -v grep |awk '{print $2}' |xargs kill -s 9 & python draw.py
+py= python draw.py
+echo $py
+#sleep 6 && ps ux | grep -E 'python' | grep -v grep |awk '{print $2}' |xargs kill -s 9 & py= python draw.py  
+
