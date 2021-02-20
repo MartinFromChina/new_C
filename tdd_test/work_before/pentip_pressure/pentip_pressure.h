@@ -5,7 +5,7 @@
 	extern "C"{
 #endif
 
-#define SAMPLE_CNT   (500)//(0xff)
+#define SAMPLE_CNT   (256)//(0xff)
 
 
 #include "../../../module/common/x_cross_platform.h"
@@ -14,6 +14,7 @@
 typedef uint16_t (*GetRawPressure)(X_Void);
 
 X_Boolean PentipInit(GetRawPressure p_get_raw);
+X_Boolean AnotherPentipInit(GetRawPressure p_get_raw);
 
 
 #ifdef __cplusplus

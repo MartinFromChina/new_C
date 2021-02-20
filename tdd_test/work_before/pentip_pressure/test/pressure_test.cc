@@ -53,6 +53,13 @@ TEST(pentip,base)
  	TestInit();
  	PentipInit(mockable_PentipGetRaw);
  }
+ TEST(pentip,anotherinit)
+ {
+ 	TestInit();
+ 	AnotherPentipInit(mockable_PentipGetRaw);
+ }
+
+ 
 
  GTEST_API_ int main(int argc, char **argv) {
    cout<<"------------pressure_test from pressure_test.cc \r\n";
