@@ -4,9 +4,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sympy import *
 import sympy
+import sys
 
+gpus = sys.argv[1]
+print gpus
+j = int(gpus)
 
-print("draw.py start")
 filename = './text/gauss.txt'
 X,Y = [],[]
 with open(filename, 'r') as f:#1
@@ -30,7 +33,7 @@ def Symnormfun(x, mu, sigma):
   return pdf
 
 
-fig = plt.figure(figsize=(20, 20))
+fig = plt.figure(figsize=(12, 12))
 ax1 = fig.add_subplot(3,1,1)
 ax1.scatter(X, Y,s = 3)
 plt.grid()
@@ -80,7 +83,7 @@ ax2.axvline(x=get_big,ymin=0,ymax=15,c="red",linewidth=1.5,zorder=0)
 
 plt.savefig('normal_column.jpg')
 plt.draw()
-plt.pause(3)  # 该句显示图片15秒
+plt.pause(j)  # 该句显示图片15秒
 plt.close() 
 
 
