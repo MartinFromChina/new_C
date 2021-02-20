@@ -51,7 +51,7 @@ plt.grid()
 
 ax3 = fig.add_subplot(3,1,3)
 x2 = symbols('x')
-gauss = integrate(Symnormfun(x2,1700.0,15.0) ,x2)
+gauss = integrate(Symnormfun(x2,1700.0,14.66) ,x2) #root 215
 print gauss
 x_value = []
 y_value = []
@@ -60,14 +60,20 @@ get_big = 0
 for  i in np.arange(1650,1750,1):
     x_value.append(i)
     y_value.append(gauss.subs('x',i) + 0.5)# the 0.5 shift is wired , i can not see why
-    if get_small == 0 and y_value[i - 1650]>=0.1: 
+    if get_small == 0 and y_value[i - 1650]>=0.01: 
         get_small = i  
         print i
-    if get_big == 0 and y_value[i - 1650]>=0.9: 
+    if get_big == 0 and y_value[i - 1650]>=0.99: 
         get_big = i  
         print i
 ax3.plot(x_value,y_value )
 plt.grid()
+
+ax1.axhline(y=get_small,xmin=0,xmax=500,c="red",linewidth=1.5,zorder=0)
+ax1.axhline(y=get_big,xmin=0,xmax=500,c="red",linewidth=1.5,zorder=0)
+
+ax2.axvline(x=get_small,ymin=0,ymax=15,c="red",linewidth=1.5,zorder=0)
+ax2.axvline(x=get_big,ymin=0,ymax=15,c="red",linewidth=1.5,zorder=0)
 
 
 
