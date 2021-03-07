@@ -1,0 +1,8 @@
+D:\AllApplication\GitAll\Ubuntu_share\C_CPP\new_C\tdd_test\tiny_dancer\6d_motion\c_sharp\Ble_Motion_Dispaly\Ble_Motion_Dispaly\obj\Debug\Ble_Motion_Dispaly.csprojAssemblyReference.cache
+D:\AllApplication\GitAll\Ubuntu_share\C_CPP\new_C\tdd_test\tiny_dancer\6d_motion\c_sharp\Ble_Motion_Dispaly\Ble_Motion_Dispaly\obj\Debug\WindowsFormsApplication1.RealChart.resources
+D:\AllApplication\GitAll\Ubuntu_share\C_CPP\new_C\tdd_test\tiny_dancer\6d_motion\c_sharp\Ble_Motion_Dispaly\Ble_Motion_Dispaly\obj\Debug\Ble_Motion_Dispaly.Properties.Resources.resources
+D:\AllApplication\GitAll\Ubuntu_share\C_CPP\new_C\tdd_test\tiny_dancer\6d_motion\c_sharp\Ble_Motion_Dispaly\Ble_Motion_Dispaly\obj\Debug\Ble_Motion_Dispaly.csproj.GenerateResource.cache
+D:\AllApplication\GitAll\Ubuntu_share\C_CPP\new_C\tdd_test\tiny_dancer\6d_motion\c_sharp\Ble_Motion_Dispaly\Ble_Motion_Dispaly\obj\Debug\Ble_Motion_Dispaly.csproj.CoreCompileInputs.cache
+D:\AllApplication\GitAll\Ubuntu_share\C_CPP\new_C\tdd_test\tiny_dancer\6d_motion\c_sharp\Ble_Motion_Dispaly\Ble_Motion_Dispaly\obj\Debug\DynamicGraph.Form1.resources
+D:\AllApplication\GitAll\Ubuntu_share\C_CPP\new_C\tdd_test\tiny_dancer\6d_motion\c_sharp\Ble_Motion_Dispaly\Ble_Motion_Dispaly\obj\Debug\DynamicGraph.x_main.resources
+D:\AllApplication\GitAll\Ubuntu_share\C_CPP\new_C\tdd_test\tiny_dancer\6d_motion\c_sharp\Ble_Motion_Dispaly\Ble_Motion_Dispaly\obj\Debug\WaveForm1.waveFunction.resources
