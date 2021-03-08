@@ -61,7 +61,8 @@ def JlinkRead(p_jlink,float_rawdata):
       for i in range(0,4,1):FLOAT325.append(list[24-i])
       ratate_z = struct.unpack('<f', struct.pack('4B', *FLOAT325))[0]
 
-      print('---------------------------------')
+      #print('---------------------------------')
+      del float_rawdata[:]
       float_rawdata.append(acce_x)
       float_rawdata.append(acce_y)
       float_rawdata.append(acce_z)
