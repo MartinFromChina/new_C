@@ -8,14 +8,8 @@ import numpy as np
 
 def WaveDispaly(p_link,jlink_read):
     sixD_data = []
-    isNew = jlink_read(p_link,sixD_data)
-    if(isNew == True):
-         print(sixD_data[0])
-         print(sixD_data[1])
-         print(sixD_data[2])
-         print(sixD_data[3])
-         print(sixD_data[4])
-         print(sixD_data[5])
+    ACCE_X = []
+   
 
     fig = plt.figure(figsize=(12, 12))
     ax1 = fig.add_subplot(3,1,1)
@@ -40,10 +34,19 @@ def WaveDispaly(p_link,jlink_read):
     plt.grid()
 
     def animate(i):
-       line1_x.set_ydata(acce_x + (i * 200))
-       line1_y.set_ydata(acce_y + (i * 200))
-       line2.set_ydata(y2 + (i * 200))
-       return line1_x,line1_y,line1_z,line2,
+        isNew = jlink_read(p_link,sixD_data)
+        if(isNew == True):
+            print(sixD_data[0])
+            print(sixD_data[1])
+            print(sixD_data[2])
+            print(sixD_data[3])
+            print(sixD_data[4])
+            print(sixD_data[5])
+            line1_x.set_ydata(acce_x + (i * 200))
+            line1_y.set_ydata(acce_y + (i * 200))
+            line2.set_ydata(y2 + (i * 200))
+            
+        return line1_x,line1_y,line1_z,line2,
 
     def init():
         line1_x.set_ydata(0)
@@ -53,6 +56,6 @@ def WaveDispaly(p_link,jlink_read):
         line2.set_ydata(0)
         return line1_x,line1_y,line1_z,line2, 
         
-    ani = animation.FuncAnimation(fig = fig,func=animate,frames = 100,init_func=init,interval = 500,blit = True)
+    ani = animation.FuncAnimation(fig = fig,func=animate,frames = 100,init_func=init,interval = 5,blit = True)
     
     plt.show()
