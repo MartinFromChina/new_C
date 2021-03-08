@@ -5,27 +5,20 @@ import struct
 import math 
 
 from jlink import JlinkInit,JlinkClose,JlinkRead
+from wave  import WaveDispaly
 
-successed_time = 1000
-sixD_data = []
 isOK = True
-isRead = False
+successed_time = 10000
+
 jlink = JlinkInit()
 
 while isOK == True:
     try:
-         isRead =  JlinkRead(jlink,sixD_data)
-         if (isRead == True):
-             print(sixD_data[0])
-             print(sixD_data[1])
-             print(sixD_data[2])
-             print(sixD_data[3])
-             print(sixD_data[4])
-             print(sixD_data[5])
-             if(successed_time > 0):
-                successed_time = successed_time - 1
-             else :
-                break
+         isOK = WaveDispaly(jlink,JlinkRead)
+         if(successed_time > 0):
+            successed_time = successed_time - 1
+         else :
+            break
     except pylink.errors.JLinkRTTException:
         time.sleep(0.1)
 
