@@ -22,25 +22,36 @@ def WaveDispaly(p_link,jlink_read):
     ax2 = fig.add_subplot(3,1,2)
     
     x1 = np.arange(0,1000,1) 
-    y1 = x1 
+    acce_x = x1 
+    acce_y = -x1
+    acce_z = x1 - x1
 
     x2 = np.arange(0,500,1)  
     y2 = -x2
 
-    line1,= ax1.plot(x1,y1)
+    y_limit_up_backup = 1000
+    y_limit_down_backup = -1000
+
+    line1_x,= ax1.plot(x1,acce_x,color='red')
+    line1_y,= ax1.plot(x1,acce_y,color='green')
+    line1_z,= ax1.plot(x1,acce_z,color='blue')
     line2,= ax2.plot(x2,y2)
     
     plt.grid()
 
     def animate(i):
-       line1.set_ydata(y1 + (i * 200))
+       line1_x.set_ydata(acce_x + (i * 200))
+       line1_y.set_ydata(acce_y + (i * 200))
        line2.set_ydata(y2 + (i * 200))
-       return line1,line2,
+       return line1_x,line1_y,line1_z,line2,
 
     def init():
-        line1.set_ydata(0)
+        line1_x.set_ydata(0)
+        line1_y.set_ydata(0)
+        line1_z.set_ydata(0)
+        ax1.set_ylim(-2000,2000)
         line2.set_ydata(0)
-        return line1,line2, 
+        return line1_x,line1_y,line1_z,line2, 
         
     ani = animation.FuncAnimation(fig = fig,func=animate,frames = 100,init_func=init,interval = 500,blit = True)
     
