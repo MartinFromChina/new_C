@@ -4,14 +4,17 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from matplotlib import animation
 import numpy as np
+from tkinter import *
+from jlink import JlinkInit,DoesJlinkInitial
+import time
 
 accex_index = 0  
-
+real_p_link = 0
 def BufClear(buf,size):
     for i in range(0,size,1):
         buf.append(0)
 
-def WaveDispaly(p_link,jlink_read):
+def WaveDispaly(jlink_read):
     sixD_data = [] 
     ACCE_X = []
    
@@ -40,9 +43,16 @@ def WaveDispaly(p_link,jlink_read):
     plt.grid()
     #--------------------------------------------------------
 
+     
     def animate(i):
         global accex_index
-        isNew = jlink_read(p_link,sixD_data)
+        global real_p_link
+        isInit = DoesJlinkInitial()
+        if(isInit == False):
+            real_p_link = JlinkInit()
+            print("reconnectjlink")
+        isNew = jlink_read(real_p_link,sixD_data)
+        
         if(isNew == True):
             #print(sixD_data[0]);print(sixD_data[1]);print(sixD_data[2])
             #print(sixD_data[3]);print(sixD_data[4]);print(sixD_data[5])
@@ -69,7 +79,7 @@ def WaveDispaly(p_link,jlink_read):
                 #print(np.array(ACCE_X)[ (i + accex_index + 1)/1000])
                 a = 0
             print('----------------------------------------------------------%f'%sixD_data[0])
-            
+             
             
             line1_y.set_ydata(acce_y + (i * 200))
 
@@ -88,6 +98,14 @@ def WaveDispaly(p_link,jlink_read):
         line2_z.set_ydata(0)
         return line1_x,line1_y,line1_z,line2_x,line2_y,line2_z
    #--------------------------------------------------------     
-    ani = animation.FuncAnimation(fig = fig,func=animate,frames = 100,init_func=init,interval = 50,blit = True)
+    ani = animation.FuncAnimation(fig = fig,func=animate,frames = 50,init_func=init,interval = 8,blit = True)
     
     plt.show()
+
+
+def WaveDispalySimple(p_link,jlink_read):
+        sixD_data = [] 
+        while True:
+            isNew = jlink_read(p_link,sixD_data)
+            time.sleep(0.1)
+            

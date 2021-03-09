@@ -3,10 +3,9 @@ import sched,time
 import math 
 
 from jlink import JlinkInit,JlinkClose,JlinkRead
-from wave  import WaveDispaly
+from wave  import WaveDispaly,WaveDispalySimple
 
-jlink = JlinkInit()
-WaveDispaly(jlink,JlinkRead)
+WaveDispaly(JlinkRead)
 JlinkClose(jlink)
 
 
