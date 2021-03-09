@@ -35,14 +35,14 @@ def JlinkRead(p_jlink,float_rawdata):
     global ref_backup
     global isJlinkInit
     try:
-        list = p_jlink.memory_read8(0x200045DC,25) 
+        list = p_jlink.memory_read8(0x200045FC,25) 
         ref = list[0]
         if(ref_backup != ref):
           ref_backup = ref
           FLOAT32 = []
           for i in range(0,4,1):FLOAT32.append(list[4-i])
           #print(FLOAT32)
-          acce_x = struct.unpack('<f', struct.pack('4B', *FLOAT32))[0] # B means unsigned byte
+          acce_x = struct.unpack('<f', struct.pack('4B', *FLOAT32))[0] # B means unsigned byte  
           #print(acce_x)
 
           FLOAT321 = []

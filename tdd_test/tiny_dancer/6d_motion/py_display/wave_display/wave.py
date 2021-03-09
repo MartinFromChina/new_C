@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from matplotlib import animation
 import numpy as np
-from tkinter import *
 from jlink import JlinkInit,DoesJlinkInitial
 import time
 
@@ -78,7 +77,7 @@ def WaveDispaly(jlink_read):
                 #print(ACCE_X[i])
                 #print(np.array(ACCE_X)[ (i + accex_index + 1)/1000])
                 a = 0
-            print('----------------------------------------------------------%f'%sixD_data[0])
+            print('----------------------------------------------------------%10.10f'%sixD_data[0])
              
             
             line1_y.set_ydata(acce_y + (i * 200))
