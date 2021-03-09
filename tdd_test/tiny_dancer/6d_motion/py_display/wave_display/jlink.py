@@ -49,12 +49,12 @@ def JlinkRead(p_jlink,float_rawdata):
           #print('%#x'%FLOAT32[2])
           #print('%#x'%FLOAT32[3])
           acce_x = FourCharToDouble(FLOAT32)
-          print(acce_x)
+          #print(acce_x)
 
           FLOAT321 = []
           for i in range(0,4,1):FLOAT321.append(list[8-i])
           acce_y= FourCharToDouble(FLOAT321)
-          #print(acce_y)
+          print(acce_y)
 
           FLOAT322 = []
           for i in range(0,4,1):FLOAT322.append(list[12-i])

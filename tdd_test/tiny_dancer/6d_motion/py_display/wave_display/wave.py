@@ -9,13 +9,28 @@ import time
 
 accex_index = 0  
 real_p_link = None
-def BufClear(buf,size):
+
+def ConvertAxis(src,dest,index):
+    if(src >= 0):
+        dest[index] = src* (10**39)
+    else:
+        dest[index] = src * (10**(-39))
+
+def ConvertAyis(src,dest,index):
+    if(src >= 0):
+        dest[index] = src* (10**(39))
+    else:
+        dest[index] = src * (10**(-39))
+        
+def BufClear(buf,size,value):
     for i in range(0,size,1):
-        buf.append(0)
+        buf.append(value)
 
 def WaveDispaly(jlink_read):
     sixD_data = [] 
     ACCE_X = []
+    ACCE_Y = []
+    ACCE_Z = []
     global real_p_link
 #--------------------------------------------------------
     fig = plt.figure(figsize=(12, 12))
@@ -55,15 +70,12 @@ def WaveDispaly(jlink_read):
         if(isNew == True):
             #print(sixD_data[0]);print(sixD_data[1]);print(sixD_data[2])
             #print(sixD_data[3]);print(sixD_data[4]);print(sixD_data[5])
-            '''
-            if(sixD_data[0] < 10000):
-                ACCE_X[accex_index] = 5000
-            else:
-                ACCE_X[accex_index] = 15000
-            '''
-            ACCE_X[accex_index] = (sixD_data[0])
-            print(ACCE_X[accex_index])
-            #print(2**30)
+            
+            ConvertAxis(sixD_data[0],ACCE_X,accex_index)
+            ConvertAxis(sixD_data[1],ACCE_Y,accex_index)
+            ConvertAxis(sixD_data[2],ACCE_Z,accex_index)
+            
+       
             if (accex_index < 999):
                 accex_index = accex_index + 1
             else:
@@ -72,28 +84,20 @@ def WaveDispaly(jlink_read):
             #print(ACCE_X)
             #print(np.array(ACCE_X))
             #print('----------------------------------------------------------')
-            
-            
-            for i in range(0,1000,1):
-                #print((i + accex_index )%1000)
-                #print(ACCE_X[i])
-                #print(np.array(ACCE_X)[ (i + accex_index + 1)/1000])
-                a = 0
-            
-             
-            
-            line1_y.set_ydata(acce_y + (i * 200))
-
         
-        line1_x.set_ydata(np.array(ACCE_X)[(x1 + accex_index )%1000])    
+        line1_x.set_ydata(np.array(ACCE_X)[(x1 + accex_index )%1000]+2000)   
+        line1_y.set_ydata(np.array(ACCE_Y)[(x1 + accex_index )%1000])  
+        line1_z.set_ydata(np.array(ACCE_Z)[(x1 + accex_index )%1000]-4000)  
         return line1_x,line1_y,line1_z,line2_x,line2_y,line2_z
     #--------------------------------------------------------
     def init():
-        BufClear(ACCE_X,1000)
+        BufClear(ACCE_X,1000,2000)
+        BufClear(ACCE_Y,1000,0)
+        BufClear(ACCE_Z,1000,-2000)
         line1_x.set_ydata(0)
         line1_y.set_ydata(0)
         line1_z.set_ydata(0)
-        #ax1.set_ylim(-20000,20000)
+        ax1.set_ylim(-20000,20000)
         line2_x.set_ydata(0)
         line2_y.set_ydata(0)
         line2_z.set_ydata(0)
