@@ -7,7 +7,7 @@ ref_backup = 0
 isJlinkInit = False    
 
 def FourCharToDouble(four_Char):
-    return struct.unpack('<f', struct.pack('4B', *four_Char))[0]
+    return struct.unpack('>f', struct.pack('4B', *four_Char))[0]
        
 def JlinkInit():
     global ref 
@@ -44,31 +44,34 @@ def JlinkRead(p_jlink,float_rawdata):
           ref_backup = ref
           FLOAT32 = []
           for i in range(0,4,1):FLOAT32.append(list[4-i])
-          #print(FLOAT32)
+          #print('%#x'%FLOAT32[0])
+          #print('%#x'%FLOAT32[1])
+          #print('%#x'%FLOAT32[2])
+          #print('%#x'%FLOAT32[3])
           acce_x = FourCharToDouble(FLOAT32)
           print(acce_x)
 
           FLOAT321 = []
           for i in range(0,4,1):FLOAT321.append(list[8-i])
-          acce_y= struct.unpack('<f', struct.pack('4B', *FLOAT321))[0]
+          acce_y= FourCharToDouble(FLOAT321)
           #print(acce_y)
 
           FLOAT322 = []
           for i in range(0,4,1):FLOAT322.append(list[12-i])
-          acce_z = struct.unpack('<f', struct.pack('4B', *FLOAT322))[0]
+          acce_z = FourCharToDouble(FLOAT322)
           #print(acce_z)
 
           FLOAT323 = []
           for i in range(0,4,1):FLOAT323.append(list[16-i])
-          ratate_x = struct.unpack('<f', struct.pack('4B', *FLOAT323))[0]
+          ratate_x = FourCharToDouble(FLOAT323)
 
           FLOAT324 = []
           for i in range(0,4,1):FLOAT324.append(list[20-i])
-          ratate_y = struct.unpack('<f', struct.pack('4B', *FLOAT324))[0]
+          ratate_y = FourCharToDouble(FLOAT324)
 
           FLOAT325 = []
           for i in range(0,4,1):FLOAT325.append(list[24-i])
-          ratate_z = struct.unpack('<f', struct.pack('4B', *FLOAT325))[0]
+          ratate_z = FourCharToDouble(FLOAT325)
 
           #print('---------------------------------')
           del float_rawdata[:]

@@ -55,13 +55,15 @@ def WaveDispaly(jlink_read):
         if(isNew == True):
             #print(sixD_data[0]);print(sixD_data[1]);print(sixD_data[2])
             #print(sixD_data[3]);print(sixD_data[4]);print(sixD_data[5])
-
+            '''
             if(sixD_data[0] < 10000):
                 ACCE_X[accex_index] = 5000
             else:
                 ACCE_X[accex_index] = 15000
-            #ACCE_X[accex_index] = sixD_data[0]/1000000
-            
+            '''
+            ACCE_X[accex_index] = (sixD_data[0])
+            print(ACCE_X[accex_index])
+            #print(2**30)
             if (accex_index < 999):
                 accex_index = accex_index + 1
             else:
@@ -77,7 +79,7 @@ def WaveDispaly(jlink_read):
                 #print(ACCE_X[i])
                 #print(np.array(ACCE_X)[ (i + accex_index + 1)/1000])
                 a = 0
-            print('----------------------------------------------------------%10.10f'%sixD_data[0])
+            
              
             
             line1_y.set_ydata(acce_y + (i * 200))
@@ -91,7 +93,7 @@ def WaveDispaly(jlink_read):
         line1_x.set_ydata(0)
         line1_y.set_ydata(0)
         line1_z.set_ydata(0)
-        ax1.set_ylim(-20000,20000)
+        #ax1.set_ylim(-20000,20000)
         line2_x.set_ydata(0)
         line2_y.set_ydata(0)
         line2_z.set_ydata(0)
