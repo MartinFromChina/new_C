@@ -6,7 +6,6 @@ from jlink import JlinkInit,JlinkClose,JlinkRead
 from wave  import WaveDispaly,WaveDispalySimple
 
 WaveDispaly(JlinkRead)
-JlinkClose(jlink)
 
 
 

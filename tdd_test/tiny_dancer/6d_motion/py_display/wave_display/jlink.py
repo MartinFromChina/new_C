@@ -6,6 +6,9 @@ ref = 0
 ref_backup = 0
 isJlinkInit = False    
 
+def FourCharToDouble(four_Char):
+    return struct.unpack('<f', struct.pack('4B', *four_Char))[0]
+       
 def JlinkInit():
     global ref 
     global ref_backup
@@ -42,8 +45,8 @@ def JlinkRead(p_jlink,float_rawdata):
           FLOAT32 = []
           for i in range(0,4,1):FLOAT32.append(list[4-i])
           #print(FLOAT32)
-          acce_x = struct.unpack('<f', struct.pack('4B', *FLOAT32))[0] # B means unsigned byte  
-          #print(acce_x)
+          acce_x = FourCharToDouble(FLOAT32)
+          print(acce_x)
 
           FLOAT321 = []
           for i in range(0,4,1):FLOAT321.append(list[8-i])

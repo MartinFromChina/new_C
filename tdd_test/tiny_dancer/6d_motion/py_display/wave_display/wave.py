@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from matplotlib import animation
 import numpy as np
-from jlink import JlinkInit,DoesJlinkInitial
+from jlink import JlinkInit,DoesJlinkInitial,JlinkClose
 import time
 
 accex_index = 0  
-real_p_link = 0
+real_p_link = None
 def BufClear(buf,size):
     for i in range(0,size,1):
         buf.append(0)
@@ -16,7 +16,7 @@ def BufClear(buf,size):
 def WaveDispaly(jlink_read):
     sixD_data = [] 
     ACCE_X = []
-   
+    global real_p_link
 #--------------------------------------------------------
     fig = plt.figure(figsize=(12, 12))
     ax1 = fig.add_subplot(3,1,1)
@@ -100,7 +100,7 @@ def WaveDispaly(jlink_read):
     ani = animation.FuncAnimation(fig = fig,func=animate,frames = 50,init_func=init,interval = 8,blit = True)
     
     plt.show()
-
+    JlinkClose(real_p_link)
 
 def WaveDispalySimple(p_link,jlink_read):
         sixD_data = [] 
