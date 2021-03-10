@@ -5,21 +5,35 @@ import matplotlib.font_manager as font_manager
 from matplotlib import animation
 import numpy as np
 from jlink import JlinkInit,DoesJlinkInitial,JlinkClose
+from clock import ClockSet
 import time
 
 accex_index = 0  
 real_p_link = None
+x_backup = 1.0
 
 def GetXiTa(x,y,z):
+    global x_backup
+    '''
+    if(x == 0.0):
+        print('--------DETECTED---!!!!!!!!!!!!!!!!!!!!!!')
+        x = x_backup/2
+    '''
     cos_xita = (x*x) + (y*y) + (z*z)
     cos_xita = cos_xita **0.5
+    
     cos_xita = x/cos_xita
     cos_xita = -cos_xita 
-    
+    x_backup = x
+    #print(cos_xita)
+    #print('---------------------',x,y,z,'---------------------',cos_xita)
     xita = np.arccos(cos_xita)
+
+    #print('---------------------',xita,xita/3.1415926)
     xita = 180*xita/3.1415926
 
-    print(xita)
+    #xita = int(xita)
+    #print(xita)
     return xita
 
 def ConvertAxis(src,dest,index):
@@ -48,9 +62,9 @@ def WaveDispaly(jlink_read):
     ROTATE_Z = []
     global real_p_link
 #--------------------------------------------------------
-    fig = plt.figure(figsize=(12, 12))
-    ax1 = fig.add_subplot(3,1,1)
-    ax2 = fig.add_subplot(3,1,2)
+    fig = plt.figure(figsize=(12, 8))
+    ax1 = fig.add_subplot(2,1,1)
+    ax2 = fig.add_subplot(2,1,2)
 #--------------------------------------------------------    
     x1 = np.arange(0,1000,1) 
     acce_x = x1 
@@ -90,13 +104,16 @@ def WaveDispaly(jlink_read):
             ConvertRotate(sixD_data[3],ROTATE_X,accex_index)
             ConvertRotate(sixD_data[4],ROTATE_Y,accex_index)
             ConvertRotate(sixD_data[5],ROTATE_Z,accex_index)
-       
+
+            angle = GetXiTa(ACCE_X[accex_index],ACCE_Y[accex_index],ACCE_Z[accex_index])
+           
+            
             if (accex_index < 999):
                 accex_index = accex_index + 1
             else:
                 accex_index = 0
             #print('----------------------------------------------------------')
-            GetXiTa(sixD_data[0],sixD_data[1],sixD_data[2])
+            ClockSet(angle)
         
         line1_x.set_ydata(np.array(ACCE_X)[(x1 + accex_index )%1000]+500)   
         line1_y.set_ydata(np.array(ACCE_Y)[(x1 + accex_index )%1000])  
