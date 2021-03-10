@@ -6,6 +6,13 @@ ref = 0
 ref_backup = 0
 isJlinkInit = False    
 
+def NanHandle(src):
+    if(src != src):
+        #print('nan detectived')
+        return 0.0
+    else:
+        return src
+
 def FourCharToDouble(four_Char):
     return struct.unpack('>f', struct.pack('4B', *four_Char))[0]
        
@@ -49,31 +56,40 @@ def JlinkRead(p_jlink,float_rawdata):
           #print('%#x'%FLOAT32[2])
           #print('%#x'%FLOAT32[3])
           acce_x = FourCharToDouble(FLOAT32)
+          acce_x = NanHandle(acce_x)
           #print(acce_x)
 
           FLOAT321 = []
           for i in range(0,4,1):FLOAT321.append(list[8-i])
           acce_y= FourCharToDouble(FLOAT321)
-          print(acce_y)
+          acce_y = NanHandle(acce_y)
+          #print(acce_y)
 
           FLOAT322 = []
           for i in range(0,4,1):FLOAT322.append(list[12-i])
           acce_z = FourCharToDouble(FLOAT322)
+          acce_z = NanHandle(acce_z)
           #print(acce_z)
 
           FLOAT323 = []
           for i in range(0,4,1):FLOAT323.append(list[16-i])
           ratate_x = FourCharToDouble(FLOAT323)
-
+          print(ratate_x)
+          ratate_x = NanHandle(ratate_x)
+          
           FLOAT324 = []
           for i in range(0,4,1):FLOAT324.append(list[20-i])
           ratate_y = FourCharToDouble(FLOAT324)
+          print(ratate_y)
+          ratate_y = NanHandle(ratate_y)
 
           FLOAT325 = []
           for i in range(0,4,1):FLOAT325.append(list[24-i])
           ratate_z = FourCharToDouble(FLOAT325)
+          print(ratate_z)
+          ratate_z = NanHandle(ratate_z)
 
-          #print('---------------------------------')
+          print('---------------------------------')
           del float_rawdata[:]
           float_rawdata.append(acce_x)
           float_rawdata.append(acce_y)

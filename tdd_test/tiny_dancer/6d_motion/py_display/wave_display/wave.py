@@ -12,15 +12,15 @@ real_p_link = None
 
 def ConvertAxis(src,dest,index):
     if(src >= 0):
-        dest[index] = src* (10**39)
+        dest[index] = src* (10**38)
     else:
-        dest[index] = src * (10**(-39))
+        dest[index] = src * (10**(-38))
 
-def ConvertAyis(src,dest,index):
+def ConvertRotate(src,dest,index):
     if(src >= 0):
-        dest[index] = src* (10**(39))
+        dest[index] = src* (10**41)
     else:
-        dest[index] = src * (10**(-39))
+        dest[index] = src * (10**(-41))
         
 def BufClear(buf,size,value):
     for i in range(0,size,1):
@@ -31,6 +31,9 @@ def WaveDispaly(jlink_read):
     ACCE_X = []
     ACCE_Y = []
     ACCE_Z = []
+    ROTATE_X = []
+    ROTATE_Y = []
+    ROTATE_Z = []
     global real_p_link
 #--------------------------------------------------------
     fig = plt.figure(figsize=(12, 12))
@@ -41,20 +44,20 @@ def WaveDispaly(jlink_read):
     acce_x = x1 
     acce_y = -x1
     acce_z = x1 - x1
-    line1_x,= ax1.plot(x1,acce_x,color='red')
-    line1_y,= ax1.plot(x1,acce_y,color='green')
-    line1_z,= ax1.plot(x1,acce_z,color='blue')
+    line1_x,= ax1.plot(x1,acce_x,color='red',linewidth = 0.5)
+    line1_y,= ax1.plot(x1,acce_y,color='green',linewidth = 0.5)
+    line1_z,= ax1.plot(x1,acce_z,color='blue',linewidth = 0.5)
+    
  #--------------------------------------------------------
-    x2 = np.arange(0,500,1)  
+    x2 = np.arange(0,1000,1)  
     rota_x = x2 
     rota_y = -x2
     rota_z = x2 - x2
 
-    line2_x,= ax2.plot(x2,rota_x,color='red')
-    line2_y,= ax2.plot(x2,rota_y,color='green')
-    line2_z,= ax2.plot(x2,rota_z,color='blue')
-    
-    plt.grid()
+    line2_x,= ax2.plot(x2,rota_x,color='red',linewidth = 0.5)
+    line2_y,= ax2.plot(x2,rota_y,color='green',linewidth = 0.5)
+    line2_z,= ax2.plot(x2,rota_z,color='blue',linewidth = 0.5)
+
     #--------------------------------------------------------
 
      
@@ -68,39 +71,45 @@ def WaveDispaly(jlink_read):
         isNew = jlink_read(real_p_link,sixD_data)
         
         if(isNew == True):
-            #print(sixD_data[0]);print(sixD_data[1]);print(sixD_data[2])
-            #print(sixD_data[3]);print(sixD_data[4]);print(sixD_data[5])
             
             ConvertAxis(sixD_data[0],ACCE_X,accex_index)
             ConvertAxis(sixD_data[1],ACCE_Y,accex_index)
             ConvertAxis(sixD_data[2],ACCE_Z,accex_index)
-            
+            ConvertRotate(sixD_data[3],ROTATE_X,accex_index)
+            ConvertRotate(sixD_data[4],ROTATE_Y,accex_index)
+            ConvertRotate(sixD_data[5],ROTATE_Z,accex_index)
        
             if (accex_index < 999):
                 accex_index = accex_index + 1
             else:
                 accex_index = 0
-            #print(accex_index)
-            #print(ACCE_X)
-            #print(np.array(ACCE_X))
             #print('----------------------------------------------------------')
         
-        line1_x.set_ydata(np.array(ACCE_X)[(x1 + accex_index )%1000]+2000)   
+        line1_x.set_ydata(np.array(ACCE_X)[(x1 + accex_index )%1000]+500)   
         line1_y.set_ydata(np.array(ACCE_Y)[(x1 + accex_index )%1000])  
-        line1_z.set_ydata(np.array(ACCE_Z)[(x1 + accex_index )%1000]-4000)  
+        line1_z.set_ydata(np.array(ACCE_Z)[(x1 + accex_index )%1000]-500)  
+        
+        line2_x.set_ydata(np.array(ROTATE_X)[(x2 + accex_index )%1000]+500)   
+        line2_y.set_ydata(np.array(ROTATE_Y)[(x2 + accex_index )%1000])  
+        line2_z.set_ydata(np.array(ROTATE_Z)[(x2 + accex_index )%1000]-500) 
         return line1_x,line1_y,line1_z,line2_x,line2_y,line2_z
     #--------------------------------------------------------
     def init():
-        BufClear(ACCE_X,1000,2000)
+        BufClear(ACCE_X,1000,500)
         BufClear(ACCE_Y,1000,0)
-        BufClear(ACCE_Z,1000,-2000)
+        BufClear(ACCE_Z,1000,500)
+        BufClear(ROTATE_X,1000,500)
+        BufClear(ROTATE_Y,1000,0)
+        BufClear(ROTATE_Z,1000,500)
+        
         line1_x.set_ydata(0)
         line1_y.set_ydata(0)
         line1_z.set_ydata(0)
-        ax1.set_ylim(-20000,20000)
+        ax1.set_ylim(-1000,1000)
         line2_x.set_ydata(0)
         line2_y.set_ydata(0)
         line2_z.set_ydata(0)
+        ax2.set_ylim(-1000,1000)
         return line1_x,line1_y,line1_z,line2_x,line2_y,line2_z
    #--------------------------------------------------------     
     ani = animation.FuncAnimation(fig = fig,func=animate,frames = 50,init_func=init,interval = 8,blit = True)
