@@ -10,6 +10,18 @@ import time
 accex_index = 0  
 real_p_link = None
 
+def GetXiTa(x,y,z):
+    cos_xita = (x*x) + (y*y) + (z*z)
+    cos_xita = cos_xita **0.5
+    cos_xita = x/cos_xita
+    cos_xita = -cos_xita 
+    
+    xita = np.arccos(cos_xita)
+    xita = 180*xita/3.1415926
+
+    print(xita)
+    return xita
+
 def ConvertAxis(src,dest,index):
     if(src >= 0):
         dest[index] = src* (10**38)
@@ -84,6 +96,7 @@ def WaveDispaly(jlink_read):
             else:
                 accex_index = 0
             #print('----------------------------------------------------------')
+            GetXiTa(sixD_data[0],sixD_data[1],sixD_data[2])
         
         line1_x.set_ydata(np.array(ACCE_X)[(x1 + accex_index )%1000]+500)   
         line1_y.set_ydata(np.array(ACCE_Y)[(x1 + accex_index )%1000])  
@@ -92,6 +105,7 @@ def WaveDispaly(jlink_read):
         line2_x.set_ydata(np.array(ROTATE_X)[(x2 + accex_index )%1000]+500)   
         line2_y.set_ydata(np.array(ROTATE_Y)[(x2 + accex_index )%1000])  
         line2_z.set_ydata(np.array(ROTATE_Z)[(x2 + accex_index )%1000]-500) 
+
         return line1_x,line1_y,line1_z,line2_x,line2_y,line2_z
     #--------------------------------------------------------
     def init():

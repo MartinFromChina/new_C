@@ -74,22 +74,22 @@ def JlinkRead(p_jlink,float_rawdata):
           FLOAT323 = []
           for i in range(0,4,1):FLOAT323.append(list[16-i])
           ratate_x = FourCharToDouble(FLOAT323)
-          print(ratate_x)
+          #print(ratate_x)
           ratate_x = NanHandle(ratate_x)
           
           FLOAT324 = []
           for i in range(0,4,1):FLOAT324.append(list[20-i])
           ratate_y = FourCharToDouble(FLOAT324)
-          print(ratate_y)
+          #print(ratate_y)
           ratate_y = NanHandle(ratate_y)
 
           FLOAT325 = []
           for i in range(0,4,1):FLOAT325.append(list[24-i])
           ratate_z = FourCharToDouble(FLOAT325)
-          print(ratate_z)
+          #print(ratate_z)
           ratate_z = NanHandle(ratate_z)
 
-          print('---------------------------------')
+          #print('---------------------------------')
           del float_rawdata[:]
           float_rawdata.append(acce_x)
           float_rawdata.append(acce_y)
