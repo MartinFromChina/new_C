@@ -46,14 +46,18 @@ def rotate(angle):
        Z = 4*X + 3*Y
        #print(0)
     '''
+    ax.set_xlim3d(0, 20) 
+    ax.set_ylim3d(0, 20)
+    ax.set_zlim3d(0, 20)
+    
     k = k + 0.1
     if(k >= (2*pai - 0.1)): k = -(2*pai)
     real_k = np.tan(k)
     X = real_k*(Z - 10) + 12
+
+   
     surf = ax.plot_surface(X, Y, Z, rstride = 1, cstride = 1, cmap = jet,linewidth = 0,alpha= 1) 
-    ax.set_xlim3d(0, 20) 
-    ax.set_ylim3d(0, 20)
-    ax.set_zlim3d(0, 20)
+    
     
 
 surf = ax.plot_surface(X, Y, Z, rstride = 1, cstride = 1, cmap = jet,linewidth = 0,alpha= 1) 
@@ -66,7 +70,7 @@ ax.set_xlabel('x')
 ax.set_ylabel('y') 
 ax.set_zlabel('z') 
 
-rot_animation = animation.FuncAnimation(fig, rotate, frames=np.arange(0,362,2),interval=100) 
+rot_animation = animation.FuncAnimation(fig, rotate, frames=np.arange(0,362,2),interval=8) 
 
 
 plt.show() 

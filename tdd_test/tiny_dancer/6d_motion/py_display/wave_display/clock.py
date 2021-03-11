@@ -18,7 +18,7 @@ def mkHand(name,length):      #注册turtle形状，建立表针turtle
     register_shape(name,handForm)
 
 def Init():
-    setup( width = 800, height = 400, startx = None, starty = None) 
+    setup( width = 400, height = 400, startx = None, starty = None) 
     global secHand,minHand,hurHand,printer
     mode("logo")             #重置turtle指向北
 
@@ -64,3 +64,7 @@ def ClockSet(angle):
     secHand.setheading(angle)
     minHand.setheading(90)
     hurHand.setheading(180)
+
+def ClockClose():
+    a = 0
+    #turtle.bye() # not work

@@ -6,11 +6,15 @@ from matplotlib import animation
 import numpy as np
 from jlink import JlinkInit,DoesJlinkInitial,JlinkClose
 from clock import ClockSet
+from mpl_toolkits.mplot3d import Axes3D
+
 import time
 
 accex_index = 0  
 real_p_link = None
 x_backup = 1.0
+k = 0
+pai = 3.141592653
 
 def GetXiTa(x,y,z):
     global x_backup
@@ -21,6 +25,7 @@ def GetXiTa(x,y,z):
     '''
     cos_xita = (x*x) + (y*y) + (z*z)
     cos_xita = cos_xita **0.5
+    if(cos_xita == 0): return 90
     
     cos_xita = x/cos_xita
     cos_xita = -cos_xita 
@@ -62,9 +67,14 @@ def WaveDispaly(jlink_read):
     ROTATE_Z = []
     global real_p_link
 #--------------------------------------------------------
-    fig = plt.figure(figsize=(12, 8))
-    ax1 = fig.add_subplot(2,1,1)
-    ax2 = fig.add_subplot(2,1,2)
+    fig = plt.figure(figsize=(5, 20))
+    jet = plt.get_cmap('jet') 
+    ax1 = fig.add_subplot(3,1,1)
+    ax2 = fig.add_subplot(3,1,2)
+    ax3 = fig.add_subplot(3,1,3,projection='3d') 
+    ax3.set_xlim3d(0, 20) 
+    ax3.set_ylim3d(0, 20)
+    ax3.set_zlim3d(0, 20)
 #--------------------------------------------------------    
     x1 = np.arange(0,1000,1) 
     acce_x = x1 
@@ -85,8 +95,28 @@ def WaveDispaly(jlink_read):
     line2_z,= ax2.plot(x2,rota_z,color='blue',linewidth = 0.5)
 
     #--------------------------------------------------------
+    Z = np.linspace(0,4,4) 
+    Y = np.linspace(0,4,4) 
+    Z,Y= np.meshgrid(Z, Y) 
+    
+    X = Z - Z + Y - Y + 2
+    ax3.plot_surface(X, Y, Z, rstride = 1, cstride = 1, cmap = jet,linewidth = 0,alpha= 1) 
+    def rotate(x_angle,y_angle,z_angle): 
+        global k
+        ax3.view_init(20,x_angle) 
+        global pai
+        
+        ax3.clear()
+        
+        
+        k = k + 0.1
+        if(k >= (2*pai - 0.1)): k = -(2*pai)
+        real_k = np.tan(k)
+        X = real_k*(Z - 10) + 12
 
-     
+        ax3.plot_surface(X, Y, Z, rstride = 1, cstride = 1, cmap = jet,linewidth = 0,alpha= 1) 
+    
+    #--------------------------------------------------------
     def animate(i):
         global accex_index
         global real_p_link
@@ -114,6 +144,7 @@ def WaveDispaly(jlink_read):
                 accex_index = 0
             #print('----------------------------------------------------------')
             ClockSet(angle)
+            #rotate(accex_index * 2,0,0)
         
         line1_x.set_ydata(np.array(ACCE_X)[(x1 + accex_index )%1000]+500)   
         line1_y.set_ydata(np.array(ACCE_Y)[(x1 + accex_index )%1000])  
