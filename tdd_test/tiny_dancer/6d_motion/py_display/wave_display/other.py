@@ -7,15 +7,16 @@ from scipy import array
 from mpl_toolkits.mplot3d import Axes3D
 
 surf = None
+k = 0
 
 jet = plt.get_cmap('jet') 
 from matplotlib import animation 
 fig = plt.figure() 
 ax = fig.gca(projection='3d') 
 
-X = np.linspace(0,20,20) 
+Z = np.linspace(0,20,20) 
 Y = np.linspace(0,20,20) 
-X,Y= np.meshgrid(X, Y) 
+Z,Y= np.meshgrid(Z, Y) 
 
 
 '''
@@ -26,32 +27,46 @@ Z = array ([
      [3257.280827, 3800.655101, 4561.372117, 5702.458776], 
      ]) 
 '''
-Z = X*X + Y*Y
+X = Z - Z + Y - Y + 2
+pai = 3.141592653
 def rotate(angle): 
+    global k
     #print(angle)
-    ax.view_init(angle,angle) 
+    ax.view_init(20,angle) 
     global surf
+    global pai
+    
     ax.clear()
     #Z[0] = Z[0] + angle
+    '''
     if(((angle /2) % 2) == 0):
        Z = X
        #print(1)
     else:
        Z = 4*X + 3*Y
        #print(0)
-    
+    '''
+    k = k + 0.1
+    if(k >= (2*pai - 0.1)): k = -(2*pai)
+    real_k = np.tan(k)
+    X = real_k*(Z - 10) + 12
     surf = ax.plot_surface(X, Y, Z, rstride = 1, cstride = 1, cmap = jet,linewidth = 0,alpha= 1) 
+    ax.set_xlim3d(0, 20) 
+    ax.set_ylim3d(0, 20)
+    ax.set_zlim3d(0, 20)
     
 
 surf = ax.plot_surface(X, Y, Z, rstride = 1, cstride = 1, cmap = jet,linewidth = 0,alpha= 1) 
-ax.set_zlim3d(0, Z.max()) 
+ax.set_xlim3d(0, X.max()) 
+#ax.set_zlim3d(0, Z.max())
+
 
 fig.colorbar(surf, shrink=0.8, aspect=5) 
-ax.set_xlabel('Axial Length [mm]') 
-ax.set_ylabel('nbTurns') 
-ax.set_zlabel('RPM') 
+ax.set_xlabel('x') 
+ax.set_ylabel('y') 
+ax.set_zlabel('z') 
 
-rot_animation = animation.FuncAnimation(fig, rotate, frames=np.arange(0,362,2),interval=500) 
+rot_animation = animation.FuncAnimation(fig, rotate, frames=np.arange(0,362,2),interval=100) 
 
 
 plt.show() 
