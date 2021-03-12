@@ -7,6 +7,11 @@ from scipy import array
 from mpl_toolkits.mplot3d import Axes3D
 from jlink_read import JlinkClose,DoesJlinkInitial,JlinkRead,JlinkInit
 
+from ctypes import *
+
+#load the shared object file
+C_Func = CDLL('../test/finally.so')
+
 
 z = 0
 accex_index = 0  
@@ -55,10 +60,10 @@ def action(angle):
     isNew = JlinkRead(real_p_link,sixD_data)
     
     if(isNew == True):
-        a = 0
-        x_xita = 0
-        y_xita = 0
-        z_xita = 45
+        C_Func.TestFunction()
+        x_xita = C_Func.GetX_Xita()
+        y_xita = C_Func.GetY_Xita()
+        z_xita = C_Func.GetZ_Xita()
         rotate(x_xita,y_xita,z_xita)
 
    

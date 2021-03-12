@@ -7,6 +7,7 @@ fi
 
 cd ..
 cd py_display
-cd wave_display
+#cd wave_display
 
-python finally.py
+python 3d_display.py
+#python finally.py

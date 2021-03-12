@@ -8,4 +8,18 @@ unsigned char TestFunction(void)
 	return i;
 }
 
+unsigned char GetX_Xita(void)
+{
+	return (i%360);
+}
+unsigned char GetY_Xita(void)
+{
+	return (i%360);
+}
+unsigned char GetZ_Xita(void)
+{
+	return (i%360);
+}
+
+
 
