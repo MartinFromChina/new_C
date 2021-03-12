@@ -3,7 +3,7 @@
 from ctypes import *
 
 #load the shared object file
-adder = CDLL('../../c/finally.so')
+adder = CDLL('../../test/finally.so')
 
 for i in range(100):
     res_int = adder.TestFunction()
