@@ -82,7 +82,7 @@ ax.set_xlabel('x')
 ax.set_ylabel('y') 
 ax.set_zlabel('z') 
 
-rot_animation = animation.FuncAnimation(fig, action, frames=np.arange(0,362,2),interval=8) 
+rot_animation = animation.FuncAnimation(fig, action, frames=np.arange(0,362,2),interval=1) 
 
 plt.show() 
 

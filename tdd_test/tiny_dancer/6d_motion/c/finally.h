@@ -5,12 +5,12 @@
 extern "C" {
 #endif
 
-//#include "../../../../module/common/x_cross_platform.h"
+#include "../../../../module/common/x_cross_platform.h"
 
-unsigned char TestFunction(void);
-unsigned char GetX_Xita(void);
-unsigned char GetY_Xita(void);
-unsigned char GetZ_Xita(void);
+uint8_t TestFunction(X_Void);
+uint8_t GetX_Xita(X_Void);
+uint8_t GetY_Xita(X_Void);
+uint8_t GetZ_Xita(X_Void);
 
 #ifdef __cplusplus
 	}
