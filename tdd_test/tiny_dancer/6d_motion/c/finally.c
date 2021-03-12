@@ -9,7 +9,7 @@
 #endif
 
 #if (USE_INSERT_DEBUG != 0)
-INSERT(LOG_ONCE_ENTRY_DEF)(p_once,1);
+//INSERT(LOG_ONCE_ENTRY_DEF)(p_once,1);
 INSERT(LOG_COUNTER_ENTRY_DEF)(p_counter,0);
 #endif
 
@@ -20,6 +20,14 @@ uint8_t TestFunction(X_Void)
     i = i + 1;
 	INSERT(LogDebugCounter)(1,p_counter,100,("hello\r\n")); 
 	return i;
+}
+
+X_Void ReadRawData(uint32_t *p_buf)
+{
+	INSERT(LogDebug)(1,("x-------%2x %2x %2x %2x ; y-------  %2x %2x %2x %2x ; z -------  %2x %2x %2x %2x\r\n"
+					,p_buf[0],p_buf[1],p_buf[2],p_buf[3]
+					,p_buf[4],p_buf[5],p_buf[6],p_buf[7]
+					,p_buf[8],p_buf[9],p_buf[10],p_buf[11])); 
 }
 
 uint8_t GetX_Xita(X_Void)

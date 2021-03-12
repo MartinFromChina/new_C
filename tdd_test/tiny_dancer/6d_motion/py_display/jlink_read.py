@@ -40,6 +40,29 @@ def DoesJlinkInitial():
     global isJlinkInit
     return isJlinkInit
 
+def JlinkReadRaw(p_jlink,float_rawdata):
+    global ref 
+    global ref_backup
+    global isJlinkInit
+    try:
+        list = p_jlink.memory_read8(0x200045FC,25) 
+        ref = list[0]
+        if(ref_backup != ref):
+          ref_backup = ref
+          del float_rawdata[:]
+          #print(list)
+          for i in range(0,23,1):
+            float_rawdata.append(list[i+1])
+          return True
+        else:
+            return False
+    except :
+                print("read error !!!!!!, close jlink ")
+                JlinkClose(p_jlink)
+                #time.sleep(0.1)
+                isJlinkInit = False
+                return False
+
 def JlinkRead(p_jlink,float_rawdata):
     global ref 
     global ref_backup

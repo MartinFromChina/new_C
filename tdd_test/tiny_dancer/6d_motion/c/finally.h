@@ -8,6 +8,7 @@ extern "C" {
 #include "../../../../module/common/x_cross_platform.h"
 
 uint8_t TestFunction(X_Void);
+X_Void ReadRawData(uint32_t *p_buf);
 uint8_t GetX_Xita(X_Void);
 uint8_t GetY_Xita(X_Void);
 uint8_t GetZ_Xita(X_Void);

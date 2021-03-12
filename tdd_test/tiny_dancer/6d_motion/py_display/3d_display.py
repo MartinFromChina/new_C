@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np 
 from scipy import array 
 from mpl_toolkits.mplot3d import Axes3D
-from jlink_read import JlinkClose,DoesJlinkInitial,JlinkRead,JlinkInit
+from jlink_read import JlinkClose,DoesJlinkInitial,JlinkRead,JlinkInit,JlinkReadRaw
 
 from ctypes import *
 
@@ -57,19 +57,23 @@ def action(angle):
     if(isInit == False):
         real_p_link = JlinkInit()
         print("reconnectjlink")
-    isNew = JlinkRead(real_p_link,sixD_data)
+    isNew = JlinkReadRaw(real_p_link,sixD_data)  
     
     if(isNew == True):
+        INPUT = c_int * 24
+        input = INPUT()
+        for i in range(0,23,1):
+          #print(sixD_data[i])
+          input[i] = sixD_data[i]
+           
+        C_Func.ReadRawData(input)
         C_Func.TestFunction()
         x_xita = C_Func.GetX_Xita()
         y_xita = C_Func.GetY_Xita()
         z_xita = C_Func.GetZ_Xita()
         rotate(x_xita,y_xita,z_xita)
 
-   
-    
 
-    
 surf = ax.plot_surface(X, Y, Z, rstride = 1, cstride = 1, cmap = jet,linewidth = 0,alpha= 1) 
 #ax.set_xlim3d(0, X.max()) 
 #ax.set_zlim3d(0, Z.max())
