@@ -7,7 +7,7 @@ TARGET = finally.so
 CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += $(DEFS)
 
-$(TARGET) : ./obj/finally.o	 ./obj/InsertLogDebug.o ./obj/DataMonitor.o
+$(TARGET) : ./obj/finally.o	 ./obj/InsertLogDebug.o ./obj/DataMonitor.o ./obj/MotionFusion.o
 	$(CXX) $(CXXFLAGS) $^ -shared -fPIC -o $@ $(DLIBS)
 
 ./obj/finally.o :../c/finally.c   ../c/finally.h 	../c/DataMonitor.h 
@@ -22,9 +22,13 @@ $(TARGET) : ./obj/finally.o	 ./obj/InsertLogDebug.o ./obj/DataMonitor.o
 	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
 	-fPIC -c ../c/DataConvert.c -o $@
 
+./obj/MotionFusion.o :../c/MotionFusion.c   ../c/MotionFusion.h 	
+	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
+	-fPIC -c ../c/MotionFusion.c -o $@
+
 ./obj/InsertLogDebug.o : ../../../../module/common/InsertLog/InsertLogDebug.c ../../../../module/common/InsertLog/InsertLogDebug.h
 	$(CXX) $(CXXFLAGS) -I../../../../../module/common    \
       -fPIC -c ../../../../module/common/InsertLog/InsertLogDebug.c -o $@					
 clean:
-	rm 		./obj/finally.o  ./obj/DataMonitor.o finally.so				
+	rm 		./obj/finally.o  ./obj/DataMonitor.o finally.so	./obj/MotionFusion.o			
 

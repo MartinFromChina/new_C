@@ -3,6 +3,7 @@
 #include "../../../../module/common/InsertLog/InsertLogDebug.h"
 #include "DataMonitor.h"
 #include "DataConvert.h"
+#include "MotionFusion.h"
 
 
 
@@ -26,15 +27,18 @@ uint8_t TestFunction(X_Void)
 	return i;
 }
 
+static s_6D_data raw_6d;
+static s_3_angle angle = {0,0,0};
 X_Void ReadRawData(uint32_t *p_buf)
 {
 	uint8_t buf_copy[24],i;
+	
 	if(p_buf == X_Null) {return;}
 	INSERT(LogDebug)(0,("x-------%2x %2x %2x %2x ; y-------  %2x %2x %2x %2x ; z -------  %2x %2x %2x %2x\r\n"
 					,p_buf[0],p_buf[1],p_buf[2],p_buf[3]
 					,p_buf[4],p_buf[5],p_buf[6],p_buf[7]
 					,p_buf[8],p_buf[9],p_buf[10],p_buf[11])); 
-	s_6D_data raw_6d;
+	
 
 	for(i=0;i<24;i++)
 	{
@@ -43,23 +47,24 @@ X_Void ReadRawData(uint32_t *p_buf)
 	CopyBuffer(buf_copy,&raw_6d.acce,12);
 	CopyBuffer(&buf_copy[12],&raw_6d.rotate,12);
 	
-	INSERT(LogDebug)(1,("acce------  %s %s %s ; rotate ------ %s %s %s \r\n"
+	INSERT(LogDebug)(0,("acce------  %s %s %s ; rotate ------ %s %s %s \r\n"
 					,IntConvertFloatChar(raw_6d.acce.x),IntConvertFloatChar(raw_6d.acce.y),IntConvertFloatChar(raw_6d.acce.z)
 					,IntConvertFloatChar(raw_6d.rotate.x),IntConvertFloatChar(raw_6d.rotate.y),IntConvertFloatChar(raw_6d.rotate.z)));
 					
+	MotionFusion(&raw_6d,&angle);
 }
 
 uint8_t GetX_Xita(X_Void)
 {
-	return (i%360);
+	return angle.alpha;
 }
 uint8_t GetY_Xita(X_Void)
 {
-	return (i%360);
+	return angle.beta;
 }
 uint8_t GetZ_Xita(X_Void)
 {
-	return (i%360);
+	return angle.gama;
 }
 
 

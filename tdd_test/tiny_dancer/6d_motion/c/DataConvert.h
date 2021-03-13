@@ -52,7 +52,12 @@ typedef struct
 	s_3D_tatate rotate;
 }s_6D_data;
 
-
+typedef struct
+{
+	uint8_t alpha;
+	uint8_t beta;
+	uint8_t gama;
+}s_3_angle;
 
 #pragma pack()
 
