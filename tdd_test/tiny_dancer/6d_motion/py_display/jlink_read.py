@@ -49,6 +49,15 @@ def JlinkReadRaw(p_jlink,float_rawdata):
         ref = list[0]
         if(ref_backup != ref):
           ref_backup = ref
+
+          '''
+          FLOAT32 = []
+          for i in range(0,4,1):FLOAT32.append(list[4-i])
+          acce_x = FourCharToDouble(FLOAT32)
+          acce_x = NanHandle(acce_x)
+          print(acce_x)
+          '''
+          
           del float_rawdata[:]
           #print(list)
           for i in range(0,23,1):
