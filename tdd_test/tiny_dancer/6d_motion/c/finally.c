@@ -47,7 +47,7 @@ X_Void ReadRawData(uint32_t *p_buf)
 	CopyBuffer(buf_copy,&raw_6d.acce,12);
 	CopyBuffer(&buf_copy[12],&raw_6d.rotate,12);
 	
-	INSERT(LogDebug)(0,("acce------  %s %s %s ; rotate ------ %s %s %s \r\n"
+	INSERT(LogDebug)(1,("acce------  %s %s %s ; rotate ------ %s %s %s \r\n"
 					,IntConvertFloatChar(raw_6d.acce.x),IntConvertFloatChar(raw_6d.acce.y),IntConvertFloatChar(raw_6d.acce.z)
 					,IntConvertFloatChar(raw_6d.rotate.x),IntConvertFloatChar(raw_6d.rotate.y),IntConvertFloatChar(raw_6d.rotate.z)));
 					

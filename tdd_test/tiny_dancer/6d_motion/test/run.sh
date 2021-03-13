@@ -5,6 +5,8 @@ echo "make failed!!! please Check error"
 exit
 fi
 
+./Motion
+
 cd ..
 cd py_display
 #cd wave_display
