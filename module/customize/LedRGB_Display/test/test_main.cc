@@ -2,7 +2,7 @@
 #include "../../../google_test/include/include/gmock/gmock.h"
 #include <iostream>
 using namespace std;
-//#include "../ProtocolRecv.h"
+#include "../LedDisplay.h"
 
 
 #if (USE_TDD_MOCK != 0)
@@ -30,9 +30,20 @@ using namespace std;
 #endif
 
 */
+X_Void mockable_LedInit(X_Void)
+{
+
+}
+X_Void mockable_LedDraw(uint32_t color)
+{
+	color = color;
+}
 
 
-TEST(Protocol_recv,init)
+APP_LED_DISPLAY_MODULE_DEF(p_led,MOCKABLE(LedInit),MOCKABLE(LedDraw),10);
+
+
+TEST(Led,init)
 {
 	//EXPECT_EQ(DoesProtocolRecvInitOK(p_uart10),X_True);
 }

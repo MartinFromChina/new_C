@@ -7,7 +7,7 @@ TARGET2 = RGB_Display
 CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += $(DEFS)
 
-OBJ = ./obj/LedDisplay.o  ./obj/test_main.o
+OBJ = ./obj/LedDisplay.o  ./obj/test_main.o ./obj/loop_queues.o
 # SRC_FILES = $(filter-out ./obj/Motion_test.o, $(OBJ))
 
 
@@ -19,10 +19,16 @@ $(TARGET1) : $(OBJ)
 	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
       -fPIC -c ../LedDisplay.c -o $@
 
+./obj/loop_queues.o : ../../../../module/common/loopqueue/loop_queues.c ../../../../module/common/loopqueue/loop_queues.h
+	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
+      -fPIC -c ../../../../module/common/loopqueue/loop_queues.c -o $@
+
+      
+
 ./obj/test_main.o : test_main.cc 
 	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
       -fPIC -c test_main.cc -o $@
 clean:
-	rm 		./obj/LedDisplay.o  	 ./obj/test_main.o	
+	rm 		./obj/LedDisplay.o  	 ./obj/test_main.o	./obj/loop_queues.o
 	
 

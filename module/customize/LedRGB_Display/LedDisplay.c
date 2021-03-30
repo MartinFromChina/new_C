@@ -5,6 +5,8 @@
 
 X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 {
+	p_manager = p_manager;
+
 	//isModuleForbidden = X_False;
 	//isUserDefineParamEmpty = X_True;
 	//SimpleQueueInitialize(p_led_event);
@@ -15,6 +17,8 @@ X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 
 X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 {
+	p_manager = p_manager;
+
 	/*
 	if(isModuleForbidden == X_True) 
 	{
@@ -38,6 +42,10 @@ X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 }
 X_Boolean LedDisplayRegisterEvent(const sLedDisPlayManager *p_manager,sLedDisplayEvent *p_event)
 {
+	p_manager = p_manager;
+	p_event = p_event;
+	return X_True;
+
 	/*
 	X_Boolean isOK;
 	uint16_t  bufnumber;
@@ -58,24 +66,24 @@ X_Boolean LedDisplayRegisterEvent(const sLedDisPlayManager *p_manager,sLedDispla
 }
 X_Void LedDisplayEnable(const sLedDisPlayManager *p_manager)
 {
-
+	p_manager = p_manager;
 }
 X_Void LedDisplayDisable(const sLedDisPlayManager *p_manager)
 {
-
+	p_manager = p_manager;
 }
 
 X_Void LedDisplayEnableImmediately(const sLedDisPlayManager *p_manager)
 {
-
+	p_manager = p_manager;
 }
 X_Void LedDisplayDisableImmediately(const sLedDisPlayManager *p_manager)
 {
-
+	p_manager = p_manager;
 }
 X_Void LedDisplayReset(const sLedDisPlayManager *p_manager)
 {
-
+	p_manager = p_manager;
 }
 
 

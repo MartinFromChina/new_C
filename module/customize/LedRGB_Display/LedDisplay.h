@@ -44,15 +44,31 @@ typedef struct
 {
 	sLedDisplayCommonFlag *p_flag;
 	X_Void (*init)(X_Void);
-	X_Void (*draw)(X_Void);
+	X_Void (*draw)(uint32_t color);
+
+	s_QueueOperation      *const    p_operation; 
 }sLedDisPlayManager;
 
 #define APP_LED_DISPLAY_MODULE_DEF(p_manager,color_init,color_draw,max_event_num)   						\
 		static sLedDisplayCommonFlag  CONCAT_2(p_manager, led_display_flag_entry) = {X_False,X_False};		\
+		APP_LOOPQUEUE_DEF(CONCAT_2(p_manager,_led_event_queue),max_event_num);									\
+			static s_QueueOperation      CONCAT_2(p_manager,_led_display_queue) = {						\
+					0,																				\
+					0,																				\
+					CONCAT_2(p_manager,_led_event_queue),														\
+					LoopQueueInitialize,															\
+					LoopQueueFirstIn,																\
+					LoopQueueFirstOut,															\
+					ClearLoopQueue,																\
+					RealseLoopQueueBuf,															\
+					GetLoopQueueUsedNodeNumber,													\
+					DoesLoopQueueEmpty,															\
+			};																						\
 		static const sLedDisPlayManager CONCAT_2(p_manager, led_display_entry) = {							\
 			&CONCAT_2(p_manager, led_display_flag_entry),													\
 			color_init,																						\
 			color_draw,																						\
+			&CONCAT_2(p_manager,_led_display_queue),												\
 		};
 
 X_Void LedDisplayInit(const sLedDisPlayManager *p_manager);
