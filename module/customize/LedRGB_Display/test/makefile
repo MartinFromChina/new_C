@@ -1,37 +1,28 @@
 DLIBS = ../../../google_test/lib/libgmock.a
-DEFS = -DUSE_TDD_MOCK=1 -DLOG_DEBUG_METHOD=printf
-TARGET = Recv
+DEFS = -DUSE_TDD_MOCK=1 -DLOG_DEBUG_METHOD=printf -DUSE_INSERT_DEBUG=1
+TARGET1 = RGB_Display.so
+TARGET2 = RGB_Display
 
 # Flags passed to the C++ compiler.
 CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += $(DEFS)
 
-$(TARGET) : test_main.o ProtocolRecv.o StateMachine.o rw_by_line.o char_to_num.o loop_queues.o
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(DLIBS)
+OBJ = ./obj/LedDisplay.o  ./obj/test_main.o
+# SRC_FILES = $(filter-out ./obj/Motion_test.o, $(OBJ))
 
-loop_queues.o : ../../../common/loopqueue/loop_queues.c   ../../../common/loopqueue/loop_queues.h
-	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
-            -c ../../../common/loopqueue/loop_queues.c
 
-char_to_num.o:../../../common/CharToNum/char_to_num.c   ../../../common/CharToNum/char_to_num.h
-	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
-            -c ../../../common/CharToNum/char_to_num.c
+$(TARGET1) : $(OBJ)
+	$(CXX) $(CXXFLAGS) -o $(TARGET2) $^ $(DLIBS)
+#	$(CXX) $(CXXFLAGS) $(SRC_FILES) -shared -fPIC -o $@ 
 
-rw_by_line.o: ../../../common/FileOperation/rw_by_line.c   ../../../common/FileOperation/rw_by_line.h
-	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
-            -c ../../../common/FileOperation/rw_by_line.c
+./obj/LedDisplay.o : ../LedDisplay.c ../LedDisplay.h
+	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
+      -fPIC -c ../LedDisplay.c -o $@
 
-StateMachine.o:../../../common/StateMachine/StateMachine.c   ../../../common/StateMachine/StateMachine.h 
-	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
-            -c ../../../common/StateMachine/StateMachine.c
-            
-ProtocolRecv.o :../ProtocolRecv.c  ../ProtocolRecv.h 	
-	$(CXX) $(CXXFLAGS)  -I../../../../module/common   \
-            -c ../ProtocolRecv.c
-  
-test_main.o : test_main.cc   ../ProtocolRecv.h    ../../../common/StateMachine/StateMachine.h 
-	$(CXX) $(CXXFLAGS)  -I../../../../module/common\
-            -c test_main.cc
-						
+./obj/test_main.o : test_main.cc 
+	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
+      -fPIC -c test_main.cc -o $@
 clean:
-	rm $(TARGET) test_main.o ProtocolRecv.o StateMachine.o rw_by_line.o char_to_num.o loop_queues.o
+	rm 		./obj/LedDisplay.o  	 ./obj/test_main.o	
+	
+
