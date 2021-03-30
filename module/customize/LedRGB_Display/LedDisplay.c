@@ -2,16 +2,20 @@
 
 
 
-/*
-X_Void mModule_LedDisplayInit(X_Void)
+
+X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 {
-	isModuleForbidden = X_False;
-	isUserDefineParamEmpty = X_True;
-	SimpleQueueInitialize(p_led_event);
+	//isModuleForbidden = X_False;
+	//isUserDefineParamEmpty = X_True;
+	//SimpleQueueInitialize(p_led_event);
 }
 
-X_Void mModule_LedDisplayHandle(X_Void)
+
+
+
+X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 {
+	/*
 	if(isModuleForbidden == X_True) 
 	{
 		mFunc_ColorDisable();
@@ -28,10 +32,13 @@ X_Void mModule_LedDisplayHandle(X_Void)
 	{
 		mModule_PowerSourceApply(PS_Pentip,PSA_PentipRGB,COMMON_COLOR_ON_TIME_IN_MS);
 	}
+
+	*/
 	
 }
-X_Void mModule_LedRegisterEvent(eLedEvent event,sLedDisplayParam *p_param)
+X_Boolean LedDisplayRegisterEvent(const sLedDisPlayManager *p_manager,sLedDisplayEvent *p_event)
 {
+	/*
 	X_Boolean isOK;
 	uint16_t  bufnumber;
 	
@@ -47,19 +54,33 @@ X_Void mModule_LedRegisterEvent(eLedEvent event,sLedDisplayParam *p_param)
 			CopyBuffer(p_param,&sBP_UserDefine,sizeof(sLedDisplayParam)/sizeof(uint8_t));
 		}
 	}
+	*/
 }
-X_Void mModule_LedDisplaySwitch(X_Boolean isEnable)
+X_Void LedDisplayEnable(const sLedDisPlayManager *p_manager)
 {
-	isModuleForbidden = (isEnable == X_False);
+
 }
-X_Void mModule_LedForeverBlinkSwitch(X_Boolean isEnable)
+X_Void LedDisplayDisable(const sLedDisPlayManager *p_manager)
 {
-	isLedOnForever = isEnable;
+
 }
-X_Boolean mModule_DoesUserDefineLedParamFree(X_Void)
+
+X_Void LedDisplayEnableImmediately(const sLedDisPlayManager *p_manager)
 {
-	return isUserDefineParamEmpty;
+
 }
+X_Void LedDisplayDisableImmediately(const sLedDisPlayManager *p_manager)
+{
+
+}
+X_Void LedDisplayReset(const sLedDisPlayManager *p_manager)
+{
+
+}
+
+
+
+/*
 X_Void mModule_LedDisplayReset(X_Void)
 {
 	isModuleForbidden = X_False;
