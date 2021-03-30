@@ -88,6 +88,29 @@ if the return value is INVALID_NODE_NUM,
 sth wrong ,call ClearSimpleQueue to reinit it
 *************************/
 
+typedef X_Void 		(*QueueInit)(const sListManager *p_manager);
+typedef uint16_t    (*QueueFI)(const sListManager *p_manager,X_Boolean is_OccupyPermit);
+typedef uint16_t    (*QueueFO)(const sListManager *p_manager);
+typedef X_Void      (*QueueClear)(const sListManager *p_manager);
+typedef X_Void      (*QueueRelease)(const sListManager *p_manager,uint8_t buf_num);
+typedef uint16_t    (*QueueUsedNum)(const sListManager *p_manager);
+typedef X_Boolean   (*QueueDoesEmpty)(const sListManager *p_manager);
+
+typedef struct
+ {
+	uint16_t cur_push_node;
+	uint16_t cur_pop_node;
+	const sListManager *p_manager;
+	QueueInit 			queue_init;
+	QueueFI				queue_fi;
+	QueueFO				queue_fo;
+	QueueClear			queue_clear;
+	QueueRelease		queue_release;
+	QueueUsedNum		queue_num;
+	QueueDoesEmpty		queue_empty;
+ }s_QueueOperation;
+
+
 #ifdef __cplusplus
 }
 #endif

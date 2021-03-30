@@ -26,14 +26,6 @@ typedef enum{
 	FOP_nospace,
 }e_find_other_process;
 
-typedef X_Void 		(*QueueInit)(const sListManager *p_manager);
-typedef uint16_t    (*QueueFI)(const sListManager *p_manager,X_Boolean is_OccupyPermit);
-typedef uint16_t    (*QueueFO)(const sListManager *p_manager);
-typedef X_Void      (*QueueClear)(const sListManager *p_manager);
-typedef X_Void      (*QueueRelease)(const sListManager *p_manager,uint8_t buf_num);
-typedef uint16_t    (*QueueUsedNum)(const sListManager *p_manager);
-typedef X_Boolean   (*QueueDoesEmpty)(const sListManager *p_manager);
-
 
 typedef X_DATA_UNIT (*unit_receive)(X_Void);
 typedef X_Boolean (*find_header)(X_DATA_UNIT current_data);
@@ -44,19 +36,6 @@ typedef struct
 	X_Boolean isHeaderFind;
 	e_find_other_process process;
 }s_ProtocolRecvProcess;
- typedef struct
- {
-	uint16_t cur_push_node;
-	uint16_t cur_pop_node;
-	const sListManager *p_manager;
-	QueueInit 			queue_init;
-	QueueFI				queue_fi;
-	QueueFO				queue_fo;
-	QueueClear			queue_clear;
-	QueueRelease		queue_release;
-	QueueUsedNum		queue_num;
-	QueueDoesEmpty		queue_empty;
- }s_QueueOperation;
 
  typedef struct
 {
