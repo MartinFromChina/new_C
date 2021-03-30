@@ -39,8 +39,14 @@ X_Void mockable_LedDraw(uint32_t color)
 	color = color;
 }
 
+X_Void mockable_LedOff(X_Void)
+{
 
-APP_LED_DISPLAY_MODULE_DEF(p_led,MOCKABLE(LedInit),MOCKABLE(LedDraw),10);
+}
+
+
+
+APP_LED_DISPLAY_MODULE_DEF(p_led,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),10,20);
 
 
 TEST(Led,init)

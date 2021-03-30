@@ -5,6 +5,7 @@
 
 X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 {
+	if(p_manager == X_Null) {return;}
 	p_manager = p_manager;
 
 	//isModuleForbidden = X_False;
@@ -17,6 +18,7 @@ X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 
 X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 {
+	if(p_manager == X_Null) {return;}
 	p_manager = p_manager;
 
 	/*
@@ -35,6 +37,7 @@ X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 	if(isLedOnForever == X_True)
 	{
 		mModule_PowerSourceApply(PS_Pentip,PSA_PentipRGB,COMMON_COLOR_ON_TIME_IN_MS);
+		
 	}
 
 	*/
@@ -42,6 +45,7 @@ X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 }
 X_Boolean LedDisplayRegisterEvent(const sLedDisPlayManager *p_manager,sLedDisplayEvent *p_event)
 {
+	if(p_manager == X_Null || p_event == X_Null ) {return X_False;}
 	p_manager = p_manager;
 	p_event = p_event;
 	return X_True;
@@ -66,23 +70,32 @@ X_Boolean LedDisplayRegisterEvent(const sLedDisPlayManager *p_manager,sLedDispla
 }
 X_Void LedDisplayEnable(const sLedDisPlayManager *p_manager)
 {
+	if(p_manager == X_Null) {return;}
 	p_manager = p_manager;
 }
 X_Void LedDisplayDisable(const sLedDisPlayManager *p_manager)
 {
-	p_manager = p_manager;
+	uint16_t buf_num;
+	if(p_manager == X_Null) {return;}
+	buf_num = p_manager ->p_operation->queue_fi(p_manager ->p_operation ->p_manager,X_False);
+	if(buf_num >= p_manager ->max_event_to_cache )  {return;}
+
+	p_manager ->p_event_buf[buf_num].event_mode = LedDisable;
 }
 
 X_Void LedDisplayEnableImmediately(const sLedDisPlayManager *p_manager)
 {
+	if(p_manager == X_Null) {return;}
 	p_manager = p_manager;
 }
 X_Void LedDisplayDisableImmediately(const sLedDisPlayManager *p_manager)
 {
+	if(p_manager == X_Null) {return;}
 	p_manager = p_manager;
 }
 X_Void LedDisplayReset(const sLedDisPlayManager *p_manager)
 {
+	if(p_manager == X_Null) {return;}
 	p_manager = p_manager;
 }
 
