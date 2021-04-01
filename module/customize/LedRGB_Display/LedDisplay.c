@@ -9,22 +9,19 @@ X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 	
 	if(p_manager ->init == X_Null)  {return;}
 	p_manager ->init();
+	if(p_manager ->draw == X_Null || p_manager ->off == X_Null ) {return;}
 	if(p_manager ->p_operation == X_Null)  {return;}
 	p_manager ->p_operation ->queue_init(p_manager ->p_operation ->p_manager);
 	
-	p_manager ->p_flag -> isEnable = X_True;
+	p_manager ->p_flag ->isEnable = X_True;
 	p_manager ->p_flag ->isInitOK  = X_True;
 
 }
-
-
-
 
 X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 {
 	if(p_manager == X_Null) {return;}
 	if(p_manager ->p_flag ->isInitOK == X_False) {return ;}
-	p_manager = p_manager;
 
 	/*
 	if(isModuleForbidden == X_True) 
@@ -50,29 +47,22 @@ X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 }
 X_Boolean LedDisplayEventRegister(const sLedDisPlayManager *p_manager,sLedDisplayEvent *p_event)
 {
+	uint16_t buf_number;
 	if(p_manager == X_Null || p_event == X_Null ) {return X_False;}
 	if(p_manager ->p_flag ->isInitOK == X_False) {return X_False;}
-	p_manager = p_manager;
 	p_event = p_event;
-	return X_True;
 
-	/*
-	X_Boolean isOK;
-	uint16_t  bufnumber;
-	
-	if(event == LE_UserDefine && p_param == X_Null) {return;}
-	
-	bufnumber = SimpleQueueFirstIn(p_led_event,&isOK,X_False);
-	if(isOK == X_True && bufnumber < MAX_LED_EVENT_HOLD_COUNT)
+	buf_number = p_manager ->p_operation->queue_fi(p_manager ->p_operation ->p_manager,X_False);
+	if(buf_number < p_manager ->max_event_to_cache)
 	{
-		led_event_buf[bufnumber] = event;
-		if(event == LE_UserDefine)
-		{
-			isUserDefineParamEmpty = X_False;
-			CopyBuffer(p_param,&sBP_UserDefine,sizeof(sLedDisplayParam)/sizeof(uint8_t));
-		}
+		p_manager ->p_event_buf[buf_number].event_mode 				= p_event->event_mode;
+		p_manager ->p_event_buf[buf_number].param.color 			= p_event->param.color;
+		p_manager ->p_event_buf[buf_number].param.led_off_time 		= p_event->param.led_off_time;
+		p_manager ->p_event_buf[buf_number].param.led_on_time  		= p_event->param.led_on_time;
+		p_manager ->p_event_buf[buf_number].param.on_off_cycle 		= p_event->param.on_off_cycle;
+		return X_True;
 	}
-	*/
+	return X_False;
 }
 X_Void LedDisplayEnable(const sLedDisPlayManager *p_manager)
 {

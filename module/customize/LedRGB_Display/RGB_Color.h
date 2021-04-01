@@ -151,7 +151,7 @@
 #define COLOR_RGB_Yellow                    0xFFFF00
 #define COLOR_RGB_YellowGreen               0x9ACD32
 
-
+#define COLOR_WITH_FULL_TRANSPORT(color)           (uint32_t)(0xff000000|color)
 
 #ifdef __cplusplus
 		}
