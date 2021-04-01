@@ -16,6 +16,7 @@
 
 #define LED_ON_INFINITE_TIME   0xffff
 
+
 typedef enum
 {
 	LedBlink,
@@ -49,16 +50,42 @@ typedef struct
 
 typedef struct
 {
-	sLedDisplayCommonFlag *p_flag;
-	uint16_t max_event_to_cache;
+	sLedDisplayCommonFlag *			p_flag;
+	uint16_t 						max_event_to_cache;
 	X_Void (*init)(X_Void);
 	X_Void (*draw)(uint32_t color);
 	X_Void (*off)(X_Void);
 	X_Void (*pow_apply)(X_Void);
 	X_Boolean (*DoesPowerOn)(X_Void);
 	sLedDisplayEvent      *const    p_event_buf;
-	s_QueueOperation      *const    p_operation; 
+	s_QueueOperation      *const    p_operation;
+	s_StateMachineParam   *			p_param;
+	const s_StateMachine  *			p_state_machine;
 }sLedDisPlayManager;
+
+
+
+
+
+typedef struct
+{
+	s_StateMachineParam 	base;
+	//eLedEvent               current_event;
+	StateNumber				state_backup;
+	uint16_t 				wait_counter_in_ms;
+	uint32_t                color_backup;
+	sLedBlinkParam          const *p_on_off_param_backup;
+	X_Boolean               (*onWaitMethod)(X_Void);
+	uint16_t				blink_cycle_counter;
+}sLedStateParam;
+
+StateNumber LS_IdleAction(s_StateMachineParam *p_this);
+StateNumber LS_LoadEventAction(s_StateMachineParam *p_this);
+StateNumber LS_ReadyForEventAction(s_StateMachineParam *p_this);
+StateNumber LS_RecoverAction(s_StateMachineParam *p_this);
+StateNumber LS_BlinkOnAction(s_StateMachineParam *p_this);
+StateNumber LS_BlinkOffAction(s_StateMachineParam *p_this);
+StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 
 #define APP_LED_DISPLAY_MODULE_DEF(	p_manager,												\
 								 	color_init,												\
@@ -82,6 +109,19 @@ typedef struct
 				GetLoopQueueUsedNodeNumber,													\
 				DoesLoopQueueEmpty,															\
 		};																						\
+		static sLedStateParam CONCAT_2(p_manager,_sLSP);										\
+		static const StateAction CONCAT_2(p_manager,_SimpleStateAction)[] = {						\
+				{LS_IdleAction},																		\
+				{LS_LoadEventAction},																		\
+				{LS_ReadyForEventAction},																		\
+				{LS_RecoverAction},																					\
+				{LS_BlinkOnAction},																					\
+				{LS_BlinkOffAction},																				\
+				{LS_WaitAction},																					\
+		};																													\
+		APP_STATE_MACHINE_DEF(CONCAT_2(p_manager,_p_simple_state),																				\
+							sizeof(CONCAT_2(p_manager,_SimpleStateAction))/sizeof(CONCAT_2(p_manager,_SimpleStateAction)[0]),		\
+							&CONCAT_2(p_manager,_SimpleStateAction)[0]);							\
 		static sLedDisplayEvent 	CONCAT_2(p_manager, led_display_event_buf)[max_event_num];		\
 		static const sLedDisPlayManager CONCAT_2(p_manager, led_display_entry) = {							\
 			&CONCAT_2(p_manager, led_display_flag_entry),													\
@@ -93,6 +133,8 @@ typedef struct
 			does_power_on,																				\
 			&CONCAT_2(p_manager, led_display_event_buf)[0],												\
 			&CONCAT_2(p_manager,_led_display_queue),												\
+			&(CONCAT_2(p_manager,_sLSP).base),																\
+			CONCAT_2(p_manager,_p_simple_state),													\
 		};																							\
 		static const sLedDisPlayManager * p_manager = &CONCAT_2(p_manager, led_display_entry)
 
