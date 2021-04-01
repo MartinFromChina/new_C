@@ -7,6 +7,8 @@ using namespace std;
 
 
 //#include "../../../common/StateMachine/StateMachine.h"
+//#include "../../common/StateMachine/test_11.h"
+
 
 StateNumber LS_IdleAction(s_StateMachineParam *p_this)
 {
@@ -31,8 +33,7 @@ int main(int argc, char **argv)
 {
 	cout<<"------------led_display_test from test_main.cc \r\n";
 	testing::InitGoogleTest(&argc, argv);
-
-	//Test_Function();
+	
 	mStateMachineStateSet(p_manager,0);
 	
 	return RUN_ALL_TESTS();

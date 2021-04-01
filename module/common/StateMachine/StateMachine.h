@@ -1,7 +1,7 @@
 #ifndef __STATEMACHINE_H
 #define __STATEMACHINE_H
 
-#ifdef __cpluscplus
+#ifdef __cplusplus
 	extern "C" {
 #endif
 
@@ -49,7 +49,7 @@ m_app_result mStateMachineRun( const s_StateMachine *p_ssp
 m_app_result mStateMachineStateSet(const s_StateMachine *p_ss,StateNumber state);
 
 
-#ifdef __cpluscplus
+#ifdef __cplusplus
 		}
 #endif
 

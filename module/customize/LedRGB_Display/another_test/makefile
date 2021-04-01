@@ -13,6 +13,10 @@ OBJ =  test_main.o  StateMachine.o
 $(TARGET2) : $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $(TARGET2) $^ $(DLIBS)
 
+#test_11.o : ../../../../module/common/StateMachine/test_11.c ../../../../module/common/StateMachine/test_11.h
+#	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
+#     -fPIC -c ../../../../module/common/StateMachine/test_11.c -o $@ 
+
 StateMachine.o : ../../../../module/common/StateMachine/StateMachine.c ../../../../module/common/StateMachine/StateMachine.h
 	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
      -fPIC -c ../../../../module/common/StateMachine/StateMachine.c -o $@  
