@@ -14,6 +14,4 @@ typedef uint8_t						m_app_result;
 #define APP_NO_ENOUGH_SPACE			6
 #define APP_UNEXPECT_STATE			7
 
-char *AppErrorGet(uint32_t error,char* p_cannot);
-
 #endif

@@ -92,8 +92,6 @@ TEST(Led,init)
 	isOK = LedDisplayEventRegister(p_led,&led_event);
 	EXPECT_EQ(isOK,X_True);
 
-	//mStateMachineStateSet(p_led ->p_state_machine,0);
-	stateMachineTest();
 }
 
 static sLedDisplayEvent blink_event1 = {
@@ -149,10 +147,38 @@ TEST(Led,sample_blink)
 	
 }
 
+APP_LOOPQUEUE_DEF(p_queue,20);
+static StateNumber t0Action(s_StateMachineParam *p_this){return p_this ->current_state;}
+static StateNumber t1Action(s_StateMachineParam *p_this){return p_this ->current_state;}
+static const StateAction jumpStateAction[] = {
+		{t0Action},{t1Action},
+};
+typedef X_Void (*f_jump_recorder)(StateNumber state_going_to_leave,StateNumber state_going_to_enter);
+typedef struct
+{
+	s_StateMachineParam 		base;
+	StateNumber 						StateBackupWhenSuccessed;
+	StateNumber 						StateBackupWhenFailed;
+	uint16_t 								wait_counter;
+}sParamExtern;
 
+
+APP_STATE_MACHINE_DEF(p_jump_state
+						,sizeof(jumpStateAction)/sizeof(jumpStateAction[0])
+						,&jumpStateAction[0]);
+static sParamExtern sPE;
+
+TEST(stateMachine,peoblem)
+{
+	mStateMachineStateSet(p_jump_state,0);
+	//stateMachineTest();
+	LoopQueueInitialize(p_queue);
+	EXPECT_EQ(p_jump_state ->AllStateNum,2);
+	 
+	//mStateMachineRun(p_jump_state,&sPE.base,(f_jump_recorder)0);
+}
 TEST(Led,disable_enable)
 {
-
 }
 
 TEST(Led,disable_enable_immediately)

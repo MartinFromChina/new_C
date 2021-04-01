@@ -7,13 +7,13 @@
 #endif
 
 
-#include "RGB_Color.h"
+//#include "RGB_Color.h"
 #include "../../common/x_cross_platform.h"
-#include "../../common/CommonMarco.h"
+//#include "../../common/CommonMarco.h"
 #include "../../common/loopqueue/loop_queues.h"
 #include "../../common/StateMachine/StateMachine.h"
 
-
+/*
 #define LED_ON_INFINITE_TIME   0xffff
 
 
@@ -147,7 +147,7 @@ X_Void LedDisplayDisable(const sLedDisPlayManager *p_manager);
 X_Void LedDisplayEnableImmediately(const sLedDisPlayManager *p_manager);
 X_Void LedDisplayDisableImmediately(const sLedDisPlayManager *p_manager);
 X_Void LedDisplayReset(const sLedDisPlayManager *p_manager);
-
+*/
 #ifdef __cplusplus
 		}
 #endif
