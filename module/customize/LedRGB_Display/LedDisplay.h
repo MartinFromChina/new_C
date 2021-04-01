@@ -10,9 +10,9 @@
 //#include "RGB_Color.h"
 #include "../../common/x_cross_platform.h"
 //#include "../../common/CommonMarco.h"
-#include "../../common/loopqueue/loop_queues.h"
-//#include "../../common/StateMachine/StateMachine.h"
-#include "../../common/StateMachine/test_11.h"
+//#include "../../common/loopqueue/loop_queues.h"
+#include "../../common/StateMachine/StateMachine.h"
+//#include "../../common/StateMachine/test_11.h"
 
 
 /*
