@@ -12,9 +12,9 @@ OBJ = main.o  StateMachine.o
 $(TARGET2) : $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $(TARGET2) $^ $(DLIBS)
 
-StateMachine.o : ../../../module/common/StateMachine/StateMachine.c ../../../module/common/StateMachine/StateMachine.h
-	$(CXX) $(CXXFLAGS) -I../../../module/common    \
-     -fPIC -c ../../../module/common/StateMachine/StateMachine.c -o $@  
+StateMachine.o : ../../../../module/common/StateMachine/StateMachine.c ../../../../module/common/StateMachine/StateMachine.h
+	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
+     -fPIC -c ../../../../module/common/StateMachine/StateMachine.c -o $@  
 
 main.o : main.cc
 	$(CXX) $(CXXFLAGS) -I../../../module/common    \
@@ -22,6 +22,6 @@ main.o : main.cc
 
 
 clean:
-	rm 		StateMachine.o  
+	rm 		StateMachine.o  main.o RGB_Display
 	
 

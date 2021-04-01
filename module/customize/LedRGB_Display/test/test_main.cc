@@ -91,6 +91,9 @@ TEST(Led,init)
 
 	isOK = LedDisplayEventRegister(p_led,&led_event);
 	EXPECT_EQ(isOK,X_True);
+
+	//mStateMachineStateSet(p_led ->p_state_machine,0);
+	stateMachineTest();
 }
 
 static sLedDisplayEvent blink_event1 = {
@@ -175,5 +178,6 @@ GTEST_API_ int main(int argc, char **argv) {
   cout<<"------------led_display_test from test_main.cc \r\n";
   testing::InitGoogleTest(&argc, argv);
   //testing::FLAGS_gtest_filter = "Protocol_recv.find_headers_0";
+  
   return RUN_ALL_TESTS();
 }

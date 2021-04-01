@@ -48,6 +48,7 @@ m_app_result mStateMachineRun( const s_StateMachine *p_ssp
 
 m_app_result mStateMachineStateSet(const s_StateMachine *p_ss,StateNumber state);
 
+
 #ifdef __cpluscplus
 		}
 #endif

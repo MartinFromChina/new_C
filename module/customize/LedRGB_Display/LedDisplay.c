@@ -267,7 +267,7 @@ X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 	if(p_manager ->p_flag ->isInitOK == X_False) {return ;}
 	
 	//mStateMachineRun(p_manager ->p_state_machine,p_manager ->p_param,Recorder);
-	mStateMachineStateSet(p_manager ->p_state_machine,0);
+	//mStateMachineStateSet(p_manager ->p_state_machine,0);
 	
 	/*
 	
