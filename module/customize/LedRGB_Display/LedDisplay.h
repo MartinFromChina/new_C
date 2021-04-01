@@ -45,6 +45,7 @@ typedef struct
 {
 	X_Boolean isInitOK;
 	X_Boolean isEnable;
+	X_Boolean isPowerCtrlNeeded;
 }sLedDisplayCommonFlag;
 
 
@@ -70,10 +71,10 @@ typedef struct
 typedef struct
 {
 	s_StateMachineParam 	base;
-	//eLedEvent               current_event;
 	StateNumber				state_backup;
 	uint16_t 				wait_counter_in_ms;
 	uint32_t                color_backup;
+	X_Boolean 				is_power_ctrl_needed;
 	sLedBlinkParam          const *p_on_off_param_backup;
 	X_Boolean               (*onWaitMethod)(X_Void);
 	uint16_t				blink_cycle_counter;
@@ -95,7 +96,7 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 								 	does_power_on,											\
 								 	max_event_num,											\
 								 	handle_frequency_in_ms)									\
-		static sLedDisplayCommonFlag  CONCAT_2(p_manager, led_display_flag_entry) = {X_False,X_False};		\
+		static sLedDisplayCommonFlag  CONCAT_2(p_manager, led_display_flag_entry) = {X_False,X_False,X_False};		\
 		APP_LOOPQUEUE_DEF(CONCAT_2(p_manager,_led_event_queue),max_event_num);									\
 		static s_QueueOperation      CONCAT_2(p_manager,_led_display_queue) = {						\
 				0,																				\

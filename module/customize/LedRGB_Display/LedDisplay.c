@@ -238,7 +238,7 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this)
 	*/
 	return p_this ->current_state;
 }
-X_Void Recorder(StateNumber state_going_to_leave,StateNumber state_going_to_enter)
+static X_Void Recorder(StateNumber state_going_to_leave,StateNumber state_going_to_enter)
 {
 	state_going_to_leave = state_going_to_leave;
 	state_going_to_enter = state_going_to_enter;
@@ -255,7 +255,9 @@ X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 	if(p_manager ->draw == X_Null || p_manager ->off == X_Null ) {return;}
 	if(p_manager ->p_operation == X_Null)  {return;}
 	p_manager ->p_operation ->queue_init(p_manager ->p_operation ->p_manager);
-	
+
+	if(p_manager ->pow_apply != X_Null && p_manager ->DoesPowerOn != X_Null) {p_manager ->p_flag ->isPowerCtrlNeeded = X_True;}
+	else {p_manager ->p_flag ->isEnable = X_False;}
 	p_manager ->p_flag ->isEnable = X_True;
 	p_manager ->p_flag ->isInitOK  = X_True;
 
@@ -266,26 +268,8 @@ X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 	if(p_manager == X_Null) {return;}
 	if(p_manager ->p_flag ->isInitOK == X_False) {return ;}
 	
-	//mStateMachineRun(p_manager ->p_state_machine,p_manager ->p_param,Recorder);
+	mStateMachineRun(p_manager ->p_state_machine,p_manager ->p_param,Recorder);
 	//mStateMachineStateSet(p_manager ->p_state_machine,0);
-	
-	/*
-	
-	SimpleStateMachineRun(p_simple_state,&sLSP.base,X_Null
-	#if (SEGGER_RTT_DEBUG == 1)
-	,StateJumpRecorder
-	#else
-	,X_Null
-	#endif
-	);
-	if(isLedOnForever == X_True)
-	{
-		mModule_PowerSourceApply(PS_Pentip,PSA_PentipRGB,COMMON_COLOR_ON_TIME_IN_MS);
-		
-	}
-
-	*/
-	
 }
 X_Boolean LedDisplayEventRegister(const sLedDisPlayManager *p_manager,sLedDisplayEvent *p_event)
 {
