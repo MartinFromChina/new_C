@@ -6,7 +6,7 @@ TARGET2 = RGB_Display
 CXXFLAGS += -g -Wall -Wextra -pthread
 CXXFLAGS += $(DEFS)
 
-OBJ = test_main.o  StateMachine.o loop_queues.o     
+OBJ = test_main.o  StateMachine.o loop_queues.o  test_11.o   
 # SRC_FILES = $(filter-out ./obj/Motion_test.o, $(OBJ))
 
 
@@ -16,6 +16,10 @@ $(TARGET2) : $(OBJ)
 loop_queues.o : ../../../../module/common/loopqueue/loop_queues.c ../../../../module/common/loopqueue/loop_queues.h
 	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
       -fPIC -c ../../../../module/common/loopqueue/loop_queues.c -o $@
+
+test_11.o : ../../../../module/common/StateMachine/test_11.c ../../../../module/common/StateMachine/test_11.h
+	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
+     -fPIC -c ../../../../module/common/StateMachine/test_11.c -o $@ 
       
 StateMachine.o : ../../../../module/common/StateMachine/StateMachine.c ../../../../module/common/StateMachine/StateMachine.h
 	$(CXX) $(CXXFLAGS) -I../../../../module/common    \
@@ -27,6 +31,6 @@ test_main.o : test_main.cc
 
 
 clean:
-	rm 		StateMachine.o  main.o RGB_Display loop_queues.o
+	rm 		StateMachine.o  main.o RGB_Display loop_queues.o test_11.o
 	
 
