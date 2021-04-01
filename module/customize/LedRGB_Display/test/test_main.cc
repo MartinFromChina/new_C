@@ -65,6 +65,11 @@ X_Void mockable_PowerApply(X_Void)
 {
 
 }
+X_Boolean mockable_DoesPowerOn(X_Void)
+{
+	return X_True;
+}
+
 
 
 #define HANDLE_FREQUENCY  20
@@ -73,7 +78,7 @@ X_Void mockable_PowerApply(X_Void)
 static sLedDisplayEvent led_event;
 TEST(Led,init)
 {
-	APP_LED_DISPLAY_MODULE_DEF(p_led,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),10,HANDLE_FREQUENCY);
+	APP_LED_DISPLAY_MODULE_DEF(p_led,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),MOCKABLE(DoesPowerOn),10,HANDLE_FREQUENCY);
 	X_Boolean isOK;
 	test_init();
 	
@@ -100,7 +105,7 @@ static sLedDisplayEvent blink_event1 = {
 		
 TEST(Led,sample_blink)
 {
-	APP_LED_DISPLAY_MODULE_DEF(p_led1,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),10,HANDLE_FREQUENCY);
+	APP_LED_DISPLAY_MODULE_DEF(p_led1,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),MOCKABLE(DoesPowerOn),10,HANDLE_FREQUENCY);
 	uint32_t timer_cnt = 0;
 	X_Boolean isOK;
 	led_event.event_mode 	= LedBlink;

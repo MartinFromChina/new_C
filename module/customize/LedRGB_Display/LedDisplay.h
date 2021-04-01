@@ -11,6 +11,8 @@
 #include "../../common/x_cross_platform.h"
 #include "../../common/CommonMarco.h"
 #include "../../common/loopqueue/loop_queues.h"
+#include "../../common/StateMachine/StateMachine.h"
+
 
 #define LED_ON_INFINITE_TIME   0xffff
 
@@ -53,6 +55,7 @@ typedef struct
 	X_Void (*draw)(uint32_t color);
 	X_Void (*off)(X_Void);
 	X_Void (*pow_apply)(X_Void);
+	X_Boolean (*DoesPowerOn)(X_Void);
 	sLedDisplayEvent      *const    p_event_buf;
 	s_QueueOperation      *const    p_operation; 
 }sLedDisPlayManager;
@@ -62,6 +65,7 @@ typedef struct
 								 	color_draw,												\
 								 	color_off,												\
 								 	power_apply,											\
+								 	does_power_on,											\
 								 	max_event_num,											\
 								 	handle_frequency_in_ms)									\
 		static sLedDisplayCommonFlag  CONCAT_2(p_manager, led_display_flag_entry) = {X_False,X_False};		\
@@ -86,6 +90,7 @@ typedef struct
 			color_draw,																						\
 			color_off,																					\
 			power_apply,																				\
+			does_power_on,																				\
 			&CONCAT_2(p_manager, led_display_event_buf)[0],												\
 			&CONCAT_2(p_manager,_led_display_queue),												\
 		};																							\
