@@ -5,11 +5,11 @@ echo "make failed!!! please Check error"
 exit
 fi
 
-./Motion
+./RGB_Display 
 
-cd ..
-cd py_display
+#cd ..
+#cd py_display
 #cd wave_display
 
-python 3d_display.py
+#python 3d_display.py
 #python finally.py

@@ -6,11 +6,15 @@
 X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 {
 	if(p_manager == X_Null) {return;}
-	p_manager = p_manager;
+	
+	if(p_manager ->init == X_Null)  {return;}
+	p_manager ->init();
+	if(p_manager ->p_operation == X_Null)  {return;}
+	p_manager ->p_operation ->queue_init(p_manager ->p_operation ->p_manager);
+	
+	p_manager ->p_flag -> isEnable = X_True;
+	p_manager ->p_flag ->isInitOK  = X_True;
 
-	//isModuleForbidden = X_False;
-	//isUserDefineParamEmpty = X_True;
-	//SimpleQueueInitialize(p_led_event);
 }
 
 
@@ -19,6 +23,7 @@ X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 {
 	if(p_manager == X_Null) {return;}
+	if(p_manager ->p_flag ->isInitOK == X_False) {return ;}
 	p_manager = p_manager;
 
 	/*
@@ -43,9 +48,10 @@ X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 	*/
 	
 }
-X_Boolean LedDisplayRegisterEvent(const sLedDisPlayManager *p_manager,sLedDisplayEvent *p_event)
+X_Boolean LedDisplayEventRegister(const sLedDisPlayManager *p_manager,sLedDisplayEvent *p_event)
 {
 	if(p_manager == X_Null || p_event == X_Null ) {return X_False;}
+	if(p_manager ->p_flag ->isInitOK == X_False) {return X_False;}
 	p_manager = p_manager;
 	p_event = p_event;
 	return X_True;

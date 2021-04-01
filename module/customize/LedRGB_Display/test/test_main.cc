@@ -30,30 +30,90 @@ using namespace std;
 #endif
 
 */
+static uint16_t init_cnt = 0,draw_cnt = 0,off_cnt = 0;
+static X_Void test_init(X_Void)
+{
+	init_cnt = 0;
+	draw_cnt = 0; 
+	off_cnt = 0;
+}
 X_Void mockable_LedInit(X_Void)
 {
-
+	init_cnt ++; 
 }
 X_Void mockable_LedDraw(uint32_t color)
 {
+	draw_cnt ++;
 	color = color;
 }
 
 X_Void mockable_LedOff(X_Void)
 {
-
+	off_cnt++;
 }
 
 
+#define HANDLE_FREQUENCY = 20;
+APP_LED_DISPLAY_MODULE_DEF(p_led,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),10,HANDLE_FREQUENCY);
 
-APP_LED_DISPLAY_MODULE_DEF(p_led,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),10,20);
-
-
+static sLedDisplayEvent led_event;
 TEST(Led,init)
 {
-	//EXPECT_EQ(DoesProtocolRecvInitOK(p_uart10),X_True);
+	X_Boolean isOK;
+	test_init();
+	
+	isOK = LedDisplayEventRegister(p_led,&led_event);
+	EXPECT_EQ(isOK,X_False);
+	
+	LedDisplayInit(p_led);
+
+	EXPECT_EQ(init_cnt,1);
+
+	isOK = LedDisplayEventRegister(p_led,&led_event);
+	EXPECT_EQ(isOK,X_True);
 }
 
+static sLedDisplayEvent event1 = {
+
+
+};
+TEST(Led,blink)
+{
+	uint32_t timer_cnt = 0;
+	led_event.event_mode 	= LedBlink;
+	led_event.param.color   = COLOR_RGB_Blue;
+	led_event.param.led_off_time   = 300;
+	led_event.param.led_on_time    = 500;
+	led_event.param.on_off_cycle   = 5;
+
+	while(timer_cnt < 5000)
+	{
+		timer_cnt = timer_cnt + HANDLE_FREQUENCY;
+	}
+}
+
+
+TEST(Led,disable_enable)
+{
+
+}
+
+TEST(Led,disable_enable_immediately)
+{
+
+}
+
+
+
+TEST(Led,on_off)
+{
+
+}
+
+TEST(Led,mul_entry)
+{
+
+}
 
 
 

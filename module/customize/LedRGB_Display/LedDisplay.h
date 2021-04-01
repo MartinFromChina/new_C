@@ -27,8 +27,8 @@ typedef enum
 typedef struct
 {
 	uint32_t color;
-	uint16_t led_on_time;
-	uint16_t led_off_time;
+	uint16_t led_on_time;// in ms
+	uint16_t led_off_time;// in ms
 	uint16_t on_off_cycle;
 }sLedBlinkParam;
 
@@ -78,11 +78,13 @@ typedef struct
 			color_draw,																						\
 			&CONCAT_2(p_manager, led_display_event_buf)[0],												\
 			&CONCAT_2(p_manager,_led_display_queue),												\
-		};
+		};																							\
+		static const sLedDisPlayManager * p_manager = &CONCAT_2(p_manager, led_display_entry)
+
 
 X_Void LedDisplayInit(const sLedDisPlayManager *p_manager);
 X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager);// call it every "handle_frequency_in_ms" ms
-X_Boolean LedDisplayRegisterEvent(const sLedDisPlayManager *p_manager,sLedDisplayEvent *p_event);
+X_Boolean LedDisplayEventRegister(const sLedDisPlayManager *p_manager,sLedDisplayEvent *p_event);
 X_Void LedDisplayEnable(const sLedDisPlayManager *p_manager);
 X_Void LedDisplayDisable(const sLedDisPlayManager *p_manager);
 X_Void LedDisplayEnableImmediately(const sLedDisPlayManager *p_manager);
