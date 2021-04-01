@@ -238,6 +238,11 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this)
 	*/
 	return p_this ->current_state;
 }
+X_Void Recorder(StateNumber state_going_to_leave,StateNumber state_going_to_enter)
+{
+	state_going_to_leave = state_going_to_leave;
+	state_going_to_enter = state_going_to_enter;
+}
 
 /*******************************************************************************/
 
@@ -260,13 +265,12 @@ X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 {
 	if(p_manager == X_Null) {return;}
 	if(p_manager ->p_flag ->isInitOK == X_False) {return ;}
-
+	
+	//mStateMachineRun(p_manager ->p_state_machine,p_manager ->p_param,Recorder);
+	mStateMachineStateSet(p_manager ->p_state_machine,0);
+	
 	/*
-	if(isModuleForbidden == X_True) 
-	{
-		mFunc_ColorDisable();
-		return;
-	}
+	
 	SimpleStateMachineRun(p_simple_state,&sLSP.base,X_Null
 	#if (SEGGER_RTT_DEBUG == 1)
 	,StateJumpRecorder

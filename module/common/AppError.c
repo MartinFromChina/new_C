@@ -1,6 +1,6 @@
 #include "AppError.h"
 
-static char Canot_Translate[2][9] = {
+static char Canot_Translate[2][15] = {
 		"unknow",
 		"unsupport",
 };

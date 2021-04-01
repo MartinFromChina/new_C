@@ -1,8 +1,8 @@
 #include "StateMachine.h"
 
-m_app_result mStateMachineRun( const s_StateMachine *p_ssp,s_StateMachineParam *p_smp
+m_app_result mStateMachineRun( const s_StateMachine *p_ssp
+						,s_StateMachineParam *p_smp
 						,X_Void(*StateRecorder)(StateNumber state_going_to_leave,StateNumber state_going_to_enter))
-
 {
 	StateNumber current_state,previous_state;
 
