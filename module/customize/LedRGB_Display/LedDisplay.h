@@ -51,31 +51,41 @@ typedef struct
 	uint16_t max_event_to_cache;
 	X_Void (*init)(X_Void);
 	X_Void (*draw)(uint32_t color);
+	X_Void (*off)(X_Void);
+	X_Void (*pow_apply)(X_Void);
 	sLedDisplayEvent      *const    p_event_buf;
 	s_QueueOperation      *const    p_operation; 
 }sLedDisPlayManager;
 
-#define APP_LED_DISPLAY_MODULE_DEF(p_manager,color_init,color_draw,color_off,max_event_num,handle_frequency_in_ms)   		\
+#define APP_LED_DISPLAY_MODULE_DEF(	p_manager,												\
+								 	color_init,												\
+								 	color_draw,												\
+								 	color_off,												\
+								 	power_apply,											\
+								 	max_event_num,											\
+								 	handle_frequency_in_ms)									\
 		static sLedDisplayCommonFlag  CONCAT_2(p_manager, led_display_flag_entry) = {X_False,X_False};		\
 		APP_LOOPQUEUE_DEF(CONCAT_2(p_manager,_led_event_queue),max_event_num);									\
-			static s_QueueOperation      CONCAT_2(p_manager,_led_display_queue) = {						\
-					0,																				\
-					0,																				\
-					CONCAT_2(p_manager,_led_event_queue),														\
-					LoopQueueInitialize,															\
-					LoopQueueFirstIn,																\
-					LoopQueueFirstOut,															\
-					ClearLoopQueue,																\
-					RealseLoopQueueBuf,															\
-					GetLoopQueueUsedNodeNumber,													\
-					DoesLoopQueueEmpty,															\
-			};																						\
+		static s_QueueOperation      CONCAT_2(p_manager,_led_display_queue) = {						\
+				0,																				\
+				0,																				\
+				CONCAT_2(p_manager,_led_event_queue),														\
+				LoopQueueInitialize,															\
+				LoopQueueFirstIn,																\
+				LoopQueueFirstOut,															\
+				ClearLoopQueue,																\
+				RealseLoopQueueBuf,															\
+				GetLoopQueueUsedNodeNumber,													\
+				DoesLoopQueueEmpty,															\
+		};																						\
 		static sLedDisplayEvent 	CONCAT_2(p_manager, led_display_event_buf)[max_event_num];		\
 		static const sLedDisPlayManager CONCAT_2(p_manager, led_display_entry) = {							\
 			&CONCAT_2(p_manager, led_display_flag_entry),													\
 			max_event_num,																				\
 			color_init,																						\
 			color_draw,																						\
+			color_off,																					\
+			power_apply,																				\
 			&CONCAT_2(p_manager, led_display_event_buf)[0],												\
 			&CONCAT_2(p_manager,_led_display_queue),												\
 		};																							\

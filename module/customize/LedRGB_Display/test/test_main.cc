@@ -31,11 +31,14 @@ using namespace std;
 
 */
 static uint16_t init_cnt = 0,draw_cnt = 0,off_cnt = 0;
+static X_Boolean current_led_on = X_False;
+
 static X_Void test_init(X_Void)
 {
 	init_cnt = 0;
 	draw_cnt = 0; 
 	off_cnt = 0;
+	current_led_on = X_False;
 }
 X_Void mockable_LedInit(X_Void)
 {
@@ -45,16 +48,23 @@ X_Void mockable_LedDraw(uint32_t color)
 {
 	draw_cnt ++;
 	color = color;
+	current_led_on = X_True;
 }
 
 X_Void mockable_LedOff(X_Void)
 {
 	off_cnt++;
+	current_led_on = X_False;
+}
+
+X_Void mockable_PowerApply(X_Void)
+{
+
 }
 
 
-#define HANDLE_FREQUENCY = 20;
-APP_LED_DISPLAY_MODULE_DEF(p_led,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),10,HANDLE_FREQUENCY);
+#define HANDLE_FREQUENCY  20
+APP_LED_DISPLAY_MODULE_DEF(p_led,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),10,HANDLE_FREQUENCY);
 
 static sLedDisplayEvent led_event;
 TEST(Led,init)
@@ -73,11 +83,16 @@ TEST(Led,init)
 	EXPECT_EQ(isOK,X_True);
 }
 
-static sLedDisplayEvent event1 = {
-
-
+static sLedDisplayEvent blink_event1 = {
+	LedBlink,
+	{
+		COLOR_RGB_Blue,
+		100,
+		100,
+		1
+	},
 };
-TEST(Led,blink)
+TEST(Led,sample_blink)
 {
 	uint32_t timer_cnt = 0;
 	led_event.event_mode 	= LedBlink;
@@ -86,10 +101,28 @@ TEST(Led,blink)
 	led_event.param.led_on_time    = 500;
 	led_event.param.on_off_cycle   = 5;
 
+
+	LedDisplayEventRegister(p_led,&led_event);
+
 	while(timer_cnt < 5000)
 	{
+		LedDisplayHandle(p_led);
 		timer_cnt = timer_cnt + HANDLE_FREQUENCY;
+		switch(timer_cnt)
+		{
+			case 0:
+				//EXPECT_EQ(isOK,X_True);
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			default:
+				break;
+		}
 	}
+
+	
 }
 
 
