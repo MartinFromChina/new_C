@@ -23,7 +23,7 @@ StateNumber LS_IdleAction(s_StateMachineParam *p_this)
 	p_ext ->state_backup		 	= LS_Idle;
 	p_ext ->event_buf_number_backup = 0;
 	p_ext ->wait_counter_in_ms 		= 0;
-	p_ext ->color_backup			= 0;
+	p_ext ->color_backup			= LD_COLOR_OFF;
 	p_ext ->blink_cycle_counter		= 0;
 	p_ext ->p_current_event			= (sLedDisplayEvent*)0;
 	p_ext ->onWaitMethod			= p_ext ->display.DoesPowerOn;
@@ -218,7 +218,7 @@ StateNumber LS_BlinkOffAction(s_StateMachineParam *p_this)
 		{
 			if(p_param->on_off_cycle > 0) 
 			{
-				p_ext->display.draw(LD_COLOR_OFF);
+				p_ext->display.off();
 				p_param->on_off_cycle --;
 			}
 			else {return LS_Recover;}

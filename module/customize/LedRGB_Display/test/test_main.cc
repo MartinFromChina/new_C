@@ -30,6 +30,8 @@ using namespace std;
 #endif
 
 */
+typedef X_Boolean(*does_power_on)(X_Void);
+
 static uint16_t init_cnt = 0,draw_cnt = 0,off_cnt = 0;
 static X_Boolean current_led_on = X_False;
 static uint32_t CurrentColor = COLOR_RGB_Black;
@@ -106,13 +108,13 @@ static sLedDisplayEvent blink_event1 = {
 	},
 };
 		
-TEST(Led,sample_blink)
+TEST(Led,simple_blink)
 {
-	APP_LED_DISPLAY_MODULE_DEF(p_led1,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),MOCKABLE(DoesPowerOn),10,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
+	APP_LED_DISPLAY_MODULE_DEF(p_led1,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),(does_power_on)0,10,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
 	uint32_t timer_cnt = 0;
 	X_Boolean isOK;
 	led_event.event_mode 	= LedBlink;
-	led_event.param.color   = COLOR_RGB_Blue;
+	led_event.param.color   = COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Blue);
 	led_event.param.led_off_time   = 300;
 	led_event.param.led_on_time    = 500;
 	led_event.param.on_off_cycle   = 5;
@@ -133,10 +135,10 @@ TEST(Led,sample_blink)
 			case HANDLE_FREQUENCY:
 				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black));
 				break;
-			case (HANDLE_FREQUENCY*2):
+			case (HANDLE_FREQUENCY*10):
 				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Blue));
 				break;
-			case (HANDLE_FREQUENCY*3) + 300 :
+			case (HANDLE_FREQUENCY*6) + 500 :
 				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black));
 				break;
 			default:
