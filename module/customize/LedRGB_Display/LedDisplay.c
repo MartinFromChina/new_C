@@ -262,7 +262,6 @@ X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 	p_manager ->p_flag ->isInitOK  = X_True;
 
 }
-
 X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 {
 	if(p_manager == X_Null) {return;}
@@ -273,7 +272,7 @@ X_Boolean LedDisplayEventRegister(const sLedDisPlayManager *p_manager,sLedDispla
 {
 	uint16_t buf_number;
 	if(p_manager == X_Null) {return X_False;}
-	if(p_manager ->p_flag ->isInitOK == X_False) {return X_False;}
+	if(p_manager ->p_flag ->isInitOK == X_False || p_manager ->p_flag ->isEnable == X_False) {return X_False;}
 	sLedStateParam *p_ext 			= (sLedStateParam *)p_manager ->p_state_param;
 
 	buf_number = p_ext ->p_operation->queue_fi(p_ext ->p_operation ->p_manager,X_False);
@@ -288,22 +287,22 @@ X_Boolean LedDisplayEventRegister(const sLedDisPlayManager *p_manager,sLedDispla
 	}
 	return X_False;
 }
-
 X_Void LedDisplayEnableImmediately(const sLedDisPlayManager *p_manager)
 {
 	if(p_manager == X_Null) {return;}
-	p_manager = p_manager;
+	p_manager ->p_flag ->isEnable = X_True;
 }
 X_Void LedDisplayDisableImmediately(const sLedDisPlayManager *p_manager)
 {
 	if(p_manager == X_Null) {return;}
-	p_manager = p_manager;
+	p_manager ->p_flag ->isEnable = X_False;
+	// todo : clear the led state and reset the led display state machine
 }
 X_Void LedDisplayReset(const sLedDisPlayManager *p_manager)
 {
 	if(p_manager == X_Null) {return;}
 	sLedStateParam *p_ext 			= (sLedStateParam *)p_manager ->p_state_param;
-	p_ext ->p_operation ->QueueClear(p_ext ->p_operation->p_manager);
+	p_ext ->p_operation ->queue_clear(p_ext ->p_operation->p_manager);
 	mStateMachineStateSet(p_manager ->p_state_machine,LS_Idle);
 	p_manager ->p_flag ->isEnable = X_True;
 }

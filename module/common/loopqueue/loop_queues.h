@@ -100,14 +100,14 @@ typedef struct
  {
 	uint16_t cur_push_node;
 	uint16_t cur_pop_node;
-	const sListManager *p_manager;
-	QueueInit 			queue_init;
-	QueueFI				queue_fi;
-	QueueFO				queue_fo;
-	QueueClear			queue_clear;
-	QueueRelease		queue_release;
-	QueueUsedNum		queue_num;
-	QueueDoesEmpty		queue_empty;
+	const sListManager 			*p_manager;
+	const QueueInit 			queue_init;
+	const QueueFI				queue_fi;
+	const QueueFO				queue_fo;
+	const QueueClear			queue_clear;
+	const QueueRelease			queue_release;
+	const QueueUsedNum			queue_num;
+	const QueueDoesEmpty		queue_empty;
  }s_QueueOperation;
 
 

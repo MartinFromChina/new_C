@@ -21,10 +21,7 @@ typedef enum
 {
 	LedBlink,
 	LedHoldOn,
-	LedHoldRecoverable,
-	LedReset,
-	LedEnableImmediately,
-	LedDisableImmediately,
+	LedHoldOnRecoverable,
 }eLedDisplayMode;
 
 typedef struct
