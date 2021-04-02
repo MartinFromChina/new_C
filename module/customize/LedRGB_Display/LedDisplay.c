@@ -78,11 +78,6 @@ StateNumber LS_ReadyForEventAction(s_StateMachineParam *p_this)
 
 	if(p_ext ->p_current_event ->event_mode == LedBlink)// blink mode
 	{
-		if(current_color == LD_COLOR_OFF || p_param ->on_off_cycle == 0) 
-		{
-			p_ext->p_operation ->queue_release(p_ext->p_operation ->p_manager,p_ext ->event_buf_number_backup);
-			return LS_LoadEvent;
-		}
 		p_param ->on_off_cycle  += p_param ->on_off_cycle; // double it ;
 		
 		blink_time = p_param ->led_off_time + p_param ->led_on_time;
@@ -150,7 +145,8 @@ StateNumber LS_RecoverAction(s_StateMachineParam *p_this)
 {
 		
 		sLedStateParam *p_ext 	= (sLedStateParam *)p_this;
-		p_ext = p_ext;
+		
+		//p_ext ->p_operation ->queue_release(p_ext ->p_operation ->p_manager,p_ext ->event_buf_number_backup);
 		/*
 		if(p_ext ->color_backup != ColorOff)
 		{
@@ -281,6 +277,11 @@ X_Boolean LedDisplayEventRegister(const sLedDisPlayManager *p_manager,sLedDispla
 	if(p_manager ->p_flag ->isInitOK == X_False || p_manager ->p_flag ->isEnable == X_False) {return X_False;}
 	sLedStateParam *p_ext 			= (sLedStateParam *)p_manager ->p_state_param;
 
+	if(p_event ->event_mode == LedBlink)
+	{
+		if(p_event ->param.led_on_time < p_ext ->state_interval || p_event ->param.led_off_time < p_ext ->state_interval 
+				|| p_event ->param.on_off_cycle == 0 ||p_event ->param.color == LD_COLOR_OFF) {return X_False;}
+	}
 	buf_number = p_ext ->p_operation->queue_fi(p_ext ->p_operation ->p_manager,X_False);
 	if(buf_number < p_manager ->max_event_to_cache)
 	{
