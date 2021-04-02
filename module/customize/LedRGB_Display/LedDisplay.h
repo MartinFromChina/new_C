@@ -15,6 +15,8 @@
 
 
 #define LED_ON_INFINITE_TIME   0xffff
+#define LD_COLOR_OFF								(COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black))
+
 typedef X_Boolean(*onwait)(X_Void);
 
 typedef enum
@@ -49,7 +51,7 @@ typedef struct
 	X_Void (*init)(X_Void);
 	X_Void (*draw)(uint32_t color);
 	X_Void (*off)(X_Void);
-	X_Void (*pow_apply)(X_Void);
+	X_Void (*pow_apply)(uint32_t time_in_ms);// suggestion: the param is total blink times in ms ; user could add the power setup time inside the function 
 	X_Boolean (*DoesPowerOn)(X_Void);
 }sLedDisplayFunc;
 
@@ -64,16 +66,21 @@ typedef struct
 
 typedef struct
 {
-	s_StateMachineParam 	base;
+	s_StateMachineParam 			base;
 	sLedDisplayFunc		   const 	display;
 	sLedDisplayEvent      *const    p_event_buf;
 	s_QueueOperation      *const    p_operation;
-	X_Boolean 				is_power_ctrl_needed;
-	StateNumber				state_backup;
-	uint16_t 				wait_counter_in_ms;
-	uint32_t                color_backup;
-	X_Boolean               (*onWaitMethod)(X_Void);
-	uint16_t				blink_cycle_counter;
+	uint16_t 			  const		max_event_to_cache;
+	uint16_t              const     state_interval;
+	uint16_t 			  const     wait_power_setup_time;
+	X_Boolean 						is_power_ctrl_needed;
+	sLedDisplayEvent	  			*p_current_event;
+	StateNumber						state_backup;
+	uint16_t 						event_buf_number_backup;
+	uint16_t 						wait_counter_in_ms;
+	uint32_t                		color_backup;
+	X_Boolean               		(*onWaitMethod)(X_Void);
+	uint16_t						blink_cycle_counter;
 }sLedStateParam;
 
 StateNumber LS_IdleAction(s_StateMachineParam *p_this);
@@ -91,7 +98,8 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 								 	power_apply,											\
 								 	does_power_on,											\
 								 	max_event_num,											\
-								 	handle_frequency_in_ms)									\
+								 	handle_frequency_in_ms,									\
+								 	power_setup_in_ms)										\
 		static sLedDisplayCommonFlag  CONCAT_2(p_manager, led_display_flag_entry) = {X_False,X_False};		\
 		static sLedDisplayEvent 	CONCAT_2(p_manager, led_display_event_buf)[max_event_num];		\
 		APP_LOOPQUEUE_DEF(CONCAT_2(p_manager,_led_event_queue),max_event_num);									\
@@ -116,7 +124,10 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 					does_power_on,		},																				\
 				&CONCAT_2(p_manager, led_display_event_buf)[0],												\
 				&CONCAT_2(p_manager,_led_display_queue),												\
-				X_False,DEFAULT_STATE_NUMBER,0,0,(onwait)0,0													\
+				max_event_num,																				\
+				handle_frequency_in_ms,																			\
+				power_setup_in_ms,																				\
+				X_False,(sLedDisplayEvent*)0,0,DEFAULT_STATE_NUMBER,0,0,(onwait)0,0									\
 			};																					\
 		static const StateAction CONCAT_2(p_manager,_SimpleStateAction)[] = {						\
 				{LS_IdleAction},																		\

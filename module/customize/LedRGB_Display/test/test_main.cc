@@ -61,9 +61,9 @@ X_Void mockable_LedOff(X_Void)
 	CurrentColor = COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black);
 }
 
-X_Void mockable_PowerApply(X_Void)
+X_Void mockable_PowerApply(uint32_t time_in_ms)
 {
-
+	time_in_ms = time_in_ms;
 }
 X_Boolean mockable_DoesPowerOn(X_Void)
 {
@@ -73,12 +73,14 @@ X_Boolean mockable_DoesPowerOn(X_Void)
 
 
 #define HANDLE_FREQUENCY  20
+#define POWER_SETUP_IN_MS   0
+
 
 
 static sLedDisplayEvent led_event;
 TEST(Led,init)
 {
-	APP_LED_DISPLAY_MODULE_DEF(p_led,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),MOCKABLE(DoesPowerOn),10,HANDLE_FREQUENCY);
+	APP_LED_DISPLAY_MODULE_DEF(p_led,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),MOCKABLE(DoesPowerOn),10,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
 	X_Boolean isOK;
 	test_init();
 	
@@ -106,7 +108,7 @@ static sLedDisplayEvent blink_event1 = {
 		
 TEST(Led,sample_blink)
 {
-	APP_LED_DISPLAY_MODULE_DEF(p_led1,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),MOCKABLE(DoesPowerOn),10,HANDLE_FREQUENCY);
+	APP_LED_DISPLAY_MODULE_DEF(p_led1,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),MOCKABLE(DoesPowerOn),10,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
 	uint32_t timer_cnt = 0;
 	X_Boolean isOK;
 	led_event.event_mode 	= LedBlink;

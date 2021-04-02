@@ -2,7 +2,6 @@
 
 typedef X_Void (*recorder)(StateNumber state_going_to_leave,StateNumber state_going_to_enter);
 
-
 typedef enum
 {
 	LS_Idle = 0,
@@ -18,29 +17,18 @@ typedef enum
 			0
 ********************************************************************************************************************************
 */
-
-
 StateNumber LS_IdleAction(s_StateMachineParam *p_this)
 {	
 	sLedStateParam *p_ext 										= (sLedStateParam *)p_this;
-	p_ext = p_ext;
-	/*
-	p_ext ->current_event   									= LE_NotCharge;
-	p_ext ->state_backup  										= LS_Idle;
-	p_ext ->wait_counter_in_ms  							= 0;
-	p_ext ->color_backup  										= ColorOff;
-	p_ext ->p_on_off_param_backup 						= &sBP_NotCharge;
-	p_ext ->onWaitMethod 											= mModule_DoesPentipPowerSupply;
-	p_ext ->current_blink_param.BlinkTimes 		= 0;
-	p_ext ->current_blink_param.DutyCycleOFF 	= 0;
-	p_ext ->current_blink_param.DutyCycleON  	= 0;
-	p_ext ->blink_cycle_counter								= 0;
-
-	*/
+	p_ext ->state_backup		 	= LS_Idle;
+	p_ext ->event_buf_number_backup = 0;
+	p_ext ->wait_counter_in_ms 		= 0;
+	p_ext ->color_backup			= 0;
+	p_ext ->blink_cycle_counter		= 0;
+	p_ext ->p_current_event			= (sLedDisplayEvent*)0;
+	p_ext ->onWaitMethod			= p_ext ->display.DoesPowerOn;
 	return LS_LoadEvent;
 }
-
-
 /*
 ********************************************************************************************************************************
 			1
@@ -48,24 +36,26 @@ StateNumber LS_IdleAction(s_StateMachineParam *p_this)
 */
 StateNumber LS_LoadEventAction(s_StateMachineParam *p_this)
 {
-	
-	//X_Boolean isOK;
-	//uint16_t  bufnumber;
+	uint16_t  bufnumber;
 	sLedStateParam *p_ext 	= (sLedStateParam *)p_this;
-	p_ext = p_ext;
-	/*
-	bufnumber = SimpleQueueFirstOut(p_led_event,&isOK);
-	if(isOK == X_True)
+	s_QueueOperation *p_op  = p_ext ->p_operation;
+
+	if(p_op ->queue_empty(p_op ->p_manager) == X_True) {return p_this ->current_state;}
+	bufnumber = p_op ->queue_fo(p_op ->p_manager);
+	if(bufnumber < p_ext ->max_event_to_cache)
 	{
-		p_ext ->current_event = led_event_buf[bufnumber];
-		RealseSimpleQueueBuf(p_led_event,bufnumber);
+		p_ext ->p_current_event = &(p_ext->p_event_buf[bufnumber]);
+		p_ext ->event_buf_number_backup = bufnumber;
+		/*
+			it is safer to release node after the blink process is finished ; 
+			but I believe the blink process is faster than the speed of user register event;
+			so there will not be any problem if the user use the module in a normal way; 
+		*/
+		/////p_op ->queue_release(p_op ->p_manager,bufnumber);// do it after the blink is finished , in case some challenging situation
 		return LS_ReadyForEvent;
 	}
-	*/
 	return p_this ->current_state;
 }
-
-
 /*
 ********************************************************************************************************************************
 			2
@@ -74,13 +64,58 @@ StateNumber LS_LoadEventAction(s_StateMachineParam *p_this)
 StateNumber LS_ReadyForEventAction(s_StateMachineParam *p_this)
 {
 	
-	//uint32_t current_color,blink_time;
+	uint32_t current_color,blink_time;
+	sLedBlinkParam *p_param;
 	sLedStateParam *p_ext 	= (sLedStateParam *)p_this;
-	p_ext = p_ext;
-	/*
-	current_color = p_led_display_param_buf[p_ext ->current_event]->base.color;
-	if(p_led_display_param_buf[p_ext ->current_event] ->base.mode == LDM_On_Off) // on off mode
+	if(p_ext ->p_current_event == X_Null) 
 	{
+		p_ext->p_operation ->queue_release(p_ext->p_operation ->p_manager,p_ext ->event_buf_number_backup);
+		return LS_LoadEvent;
+	}
+	
+	current_color = p_ext ->p_current_event ->param.color;
+	p_param		  = &(p_ext ->p_current_event ->param);
+
+	if(p_ext ->p_current_event ->event_mode == LedBlink)// blink mode
+	{
+		if(current_color == LD_COLOR_OFF || p_param ->on_off_cycle == 0) 
+		{
+			p_ext->p_operation ->queue_release(p_ext->p_operation ->p_manager,p_ext ->event_buf_number_backup);
+			return LS_LoadEvent;
+		}
+		p_param ->on_off_cycle  += p_param ->on_off_cycle; // double it ;
+		
+		blink_time = p_param ->led_off_time + p_param ->led_on_time;
+		blink_time = blink_time * p_param ->on_off_cycle;		
+		
+		if(p_ext ->color_backup != LD_COLOR_OFF) 
+		{
+			p_ext ->state_backup = LS_BlinkOff;
+			p_ext ->blink_cycle_counter = p_param ->led_off_time;
+		}
+		else 
+		{
+			p_ext ->state_backup = LS_BlinkOn;
+			p_ext ->blink_cycle_counter = p_param ->led_on_time;
+		}
+
+		if(p_ext ->is_power_ctrl_needed == X_False)
+		{
+			return p_ext ->state_backup;
+		}
+		else
+		{
+			blink_time += p_ext ->wait_power_setup_time;
+			p_ext ->display.pow_apply(blink_time);
+			p_ext ->wait_counter_in_ms = p_ext ->wait_power_setup_time;
+			p_ext ->wait_counter_in_ms += p_ext ->state_interval * 2;
+			return LS_Wait;
+		}
+		
+	}
+	else// on off mode
+	{
+	/*
 		p_ext ->color_backup = current_color;
 		
 		if(current_color != ColorOff) // to do : apply power , enable pwm , config pwm 
@@ -100,36 +135,9 @@ StateNumber LS_ReadyForEventAction(s_StateMachineParam *p_this)
 			isUserDefineParamEmpty = X_True;
 		}
 		return LS_LoadEvent;
+		*/
 	}
-	else // blink mode
-	{
-		if(current_color == ColorOff || p_led_display_param_buf[p_ext ->current_event]->ext_param.sLB.BlinkTimes == 0) {return LS_LoadEvent;}
-		p_ext ->current_blink_param.BlinkTimes   = p_led_display_param_buf[p_ext ->current_event]->ext_param.sLB.BlinkTimes;
-		p_ext ->current_blink_param.BlinkTimes 	+= p_ext ->current_blink_param.BlinkTimes; // double it ;
-		p_ext ->current_blink_param.DutyCycleON  = p_led_display_param_buf[p_ext ->current_event]->ext_param.sLB.DutyCycleON;
-		p_ext ->current_blink_param.DutyCycleOFF = p_led_display_param_buf[p_ext ->current_event]->ext_param.sLB.DutyCycleOFF;
-		
-		blink_time = p_ext ->current_blink_param.DutyCycleOFF + p_ext ->current_blink_param.DutyCycleON;
-		blink_time = blink_time * p_ext ->current_blink_param.BlinkTimes;
-		blink_time = blink_time * MAIN_TICK_INTERVAL_MS;
-		blink_time += MAX_CONFIG_WAIT_TIME_IN_MS ;
-		mModule_PowerSourceApply(PS_Pentip,PSA_PentipRGB,blink_time);
-		mFunc_ColorEnable();
-		
-		if(p_ext ->color_backup != ColorOff) 
-		{
-			p_ext ->state_backup = LS_BlinkOff;
-			p_ext ->blink_cycle_counter = p_ext ->current_blink_param.DutyCycleOFF;
-		}
-		else 
-		{
-			p_ext ->state_backup = LS_BlinkOn;
-			p_ext ->blink_cycle_counter = p_ext ->current_blink_param.DutyCycleON;
-		}
-		p_ext ->wait_counter_in_ms = MAX_CONFIG_WAIT_TIME_IN_MS;
-		return LS_Wait;
-	}
-	*/
+	
 	return LS_Wait;
 }
 
@@ -173,24 +181,25 @@ StateNumber LS_BlinkOnAction(s_StateMachineParam *p_this)
 {
 		
 		sLedStateParam *p_ext 	= (sLedStateParam *)p_this;
-		p_ext = p_ext;
-		/*
-		if(p_ext ->blink_cycle_counter == p_ext ->current_blink_param.DutyCycleON)
+		sLedBlinkParam *p_param;
+		p_param = &(p_ext ->p_current_event ->param);
+		
+		if(p_ext ->blink_cycle_counter == p_param ->led_on_time)
 		{
-			if(p_ext ->current_blink_param.BlinkTimes > 0) 
+			if(p_param->on_off_cycle > 0) 
 			{
-				mFunc_ColorDraw(p_led_display_param_buf[p_ext ->current_event]->base.color);
-				p_ext ->current_blink_param.BlinkTimes --;
+				p_ext->display.draw(p_param->color);
+				p_param->on_off_cycle --;
 			}
 			else {return LS_Recover;}
 		}
-		if(p_ext ->blink_cycle_counter > 0)
+		if(p_ext ->blink_cycle_counter >= p_ext ->state_interval)
 		{
-			p_ext ->blink_cycle_counter --;
+			p_ext ->blink_cycle_counter -= p_ext ->state_interval;
 			return p_this ->current_state;
 		}
-		p_ext ->blink_cycle_counter = p_ext ->current_blink_param.DutyCycleOFF;
-		*/
+		p_ext ->blink_cycle_counter = p_param ->led_off_time;
+		
 		return LS_BlinkOff;
 }
 
@@ -202,24 +211,25 @@ StateNumber LS_BlinkOnAction(s_StateMachineParam *p_this)
 StateNumber LS_BlinkOffAction(s_StateMachineParam *p_this)
 {
 		sLedStateParam *p_ext 	= (sLedStateParam *)p_this;
-		p_ext = p_ext;
-		/*
-		if(p_ext ->blink_cycle_counter == p_ext ->current_blink_param.DutyCycleOFF)
+		sLedBlinkParam *p_param;
+		p_param = &(p_ext ->p_current_event ->param);
+		
+		if(p_ext ->blink_cycle_counter == p_param ->led_off_time)
 		{
-			if(p_ext ->current_blink_param.BlinkTimes > 0) 
+			if(p_param->on_off_cycle > 0) 
 			{
-				mFunc_ColorDraw(ColorOff);
-				p_ext ->current_blink_param.BlinkTimes --;
+				p_ext->display.draw(LD_COLOR_OFF);
+				p_param->on_off_cycle --;
 			}
 			else {return LS_Recover;}
 		}
-		if(p_ext ->blink_cycle_counter > 0)
+		if(p_ext ->blink_cycle_counter >= p_ext ->state_interval)
 		{
-			p_ext ->blink_cycle_counter --;
+			p_ext ->blink_cycle_counter -= p_ext ->state_interval;
 			return p_this ->current_state;
 		}
-		p_ext ->blink_cycle_counter = p_ext ->current_blink_param.DutyCycleON;
-		*/
+		p_ext ->blink_cycle_counter = p_param ->led_on_time;
+		
 		return LS_BlinkOn;
 }
 
@@ -230,15 +240,11 @@ StateNumber LS_BlinkOffAction(s_StateMachineParam *p_this)
 */
 StateNumber LS_WaitAction(s_StateMachineParam *p_this)
 {
-	
 	sLedStateParam *p_ext = (sLedStateParam *)p_this;
-	p_ext = p_ext;
-	/*
 	if(p_ext ->onWaitMethod == X_Null) {return p_ext ->state_backup;}
 	if(p_ext ->onWaitMethod() == X_True) {return p_ext ->state_backup;}
-	if(p_ext ->wait_counter_in_ms < MAIN_TICK_INTERVAL_MS) {return LS_LoadEvent;}
-	p_ext ->wait_counter_in_ms -= MAIN_TICK_INTERVAL_MS;
-	*/
+	if(p_ext ->wait_counter_in_ms < p_ext ->state_interval) {return LS_LoadEvent;}
+	p_ext ->wait_counter_in_ms -= p_ext ->state_interval;
 	return p_this ->current_state;
 }
 
