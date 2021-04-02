@@ -15,14 +15,14 @@
 
 
 #define LED_ON_INFINITE_TIME   0xffff
-
+typedef X_Boolean(*onwait)(X_Void);
 
 typedef enum
 {
 	LedBlink,
+	LedHoldOn,
+	LedHoldRecoverable,
 	LedReset,
-	LedEnable,
-	LedDisable,
 	LedEnableImmediately,
 	LedDisableImmediately,
 }eLedDisplayMode;
@@ -45,37 +45,36 @@ typedef struct
 {
 	X_Boolean isInitOK;
 	X_Boolean isEnable;
-	X_Boolean isPowerCtrlNeeded;
 }sLedDisplayCommonFlag;
-
 
 typedef struct
 {
-	sLedDisplayCommonFlag *			p_flag;
-	uint16_t 						max_event_to_cache;
 	X_Void (*init)(X_Void);
 	X_Void (*draw)(uint32_t color);
 	X_Void (*off)(X_Void);
 	X_Void (*pow_apply)(X_Void);
 	X_Boolean (*DoesPowerOn)(X_Void);
-	sLedDisplayEvent      *const    p_event_buf;
-	s_QueueOperation      *const    p_operation;
-	s_StateMachineParam   *			p_param;
+}sLedDisplayFunc;
+
+typedef struct
+{
+	sLedDisplayCommonFlag *			p_flag;
+	uint16_t 						max_event_to_cache;
+	s_StateMachineParam   *			p_state_param;
 	const s_StateMachine  *			p_state_machine;
 }sLedDisPlayManager;
-
-
-
 
 
 typedef struct
 {
 	s_StateMachineParam 	base;
+	sLedDisplayFunc		   const 	display;
+	sLedDisplayEvent      *const    p_event_buf;
+	s_QueueOperation      *const    p_operation;
+	X_Boolean 				is_power_ctrl_needed;
 	StateNumber				state_backup;
 	uint16_t 				wait_counter_in_ms;
 	uint32_t                color_backup;
-	X_Boolean 				is_power_ctrl_needed;
-	sLedBlinkParam          const *p_on_off_param_backup;
 	X_Boolean               (*onWaitMethod)(X_Void);
 	uint16_t				blink_cycle_counter;
 }sLedStateParam;
@@ -96,7 +95,8 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 								 	does_power_on,											\
 								 	max_event_num,											\
 								 	handle_frequency_in_ms)									\
-		static sLedDisplayCommonFlag  CONCAT_2(p_manager, led_display_flag_entry) = {X_False,X_False,X_False};		\
+		static sLedDisplayCommonFlag  CONCAT_2(p_manager, led_display_flag_entry) = {X_False,X_False};		\
+		static sLedDisplayEvent 	CONCAT_2(p_manager, led_display_event_buf)[max_event_num];		\
 		APP_LOOPQUEUE_DEF(CONCAT_2(p_manager,_led_event_queue),max_event_num);									\
 		static s_QueueOperation      CONCAT_2(p_manager,_led_display_queue) = {						\
 				0,																				\
@@ -110,7 +110,17 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 				GetLoopQueueUsedNodeNumber,													\
 				DoesLoopQueueEmpty,															\
 		};																						\
-		static sLedStateParam CONCAT_2(p_manager,_sLSP);										\
+		static sLedStateParam CONCAT_2(p_manager,_sLSP) = {										\
+				{DEFAULT_STATE_NUMBER},															\
+				{	color_init,																						\
+					color_draw,																						\
+					color_off,																					\
+					power_apply,																				\
+					does_power_on,		},																				\
+				&CONCAT_2(p_manager, led_display_event_buf)[0],												\
+				&CONCAT_2(p_manager,_led_display_queue),												\
+				X_False,DEFAULT_STATE_NUMBER,0,0,(onwait)0,0													\
+			};																					\
 		static const StateAction CONCAT_2(p_manager,_SimpleStateAction)[] = {						\
 				{LS_IdleAction},																		\
 				{LS_LoadEventAction},																		\
@@ -123,17 +133,9 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 		APP_STATE_MACHINE_DEF(CONCAT_2(p_manager,_p_simple_state),																				\
 							sizeof(CONCAT_2(p_manager,_SimpleStateAction))/sizeof(CONCAT_2(p_manager,_SimpleStateAction)[0]),		\
 							&CONCAT_2(p_manager,_SimpleStateAction)[0]);							\
-		static sLedDisplayEvent 	CONCAT_2(p_manager, led_display_event_buf)[max_event_num];		\
 		static const sLedDisPlayManager CONCAT_2(p_manager, led_display_entry) = {							\
 			&CONCAT_2(p_manager, led_display_flag_entry),													\
 			max_event_num,																				\
-			color_init,																						\
-			color_draw,																						\
-			color_off,																					\
-			power_apply,																				\
-			does_power_on,																				\
-			&CONCAT_2(p_manager, led_display_event_buf)[0],												\
-			&CONCAT_2(p_manager,_led_display_queue),												\
 			&(CONCAT_2(p_manager,_sLSP).base),																\
 			CONCAT_2(p_manager,_p_simple_state),													\
 		};																							\
@@ -143,8 +145,6 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 X_Void LedDisplayInit(const sLedDisPlayManager *p_manager);
 X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager);// call it every "handle_frequency_in_ms" ms
 X_Boolean LedDisplayEventRegister(const sLedDisPlayManager *p_manager,sLedDisplayEvent *p_event);
-X_Void LedDisplayEnable(const sLedDisPlayManager *p_manager);
-X_Void LedDisplayDisable(const sLedDisPlayManager *p_manager);
 X_Void LedDisplayEnableImmediately(const sLedDisPlayManager *p_manager);
 X_Void LedDisplayDisableImmediately(const sLedDisPlayManager *p_manager);
 X_Void LedDisplayReset(const sLedDisPlayManager *p_manager);

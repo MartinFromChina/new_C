@@ -1,5 +1,8 @@
 #include "LedDisplay.h"
 
+typedef X_Void (*recorder)(StateNumber state_going_to_leave,StateNumber state_going_to_enter);
+
+
 typedef enum
 {
 	LS_Idle = 0,
@@ -238,26 +241,23 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this)
 	*/
 	return p_this ->current_state;
 }
-static X_Void Recorder(StateNumber state_going_to_leave,StateNumber state_going_to_enter)
-{
-	state_going_to_leave = state_going_to_leave;
-	state_going_to_enter = state_going_to_enter;
-}
 
 /*******************************************************************************/
 
 X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 {
 	if(p_manager == X_Null) {return;}
+	sLedStateParam *p_ext 			= (sLedStateParam *)p_manager ->p_state_param;
 	
-	if(p_manager ->init == X_Null)  {return;}
-	p_manager ->init();
-	if(p_manager ->draw == X_Null || p_manager ->off == X_Null ) {return;}
-	if(p_manager ->p_operation == X_Null)  {return;}
-	p_manager ->p_operation ->queue_init(p_manager ->p_operation ->p_manager);
+	if(p_ext ->display.init == X_Null)  {return;}
+	p_ext ->display.init();
+	if(p_ext ->display.draw == X_Null || p_ext ->display.off == X_Null ) {return;}
+	if(p_ext ->p_operation == X_Null)  {return;}
+	p_ext ->p_operation ->queue_init(p_ext ->p_operation ->p_manager);
 
-	if(p_manager ->pow_apply != X_Null && p_manager ->DoesPowerOn != X_Null) {p_manager ->p_flag ->isPowerCtrlNeeded = X_True;}
-	else {p_manager ->p_flag ->isEnable = X_False;}
+	if(p_ext ->display.pow_apply != X_Null && p_ext ->display.DoesPowerOn != X_Null) {p_ext ->is_power_ctrl_needed = X_True;}
+	else {p_ext ->is_power_ctrl_needed = X_False;}
+	
 	p_manager ->p_flag ->isEnable = X_True;
 	p_manager ->p_flag ->isInitOK  = X_True;
 
@@ -266,43 +266,30 @@ X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 X_Void LedDisplayHandle(const sLedDisPlayManager *p_manager)
 {
 	if(p_manager == X_Null) {return;}
-	if(p_manager ->p_flag ->isInitOK == X_False) {return ;}
+	if(p_manager ->p_flag ->isInitOK == X_False || p_manager ->p_flag ->isEnable == X_False) {return ;}
 	
-	mStateMachineRun(p_manager ->p_state_machine,p_manager ->p_param,Recorder);
+	mStateMachineRun(p_manager ->p_state_machine,p_manager ->p_state_param,(recorder)0);
 	//mStateMachineStateSet(p_manager ->p_state_machine,0);
 }
 X_Boolean LedDisplayEventRegister(const sLedDisPlayManager *p_manager,sLedDisplayEvent *p_event)
 {
 	uint16_t buf_number;
-	if(p_manager == X_Null || p_event == X_Null ) {return X_False;}
+	if(p_manager == X_Null) {return X_False;}
+	sLedStateParam *p_ext 			= (sLedStateParam *)p_manager ->p_state_param;
+	
 	if(p_manager ->p_flag ->isInitOK == X_False) {return X_False;}
-	p_event = p_event;
 
-	buf_number = p_manager ->p_operation->queue_fi(p_manager ->p_operation ->p_manager,X_False);
+	buf_number = p_ext ->p_operation->queue_fi(p_ext ->p_operation ->p_manager,X_False);
 	if(buf_number < p_manager ->max_event_to_cache)
 	{
-		p_manager ->p_event_buf[buf_number].event_mode 				= p_event->event_mode;
-		p_manager ->p_event_buf[buf_number].param.color 			= p_event->param.color;
-		p_manager ->p_event_buf[buf_number].param.led_off_time 		= p_event->param.led_off_time;
-		p_manager ->p_event_buf[buf_number].param.led_on_time  		= p_event->param.led_on_time;
-		p_manager ->p_event_buf[buf_number].param.on_off_cycle 		= p_event->param.on_off_cycle;
+		p_ext ->p_event_buf[buf_number].event_mode 				= p_event->event_mode;
+		p_ext ->p_event_buf[buf_number].param.color 			= p_event->param.color;
+		p_ext ->p_event_buf[buf_number].param.led_off_time 		= p_event->param.led_off_time;
+		p_ext ->p_event_buf[buf_number].param.led_on_time  		= p_event->param.led_on_time;
+		p_ext ->p_event_buf[buf_number].param.on_off_cycle 		= p_event->param.on_off_cycle;
 		return X_True;
 	}
 	return X_False;
-}
-X_Void LedDisplayEnable(const sLedDisPlayManager *p_manager)
-{
-	if(p_manager == X_Null) {return;}
-	p_manager = p_manager;
-}
-X_Void LedDisplayDisable(const sLedDisPlayManager *p_manager)
-{
-	uint16_t buf_num;
-	if(p_manager == X_Null) {return;}
-	buf_num = p_manager ->p_operation->queue_fi(p_manager ->p_operation ->p_manager,X_False);
-	if(buf_num >= p_manager ->max_event_to_cache )  {return;}
-
-	p_manager ->p_event_buf[buf_num].event_mode = LedDisable;
 }
 
 X_Void LedDisplayEnableImmediately(const sLedDisPlayManager *p_manager)
