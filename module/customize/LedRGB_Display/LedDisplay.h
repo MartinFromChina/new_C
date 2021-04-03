@@ -54,6 +54,7 @@ typedef struct
 	X_Void (*draw)(uint32_t color);
 	X_Void (*off)(X_Void);
 	X_Void (*pow_apply)(uint32_t time_in_ms);// suggestion: the param is total blink times in ms ; user could add the power setup time inside the function 
+	X_Void (*pow_release)(X_Void);
 	X_Boolean (*DoesPowerOn)(X_Void);
 }sLedDisplayFunc;
 
@@ -98,6 +99,7 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 								 	color_draw,												\
 								 	color_off,												\
 								 	power_apply,											\
+								 	power_release,											\
 								 	does_power_on,											\
 								 	max_event_num,											\
 								 	handle_frequency_in_ms,									\
@@ -123,6 +125,7 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 					color_draw,																						\
 					color_off,																					\
 					power_apply,																				\
+					power_release,																					\
 					does_power_on,		},																				\
 				&CONCAT_2(p_manager, led_display_event_buf)[0],												\
 				&CONCAT_2(p_manager,_led_display_queue),												\

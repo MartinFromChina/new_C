@@ -139,10 +139,6 @@ StateNumber LS_ReadyForEventAction(s_StateMachineParam *p_this)
 //////////			mFunc_ColorDraw(current_color); // necessary ? !!! call it before disable
 			mFunc_ColorDisable();
 		}
-		if(p_ext ->current_event == LE_UserDefine)
-		{
-			isUserDefineParamEmpty = X_True;
-		}
 		return LS_LoadEvent;
 		*/
 	}
@@ -287,7 +283,7 @@ X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 	if(p_ext ->p_operation == X_Null)  {return;}
 	p_ext ->p_operation ->queue_init(p_ext ->p_operation ->p_manager);
 
-	if(p_ext ->display.pow_apply != X_Null && p_ext ->display.DoesPowerOn != X_Null) {p_ext ->is_power_ctrl_needed = X_True;}
+	if(p_ext ->display.pow_apply != X_Null && p_ext ->display.DoesPowerOn != X_Null && p_ext ->display.pow_release != X_Null) {p_ext ->is_power_ctrl_needed = X_True;}
 	else {p_ext ->is_power_ctrl_needed = X_False;}
 	
 	p_manager ->p_flag ->isEnable = X_True;
@@ -313,13 +309,9 @@ X_Boolean LedDisplayEventRegister(const sLedDisPlayManager *p_manager,sLedDispla
 				|| p_event ->param.on_off_cycle == 0 
 				||p_event ->param.color == LD_COLOR_OFF || p_event ->param.color == COLOR_RGB_Black) {return X_False;}
 	}
-	else if(p_event ->event_mode == LedHoldOn)
+	else if(p_event ->event_mode == LedHoldOn || p_event ->event_mode == LedHoldOnRecoverable)
 	{
-
-	}
-	else if(p_event ->event_mode == LedHoldOnRecoverable)
-	{
-
+		//////////if(p_event ->param.color == LD_COLOR_OFF || p_event ->param.color == COLOR_RGB_Black) {return X_False;}// no need
 	}
 	else
 	{
@@ -346,7 +338,6 @@ X_Void LedDisplayDisableImmediately(const sLedDisPlayManager *p_manager)
 {
 	if(p_manager == X_Null) {return;}
 	p_manager ->p_flag ->isEnable = X_False;
-	// todo : clear the led state and reset the led display state machine
 }
 X_Void LedDisplayReset(const sLedDisPlayManager *p_manager)
 {
@@ -355,4 +346,5 @@ X_Void LedDisplayReset(const sLedDisPlayManager *p_manager)
 	p_ext ->p_operation ->queue_clear(p_ext ->p_operation->p_manager);
 	mStateMachineStateSet(p_manager ->p_state_machine,LS_Idle);
 	p_manager ->p_flag ->isEnable = X_True;
+	p_ext ->display.off();
 }
