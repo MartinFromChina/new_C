@@ -11,12 +11,6 @@ using namespace std;
 	#define MOCKABLE(method)  method
 #endif
 
-#if (USE_INSERT_DEBUG != 0)
-	#define INSERT(log_method)  insert_##log_method
-#else
-	#define INSERT(log_method)  remove_##log_method
-#endif
-
 /*
 
 #if (SEGGER_RTT_DEBUG == 0)
@@ -34,7 +28,8 @@ typedef X_Boolean(*does_power_on)(X_Void);
 
 static uint16_t init_cnt = 0,draw_cnt = 0,off_cnt = 0;
 static X_Boolean current_led_on = X_False;
-static uint32_t CurrentColor = COLOR_RGB_Black;
+static uint32_t CurrentColor = COLOR_RGB_Black,global_timer = 0;
+static uint8_t debug_flag = 0;
 
 
 static X_Void test_init(X_Void)
@@ -44,6 +39,8 @@ static X_Void test_init(X_Void)
 	off_cnt = 0;
 	current_led_on = X_False;
 	CurrentColor = COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black);
+	debug_flag = 0;
+	global_timer = 0;
 }
 X_Void mockable_LedInit(X_Void)
 {
@@ -72,7 +69,14 @@ X_Boolean mockable_DoesPowerOn(X_Void)
 	return X_True;
 }
 
-
+uint8_t mockable_GetDebugFlag(X_Void)
+{
+	return debug_flag;
+}
+uint32_t mockable_GetCurrentTime(X_Void)
+{
+	return global_timer;
+}
 
 #define HANDLE_FREQUENCY  20
 #define POWER_SETUP_IN_MS   0
@@ -173,7 +177,6 @@ TEST(Led,event_param)
 		},
 	};
 	APP_LED_DISPLAY_MODULE_DEF(p_led4,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),(does_power_on)0,5,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
-	uint32_t timer_cnt = 0;
 	X_Boolean isOK;
 	test_init();
 	LedDisplayInit(p_led4);
@@ -205,85 +208,94 @@ TEST(Led,event_param)
 	isOK = LedDisplayEventRegister(p_led4,&temp_event);
 	EXPECT_EQ(isOK,X_False);
 
+	temp_event.event_mode = LedBlink;
+	temp_event.param.color = COLOR_RGB_Black;
+	temp_event.param.led_on_time = 20;
+	temp_event.param.led_off_time = 50;
+	temp_event.param.on_off_cycle = 1;
+	isOK = LedDisplayEventRegister(p_led4,&temp_event);
+	EXPECT_EQ(isOK,X_False);
+
 }
-
-
 
 TEST(Led,mul_blink)
 {
-	sLedDisplayEvent temp_event = {
-		LedBlink,
-		{
-			COLOR_RGB_Blue,
-			100,
-			100,
-			1
-		},
-	};
+    sLedDisplayEvent temp_event;
 	APP_LED_DISPLAY_MODULE_DEF(p_led3,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),(does_power_on)0,5,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
-	uint32_t timer_cnt = 0;
 	X_Boolean isOK;
 	test_init();
+	debug_flag = 0;
 	LedDisplayInit(p_led3);
-	while(timer_cnt < 5000)   
+
+	temp_event.event_mode  = LedBlink;
+
+	while(global_timer < 15000)   
 	{
 		LedDisplayHandle(p_led3);
-		timer_cnt = timer_cnt + HANDLE_FREQUENCY;
-/*
-		switch(timer_cnt)
+		global_timer = global_timer + HANDLE_FREQUENCY;
+
+		switch(global_timer)
 		{
 			case HANDLE_FREQUENCY:
-				temp_event.event_mode = LedBlink;
 				temp_event.param.color = COLOR_RGB_Red;
-				temp_event.param.on_off_cycle = 0;
-				isOK = LedDisplayEventRegister(p_led3,&temp_event);
-				EXPECT_EQ(isOK,X_False);
-				break;
-			case 500:
-				temp_event.event_mode = LedBlink;
-				temp_event.param.color = COLOR_RGB_Red;
-				temp_event.param.led_on_time = 0;
-				temp_event.param.on_off_cycle = 100;
-				isOK = LedDisplayEventRegister(p_led3,&temp_event);
-				EXPECT_EQ(isOK,X_False);
-				break;
-			case 500 + HANDLE_FREQUENCY:
-				temp_event.event_mode = LedBlink;
-				temp_event.param.color = LD_COLOR_OFF;
-				temp_event.param.led_on_time = 50;
-				isOK = LedDisplayEventRegister(p_led3,&temp_event);
-				EXPECT_EQ(isOK,X_False);
-				break;				
-			case 2000 :
-				temp_event.event_mode = LedBlink;
-				temp_event.param.color = COLOR_RGB_Red;
-				temp_event.param.led_on_time = 2;
-				temp_event.param.led_off_time = 50;
+				temp_event.param.led_on_time = 78;
+				temp_event.param.led_off_time = 64;
 				temp_event.param.on_off_cycle = 1;
 				isOK = LedDisplayEventRegister(p_led3,&temp_event);
-				EXPECT_EQ(isOK,X_False);
+				EXPECT_EQ(isOK,X_True);
+				break;
+			case 500:
+				temp_event.param.color = COLOR_RGB_DarkRed;
+				temp_event.param.led_on_time = 126;
+				temp_event.param.led_off_time = 398;
+				temp_event.param.on_off_cycle = 5;
+				isOK = LedDisplayEventRegister(p_led3,&temp_event);
+				EXPECT_EQ(isOK,X_True);
+				break;
+			case 500 + HANDLE_FREQUENCY:
+				temp_event.param.color = COLOR_RGB_Yellow;
+				temp_event.param.led_on_time = 2000;
+				temp_event.param.led_off_time = 50;
+				temp_event.param.on_off_cycle = 3;
+				isOK = LedDisplayEventRegister(p_led3,&temp_event);
+				EXPECT_EQ(isOK,X_True);
+				break;				
+			case 2000 :
+				temp_event.param.color = COLOR_RGB_YellowGreen;
+				temp_event.param.led_on_time = 250;
+				temp_event.param.led_off_time = 1800;
+				temp_event.param.on_off_cycle = 1;
+				isOK = LedDisplayEventRegister(p_led3,&temp_event);
+				EXPECT_EQ(isOK,X_True);
 				break;
 			default:
 				break;
-		}*/
-		/*
-		switch(timer_cnt)
+		}
+		
+		switch(global_timer)
 		{
-			case HANDLE_FREQUENCY:
+			case 60 + HANDLE_FREQUENCY:
+				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Red));
+				break;
+			case 140 + HANDLE_FREQUENCY:
 				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black));
 				break;
-			case (HANDLE_FREQUENCY*10):
-				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Blue));
+			case 2160 + HANDLE_FREQUENCY:
+				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_DarkRed));
 				break;
-			case (HANDLE_FREQUENCY*6) + 500 :
+			case 5400 + HANDLE_FREQUENCY:
+				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Yellow));
+				break;
+			case 7420 + HANDLE_FREQUENCY:
 				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black));
 				break;
 			default:
 				break;
-		}*/
+		}
+		
 	}
-	//EXPECT_EQ(draw_cnt,5);
-	//EXPECT_EQ(off_cnt,5);
+	EXPECT_EQ(draw_cnt,10);
+	EXPECT_EQ(off_cnt,10);
 
 }
 

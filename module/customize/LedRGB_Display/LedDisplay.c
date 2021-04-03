@@ -1,4 +1,7 @@
 #include "LedDisplay.h"
+#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
+	INSERT(LOG_ONCE_ENTRY_DEF)(p_once,100);
+#endif
 
 typedef X_Void (*recorder)(StateNumber state_going_to_leave,StateNumber state_going_to_enter);
 
@@ -19,6 +22,9 @@ typedef enum
 */
 StateNumber LS_IdleAction(s_StateMachineParam *p_this)
 {	
+	#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
+		INSERT(LogDebugOnce)(STATE_DEBUG & (mockable_GetDebugFlag()),p_once,LS_Idle,("LS_IdleAction \r\n"));
+	#endif
 	sLedStateParam *p_ext 										= (sLedStateParam *)p_this;
 	p_ext ->state_backup		 	= LS_Idle;
 	p_ext ->event_buf_number_backup = 0;
@@ -36,6 +42,9 @@ StateNumber LS_IdleAction(s_StateMachineParam *p_this)
 */
 StateNumber LS_LoadEventAction(s_StateMachineParam *p_this)
 {
+	#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
+		INSERT(LogDebugOnce)(STATE_DEBUG & (mockable_GetDebugFlag()),p_once,LS_LoadEvent,("LS_LoadEventAction \r\n"));
+	#endif
 	uint16_t  bufnumber;
 	sLedStateParam *p_ext 	= (sLedStateParam *)p_this;
 	s_QueueOperation *p_op  = p_ext ->p_operation;
@@ -63,10 +72,15 @@ StateNumber LS_LoadEventAction(s_StateMachineParam *p_this)
 */
 StateNumber LS_ReadyForEventAction(s_StateMachineParam *p_this)
 {
-	
 	uint32_t current_color,blink_time;
 	sLedBlinkParam *p_param;
 	sLedStateParam *p_ext 	= (sLedStateParam *)p_this;
+
+	#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
+		INSERT(LogDebugOnce)(STATE_DEBUG & (mockable_GetDebugFlag()),p_once,LS_ReadyForEvent,("LS_ReadyForEventAction ;event mode : %d\r\n"
+				,p_ext ->p_current_event ->event_mode));
+	#endif
+	
 	if(p_ext ->p_current_event == X_Null) 
 	{
 		p_ext->p_operation ->queue_release(p_ext->p_operation ->p_manager,p_ext ->event_buf_number_backup);
@@ -143,7 +157,9 @@ StateNumber LS_ReadyForEventAction(s_StateMachineParam *p_this)
 */
 StateNumber LS_RecoverAction(s_StateMachineParam *p_this)
 {
-		
+	#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
+		INSERT(LogDebugOnce)(STATE_DEBUG & (mockable_GetDebugFlag()),p_once,LS_Recover,("LS_RecoverAction \r\n"));
+	#endif
 		sLedStateParam *p_ext 	= (sLedStateParam *)p_this;
 		
 		//p_ext ->p_operation ->queue_release(p_ext ->p_operation ->p_manager,p_ext ->event_buf_number_backup);
@@ -175,7 +191,9 @@ StateNumber LS_RecoverAction(s_StateMachineParam *p_this)
 */
 StateNumber LS_BlinkOnAction(s_StateMachineParam *p_this)
 {
-		
+	#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
+		INSERT(LogDebugOnce)(STATE_DEBUG & (mockable_GetDebugFlag()),p_once,LS_BlinkOn,("LS_BlinkOnAction \r\n"));
+	#endif
 		sLedStateParam *p_ext 	= (sLedStateParam *)p_this;
 		sLedBlinkParam *p_param;
 		p_param = &(p_ext ->p_current_event ->param);
@@ -186,6 +204,9 @@ StateNumber LS_BlinkOnAction(s_StateMachineParam *p_this)
 			{
 				p_ext->display.draw(p_param->color);
 				p_param->on_off_cycle --;
+				#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
+				INSERT(LogDebug)(STATE_DEBUG & (mockable_GetDebugFlag()),(" -----------led on at time: %d\r\n",mockable_GetCurrentTime()));
+				#endif
 			}
 			else {return LS_Recover;}
 		}
@@ -206,6 +227,9 @@ StateNumber LS_BlinkOnAction(s_StateMachineParam *p_this)
 */
 StateNumber LS_BlinkOffAction(s_StateMachineParam *p_this)
 {
+	#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
+		INSERT(LogDebugOnce)(STATE_DEBUG & (mockable_GetDebugFlag()),p_once,LS_BlinkOff,("LS_BlinkOffAction \r\n"));
+	#endif
 		sLedStateParam *p_ext 	= (sLedStateParam *)p_this;
 		sLedBlinkParam *p_param;
 		p_param = &(p_ext ->p_current_event ->param);
@@ -216,6 +240,9 @@ StateNumber LS_BlinkOffAction(s_StateMachineParam *p_this)
 			{
 				p_ext->display.off();
 				p_param->on_off_cycle --;
+				#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
+				INSERT(LogDebug)(STATE_DEBUG & (mockable_GetDebugFlag()),(" -----------led off at time: %d\r\n",mockable_GetCurrentTime()));
+				#endif
 			}
 			else {return LS_Recover;}
 		}
@@ -236,6 +263,9 @@ StateNumber LS_BlinkOffAction(s_StateMachineParam *p_this)
 */
 StateNumber LS_WaitAction(s_StateMachineParam *p_this)
 {
+	#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
+		INSERT(LogDebugOnce)(STATE_DEBUG & (mockable_GetDebugFlag()),p_once,LS_Wait,("LS_WaitAction \r\n"));
+	#endif
 	sLedStateParam *p_ext = (sLedStateParam *)p_this;
 	if(p_ext ->onWaitMethod == X_Null) {return p_ext ->state_backup;}
 	if(p_ext ->onWaitMethod() == X_True) {return p_ext ->state_backup;}
@@ -280,7 +310,20 @@ X_Boolean LedDisplayEventRegister(const sLedDisPlayManager *p_manager,sLedDispla
 	if(p_event ->event_mode == LedBlink)
 	{
 		if(p_event ->param.led_on_time < p_ext ->state_interval || p_event ->param.led_off_time < p_ext ->state_interval 
-				|| p_event ->param.on_off_cycle == 0 ||p_event ->param.color == LD_COLOR_OFF) {return X_False;}
+				|| p_event ->param.on_off_cycle == 0 
+				||p_event ->param.color == LD_COLOR_OFF || p_event ->param.color == COLOR_RGB_Black) {return X_False;}
+	}
+	else if(p_event ->event_mode == LedHoldOn)
+	{
+
+	}
+	else if(p_event ->event_mode == LedHoldOnRecoverable)
+	{
+
+	}
+	else
+	{
+		return X_False;
 	}
 	buf_number = p_ext ->p_operation->queue_fi(p_ext ->p_operation ->p_manager,X_False);
 	if(buf_number < p_manager ->max_event_to_cache)

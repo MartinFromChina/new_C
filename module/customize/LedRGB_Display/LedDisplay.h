@@ -12,7 +12,9 @@
 #include "../../common/CommonMarco.h"
 #include "../../common/loopqueue/loop_queues.h"
 #include "../../common/StateMachine/StateMachine.h"
-
+#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
+	#include "./test/LogDebugSwitch.h"
+#endif
 
 #define LED_ON_INFINITE_TIME   0xffff
 #define LD_COLOR_OFF								(COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black))
