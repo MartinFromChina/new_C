@@ -55,12 +55,6 @@ StateNumber LS_LoadEventAction(s_StateMachineParam *p_this)
 	{
 		p_ext ->p_current_event = &(p_ext->p_event_buf[bufnumber]);
 		p_ext ->event_buf_number_backup = bufnumber;
-		/*
-			it is safer to release node after the blink process is finished ; 
-			but I believe the blink process is faster than the speed of user register event;
-			so there will not be any problem if the user use the module in a normal way; 
-		*/
-		/////p_op ->queue_release(p_op ->p_manager,bufnumber);// do it after the blink is finished , in case some challenging situation
 		return LS_ReadyForEvent;
 	}
 	return p_this ->current_state;
@@ -148,7 +142,7 @@ StateNumber LS_ReadyForEventAction(s_StateMachineParam *p_this)
 		
 	}
 	
-	return LS_Wait;
+	return LS_LoadEvent;
 }
 
 /*

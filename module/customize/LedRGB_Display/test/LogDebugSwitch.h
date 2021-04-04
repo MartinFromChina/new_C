@@ -12,7 +12,7 @@
 	#define INSERT(log_method)  remove_##log_method
 #endif
 
-	#define STATE_DEBUG         1
+	#define STATE_DEBUG         0
 	#define ON_OFF_DEBUG		1
 	extern uint8_t mockable_GetDebugFlag(X_Void);
 	extern uint32_t mockable_GetCurrentTime(X_Void);
