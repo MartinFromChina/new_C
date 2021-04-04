@@ -158,6 +158,10 @@ StateNumber LS_RecoverAction(s_StateMachineParam *p_this)
 		sLedStateParam *p_ext 	= (sLedStateParam *)p_this;
 		
 		p_ext ->p_operation ->queue_release(p_ext ->p_operation ->p_manager,p_ext ->event_buf_number_backup);
+		if(p_ext ->display.DoesLedOn() == X_True)
+		{
+			p_ext ->display.off();
+		}
 		/*
 		if(p_ext ->color_backup != ColorOff)
 		{
@@ -199,9 +203,6 @@ StateNumber LS_BlinkOnAction(s_StateMachineParam *p_this)
 			{
 				p_ext->display.draw(p_param->color);
 				p_param->on_off_cycle --;
-				#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
-				INSERT(LogDebug)(STATE_DEBUG & (mockable_GetDebugFlag()),(" -----------led on at time: %d\r\n",mockable_GetCurrentTime()));
-				#endif
 			}
 			else {return LS_Recover;}
 		}
@@ -235,9 +236,6 @@ StateNumber LS_BlinkOffAction(s_StateMachineParam *p_this)
 			{
 				p_ext->display.off();
 				p_param->on_off_cycle --;
-				#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
-				INSERT(LogDebug)(STATE_DEBUG & (mockable_GetDebugFlag()),(" -----------led off at time: %d\r\n",mockable_GetCurrentTime()));
-				#endif
 			}
 			else {return LS_Recover;}
 		}

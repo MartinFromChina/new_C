@@ -13,6 +13,7 @@
 #endif
 
 	#define STATE_DEBUG         1
+	#define ON_OFF_DEBUG		1
 	extern uint8_t mockable_GetDebugFlag(X_Void);
 	extern uint32_t mockable_GetCurrentTime(X_Void);
 #ifdef __cplusplus

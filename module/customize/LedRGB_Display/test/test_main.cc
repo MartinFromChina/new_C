@@ -51,6 +51,9 @@ X_Void mockable_LedDraw(uint32_t color)
 	draw_cnt ++;
 	CurrentColor = COLOR_WITH_FULL_TRANSPORT(color);
 	current_led_on = X_True;
+	#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
+		INSERT(LogDebug)(ON_OFF_DEBUG & (mockable_GetDebugFlag()),(" -----------led on at time: %d\r\n",mockable_GetCurrentTime()));
+	#endif
 }
 
 X_Void mockable_LedOff(X_Void)
@@ -58,6 +61,9 @@ X_Void mockable_LedOff(X_Void)
 	off_cnt++;
 	current_led_on = X_False;
 	CurrentColor = COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black);
+	#ifdef USE_LOG_DEBUG_IN_GOOGLE_TEST
+		INSERT(LogDebug)(ON_OFF_DEBUG & (mockable_GetDebugFlag()),(" -----------led off at time: %d\r\n",mockable_GetCurrentTime()));
+	#endif
 }
 X_Boolean mockable_DoesLedOn(X_Void)
 {
@@ -347,7 +353,7 @@ TEST(Led,on_off)
 					MOCKABLE(PowerApply),MOCKABLE(PowerRelease),(does_power_on)0,5,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
 	X_Boolean isOK;
 	test_init();
-	debug_flag = 0;
+	debug_flag = 1;
 	LedDisplayInit(p_led4);
 
 	while(global_timer < 15000)   
@@ -396,7 +402,6 @@ TEST(Led,on_off)
 			default:
 				break;
 		}
-		/*
 		switch(global_timer)
 		{
 			case 60 + HANDLE_FREQUENCY:
@@ -405,23 +410,28 @@ TEST(Led,on_off)
 			case 140 + HANDLE_FREQUENCY:
 				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black));
 				break;
-			case 2160 + HANDLE_FREQUENCY:
+			case 520 + HANDLE_FREQUENCY:
 				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_DarkRed));
 				break;
-			case 5400 + HANDLE_FREQUENCY:
+			case 580 + HANDLE_FREQUENCY:
+				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black));
+				break;
+			case 4800 + HANDLE_FREQUENCY:
 				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Yellow));
 				break;
-			case 7420 + HANDLE_FREQUENCY:
+			case 6840 + HANDLE_FREQUENCY:
 				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black));
+				break;
+			case 6880 + HANDLE_FREQUENCY:
+				EXPECT_EQ(CurrentColor,COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_YellowGreen));
 				break;
 			default:
 				break;
 		}
-		*/
 		
 	}
-	//EXPECT_EQ(draw_cnt,10);
-	//EXPECT_EQ(off_cnt,10);
+	EXPECT_EQ(draw_cnt,6);
+	EXPECT_EQ(off_cnt,5);
 }
 
 TEST(Led,on_off_recover)
