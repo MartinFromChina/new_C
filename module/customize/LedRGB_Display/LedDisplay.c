@@ -32,6 +32,7 @@ StateNumber LS_IdleAction(s_StateMachineParam *p_this)
 	p_ext ->blink_cycle_counter		= 0;
 	p_ext ->p_current_event			= (sLedDisplayEvent*)0;
 	p_ext ->onWaitMethod			= p_ext ->display.DoesPowerOn;
+	p_ext ->recover_color			= LD_COLOR_OFF;
 	return LS_LoadEvent;
 }
 /*
@@ -123,8 +124,14 @@ StateNumber LS_ReadyForEventAction(s_StateMachineParam *p_this)
 	}
 	else// on off mode
 	{
-		
-		//p_ext ->color_backup = current_color;
+		if(p_ext ->p_current_event ->event_mode == LedHoldOnRecoverable)
+		{
+			p_ext ->recover_color = current_color;
+		}
+		else
+		{
+			p_ext ->recover_color = LD_COLOR_OFF;
+		}
 		
 		if(current_color != LD_COLOR_OFF) // 
 		{
@@ -134,7 +141,6 @@ StateNumber LS_ReadyForEventAction(s_StateMachineParam *p_this)
 		else
 		{
 			p_ext ->display.off();
-			
 			if(p_ext ->is_power_ctrl_needed == X_True) {p_ext ->display.pow_release();}
 		}
 		p_ext ->p_operation ->queue_release(p_ext ->p_operation ->p_manager,p_ext ->event_buf_number_backup);
@@ -158,28 +164,18 @@ StateNumber LS_RecoverAction(s_StateMachineParam *p_this)
 		sLedStateParam *p_ext 	= (sLedStateParam *)p_this;
 		
 		p_ext ->p_operation ->queue_release(p_ext ->p_operation ->p_manager,p_ext ->event_buf_number_backup);
-		if(p_ext ->display.DoesLedOn() == X_True)
+		
+		if(p_ext ->recover_color != LD_COLOR_OFF)
 		{
-			p_ext ->display.off();
-		}
-		/*
-		if(p_ext ->color_backup != ColorOff)
-		{
-			mModule_PowerSourceApply(PS_Pentip,PSA_PentipRGB,1000);
-			mFunc_ColorEnable();
-			mFunc_ColorDraw(p_ext ->color_backup);// !!! call it after enable
+			if(p_ext ->is_power_ctrl_needed == X_True) {p_ext ->display.pow_apply(LED_ON_INFINITE_TIME);}
+			p_ext ->display.draw(p_ext ->recover_color);
 		}
 		else
 		{
-			mModule_PowerSourceRelease(PS_Pentip,PSA_PentipRGB);
-//////////			mFunc_ColorDraw(p_ext ->color_backup); // necessary ? !!! call it before disable
-			mFunc_ColorDisable();
+			p_ext ->display.off();
+			if(p_ext ->is_power_ctrl_needed == X_True) {p_ext ->display.pow_release();}
 		}
-		if(p_ext ->current_event == LE_UserDefine)
-		{
-			isUserDefineParamEmpty = X_True;
-		}
-		*/
+		
 		return LS_LoadEvent;
 }
 

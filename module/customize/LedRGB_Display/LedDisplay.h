@@ -84,6 +84,7 @@ typedef struct
 	uint16_t 						wait_counter_in_ms;
 	X_Boolean               		(*onWaitMethod)(X_Void);
 	uint16_t						blink_cycle_counter;
+	uint32_t 						recover_color;
 }sLedStateParam;
 
 StateNumber LS_IdleAction(s_StateMachineParam *p_this);
@@ -134,7 +135,7 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 				max_event_num,																				\
 				handle_frequency_in_ms,																			\
 				power_setup_in_ms,																				\
-				X_False,(sLedDisplayEvent*)0,DEFAULT_STATE_NUMBER,0,0,(onwait)0,0									\
+				X_False,(sLedDisplayEvent*)0,DEFAULT_STATE_NUMBER,0,0,(onwait)0,0,LD_COLOR_OFF									\
 			};																					\
 		static const StateAction CONCAT_2(p_manager,_SimpleStateAction)[] = {						\
 				{LS_IdleAction},																		\
