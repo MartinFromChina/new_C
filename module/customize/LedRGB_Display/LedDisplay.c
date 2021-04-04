@@ -29,7 +29,6 @@ StateNumber LS_IdleAction(s_StateMachineParam *p_this)
 	p_ext ->state_backup		 	= LS_Idle;
 	p_ext ->event_buf_number_backup = 0;
 	p_ext ->wait_counter_in_ms 		= 0;
-	p_ext ->color_backup			= LD_COLOR_OFF;
 	p_ext ->blink_cycle_counter		= 0;
 	p_ext ->p_current_event			= (sLedDisplayEvent*)0;
 	p_ext ->onWaitMethod			= p_ext ->display.DoesPowerOn;
@@ -97,7 +96,7 @@ StateNumber LS_ReadyForEventAction(s_StateMachineParam *p_this)
 		blink_time = p_param ->led_off_time + p_param ->led_on_time;
 		blink_time = blink_time * p_param ->on_off_cycle;		
 		
-		if(p_ext ->color_backup != LD_COLOR_OFF) 
+		if(p_ext ->display.DoesLedOn() == X_True) 
 		{
 			p_ext ->state_backup = LS_BlinkOff;
 			p_ext ->blink_cycle_counter = p_param ->led_off_time;
@@ -124,23 +123,23 @@ StateNumber LS_ReadyForEventAction(s_StateMachineParam *p_this)
 	}
 	else// on off mode
 	{
-	/*
-		p_ext ->color_backup = current_color;
 		
-		if(current_color != ColorOff) // to do : apply power , enable pwm , config pwm 
+		//p_ext ->color_backup = current_color;
+		
+		if(current_color != LD_COLOR_OFF) // 
 		{
-			mModule_PowerSourceApply(PS_Pentip,PSA_PentipRGB,COMMON_COLOR_ON_TIME_IN_MS);
-			mFunc_ColorEnable();
-			mFunc_ColorDraw(current_color);// !!! call it after enable
+			if(p_ext ->is_power_ctrl_needed == X_True) {p_ext ->display.pow_apply(LED_ON_INFINITE_TIME);}
+			p_ext ->display.draw(current_color);
 		}
 		else
 		{
-			mModule_PowerSourceRelease(PS_Pentip,PSA_PentipRGB);
-//////////			mFunc_ColorDraw(current_color); // necessary ? !!! call it before disable
-			mFunc_ColorDisable();
+			p_ext ->display.off();
+			
+			if(p_ext ->is_power_ctrl_needed == X_True) {p_ext ->display.pow_release();}
 		}
+		p_ext ->p_operation ->queue_release(p_ext ->p_operation ->p_manager,p_ext ->event_buf_number_backup);
 		return LS_LoadEvent;
-		*/
+		
 	}
 	
 	return LS_Wait;
@@ -158,7 +157,7 @@ StateNumber LS_RecoverAction(s_StateMachineParam *p_this)
 	#endif
 		sLedStateParam *p_ext 	= (sLedStateParam *)p_this;
 		
-		//p_ext ->p_operation ->queue_release(p_ext ->p_operation ->p_manager,p_ext ->event_buf_number_backup);
+		p_ext ->p_operation ->queue_release(p_ext ->p_operation ->p_manager,p_ext ->event_buf_number_backup);
 		/*
 		if(p_ext ->color_backup != ColorOff)
 		{
@@ -279,7 +278,7 @@ X_Void LedDisplayInit(const sLedDisPlayManager *p_manager)
 	
 	if(p_ext ->display.init == X_Null)  {return;}
 	p_ext ->display.init();
-	if(p_ext ->display.draw == X_Null || p_ext ->display.off == X_Null ) {return;}
+	if(p_ext ->display.draw == X_Null || p_ext ->display.off == X_Null  || p_ext ->display.DoesLedOn == X_Null) {return;}
 	if(p_ext ->p_operation == X_Null)  {return;}
 	p_ext ->p_operation ->queue_init(p_ext ->p_operation ->p_manager);
 

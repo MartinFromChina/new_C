@@ -16,7 +16,7 @@
 	#include "./test/LogDebugSwitch.h"
 #endif
 
-#define LED_ON_INFINITE_TIME   0xffff
+#define LED_ON_INFINITE_TIME   0xffffffff
 #define LD_COLOR_OFF								(COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black))
 
 typedef X_Boolean(*onwait)(X_Void);
@@ -53,6 +53,7 @@ typedef struct
 	X_Void (*init)(X_Void);
 	X_Void (*draw)(uint32_t color);
 	X_Void (*off)(X_Void);
+	X_Boolean (*DoesLedOn)(X_Void);
 	X_Void (*pow_apply)(uint32_t time_in_ms);// suggestion: the param is total blink times in ms ; user could add the power setup time inside the function 
 	X_Void (*pow_release)(X_Void);
 	X_Boolean (*DoesPowerOn)(X_Void);
@@ -81,7 +82,6 @@ typedef struct
 	StateNumber						state_backup;
 	uint16_t 						event_buf_number_backup;
 	uint16_t 						wait_counter_in_ms;
-	uint32_t                		color_backup;
 	X_Boolean               		(*onWaitMethod)(X_Void);
 	uint16_t						blink_cycle_counter;
 }sLedStateParam;
@@ -98,6 +98,7 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 								 	color_init,												\
 								 	color_draw,												\
 								 	color_off,												\
+								 	does_led_on,											\
 								 	power_apply,											\
 								 	power_release,											\
 								 	does_power_on,											\
@@ -124,6 +125,7 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 				{	color_init,																						\
 					color_draw,																						\
 					color_off,																					\
+					does_led_on,																				\
 					power_apply,																				\
 					power_release,																					\
 					does_power_on,		},																				\
@@ -132,7 +134,7 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 				max_event_num,																				\
 				handle_frequency_in_ms,																			\
 				power_setup_in_ms,																				\
-				X_False,(sLedDisplayEvent*)0,0,DEFAULT_STATE_NUMBER,0,0,(onwait)0,0									\
+				X_False,(sLedDisplayEvent*)0,DEFAULT_STATE_NUMBER,0,0,(onwait)0,0									\
 			};																					\
 		static const StateAction CONCAT_2(p_manager,_SimpleStateAction)[] = {						\
 				{LS_IdleAction},																		\

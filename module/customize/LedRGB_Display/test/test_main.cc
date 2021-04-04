@@ -59,6 +59,10 @@ X_Void mockable_LedOff(X_Void)
 	current_led_on = X_False;
 	CurrentColor = COLOR_WITH_FULL_TRANSPORT(COLOR_RGB_Black);
 }
+X_Boolean mockable_DoesLedOn(X_Void)
+{
+	return current_led_on;
+}
 
 X_Void mockable_PowerApply(uint32_t time_in_ms)
 {
@@ -95,7 +99,8 @@ static sLedDisplayEvent led_event = {
 };
 TEST(Led,init)
 {
-	APP_LED_DISPLAY_MODULE_DEF(p_led,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),MOCKABLE(PowerRelease),MOCKABLE(DoesPowerOn),10,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
+	APP_LED_DISPLAY_MODULE_DEF(p_led,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(DoesLedOn),
+			MOCKABLE(PowerApply),MOCKABLE(PowerRelease),MOCKABLE(DoesPowerOn),10,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
 	X_Boolean isOK;
 	test_init();
 	
@@ -123,7 +128,8 @@ static sLedDisplayEvent blink_event1 = {
 		
 TEST(Led,simple_blink)
 {
-	APP_LED_DISPLAY_MODULE_DEF(p_led1,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),MOCKABLE(PowerRelease),(does_power_on)0,10,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
+	APP_LED_DISPLAY_MODULE_DEF(p_led1,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(DoesLedOn),
+				MOCKABLE(PowerApply),MOCKABLE(PowerRelease),(does_power_on)0,10,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
 	uint32_t timer_cnt = 0;
 	X_Boolean isOK;
 
@@ -177,7 +183,8 @@ TEST(Led,event_param)
 			1
 		},
 	};
-	APP_LED_DISPLAY_MODULE_DEF(p_led4,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),MOCKABLE(PowerRelease),(does_power_on)0,5,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
+	APP_LED_DISPLAY_MODULE_DEF(p_led4,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(DoesLedOn),
+				MOCKABLE(PowerApply),MOCKABLE(PowerRelease),(does_power_on)0,5,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
 	X_Boolean isOK;
 	test_init();
 	LedDisplayInit(p_led4);
@@ -222,7 +229,8 @@ TEST(Led,event_param)
 TEST(Led,mul_blink)
 {
     sLedDisplayEvent temp_event;
-	APP_LED_DISPLAY_MODULE_DEF(p_led3,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),MOCKABLE(PowerRelease),(does_power_on)0,5,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
+	APP_LED_DISPLAY_MODULE_DEF(p_led3,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(DoesLedOn),
+				MOCKABLE(PowerApply),MOCKABLE(PowerRelease),(does_power_on)0,5,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
 	X_Boolean isOK;
 	test_init();
 	debug_flag = 0;
@@ -303,7 +311,8 @@ TEST(Led,mul_blink)
 
 TEST(Led,mul_blink_full)
 {
-	APP_LED_DISPLAY_MODULE_DEF(p_led2,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),MOCKABLE(PowerRelease),(does_power_on)0,5,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
+	APP_LED_DISPLAY_MODULE_DEF(p_led2,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(DoesLedOn),
+					MOCKABLE(PowerApply),MOCKABLE(PowerRelease),(does_power_on)0,5,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
 	X_Boolean isOK;
 
 	LedDisplayInit(p_led2);
@@ -334,7 +343,8 @@ TEST(Led,disable_enable_immediately)
 TEST(Led,on_off)
 {
 	sLedDisplayEvent temp_event;
-	APP_LED_DISPLAY_MODULE_DEF(p_led4,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(PowerApply),MOCKABLE(PowerRelease),(does_power_on)0,5,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
+	APP_LED_DISPLAY_MODULE_DEF(p_led4,MOCKABLE(LedInit),MOCKABLE(LedDraw),MOCKABLE(LedOff),MOCKABLE(DoesLedOn),
+					MOCKABLE(PowerApply),MOCKABLE(PowerRelease),(does_power_on)0,5,HANDLE_FREQUENCY,POWER_SETUP_IN_MS);
 	X_Boolean isOK;
 	test_init();
 	debug_flag = 0;
