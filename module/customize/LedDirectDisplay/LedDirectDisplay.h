@@ -12,7 +12,9 @@
 
 
 #define LED_DIRECT_ON_INFINITE   0xffff
-
+#define LED_ON_OFF_CYCLE_INFINITE   0xffff
+#define LED_ON_OFF_CYCLE_MAX        30000
+		
 typedef struct
 {
 	uint16_t led_on_time;// in ms

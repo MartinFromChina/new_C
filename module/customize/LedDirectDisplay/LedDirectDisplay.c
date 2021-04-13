@@ -30,7 +30,10 @@ StateNumber LDS_IdleAction(s_StateMachineParam *p_this)
 		p_ext ->blink_cycle_counter		= 0;
 		if(p_ext ->blink_param.led_on_time > 0 && p_ext ->blink_param.on_off_cycle > 0) 
 		{
-			p_ext ->blink_param.on_off_cycle += p_ext ->blink_param.on_off_cycle;
+			if(p_ext ->blink_param.on_off_cycle != LED_ON_OFF_CYCLE_INFINITE)
+			{
+				p_ext ->blink_param.on_off_cycle += p_ext ->blink_param.on_off_cycle;
+			}
 			p_ext ->blink_cycle_counter = p_ext ->blink_param.led_on_time;
 			return LDS_BlinkOn;
 		}
@@ -54,7 +57,7 @@ StateNumber LDS_BlinkOnAction(s_StateMachineParam *p_this)
 			if(p_param->on_off_cycle > 0) 
 			{
 				p_ext->display.on();
-				p_param->on_off_cycle --;
+				if(p_param->on_off_cycle != LED_ON_OFF_CYCLE_INFINITE){p_param->on_off_cycle --;}
 				if(p_param->led_on_time == LED_DIRECT_ON_INFINITE) {return LDS_Idle;}
 			}
 			else {return  LDS_BlinkFinish;}
@@ -86,7 +89,7 @@ StateNumber LDS_BlinkOffAction(s_StateMachineParam *p_this)
 			if(p_param->on_off_cycle > 0) 
 			{
 				p_ext->display.off();
-				p_param->on_off_cycle --;
+				if(p_param->on_off_cycle != LED_ON_OFF_CYCLE_INFINITE){p_param->on_off_cycle --;}
 			}
 			else {return  LDS_BlinkFinish;}
 		}
@@ -145,6 +148,7 @@ X_Boolean LedDirectDisplayEventRegister(const sLedDirDisPlayManager *p_manager,s
 	sLedDirStateParam *p_ext 			= (sLedDirStateParam *)p_manager ->p_state_param;
 	
 	if(p_event == X_Null){return X_False;}
+	if(p_event ->on_off_cycle > LED_ON_OFF_CYCLE_MAX && p_event ->on_off_cycle != LED_ON_OFF_CYCLE_INFINITE) {return X_False;}
 	p_ext->blink_param.led_on_time  = p_event ->led_on_time;
 	p_ext->blink_param.led_off_time = p_event ->led_off_time;
 	p_ext->blink_param.on_off_cycle = p_event ->on_off_cycle;
