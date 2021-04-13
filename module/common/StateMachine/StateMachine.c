@@ -24,7 +24,7 @@ m_app_result mStateMachineRun( const s_StateMachine *p_ssp
 		current_state = p_ssp ->p_Action[current_state].Action(p_smp);
 		if((current_state+1) > p_ssp->AllStateNum)
 		{
-			current_state = DEFAULT_STATE_NUMBER;
+			(*p_ssp->p_CurrentStateNum) = DEFAULT_STATE_NUMBER;
 			return APP_BEYOND_SCOPE;
 		}
 		(*p_ssp->p_CurrentStateNum) = current_state;
