@@ -14,7 +14,7 @@
 #define X_DATA_UNIT uint8_t
 #endif
 
-#define MAX_FRAME_LENGTH         50
+#define MAX_FRAME_LENGTH         300
 #define MAX_FRAME_CHCHE_NUM      20   
 
 
