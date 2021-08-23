@@ -682,33 +682,37 @@ TEST(BH_prio_queue,does_empty)
 TEST(BH_prio_queue,boundary)
 {
 	/**********************init node num boundary test*****************************/
-	/*
-	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s1,0xffff);
-	BH_PriorityQueueInit(p_s1);
-	EXPECT_EQ(p_s1, (X_PriorityQueue *)0);
+	
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_ss1,0xffff);
+	BH_PriorityQueueInit(p_ss1);
+	EXPECT_EQ(p_ss1->p_param->isInit, X_False);
+	//printf("isInit is %2x\r\n",p_ss1->p_param->isInit);
 
-	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	buf_number = BH_PriorityQueueInsert(p_ss1,&s_ee[0].base);
 	EXPECT_EQ(buf_number ,INVALID_PRIOQUEUE_PRIORITY);
 
-	p_s1 = BH_PriorityQueueInit(0xfffe);
-	EXPECT_NE(p_s1, (X_PriorityQueue *)0);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_ss2,0xfffe);
+	BH_PriorityQueueInit(p_ss2);
+	EXPECT_EQ(p_ss2->p_param->isInit, X_True);
 
-	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	buf_number = BH_PriorityQueueInsert(p_ss2,&s_ee[0].base);
 	EXPECT_EQ(buf_number ,s_ee[0].base.priority);
 
-	p_s1 = BH_PriorityQueueInit(0);
-	EXPECT_EQ(p_s1, (X_PriorityQueue *)0);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_ss3,0);
+	BH_PriorityQueueInit(p_ss3);
+	EXPECT_EQ(p_ss3->p_param->isInit, X_False);
 
-	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	buf_number = BH_PriorityQueueInsert(p_ss3,&s_ee[0].base);
 	EXPECT_EQ(buf_number ,INVALID_PRIOQUEUE_PRIORITY);
 
-	p_s1 = BH_PriorityQueueInit(1);
-	EXPECT_NE(p_s1, (X_PriorityQueue *)0);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_ss4,1);
+	BH_PriorityQueueInit(p_ss4);
+	EXPECT_EQ(p_ss4->p_param->isInit, X_True);
 
-	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
+	buf_number = BH_PriorityQueueInsert(p_ss4,&s_ee[0].base);
 	EXPECT_EQ(buf_number ,s_ee[0].base.priority);
 
-	*/
+	
 
 	/**********************priority scope boundary test*****************************/
 	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s1,0xfffe);

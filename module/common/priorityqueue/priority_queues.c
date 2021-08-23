@@ -152,6 +152,7 @@ static	s_element_base s_minnest_sentinel = {MINNEST_BH_QUEUE_SENTINEL};
 X_Void		BH_PriorityQueueInit(const X_PriorityQueue *p_queue)
 {
 	if(p_queue == X_Null) {return ;}
+	p_queue ->p_param->isInit = X_False;
 	if(p_queue ->p_base == X_Null) {return ;}
 	if(p_queue ->max_node > MAX_BH_QUEUE_NODE_NUM || p_queue ->max_node == 0) {return ;}
 
