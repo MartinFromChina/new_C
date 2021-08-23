@@ -79,6 +79,12 @@ uint16_t 			BT_GetPriorityQueueUsedNodeNum(const sPrioListManager *p_manager);
 
 /**********************
 *************************/
+typedef struct
+{
+ X_Boolean isInit;
+ uint16_t current_used_node;
+}sBH_PrioQueue_param;
+
 typedef struct 
 {
 	uint16_t priority;
@@ -87,19 +93,39 @@ typedef struct
 typedef struct 
 {
 	uint16_t max_node;
-	uint16_t current_size;
+	sBH_PrioQueue_param *p_param;
 	s_element_base **p_base;
 }X_PriorityQueue;
 
+#define APP_BINARY_HEAP_PRIORITYQUEUE_DEF_WITHOUT_POINTER(p_manager,max_elements)   					\
+		static sBH_PrioQueue_param CONCAT_2(p_manager,cur_param) = {X_False,0};			\
+		static s_element_base *CONCAT_2(p_manager,_pri_p_base)[max_elements];			\
+		static const X_PriorityQueue CONCAT_2(p_manager,_pri_queue_entry) = {			\
+			max_elements,																\
+			&CONCAT_2(p_manager,cur_param),												\
+			&CONCAT_2(p_manager,_pri_p_base)[0],										\
+		};																				
 
-X_PriorityQueue *		BH_PriorityQueueInit(uint16_t max_elements);
-X_Void 					BH_PriorityQueueDestory(X_PriorityQueue ** p_H);
-X_Void 					BH_PriorityQueueClear(X_PriorityQueue * H);
-CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base * p_base);
-CURRENT_PRIORITY		BH_PriorityQueueFindMin(X_PriorityQueue * H,s_element_base ** pp_base);
-CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(X_PriorityQueue * H,s_element_base ** pp_base);
-X_Boolean 				BH_DoesPriorityQueueEmpty(X_PriorityQueue * H);
-uint16_t 				BH_GetPriorityQueueUsedNodeNum(X_PriorityQueue * H);
+
+#define APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_manager,max_elements)   					\
+		static sBH_PrioQueue_param CONCAT_2(p_manager,cur_param) = {X_False,0};			\
+		static s_element_base *CONCAT_2(p_manager,_pri_p_base)[max_elements];			\
+		static const X_PriorityQueue CONCAT_2(p_manager,_pri_queue_entry) = {			\
+			max_elements,																\
+			&CONCAT_2(p_manager,cur_param),												\
+			&CONCAT_2(p_manager,_pri_p_base)[0],										\
+		};																				\
+		static const X_PriorityQueue *p_manager = &CONCAT_2(p_manager,_pri_queue_entry);
+
+
+
+X_Void					BH_PriorityQueueInit(const X_PriorityQueue *p_queue);
+X_Void 					BH_PriorityQueueClear(const X_PriorityQueue * H);
+CURRENT_PRIORITY 		BH_PriorityQueueInsert(const X_PriorityQueue * H,s_element_base * p_base);
+CURRENT_PRIORITY		BH_PriorityQueueFindMin(const X_PriorityQueue * H,s_element_base ** pp_base);
+CURRENT_PRIORITY 		BH_PriorityQueueReleaseMin(const X_PriorityQueue * H,s_element_base ** pp_base);
+X_Boolean 				BH_DoesPriorityQueueEmpty(const X_PriorityQueue * H);
+uint16_t 				BH_GetPriorityQueueUsedNodeNum(const X_PriorityQueue * H);
 
 
 

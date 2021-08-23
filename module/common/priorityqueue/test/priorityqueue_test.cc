@@ -337,7 +337,6 @@ TEST(queue_test,operation_speed)
 #endif
 /************************
 X_PriorityQueue *		BH_PriorityQueueInit(uint16_t max_elements);
-X_Void 					BH_PriorityQueueDestory(X_PriorityQueue ** p_H);
 X_Void 					BH_PriorityQueueClear(X_PriorityQueue * H);
 CURRENT_PRIORITY 		BH_PriorityQueueInsert(X_PriorityQueue * H,s_element_base * p_base);
 CURRENT_PRIORITY		BH_PriorityQueueFindMin(X_PriorityQueue * H,s_element_base * p_base);
@@ -360,7 +359,7 @@ static s_element_extern *p_extern;
 
 TEST(BH_prio_queue,init)
 {
-	X_PriorityQueue *p_s1 = 0;
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s1,NORMAL_NODE_SCOPE);
 	X_Boolean isOK = X_False;
 
 	do{		
@@ -379,7 +378,7 @@ TEST(BH_prio_queue,init)
 
 		s_ee[0].base.priority = 30;
 		
-		p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
+	    BH_PriorityQueueInit(p_s1);
 		
 		buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
 		EXPECT_EQ(buf_number ,30);
@@ -402,29 +401,33 @@ TEST(BH_prio_queue,init)
 
 TEST(BH_prio_queue,node_scope)
 {
-	X_PriorityQueue *p_s1 = 0,*p_s2 = 0,*p_s3 = 0,*p_s4 = 0,*p_s5 = 0;
-
-	p_s1 = BH_PriorityQueueInit(MAX_BH_QUEUE_NODE_NUM);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s1,MAX_BH_QUEUE_NODE_NUM);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s2,MAX_BH_QUEUE_NODE_NUM + 1);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s3,MAX_BH_QUEUE_NODE_NUM - 1);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s4,1);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s5,0);
+	
+	BH_PriorityQueueInit(p_s1);
 	EXPECT_EQ(0,BH_GetPriorityQueueUsedNodeNum(p_s1));
 	
-	p_s2 = BH_PriorityQueueInit(MAX_BH_QUEUE_NODE_NUM + 1);
+	BH_PriorityQueueInit(p_s2);
 	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_GetPriorityQueueUsedNodeNum(p_s2));
 
-	p_s3 = BH_PriorityQueueInit(MAX_BH_QUEUE_NODE_NUM - 1);
+	BH_PriorityQueueInit(p_s3);
 	EXPECT_EQ(0,BH_GetPriorityQueueUsedNodeNum(p_s3));
 
 
 	s_ee[0].base.priority = 1;
 	s_ee[1].base.priority = 0;
 
-	p_s4 = BH_PriorityQueueInit(1);
+	BH_PriorityQueueInit(p_s4);
 	EXPECT_EQ(0,BH_GetPriorityQueueUsedNodeNum(p_s4));
 	EXPECT_EQ(1,BH_PriorityQueueInsert(p_s4,&s_ee[0].base));
 	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert(p_s4,&s_ee[1].base));
 	EXPECT_EQ(1,BH_GetPriorityQueueUsedNodeNum(p_s4));
 
 	
-	p_s5 = BH_PriorityQueueInit(0);
+	BH_PriorityQueueInit(p_s5);
 	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_GetPriorityQueueUsedNodeNum(p_s5));
 	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert(p_s5,&s_ee[1].base));
 	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert(p_s5,&s_ee[0].base));
@@ -434,8 +437,6 @@ TEST(BH_prio_queue,node_scope)
 
 TEST(BH_prio_queue,normal_insert)
 {
-	X_PriorityQueue *p_s1;
-
 	s_ee[0].base.priority = 100;
 	s_ee[1].base.priority = 101;
 	s_ee[2].base.priority = 3;
@@ -446,7 +447,8 @@ TEST(BH_prio_queue,normal_insert)
 	s_ee[499].base.priority = 0xffff;
 	p_base = &s_ee[NORMAL_NODE_SCOPE - 1].base;
 
-	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s1,NORMAL_NODE_SCOPE);
+	BH_PriorityQueueInit(p_s1);
 	
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
 	EXPECT_EQ(buf_number,100);
@@ -489,7 +491,7 @@ TEST(BH_prio_queue,normal_insert)
 TEST(BH_prio_queue,same_priority_insert)
 {
 
-	X_PriorityQueue *p_s1;
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s1,NORMAL_NODE_SCOPE);
 	
 	s_ee[0].base.priority = 32767;	s_ee[0].other_info = 0;
 	s_ee[1].base.priority = 32767;	s_ee[1].other_info = 1;
@@ -504,7 +506,7 @@ TEST(BH_prio_queue,same_priority_insert)
 	s_ee[10].base.priority = 255;	s_ee[10].other_info = 10;
 	s_ee[11].base.priority = 255;	s_ee[11].other_info = 11;
 	
-	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
+	BH_PriorityQueueInit(p_s1);
 
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[1].base);
@@ -535,8 +537,8 @@ TEST(BH_prio_queue,same_priority_insert)
 
 TEST(BH_prio_queue,normal_delete_min)
 {
-	X_PriorityQueue *p_s1;
-	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s1,NORMAL_NODE_SCOPE);
+	BH_PriorityQueueInit(p_s1);
 
 	s_ee[0].base.priority = 100;	s_ee[0].other_info = 0;
 	s_ee[1].base.priority = 101;	s_ee[1].other_info = 1;
@@ -588,8 +590,8 @@ TEST(BH_prio_queue,normal_delete_min)
 
 TEST(BH_prio_queue,clear)
 {
-	X_PriorityQueue *p_s1;
-	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s1,NORMAL_NODE_SCOPE);
+	BH_PriorityQueueInit(p_s1);
 
 	s_ee[0].base.priority = 100;	s_ee[0].other_info = 0;
 	s_ee[1].base.priority = 99;		s_ee[1].other_info = 1;
@@ -615,8 +617,8 @@ TEST(BH_prio_queue,clear)
 TEST(BH_prio_queue,get_uesd_node_mum)
 {
 	uint16_t i;
-	X_PriorityQueue *p_s1;
-	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s1,NORMAL_NODE_SCOPE);
+	BH_PriorityQueueInit(p_s1);
 	buf_number = BH_GetPriorityQueueUsedNodeNum(p_s1);
 	EXPECT_EQ(buf_number,0);
 
@@ -654,8 +656,8 @@ TEST(BH_prio_queue,get_uesd_node_mum)
 TEST(BH_prio_queue,does_empty)
 {
 	uint16_t i;
-	X_PriorityQueue *p_s1;
-	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s1,NORMAL_NODE_SCOPE);
+	BH_PriorityQueueInit(p_s1);
 
 	EXPECT_EQ(X_True, BH_DoesPriorityQueueEmpty(p_s1));
 
@@ -679,10 +681,10 @@ TEST(BH_prio_queue,does_empty)
 
 TEST(BH_prio_queue,boundary)
 {
-	X_PriorityQueue *p_s1;
-
 	/**********************init node num boundary test*****************************/
-	p_s1 = BH_PriorityQueueInit(0xffff);
+	/*
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s1,0xffff);
+	BH_PriorityQueueInit(p_s1);
 	EXPECT_EQ(p_s1, (X_PriorityQueue *)0);
 
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
@@ -706,8 +708,11 @@ TEST(BH_prio_queue,boundary)
 	buf_number = BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
 	EXPECT_EQ(buf_number ,s_ee[0].base.priority);
 
+	*/
+
 	/**********************priority scope boundary test*****************************/
-	p_s1 = BH_PriorityQueueInit(0xfffe);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s1,0xfffe);
+	BH_PriorityQueueInit(p_s1);
 
 	s_ee[0].base.priority = 0;		s_ee[0].other_info = 0;
 	s_ee[1].base.priority = 1;		s_ee[1].other_info = 1;
@@ -741,32 +746,6 @@ TEST(BH_prio_queue,boundary)
 	
 }
 
-TEST(BH_prio_queue,destory)
-{
-	uint16_t i;
-	X_PriorityQueue *p_s1;
-	X_PriorityQueue *p_s1_copy;
-	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
-	p_s1_copy = p_s1;
-	EXPECT_EQ(X_True, BH_DoesPriorityQueueEmpty(p_s1));
-
-	
-	for(i=0;i<2000;i++)
-	{
-		s_ee[0].base.priority = 3000 - i;
-		BH_PriorityQueueInsert(p_s1,&s_ee[0].base);
-	}
-	EXPECT_EQ(X_False, BH_DoesPriorityQueueEmpty(p_s1_copy));
-	EXPECT_EQ(NORMAL_NODE_SCOPE, BH_GetPriorityQueueUsedNodeNum(p_s1_copy));
-	
-	BH_PriorityQueueDestory(&p_s1);
-	EXPECT_EQ(X_True, BH_DoesPriorityQueueEmpty(p_s1));
-	EXPECT_EQ(0, BH_GetPriorityQueueUsedNodeNum(p_s1_copy));// not a good way ....
-	EXPECT_EQ(p_s1, (X_PriorityQueue*)0);
-	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueInsert(p_s1,&s_ee[0].base));
-	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueFindMin(p_s1,&p_base));
-	EXPECT_EQ(INVALID_PRIOQUEUE_PRIORITY,BH_PriorityQueueReleaseMin(p_s1,&p_base));
-}
 
 /*TEST(BH_prio_queue,null_pointer)
 {
@@ -818,13 +797,16 @@ TEST(BH_prio_queue,destory)
 
 TEST(BH_prio_queue,mul_entry)
 {
-	X_PriorityQueue *p_s1,*p_s2,*p_s3,*p_s4,*p_s5;
-
-	p_s1 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE);
-	p_s2 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE*2);
-	p_s3 = BH_PriorityQueueInit(NORMAL_NODE_SCOPE*2 + 680);
-	p_s4 = BH_PriorityQueueInit(779);
-	p_s5 = BH_PriorityQueueInit(65534);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s1,NORMAL_NODE_SCOPE);
+	BH_PriorityQueueInit(p_s1);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s2,NORMAL_NODE_SCOPE*2);
+	BH_PriorityQueueInit(p_s2);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s3,NORMAL_NODE_SCOPE*2 + 680);
+	BH_PriorityQueueInit(p_s3);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s4,779);
+	BH_PriorityQueueInit(p_s4);
+	APP_BINARY_HEAP_PRIORITYQUEUE_DEF(p_s5,65534);
+	BH_PriorityQueueInit(p_s5);
 
 	s_ee[0].base.priority = 288;	s_ee[0].other_info = 0;
 	s_ee[1].base.priority = 100;	s_ee[1].other_info = 1;
