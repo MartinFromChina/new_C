@@ -108,11 +108,11 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 								 	power_setup_in_ms)										\
 		static sLedDisplayCommonFlag  CONCAT_2(p_manager, led_display_flag_entry) = {X_False,X_False};		\
 		static sLedDisplayEvent 	CONCAT_2(p_manager, led_display_event_buf)[max_event_num];		\
-		APP_LOOPQUEUE_DEF(CONCAT_2(p_manager,_led_event_queue),max_event_num);									\
+		APP_LOOPQUEUE_DEF_WITHOUT_POINTER(CONCAT_2(p_manager,_led_event_queue),max_event_num);									\
 		static s_QueueOperation      CONCAT_2(p_manager,_led_display_queue) = {						\
 				0,																				\
 				0,																				\
-				CONCAT_2(p_manager,_led_event_queue),														\
+				&CONCAT_2(p_manager,_led_event_queue_loopqueue_entry),														\
 				LoopQueueInitialize,															\
 				LoopQueueFirstIn,																\
 				LoopQueueFirstOut,															\
@@ -146,14 +146,14 @@ StateNumber LS_WaitAction(s_StateMachineParam *p_this);
 				{LS_BlinkOffAction},																				\
 				{LS_WaitAction},																					\
 		};																													\
-		APP_STATE_MACHINE_DEF(CONCAT_2(p_manager,_p_simple_state),																				\
+		APP_STATE_MACHINE_DEF_WITHOUT_POINTER(CONCAT_2(p_manager,_p_simple_state),																				\
 							sizeof(CONCAT_2(p_manager,_SimpleStateAction))/sizeof(CONCAT_2(p_manager,_SimpleStateAction)[0]),		\
 							&CONCAT_2(p_manager,_SimpleStateAction)[0]);							\
 		static const sLedDisPlayManager CONCAT_2(p_manager, led_display_entry) = {							\
 			&CONCAT_2(p_manager, led_display_flag_entry),													\
 			max_event_num,																				\
 			&(CONCAT_2(p_manager,_sLSP).base),																\
-			CONCAT_2(p_manager,_p_simple_state),													\
+			&CONCAT_2(p_manager,_p_simple_state_entry),													\
 		};																							\
 		static const sLedDisPlayManager * p_manager = &CONCAT_2(p_manager, led_display_entry)
 
