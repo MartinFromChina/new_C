@@ -124,7 +124,7 @@ void audio_play(void)
 	WM8978_Input_Cfg(0,0,0);//关闭输入通道
 	WM8978_Output_Cfg(1,0);	//开启DAC输出   
 	
- 	while(f_opendir(&wavdir,"0:/MUSIC"))//打开音乐文件夹
+ 	while(f_opendir(&wavdir,"2:/music"))//打开音乐文件夹
  	{	    
 		Show_Str(60,190,240,16,"MUSIC文件夹错误!",16,0);
 		delay_ms(200);				  

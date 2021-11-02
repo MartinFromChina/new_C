@@ -38,4 +38,8 @@
 ..\obj\usmart_config.o: ..\FWLIB\inc\stm32f4xx_fsmc.h
 ..\obj\usmart_config.o: ..\SYSTEM\delay\delay.h
 ..\obj\usmart_config.o: ..\SYSTEM\sys\sys.h
+..\obj\usmart_config.o: ..\FATFS\exfuns\fattester.h
+..\obj\usmart_config.o: ..\FATFS\src\ff.h
+..\obj\usmart_config.o: ..\FATFS\src\integer.h
+..\obj\usmart_config.o: ..\FATFS\src\ffconf.h
 ..\obj\usmart_config.o: ..\HARDWARE\WM8978\wm8978.h
