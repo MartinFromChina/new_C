@@ -16,14 +16,14 @@
 
 //I2S2初始化
 
-//参数I2S_Standard: @SPI_I2S_Standard  I2S标准,
+//参数I2S_Standard:  @ref SPI_I2S_Standard  I2S标准,
 //I2S_Standard_Phillips,飞利浦标准;
 //I2S_Standard_MSB,MSB对齐标准(右对齐);
 //I2S_Standard_LSB,LSB对齐标准(左对齐);
 //I2S_Standard_PCMShort,I2S_Standard_PCMLong:PCM标准
-//参数I2S_Mode: @SPI_I2S_Mode  I2S_Mode_SlaveTx:从机发送;I2S_Mode_SlaveRx:从机接收;I2S_Mode_MasterTx:主机发送;I2S_Mode_MasterRx:主机接收;
-//参数I2S_Clock_Polarity  &SPI_I2S_Clock_Polarity:  I2S_CPOL_Low,时钟低电平有效;I2S_CPOL_High,时钟高电平有效
-//参数I2S_DataFormat：@SPI_I2S_Data_Format :数据长度,I2S_DataFormat_16b,16位标准;I2S_DataFormat_16bextended,16位扩展(frame=32bit);I2S_DataFormat_24b,24位;I2S_DataFormat_32b,32位.
+//参数I2S_Mode:  @ref SPI_I2S_Mode  I2S_Mode_SlaveTx:从机发送;I2S_Mode_SlaveRx:从机接收;I2S_Mode_MasterTx:主机发送;I2S_Mode_MasterRx:主机接收;
+//参数I2S_Clock_Polarity   @ref SPI_I2S_Clock_Polarity:  I2S_CPOL_Low,时钟低电平有效;I2S_CPOL_High,时钟高电平有效
+//参数I2S_DataFormat： @ref SPI_I2S_Data_Format :数据长度,I2S_DataFormat_16b,16位标准;I2S_DataFormat_16bextended,16位扩展(frame=32bit);I2S_DataFormat_24b,24位;I2S_DataFormat_32b,32位.
 void I2S2_Init(u16 I2S_Standard,u16 I2S_Mode,u16 I2S_Clock_Polarity,u16 I2S_DataFormat)
 { 
   I2S_InitTypeDef I2S_InitStructure;
