@@ -21,10 +21,16 @@
 //广州市星翼电子科技有限公司    
 //作者：正点原子 @ALIENTEK 
 
- 
+#define TIME_TO_PLAY_MUSIC_AFTER_PWR_UP_IN_MINUTES       360 // 6hours = 6 * 60 = 360 minutes
+#define TIME_TO_PLAY_MUSIC_AFTER_PWR_UP_IN_MS            ((uint32_t)(TIME_TO_PLAY_MUSIC_AFTER_PWR_UP_IN_MINUTES * 60000))
+
+static uint32_t cnt = 0;
+extern void SetSysCnt(uint32_t ms);
+extern uint32_t GetSysCnt(void);
 int main(void)
 {        
- 
+	SetSysCnt(TIME_TO_PLAY_MUSIC_AFTER_PWR_UP_IN_MS);
+	cnt = TIME_TO_PLAY_MUSIC_AFTER_PWR_UP_IN_MS;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置系统中断优先级分组2
 	delay_init(168);  //初始化延时函数
 	uart_init(115200);		//初始化串口波特率为115200
@@ -58,6 +64,16 @@ int main(void)
 	Show_Str(60,150,200,16,"KEY_UP:PAUSE/PLAY",16,0);
 	while(1)
 	{ 
+//		if(GetSysCnt() > 0) 
+//		{
+//			continue;
+//		}
+		if(cnt > 0)
+		{
+			cnt --;
+			delay_us(1050);
+			continue;
+		}
 		audio_play();
 	} 
 }

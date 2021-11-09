@@ -139,11 +139,24 @@ void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
+#include <stdio.h>
+static uint32_t sys_cnt = 0;
 void SysTick_Handler(void)
 {
- 
+//////////	printf(" this is systick\r\n");
+	if(sys_cnt > 0) {sys_cnt --;}
 }
 
+void SetSysCnt(uint32_t ms)
+{
+	sys_cnt = ms;
+}
+uint32_t GetSysCnt(void)
+{
+	uint32_t temp;
+	temp = sys_cnt;
+ return temp;
+}
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */

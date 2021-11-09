@@ -1,6 +1,6 @@
 Dependencies for Project 'AudioPlayer', Target 'AudioPlayer': (DO NOT MODIFY !)
-F (.\main.c)(0x54658F02)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+F (.\main.c)(0x618A9ABA)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -56,7 +56,7 @@ I (..\TEXT\text.h)(0x54213577)
 I (..\HARDWARE\WM8978\wm8978.h)(0x542FDDF8)
 I (..\APP\audioplay.h)(0x540081A1)
 I (..\AUDIOCODEC\wav\wavplay.h)(0x54008285)
-F (.\stm32f4xx_it.c)(0x5426CDF4)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\stm32f4xx_it.o --omf_browse ..\obj\stm32f4xx_it.crf --depend ..\obj\stm32f4xx_it.d)
+F (.\stm32f4xx_it.c)(0x618A97A1)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\stm32f4xx_it.o --omf_browse ..\obj\stm32f4xx_it.crf --depend ..\obj\stm32f4xx_it.d)
 I (stm32f4xx_it.h)(0x5426CDC1)
 I (stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
@@ -93,6 +93,7 @@ I (..\FWLIB\inc\stm32f4xx_can.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_dac.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 F (.\system_stm32f4xx.c)(0x542B7880)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\system_stm32f4xx.o --omf_browse ..\obj\system_stm32f4xx.crf --depend ..\obj\system_stm32f4xx.d)
 I (stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
@@ -131,7 +132,7 @@ I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 F (..\HARDWARE\LED\led.c)(0x53B78948)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\led.o --omf_browse ..\obj\led.crf --depend ..\obj\led.d)
 I (..\HARDWARE\LED\led.h)(0x53B53723)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -168,7 +169,7 @@ I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 F (..\HARDWARE\LCD\lcd.c)(0x555710FD)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\lcd.o --omf_browse ..\obj\lcd.crf --depend ..\obj\lcd.d)
 I (..\HARDWARE\LCD\lcd.h)(0x55C1EC9F)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -210,7 +211,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 I (..\SYSTEM\delay\delay.h)(0x53B7797C)
 F (..\HARDWARE\KEY\key.c)(0x53C0BDAC)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\key.o --omf_browse ..\obj\key.crf --depend ..\obj\key.d)
 I (..\HARDWARE\KEY\key.h)(0x53C0BE22)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -248,7 +249,7 @@ I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 I (..\SYSTEM\delay\delay.h)(0x53B7797C)
 F (..\HARDWARE\SPI\spi.c)(0x53BD4A07)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\spi.o --omf_browse ..\obj\spi.crf --depend ..\obj\spi.d)
 I (..\HARDWARE\SPI\spi.h)(0x543CCB83)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -285,7 +286,7 @@ I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 F (..\HARDWARE\W25QXX\w25qxx.c)(0x54478360)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\w25qxx.o --omf_browse ..\obj\w25qxx.crf --depend ..\obj\w25qxx.d)
 I (..\HARDWARE\W25QXX\w25qxx.h)(0x5368CD39)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -361,12 +362,12 @@ I (..\FWLIB\inc\stm32f4xx_dac.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\SYSTEM\usart\usart.h)(0x5397010C)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 F (..\HARDWARE\IIC\myiic.c)(0x541FE900)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\myiic.o --omf_browse ..\obj\myiic.crf --depend ..\obj\myiic.d)
 I (..\HARDWARE\IIC\myiic.h)(0x5368BC34)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -405,7 +406,7 @@ I (..\SYSTEM\delay\delay.h)(0x53B7797C)
 F (..\HARDWARE\24CXX\24cxx.c)(0x542FBCEE)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\24cxx.o --omf_browse ..\obj\24cxx.crf --depend ..\obj\24cxx.d)
 I (..\HARDWARE\24CXX\24cxx.h)(0x5368B9E1)
 I (..\HARDWARE\IIC\myiic.h)(0x5368BC34)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -443,7 +444,7 @@ I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 I (..\SYSTEM\delay\delay.h)(0x53B7797C)
 F (..\HARDWARE\I2S\i2s.c)(0x549564F3)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\i2s.o --omf_browse ..\obj\i2s.crf --depend ..\obj\i2s.d)
 I (..\HARDWARE\I2S\i2s.h)(0x543A0308)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -482,7 +483,7 @@ I (..\SYSTEM\usart\usart.h)(0x5397010C)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 F (..\HARDWARE\WM8978\wm8978.c)(0x543A2A90)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\wm8978.o --omf_browse ..\obj\wm8978.crf --depend ..\obj\wm8978.d)
 I (..\HARDWARE\WM8978\wm8978.h)(0x542FDDF8)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -519,9 +520,9 @@ I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 I (..\HARDWARE\IIC\myiic.h)(0x5368BC34)
 I (..\SYSTEM\delay\delay.h)(0x53B7797C)
-F (..\SYSTEM\delay\delay.c)(0x55CC1354)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\delay.o --omf_browse ..\obj\delay.crf --depend ..\obj\delay.d)
+F (..\SYSTEM\delay\delay.c)(0x618A9955)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\delay.o --omf_browse ..\obj\delay.crf --depend ..\obj\delay.d)
 I (..\SYSTEM\delay\delay.h)(0x53B7797C)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -557,7 +558,7 @@ I (..\FWLIB\inc\stm32f4xx_dac.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 F (..\SYSTEM\sys\sys.c)(0x53B52F52)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\sys.o --omf_browse ..\obj\sys.crf --depend ..\obj\sys.d)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -593,7 +594,7 @@ I (..\FWLIB\inc\stm32f4xx_dac.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 F (..\SYSTEM\usart\usart.c)(0x55CC14BB)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\usart.o --omf_browse ..\obj\usart.crf --depend ..\obj\usart.d)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -1056,7 +1057,7 @@ I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 I (..\SYSTEM\usart\usart.h)(0x5397010C)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 F (..\USMART\usmart_config.c)(0x543A55DC)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\usmart_config.o --omf_browse ..\obj\usmart_config.crf --depend ..\obj\usmart_config.d)
 I (..\USMART\usmart.h)(0x528CCEDB)
 I (..\USMART\usmart_str.h)(0x53673F41)
@@ -1095,7 +1096,7 @@ I (..\FWLIB\inc\stm32f4xx_dac.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 I (..\SYSTEM\delay\delay.h)(0x53B7797C)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\HARDWARE\WM8978\wm8978.h)(0x542FDDF8)
 F (..\USMART\usmart_str.c)(0x528CCEDB)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\usmart_str.o --omf_browse ..\obj\usmart_str.crf --depend ..\obj\usmart_str.d)
 I (..\USMART\usmart_str.h)(0x53673F41)
@@ -1173,7 +1174,7 @@ I (..\FWLIB\inc\stm32f4xx_dac.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 I (..\HARDWARE\W25QXX\w25qxx.h)(0x5368CD39)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\MALLOC\malloc.h)(0x54212E6B)
 F (..\FATFS\src\ff.c)(0x5400258C)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\ff.o --omf_browse ..\obj\ff.crf --depend ..\obj\ff.d)
 I (..\FATFS\src\ff.h)(0x53D1D050)
@@ -1225,7 +1226,7 @@ I (..\FATFS\exfuns\fattester.h)(0x537486F6)
 I (..\MALLOC\malloc.h)(0x54212E6B)
 I (..\SYSTEM\usart\usart.h)(0x5397010C)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 F (..\FATFS\exfuns\fattester.c)(0x5400285B)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\fattester.o --omf_browse ..\obj\fattester.crf --depend ..\obj\fattester.d)
 I (..\FATFS\exfuns\fattester.h)(0x537486F6)
 I (..\USER\stm32f4xx.h)(0x542BA483)
@@ -1270,7 +1271,7 @@ I (..\USMART\usmart.h)(0x528CCEDB)
 I (..\USMART\usmart_str.h)(0x53673F41)
 I (..\SYSTEM\usart\usart.h)(0x5397010C)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\FATFS\exfuns\exfuns.h)(0x54002836)
 I (..\MALLOC\malloc.h)(0x54212E6B)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
@@ -1314,7 +1315,7 @@ I (..\FWLIB\inc\stm32f4xx_dac.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x53DBAFAD)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x53DBAFAD)
 I (..\HARDWARE\W25QXX\w25qxx.h)(0x5368CD39)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 F (..\TEXT\fontupd.c)(0x5421358C)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\fontupd.o --omf_browse ..\obj\fontupd.crf --depend ..\obj\fontupd.d)
 I (..\TEXT\fontupd.h)(0x54213583)
 I (..\USER\stm32f4xx.h)(0x542BA483)
@@ -1355,7 +1356,7 @@ I (..\FATFS\src\ff.h)(0x53D1D050)
 I (..\FATFS\src\integer.h)(0x5378E62C)
 I (..\FATFS\src\ffconf.h)(0x53C89DEF)
 I (..\HARDWARE\W25QXX\w25qxx.h)(0x5368CD39)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\HARDWARE\LCD\lcd.h)(0x55C1EC9F)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x599ECD2C)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
@@ -1364,7 +1365,7 @@ I (..\SYSTEM\delay\delay.h)(0x53B7797C)
 I (..\SYSTEM\usart\usart.h)(0x5397010C)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 F (..\TEXT\text.c)(0x5421358C)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\text.o --omf_browse ..\obj\text.crf --depend ..\obj\text.d)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -1409,7 +1410,7 @@ I (..\SYSTEM\usart\usart.h)(0x5397010C)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 F (..\AUDIOCODEC\wav\wavplay.c)(0x543A0915)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\wavplay.o --omf_browse ..\obj\wavplay.crf --depend ..\obj\wavplay.d)
 I (..\AUDIOCODEC\wav\wavplay.h)(0x54008285)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -1458,7 +1459,7 @@ I (..\HARDWARE\KEY\key.h)(0x53C0BE22)
 I (..\HARDWARE\LED\led.h)(0x53B53723)
 F (..\APP\audioplay.c)(0x54008913)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\LED -I ..\HARDWARE\LCD -I ..\HARDWARE\KEY -I ..\HARDWARE\SRAM -I ..\HARDWARE\SDIO -I ..\MALLOC -I ..\USMART -I ..\HARDWARE\SPI -I ..\HARDWARE\W25QXX -I ..\FATFS\exfuns -I ..\FATFS\src -I ..\TEXT -I ..\FWLIB\inc -I ..\HARDWARE\24CXX -I ..\HARDWARE\IIC -I ..\HARDWARE\I2S -I ..\HARDWARE\WM8978 -I ..\APP -I ..\AUDIOCODEC\wav-I.\RTE\_AudioPlayer-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include"-IC:\Keil_v5\ARM\CMSIS\Include-I"D:\AllProgram\Program Files\Keil 5\Pack\Keil\STM32F4xx_DFP\2.7.0\Device\Include"-D__UVISION_VERSION="525" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\audioplay.o --omf_browse ..\obj\audioplay.crf --depend ..\obj\audioplay.d)
 I (..\APP\audioplay.h)(0x540081A1)
-I (..\SYSTEM\sys\sys.h)(0x55CC1471)
+I (..\SYSTEM\sys\sys.h)(0x618A98EB)
 I (..\USER\stm32f4xx.h)(0x542BA483)
 I (..\CORE\core_cm4.h)(0x53C7D530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)

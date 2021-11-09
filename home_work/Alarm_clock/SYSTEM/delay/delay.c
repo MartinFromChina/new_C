@@ -131,7 +131,6 @@ void delay_init(u8 SYSCLK)
 	fac_ms=(u16)fac_us*1000;				//非OS下,代表每个ms需要的systick时钟数   
 #endif
 }								    
-
 #if SYSTEM_SUPPORT_OS 						//如果需要支持OS.
 //延时nus
 //nus:要延时的us数.	
