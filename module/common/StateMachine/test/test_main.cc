@@ -76,6 +76,7 @@ public:
 	MOCK_METHOD0(ExpectCurrentState1,	uint8_t());
 	MOCK_METHOD0(ExpectCurrentState2,	uint8_t());
 	MOCK_METHOD0(ExpectCurrentState3,	uint8_t());
+	MOCK_METHOD0(ExpectCurrentState4,	uint8_t());
 };
 
 Mock_StateFoo mocker_sf;
@@ -257,12 +258,12 @@ TEST(state_machine,boundary)
 	}
 	
 }
-
+/*
 TEST(state_machine,param)
 {
 
 }
-
+*/
 
 static StateNumber t000Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 1;}
 static StateNumber t001Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); return 2;}
@@ -298,7 +299,43 @@ TEST(state_machine,jump_recorder)
 	}
 }
 
+static StateNumber t00000Action(s_StateMachineParam *p_this);
+static StateNumber t00001Action(s_StateMachineParam *p_this);
+static StateNumber t00002Action(s_StateMachineParam *p_this);
+static StateNumber t00003Action(s_StateMachineParam *p_this);
+static StateNumber t00004Action(s_StateMachineParam *p_this);
 
+static const StateAction jumpStateAction0000[] = {
+		{t00000Action},{t00001Action},{t00002Action},{t00003Action},{t00004Action},
+};
+
+APP_STATE_MACHINE_DEF(p_change_state
+						,sizeof(jumpStateAction0000)/sizeof(jumpStateAction0000[0])
+						,&jumpStateAction0000[0]);
+
+static StateNumber t00000Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); mStateMachineStateSet(p_change_state,4);return 1;}
+static StateNumber t00001Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); mStateMachineStateSet(p_change_state,2);return 2;}
+static StateNumber t00002Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); mStateMachineStateSet(p_change_state,3);return 3;}
+static StateNumber t00003Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); mStateMachineStateSet(p_change_state,0); return 4;}
+static StateNumber t00004Action(s_StateMachineParam *p_this){UNUSED_VARIABLE(p_this); mStateMachineStateSet(p_change_state,1);return 0;}
+
+static X_Void SuddenChangeJumpRecorder(StateNumber state_going_to_leave,StateNumber state_going_to_enter)
+{
+	 EXPECT_EQ(state_going_to_enter,mocker_sf.ExpectCurrentState4());
+}
+
+TEST(state_machine,state_sudden_change)
+{
+	uint8_t i;
+	EXPECT_CALL(mocker_sf, ExpectCurrentState4()).Times(5).WillOnce(Return(0)).WillOnce(Return(4)).WillOnce(Return(1))
+														  .WillOnce(Return(2)).WillOnce(Return(3));
+
+	mStateMachineStateSet(p_change_state,3);
+	for(i=0;i<5;i++)
+	{
+		mStateMachineRun(p_change_state,&sPE.base,SuddenChangeJumpRecorder);
+	}
+}
 
 
 

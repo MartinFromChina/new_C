@@ -9,6 +9,7 @@
 #include "../AppError.h"
 #include "../CommonMarco.h"
 
+#define INVALID_STATE_NUMBER		(0xFF)
 #define MAX_STATE_NUMBER    		(0xFE)
 #define DEFAULT_STATE_NUMBER        0
 
@@ -30,16 +31,19 @@ typedef struct
 	const StateNumber 	AllStateNum;
 	StateAction const 	*p_Action;
     StateNumber         *p_CurrentStateNum;
+	StateNumber         *p_SuddenChangeState;
 }s_StateMachine;
 
 #define APP_STATE_MACHINE_DEF_WITHOUT_POINTER(id,state_number,p_action)                \
 static StateNumber CONCAT_2(id, _current_state_number) = DEFAULT_STATE_NUMBER;						\
-static const s_StateMachine CONCAT_2(id, _entry) = {state_number,p_action,&CONCAT_2(id, _current_state_number)}
+static StateNumber CONCAT_2(id, _sudden_change_state_number) = INVALID_STATE_NUMBER;						\
+static const s_StateMachine CONCAT_2(id, _entry) = {state_number,p_action,&CONCAT_2(id, _current_state_number),&CONCAT_2(id, _sudden_change_state_number)}
 
 
 #define APP_STATE_MACHINE_DEF(id,state_number,p_action)                \
 static StateNumber CONCAT_2(id, _current_state_number) = DEFAULT_STATE_NUMBER;						\
-static const s_StateMachine CONCAT_2(id, _entry) = {state_number,p_action,&CONCAT_2(id, _current_state_number)}; \
+static StateNumber CONCAT_2(id, _sudden_change_state_number) = INVALID_STATE_NUMBER;						\
+static const s_StateMachine CONCAT_2(id, _entry) = {state_number,p_action,&CONCAT_2(id, _current_state_number),&CONCAT_2(id, _sudden_change_state_number)}; \
 static const s_StateMachine* id = &CONCAT_2(id, _entry)
 
 m_app_result mStateMachineRun( const s_StateMachine *p_ssp
