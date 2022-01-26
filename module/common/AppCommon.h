@@ -47,7 +47,8 @@ static __inline uint16_t __ByteGetCheckSum(uint8_t const* src, uint16_t length)
 
 X_Void byteBufInit(uint8_t *p_buf,uint16_t length,uint8_t init_value);
 X_Void twobyteBufInit(uint16_t *p_buf,uint16_t length,uint16_t init_value);
-
+uint16_t TwoBytesReverse(uint16_t src);
+uint32_t FourBytesReverse(uint32_t src);
 #ifdef __cplusplus
 		}
 #endif
