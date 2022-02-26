@@ -10,13 +10,14 @@
 #include "../../common/StateMachine/StateMachine.h"
 #include "../../common/loopqueue/loop_queues.h"
 
-#define MAX_TEST_MODE_OUTPUT_STRING_LENGTH        100
+#define MAX_TEST_MODE_OUTPUT_STRING_LENGTH        300
 #define MAX_TM_COMMAND_CACHE_NUM                  10
-#define MAX_TEST_MODE_COMMAND_LENGTH              80 // TMENTER OVER     £º the command length is 5 : ENTER           
+#define MAX_TEST_MODE_COMMAND_LENGTH              300 // TMENTER OVER     £º the command length is 5 : ENTER           
 #define TEST_MODE_COMMAND_STRING_EXTERN_LENGTH    7 // TM OVER
 #define TEST_MODE_RECV_EXTERN_LENGTH              3 // 1 for recv state ,2 for data length
-#define TEST_MODE_CMD_ROUTINE_END_STRING          "ENDROUTINE"
+#define TEST_MODE_CMD_ROUTINE_END_STRING          "RUNALL"
 #define TEST_SPECIAL_HOLD_TIME_INFINITE           0xFFFFFFFF
+#define TM_LENGTH_DONT_CARE                       0xFF
 
 typedef X_Boolean (*tm_get_byte)(uint8_t *p_data);
 typedef X_Boolean (*tm_send_buf)(const uint8_t *p_data,uint16_t length);
@@ -204,7 +205,7 @@ typedef struct
                                          };                                      \
          static const sTestModeParam* p_tm = &CONCAT_2(p_tm,_test_mode_entry)
 
-X_Void mTestModeInit(const sTestModeParam *p_tm);
+X_Boolean mTestModeInit(const sTestModeParam *p_tm);
 X_Void mTestModeLoopReceive(const sTestModeParam *p_tm);
 X_Void mTestModeHandle(const sTestModeParam *p_tm);
 

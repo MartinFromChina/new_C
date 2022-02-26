@@ -51,17 +51,15 @@ StateNumber TM_IdleAction(s_StateMachineParam *p_this)
 *********************************************************************************************************************************/
 StateNumber TM_CommandAnalysisAction(s_StateMachineParam *p_this)
 {
-	uint8_t i,real_compare_length;
+	uint8_t i;
 	sTestModeParamExtern *p_ext = (sTestModeParamExtern *)p_this;
 	
 	if(p_ext ->isNewCommandCome == X_True)
 	{
 		for(i=0;i<p_ext -> command_table_size;i++)
 		{
-			real_compare_length = 
-			(p_ext ->temp_command_length > p_ext ->p_command_table[i].compare_length)? p_ext ->p_command_table[i].compare_length : p_ext ->temp_command_length;
-			if((p_ext ->temp_command_length == p_ext ->p_command_table[i].length) &&
-						(memcmp(p_ext ->temp_command_buf, p_ext ->p_command_table[i].command_string,real_compare_length) == 0))
+			if((p_ext ->temp_command_length == p_ext ->p_command_table[i].length || p_ext ->p_command_table[i].length == TM_LENGTH_DONT_CARE) &&
+						(memcmp(p_ext ->temp_command_buf, p_ext ->p_command_table[i].command_string,p_ext ->p_command_table[i].compare_length) == 0))
 			{
 				
 				if(p_ext ->p_command_table[i].isSpecialModeOnly == X_True)
@@ -80,7 +78,7 @@ StateNumber TM_CommandAnalysisAction(s_StateMachineParam *p_this)
 				
 				if(p_ext ->p_command_table[i].todo != X_Null) 
 				{
-					if(DoesCommandThatNotBelongTestRoutine(p_ext ->temp_command_buf,real_compare_length) == X_False)
+					if(DoesCommandThatNotBelongTestRoutine(p_ext ->temp_command_buf,p_ext ->p_command_table[i].compare_length) == X_False)
 					{
 						TmLogPrintf(TEST_MODE_BASIC_LOG_DEBUG,(p_ext ->send_buf_method,"\r\n ( Begin Test Rountine ) \r\n"));
 					}
@@ -123,6 +121,10 @@ StateNumber TM_DoCommandRoutineAction(s_StateMachineParam *p_this)
 			return p_ext ->p_command_table[index].todo(p_this);
 		}
 		return p_this ->current_state;
+	}
+	else
+	{
+		p_ext ->routine_cnt = p_ext ->command_table_size;
 	}
 	return p_this ->current_state;
 }
@@ -404,23 +406,24 @@ static X_Boolean tm_ProtocolRecvGetCommand(sTestModeRecvParam *p_manager,uint8_t
 	RealseLoopQueueBuf(p_manager ->p_queue,p_manager ->cur_pop_num);
 	return X_True;
 }
-X_Void mTestModeInit(const sTestModeParam *p_tm)
+X_Boolean mTestModeInit(const sTestModeParam *p_tm)
 {
-	if(p_tm == X_Null) {return;}
+	if(p_tm == X_Null) {return X_False;}
 	*p_tm ->p_isInitOK = X_False;
-	if(tm_ProtocolRecvInit(p_tm ->p_recv) != X_True){return;}
+	if(tm_ProtocolRecvInit(p_tm ->p_recv) != X_True){return X_False;}
 	
-	if(p_tm ->handle_called_freq_in_ms == 0){return;}
-	if(p_tm ->get_byte_method == X_Null || p_tm ->send_buf_method == X_Null){return;}
+	if(p_tm ->handle_called_freq_in_ms == 0){return X_False;}
+	if(p_tm ->get_byte_method == X_Null){return X_False;}
 	
 	sTestModeParamExtern *p_ext = (sTestModeParamExtern *)p_tm ->p_state_param;
-	if(p_ext ->handle_called_freq_in_ms == 0) {return;}
-	if(p_ext ->get_byte_method == X_Null || p_ext ->send_buf_method == X_Null){return;}
-	if(p_ext ->p_command_table == X_Null || p_ext ->command_table_size == 0) {return;}
+	if(p_ext ->handle_called_freq_in_ms == 0) {return X_False;}
+	if(p_ext ->get_byte_method == X_Null ){return X_False;}
+	if(p_ext ->p_command_table == X_Null || p_ext ->command_table_size == 0) {return X_False;}
 	
 	mStateMachineStateSet(p_tm ->p_state_machine,TM_Idle);
 	
 	*p_tm ->p_isInitOK = X_True;
+	return X_True;
 }
 X_Void mTestModeLoopReceive(const sTestModeParam *p_tm)
 {
@@ -503,8 +506,8 @@ static uint8_t GetRountineEventNum(sTestModeParamExtern *p_extern)
 		}
 	}
 	
-	if(i >= p_extern ->command_table_size) {return 0;}
-	return num;
+	if(i >= p_extern ->command_table_size || num <= 1) {return 0;}
+	return (num - 1);
 }
 StateNumber TM_RUNALL_todo(s_StateMachineParam *p_base)
 {

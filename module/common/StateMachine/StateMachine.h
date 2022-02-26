@@ -51,7 +51,7 @@ m_app_result mStateMachineRun( const s_StateMachine *p_ssp
 						,X_Void(*StateRecorder)(StateNumber state_going_to_leave,StateNumber state_going_to_enter));
 
 m_app_result mStateMachineStateSet(const s_StateMachine *p_ss,StateNumber state);
-
+StateNumber mStateMachineGetSuddenChangeState(const s_StateMachine *p_ss);
 
 #ifdef __cplusplus
 		}

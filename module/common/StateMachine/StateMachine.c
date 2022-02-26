@@ -57,3 +57,9 @@ m_app_result mStateMachineStateSet(const s_StateMachine *p_ss,StateNumber state)
 	*p_ss ->p_SuddenChangeState = state;
 	return APP_SUCCESSED;
 }
+
+StateNumber mStateMachineGetSuddenChangeState(const s_StateMachine *p_ss)
+{
+	if(p_ss == X_Null) {return APP_POINTER_NULL;}
+	return *p_ss ->p_SuddenChangeState;
+}
