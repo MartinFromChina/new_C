@@ -38,14 +38,15 @@ http://www.cnblogs.com/lidabo/p/3729615.html
 #include <stdio.h>
 #include <stdlib.h>
 
-#define u8 unsigned char
-#define u16 unsigned short
-#define u32 unsigned long
+#define u8 uint8_t //unsigned char
+#define u16 uint16_t //unsigned short
+#define u32 uint32_t //unsigned long
  
  
 #define FILE_SCALE	16 	//音频文件质量 8或16	 
  
 //44字节 
+#pragma (1)
 typedef struct {
 	u8 riff_mark[4];
 	u32 file_size;
@@ -61,7 +62,7 @@ typedef struct {
 	u8	data_str[4]; 
 	u32 sound_size;
 } WAV_Typedef;
- 
+ #pragma ()
 WAV_Typedef WAVFile_Array;
  
 u16 *Sound_Data; 
