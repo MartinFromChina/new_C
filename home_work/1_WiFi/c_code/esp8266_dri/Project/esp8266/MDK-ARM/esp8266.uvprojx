@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy; ../Drivers/CMSIS/Device/ST/STM32F1xx/Include; ../Drivers/CMSIS/Include; ..\..\..\..\..\..\..\module\external\Segger\SEGGER_RTT_V640\RTT; ..\..\..\User\LogDebug; ..\..\..\User\App; ..\..\..\User\Module; ..\..\..\User\Func; ..\..\..\User\Drive; ..\..\..\..\..\..\..\module\common\InsertLog</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\..\..\..\..\..\..\module\external\Segger\SEGGER_RTT_V640\RTT;..\..\..\User\LogDebug;..\..\..\User\App;..\..\..\User\Module;..\..\..\User\Func;..\..\..\User\Drive;..\..\..\..\..\..\..\module\common\InsertLog;..\..\..\..\..\..\..\module\common\StateMachine;..\..\..\..\..\..\..\module\common\loopqueue</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -622,16 +622,52 @@
               <FileType>5</FileType>
               <FilePath>..\..\..\User\App\ProjectConfig.h</FilePath>
             </File>
+            <File>
+              <FileName>mApp_Init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\App\mApp_Init.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Module</GroupName>
+          <Files>
+            <File>
+              <FileName>mModule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Module\mModule.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>Func</GroupName>
+          <Files>
+            <File>
+              <FileName>mFunc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Func\mFunc.c</FilePath>
+            </File>
+            <File>
+              <FileName>mFunc_SoftTimer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Func\mFunc_SoftTimer.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>Drive</GroupName>
+          <Files>
+            <File>
+              <FileName>mDri_SoftTimer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Drive\mDri_SoftTimer.c</FilePath>
+            </File>
+            <File>
+              <FileName>mDrive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Drive\mDrive.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>LogDebug</GroupName>
