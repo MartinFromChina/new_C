@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\..\..\..\..\..\..\module\external\Segger\SEGGER_RTT_V640\RTT;..\..\..\User\LogDebug;..\..\..\User\App;..\..\..\User\Module;..\..\..\User\Func;..\..\..\User\Drive;..\..\..\..\..\..\..\module\common\InsertLog;..\..\..\..\..\..\..\module\common\StateMachine;..\..\..\..\..\..\..\module\common\loopqueue</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\..\..\..\..\..\..\module\external\Segger\SEGGER_RTT_V640\RTT;..\..\..\User\LogDebug;..\..\..\User\App;..\..\..\User\Module;..\..\..\User\Func;..\..\..\User\Drive;..\..\..\..\..\..\..\module\common\InsertLog;..\..\..\..\..\..\..\module\common\StateMachine;..\..\..\..\..\..\..\module\common\loopqueue;..\..\..\..\..\..\..\module\customize\ButtonModule;..\..\..\..\..\..\..\module\common\Math</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -607,6 +607,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\..\module\customize\TestModeConsole\mTestMode.c</FilePath>
             </File>
+            <File>
+              <FileName>ButtonModule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\..\module\customize\ButtonModule\ButtonModule.c</FilePath>
+            </File>
+            <File>
+              <FileName>bit_operation.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\..\module\common\Math\bit_operation.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -637,6 +647,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\User\Module\mModule.c</FilePath>
             </File>
+            <File>
+              <FileName>mModule_button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Module\mModule_button.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -652,20 +667,35 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\User\Func\mFunc_SoftTimer.c</FilePath>
             </File>
+            <File>
+              <FileName>mFunc_Button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Func\mFunc_Button.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Drive</GroupName>
           <Files>
             <File>
-              <FileName>mDri_SoftTimer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\User\Drive\mDri_SoftTimer.c</FilePath>
+              <FileName>MCU_Board_Speci.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\User\Drive\MCU_Board_Speci.h</FilePath>
             </File>
             <File>
               <FileName>mDrive.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\User\Drive\mDrive.c</FilePath>
+            </File>
+            <File>
+              <FileName>mDri_SoftTimer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Drive\mDri_SoftTimer.c</FilePath>
+            </File>
+            <File>
+              <FileName>mDri_GPIO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Drive\mDri_GPIO.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -676,6 +706,11 @@
               <FileName>LogDebugSwitch.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\User\LogDebug\LogDebugSwitch.c</FilePath>
+            </File>
+            <File>
+              <FileName>LogDebugSwitch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\User\LogDebug\LogDebugSwitch.h</FilePath>
             </File>
           </Files>
         </Group>

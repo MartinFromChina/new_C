@@ -1,12 +1,14 @@
 #include "mDrive.h"
 //////////#include "mDri_SoftTimer.h"
+#include "mDri_GPIO.h"
 
 extern void SystemClock_Config(void);
 X_Void mDriInit(X_Void)
 {
 	HAL_Init(); // systick 1ms irq enable
 	SystemClock_Config();
-////	mDri_IO_ClockEnable();
+	mDri_IO_ClockEnable();
+	mDri_ButtonIO_Init();
 	LogDebugInit();
 	INSERT(LogDebug)(SYS_INIT_DEBUG,("hello world\r\n"));
 }
