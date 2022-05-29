@@ -21,7 +21,7 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-
+extern uint8_t temp_uart1_rec_buf[1];
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
@@ -51,7 +51,7 @@ void MX_USART1_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART1_Init 2 */
-
+	HAL_UART_Receive_IT(&huart1,temp_uart1_rec_buf,1);
   /* USER CODE END USART1_Init 2 */
 
 }

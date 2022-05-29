@@ -54,10 +54,32 @@ X_Void SeggerRTT_LogDebug(const char * sFormat, ...);
 #define BUTTON_DOING_DEBUG    1
 #define UseButtonBehaviorAnalyze  1
 /**********************************************************************/
+#define UART_SEND_DEBUG           0
+#define UART_RECV_DEBUG           0
+/**********************************************************************/
+#define TEST_MODE_DATA_REC_DEBUG  0
+/**********************************************************************/
+/**********************************************************************/
+/**********************************************************************/
+/**********************************************************************/
+/**********************************************************************/
+/**********************************************************************/
+/**********************************************************************/
+/**********************************************************************/
 /**********************************************************************/
 /***********************************************************************
 INSERT(LogDebug)(SYS_INIT_DEBUG,("\r\n---DGJC_System started successfully---\r\n")); 
 **************************************************************************/
+#if (USE_SEGGER_RTT_READ_COMMAND != 0)
+	#define MAX_TM_FRAME_SEND_LENGTH   	200 // fix it later
+
+	X_Void SeggerRttLoopRead(X_Void);
+
+	X_Void mDri_TestModeReceiveBufClear(X_Void);
+	X_Boolean mDri_TestModeGetByteInterface(uint8_t *p_data);
+	X_Boolean mDri_TestModeSentBufInterface(const uint8_t *p_buf,uint16_t length);
+	X_Boolean mDri_DoesTestModeSentBufEmpty(X_Void);
+#endif
 
 #ifdef __cplusplus
 		}

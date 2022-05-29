@@ -637,6 +637,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\User\App\mApp_Init.c</FilePath>
             </File>
+            <File>
+              <FileName>mApp_TestMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\App\mApp_TestMode.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -672,6 +677,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\User\Func\mFunc_Button.c</FilePath>
             </File>
+            <File>
+              <FileName>mFunc_TM_Interface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Func\mFunc_TM_Interface.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -696,6 +706,16 @@
               <FileName>mDri_GPIO.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\User\Drive\mDri_GPIO.c</FilePath>
+            </File>
+            <File>
+              <FileName>mDri_Uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Drive\mDri_Uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_uart_fifo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Drive\bsp_uart_fifo.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -40,51 +40,26 @@ LED PIN
 	UART PIN
 	**********************************************************************************************/	
 	#ifdef FRAME_MARCO_UART
-		#if (USE_TEST_MODE != 0)
-			#define	UART1_FIFO_EN	1
-		#else 
-			#define	UART1_FIFO_EN	0
-		#endif
+		#define	UART1_FIFO_EN	1
 		#define UART1_BAUD			115200
 		
-		#define	UART2_FIFO_EN	1
+		#define	UART2_FIFO_EN	0
 		#define UART2_BAUD			9600
 		
-		#define	UART3_FIFO_EN	1
+		#define	UART3_FIFO_EN	0
 		#define UART3_BAUD			9600
 		
-		#define	UART4_FIFO_EN	1
+		#define	UART4_FIFO_EN	0
 		#define UART4_BAUD			115200
 		
-		#define	UART5_FIFO_EN	1
+		#define	UART5_FIFO_EN	0
 		#define UART5_BAUD			9600
-
-		#define GPS_CTRL_IO_CLK 	 RCC_APB2Periph_GPIOE
-		#define GPS_CTRL_IO_PORT   GPIOE
-		#define GPS_CTRL_IO_PIN    GPIO_Pin_15
 		
-		#define GPS_PPS_IO_CLK 	 RCC_APB2Periph_GPIOC
-		#define GPS_PPS_IO_PORT   GPIOC
-		#define GPS_PPS_IO_PIN    GPIO_Pin_8
+		#define ETH_UART_PORT    COM1
 		
-		#define GPS_UART_PORT    COM3
-		#define ETH_UART_PORT    COM4
-		#define NB_UART_PORT     COM2
-		#define PRINTF_COM			 ETH_UART_PORT			/* 宏定义printf重定向串口 */
-		#define TEST_MODE_PORT   COM1						//115200
-		#define LORA_UART_PORT    COM5
-		
-		#define UART_TM_MAX_TX_LENGTH              200 //  for TM debug
-		#define UART_BC95_MAX_TX_LENGTH            1200  // for NB
-		#define UART_GPS_MAX_TX_LENGTH             50   // for gps
 		#define UART_ETH_MAX_TX_LENGTH             1024// for eth  
-		#define UART_EXT_MAX_TX_LENGTH             UART_ETH_MAX_TX_LENGTH
 		
-		#define UART_COM1_MAX_LENGTH             UART_TM_MAX_TX_LENGTH //  for TM debug
-		#define UART_COM2_MAX_LENGTH             UART_BC95_MAX_TX_LENGTH  // for NB
-		#define UART_COM3_MAX_LENGTH             UART_GPS_MAX_TX_LENGTH   // for gps
-		#define UART_COM4_MAX_LENGTH             UART_ETH_MAX_TX_LENGTH// for eth  
-		#define UART_COM5_MAX_LENGTH             UART_EXT_MAX_TX_LENGTH
+		#define UART_COM1_MAX_LENGTH             UART_ETH_MAX_TX_LENGTH // 
 
 		/* 串口1的GPIO  PA9, PA10 */
 		#define USART1_CLK_ENABLE()              RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE)
