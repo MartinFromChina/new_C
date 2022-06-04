@@ -1,2 +1,14 @@
 该工程用于驱动ESP8266：
 内部固件是：1471_esp8266-at_mqtt-1m
+
+ONENET MQTT : 
+https://open.iot.10086.cn/devdoc/
+
+设备ID :954025650
+key: cHo0BEPZ8OUNvNRczrfpw1BYMvTaTsvq1iKnZY0YuoY=
+
+实例：test3 (https://open.iot.10086.cn/develop/mq/#/general?pid=test3)
+key: lxNVfEVd/EbBSufO/hPx9wcuTmS6EUQIdK18Q5HYyu0=
+
+
+MQTT资料：https://blog.csdn.net/Ber_Bai/article/details/120140024
