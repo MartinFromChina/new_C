@@ -29,7 +29,18 @@ X_Boolean mFun_TM_GetByte(uint8_t *p_data)
 	{
 		if(isWifiPortRawData == X_True)
 		{
-			mDri_WifiSentBufInterface(p_data,1);
+			if((*p_data) == '/')
+			{
+				uint8_t temp[2];
+				temp[0] = '\r';
+				temp[1] = '\n';
+				mDri_WifiSentBufInterface(temp,2);
+			}
+			else
+			{
+				mDri_WifiSentBufInterface(p_data,1);
+			}
+			
 		}
 		return X_True;
 	}

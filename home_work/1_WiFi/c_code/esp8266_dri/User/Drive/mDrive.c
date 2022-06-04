@@ -1,6 +1,7 @@
 #include "mDrive.h"
 //////////#include "mDri_SoftTimer.h"
 #include "mDri_GPIO.h"
+#include "mDri_Uart.h"
 
 extern void SystemClock_Config(void);
 X_Void mDriInit(X_Void)
@@ -9,6 +10,7 @@ X_Void mDriInit(X_Void)
 	SystemClock_Config();
 	mDri_IO_ClockEnable();
 	mDri_ButtonIO_Init();
+	mDri_UartInit();
 	LogDebugInit();
 	INSERT(LogDebug)(SYS_INIT_DEBUG,("hello world\r\n"));
 }

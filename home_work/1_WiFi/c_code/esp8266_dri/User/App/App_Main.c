@@ -29,8 +29,6 @@ volatile X_Boolean isTimeToAct = X_False;
   */
 int main(void)
 {
-//////  MX_GPIO_Init();
-//////  MX_USART1_UART_Init();
 	mAppInit();
   while (1)
   {
