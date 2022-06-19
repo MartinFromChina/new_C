@@ -16,3 +16,10 @@ MQTT×ÊÁÏ£ºhttps://blog.csdn.net/Ber_Bai/article/details/120140024
 https://www.emqx.com/zh/mqtt/public-mqtt5-broker
 
 https://blog.csdn.net/whstudio123/article/details/106391099
+
+
+
+
+
+AT+CIPSTART="TCP","103.151.149.55",80~
+AT+CIPSEND

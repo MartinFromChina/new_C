@@ -27,5 +27,5 @@ X_Void FastHandle(X_Void)
 {
 	mApp_TM_LoopRecv();
 	SeggerRttLoopRead();
-	mModule_WifiHandle();
+//////	mModule_WifiHandle();
 }
