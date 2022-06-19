@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\..\..\..\..\..\..\module\external\Segger\SEGGER_RTT_V640\RTT;..\..\..\User\LogDebug;..\..\..\User\App;..\..\..\User\Module;..\..\..\User\Func;..\..\..\User\Drive;..\..\..\..\..\..\..\module\common\InsertLog;..\..\..\..\..\..\..\module\common\StateMachine;..\..\..\..\..\..\..\module\common\loopqueue;..\..\..\..\..\..\..\module\customize\ButtonModule;..\..\..\..\..\..\..\module\common\Math</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\..\..\..\..\..\..\module\external\Segger\SEGGER_RTT_V640\RTT;..\..\..\User\LogDebug;..\..\..\User\App;..\..\..\User\Module;..\..\..\User\Func;..\..\..\User\Drive;..\..\..\..\..\..\..\module\common\InsertLog;..\..\..\..\..\..\..\module\common\StateMachine;..\..\..\..\..\..\..\module\common\loopqueue;..\..\..\..\..\..\..\module\customize\ButtonModule;..\..\..\..\..\..\..\module\common\Math;..\..\..\User;..\..\..\..\..\..\..\module\customize\ProtocolRecv</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -617,6 +617,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\..\module\common\Math\bit_operation.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_UserLib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\bsp_UserLib.c</FilePath>
+            </File>
+            <File>
+              <FileName>ProtocolRecv.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\..\module\customize\ProtocolRecv\ProtocolRecv.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -642,6 +652,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\User\App\mApp_TestMode.c</FilePath>
             </File>
+            <File>
+              <FileName>SysLog.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\User\App\SysLog.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -656,6 +671,11 @@
               <FileName>mModule_button.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\User\Module\mModule_button.c</FilePath>
+            </File>
+            <File>
+              <FileName>mModule_Wifi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Module\mModule_Wifi.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -681,6 +701,11 @@
               <FileName>mFunc_TM_Interface.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\User\Func\mFunc_TM_Interface.c</FilePath>
+            </File>
+            <File>
+              <FileName>mFunc_ETH_Interface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\User\Func\mFunc_ETH_Interface.c</FilePath>
             </File>
           </Files>
         </Group>

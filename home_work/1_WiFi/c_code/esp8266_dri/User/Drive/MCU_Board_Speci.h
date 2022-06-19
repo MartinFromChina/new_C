@@ -57,9 +57,9 @@ LED PIN
 		
 		#define ETH_UART_PORT    COM1
 		
-		#define UART_ETH_MAX_TX_LENGTH             1024// for eth  
+		#define UART_WIFI_MAX_TX_LENGTH             1024// for eth  
 		
-		#define UART_COM1_MAX_LENGTH             UART_ETH_MAX_TX_LENGTH // 
+		#define UART_COM1_MAX_LENGTH             UART_WIFI_MAX_TX_LENGTH // 
 
 		/* ´®¿Ú1µÄGPIO  PA9, PA10 */
 		#define USART1_CLK_ENABLE()              RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE)

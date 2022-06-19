@@ -12,3 +12,7 @@ key: lxNVfEVd/EbBSufO/hPx9wcuTmS6EUQIdK18Q5HYyu0=
 
 
 MQTT资料：https://blog.csdn.net/Ber_Bai/article/details/120140024
+工具下载：https://blog.csdn.net/qilei2010/article/details/121964597
+https://www.emqx.com/zh/mqtt/public-mqtt5-broker
+
+https://blog.csdn.net/whstudio123/article/details/106391099

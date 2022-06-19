@@ -61,12 +61,12 @@ static const sTmCommandAnalysis new_command_analysis[] = {
 ***********************************************************************************************/
 static X_Void EnterTestModeCb(X_Void)
 {
-//	mModule_SetTestMode();
+	mModule_SetTestMode();
 }
 static X_Void ClearTestModeCb(X_Void)
 {
-//	mFun_TM_ReceiveUnocked();
-//	mModule_ClearTestMode(X_Null);
+	mFun_TM_ReceiveUnocked();
+	mModule_ClearTestMode(X_Null);
 }
 
 static X_Void KillAllCb(X_Void)

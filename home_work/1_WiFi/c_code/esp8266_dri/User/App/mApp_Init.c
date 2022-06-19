@@ -5,6 +5,7 @@
 #include "../Func/mFunc.h"
 #include "../Module/mModule.h"
 #include  "mModule_button.h"
+#include  "mModule_Wifi.h"
 
 X_Void mAppInit(X_Void)
 {
@@ -26,4 +27,5 @@ X_Void FastHandle(X_Void)
 {
 	mApp_TM_LoopRecv();
 	SeggerRttLoopRead();
+	mModule_WifiHandle();
 }

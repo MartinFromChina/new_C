@@ -58,6 +58,13 @@ X_Void SeggerRTT_LogDebug(const char * sFormat, ...);
 #define UART_RECV_DEBUG           0
 /**********************************************************************/
 #define TEST_MODE_DATA_REC_DEBUG  0
+#define ETH_MODULE_DEBUG          1
+#define ETH_DATA_DEBUG            1
+#define ETH_DATA_RECV_DEBUG       1
+#define ETH_SENDBUF_DEBUG         1
+#define ETH_TRANS_DEBUG           1
+#define ETH_RECEIVE_DEBUG         1
+#define ETH_SPECIAL_RECEIVE_DEBUG  1
 /**********************************************************************/
 /**********************************************************************/
 /**********************************************************************/
@@ -80,6 +87,9 @@ INSERT(LogDebug)(SYS_INIT_DEBUG,("\r\n---DGJC_System started successfully---\r\n
 	X_Boolean mDri_TestModeSentBufInterface(const uint8_t *p_buf,uint16_t length);
 	X_Boolean mDri_DoesTestModeSentBufEmpty(X_Void);
 #endif
+
+
+#include "SysLog.h"
 
 #ifdef __cplusplus
 		}
