@@ -1,6 +1,6 @@
 #include "AppCommon.h"
 #include <stdlib.h>
-#include "Math\bit_operation.h"
+#include "Math/bit_operation.h"
 
 X_Void byteBufInit(uint8_t *p_buf,uint16_t length,uint8_t init_value)
 {

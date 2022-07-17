@@ -4,7 +4,7 @@ using namespace std;
 
 #include "../test_bench.h"
 #include "../../../module/common/InsertLog/InsertLogDebug.h"
-
+#include "../../../module/common/AppCommon.h"
 
 TEST(self,introduce)
 {
@@ -18,7 +18,6 @@ TEST(self,introduce)
 }
 
 /**********************************************add the test code below************************************************/
-
 
 /************************************************************************************************************************/
 
