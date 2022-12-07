@@ -37,6 +37,12 @@ typedef struct
 	e_find_other_process process;
 }s_ProtocolRecvProcess;
 
+typedef struct
+ {
+	uint16_t cur_push_node;
+	uint16_t cur_pop_node;
+ }s_QueueOperationParam;
+
  typedef struct
 {
     X_DATA_UNIT 	*  const		p_buf;
@@ -47,7 +53,8 @@ typedef struct
 	find_header 					func_fheader;
 	find_others_and_checksum 		func_fothers;
 	s_ProtocolRecvProcess *const	p_process;
-    s_QueueOperation      *const    p_operation;   
+    s_QueueOperationParam  *const   p_operation;
+	const sListManager 			    *p_list_manager;   
 }sProtocolRecv;
 
 #define PROTOCOL_RECV_DATA_BUF_DEF_WITHOUT_POINTER(p_manager,max_frame_length,max_faram_to_cache,recv,fheader,fothers)  \
@@ -55,17 +62,9 @@ typedef struct
 			static X_Boolean    CONCAT_2(p_manager,_isInitOk) = X_False;  									\
 			static s_ProtocolRecvProcess CONCAT_2(p_manager,_Protocol_recv_process) = {X_False,FOP_idle};  \
 			APP_LOOPQUEUE_DEF_WITHOUT_POINTER(CONCAT_2(p_manager,_queue),max_faram_to_cache);							\
-			static s_QueueOperation      CONCAT_2(p_manager,_Protocol_recv_queue) = {						\
+			static s_QueueOperationParam      CONCAT_2(p_manager,_Protocol_recv_queue) = {						\
 					0,																				\
 					0,																				\
-					&CONCAT_2(p_manager,_queue_loopqueue_entry),														\
-					LoopQueueInitialize,															\
-					LoopQueueFirstIn,																\
-					LoopQueueFirstOut,															\
-					ClearLoopQueue,																\
-					RealseLoopQueueBuf,															\
-					GetLoopQueueUsedNodeNumber,													\
-					DoesLoopQueueEmpty,															\
 			};																						\
 			static const sProtocolRecv CONCAT_2(p_manager,_protocol_recv) = {							\
 					&CONCAT_2(p_manager,_recv_buf)[0][0],												\
@@ -75,8 +74,9 @@ typedef struct
 					recv,																				\
 					fheader,																			\
 					fothers,																			\
-					& CONCAT_2(p_manager,_Protocol_recv_process),										\
+					&CONCAT_2(p_manager,_Protocol_recv_process),										\
 					&CONCAT_2(p_manager,_Protocol_recv_queue),											\
+					&CONCAT_2(p_manager,_queue_loopqueue_entry),										\
 			};																							
 
 				
@@ -85,17 +85,9 @@ typedef struct
 			static X_Boolean    CONCAT_2(p_manager,_isInitOk) = X_False;  									\
 			static s_ProtocolRecvProcess CONCAT_2(p_manager,_Protocol_recv_process) = {X_False,FOP_idle};  \
 			APP_LOOPQUEUE_DEF_WITHOUT_POINTER(CONCAT_2(p_manager,_queue),max_faram_to_cache);							\
-			static s_QueueOperation      CONCAT_2(p_manager,_Protocol_recv_queue) = {						\
+			static s_QueueOperationParam      CONCAT_2(p_manager,_Protocol_recv_queue) = {						\
 					0,																				\
 					0,																				\
-					&CONCAT_2(p_manager,_queue_loopqueue_entry),														\
-					LoopQueueInitialize,															\
-					LoopQueueFirstIn,																\
-					LoopQueueFirstOut,															\
-					ClearLoopQueue,																\
-					RealseLoopQueueBuf,															\
-					GetLoopQueueUsedNodeNumber,													\
-					DoesLoopQueueEmpty,															\
 			};																						\
 			static const sProtocolRecv CONCAT_2(p_manager,_protocol_recv) = {							\
 					&CONCAT_2(p_manager,_recv_buf)[0][0],												\
@@ -105,8 +97,9 @@ typedef struct
 					recv,																				\
 					fheader,																			\
 					fothers,																			\
-					& CONCAT_2(p_manager,_Protocol_recv_process),										\
+					&CONCAT_2(p_manager,_Protocol_recv_process),										\
 					&CONCAT_2(p_manager,_Protocol_recv_queue),											\
+					&CONCAT_2(p_manager,_queue_loopqueue_entry),										\
 			};																							\
 			static const sProtocolRecv *p_manager = &CONCAT_2(p_manager,_protocol_recv)
 
