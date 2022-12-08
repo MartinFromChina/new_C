@@ -191,6 +191,7 @@ static const uint32_t addr_table[TOTAL_FILE_TYPE_NUMBER][MAX_VERSION_FOR_ONE_TYP
 };
 
 extern X_Void mockable_mFun_ExtFlashReadBuffer(uint8_t * p_buf, uint32_t start_addr, uint32_t length_in_byte);
+extern X_Boolean mockable_mFun_ExtFlashWriteBuffer(uint8_t* p_buf, uint32_t start_addr, uint16_t length_in_byte);
 sFileInfo *File_Open(char * p_file_name)
 {
     unsigned int length;
@@ -237,10 +238,9 @@ sFileInfo *File_Open(char * p_file_name)
     {
         MOCKABLE(mFun_ExtFlashReadBuffer)((uint8_t *)&temp_info,addr_table[file_type][i],sizeof(temp_info)/sizeof(uint8_t));
         cur_version = GetVersionNum((char *)temp_info.file_name);
-        if(cur_version = 0xffff)
+        if(cur_version == 0xffff)
         {
             min_index = i;
-            cur_info.total_length = 0; // no valid files;
             break;
         }
         if(cur_version < version_min)
@@ -249,12 +249,19 @@ sFileInfo *File_Open(char * p_file_name)
             min_index = i;
         }
     }
+
+    MOCKABLE(mFun_ExtFlashReadBuffer)((uint8_t *)&temp_info,addr_table[file_type][min_index],sizeof(temp_info)/sizeof(uint8_t));
     
-    byteBufInit(cur_info.file_name,MAX_FILE_NAME_LENGTH,'\0');
-    CopyBuffer(p_file_name,cur_info.file_name,length);
-    cur_info.start_addr = addr_table[file_type][min_index];
-    cur_info.cur_pointer = 0;
-    cur_info.isValid = X_True;
+    //SysLogDebug(1,(" ~~~~~~~~~~~~~ file type %d , min index %d ; crc %2x \r\n",file_type,min_index,temp_info.crc));
+    
+    byteBufInit(temp_info.file_name,MAX_FILE_NAME_LENGTH,'\0');
+    CopyBuffer(p_file_name,temp_info.file_name,length);
+    temp_info.cur_pointer = 0;
+    temp_info.total_length = 0;
+    temp_info.start_addr  = addr_table[file_type][min_index];
+    temp_info.isValid     = X_True;
+    
+    CopyBuffer(&temp_info,&cur_info,sizeof(temp_info)/sizeof(uint8_t));
     
     return &cur_info;
 }
@@ -264,4 +271,6 @@ X_Void File_Close(sFileInfo * p_file)
 {
     if(p_file == INVALID_FILE_INFO) {return;}
     p_file ->isValid = X_False;
+
+    MOCKABLE(mFun_ExtFlashWriteBuffer)((uint8_t *)p_file,p_file ->start_addr,sizeof(sFileInfo)/sizeof(uint8_t));
 }

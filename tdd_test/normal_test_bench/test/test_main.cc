@@ -172,14 +172,179 @@ static const uint32_t addr_table[TOTAL_FILE_TYPE_NUMBER][MAX_VERSION_FOR_ONE_TYP
     {0x1C2000,  0x28A000,   0x352000},// FPGA
 };
 
+static uint8_t fake_flash[12][200];
+
 X_Void mockable_mFun_ExtFlashReadBuffer(uint8_t * p_buf, uint32_t start_addr, uint32_t length_in_byte)
 {
-	
+	uint8_t *p_flash = (uint8_t*)0;
+	uint16_t index = 0xffff;
+	/////printf("start_addr %2x \r\n",start_addr);
+	switch(start_addr)
+	{
+		case 0:
+			p_flash = &fake_flash[0][0];
+			index   = 0;
+			break;
+		case 0x32000:
+			p_flash = &fake_flash[1][0];
+			index   = 1;
+			break;
+		case 0x64000:
+			p_flash = &fake_flash[2][0];
+			index   = 2;
+			break;
+		case 0x96000:
+			p_flash = &fake_flash[3][0];
+			index   = 3;
+			break;
+		case 0xC8000:
+			p_flash = &fake_flash[4][0];
+			index   = 4;
+			break;
+		case 0xFA000:
+			p_flash = &fake_flash[5][0];
+			index   = 5;
+			break;
+		case 0x12C000:
+			p_flash = &fake_flash[6][0];
+			index   = 6;
+			/*
+			printf(" ok \r\n");
+			for(uint16_t i = 0;i<200;i++)
+			{
+				printf("%2x",p_flash[i]);
+			}
+			printf("\r\n");
+			*/
+			break;
+		case 0x15E000:
+			p_flash = &fake_flash[7][0];
+			index   = 7;
+			break;
+		case 0x190000:
+			p_flash = &fake_flash[8][0];
+			index   = 8;
+			break;
+		case 0x1C2000:
+			p_flash = &fake_flash[9][0];
+			index   = 9;
+			break;
+		case 0x28A000:
+			p_flash = &fake_flash[10][0];
+			index   = 10;
+			break;
+		case 0x352000:
+			p_flash = &fake_flash[11][0];
+			index   = 11;
+			break;
+		default:
+			break;
+	}
+
+	if(p_flash == (uint8_t*)0 || p_buf == (uint8_t*)0 || length_in_byte > 200 ) 
+	{
+		printf("fatal error ");
+		return;
+	}
+
+	CopyBuffer(p_flash,p_buf,length_in_byte);
+/*
+	printf(" read from index %d , length %d \r\n",index,length_in_byte);
+	for(uint16_t i = 0;i<length_in_byte;i++)
+	{
+		printf("%2x",p_flash[i]);
+	}
+	printf("\r\n");
+*/
+}
+X_Boolean mockable_mFun_ExtFlashWriteBuffer(uint8_t* p_buf, uint32_t start_addr, uint16_t length_in_byte)
+{
+	uint8_t *p_flash = (uint8_t*)0;
+	uint16_t index = 0xffff;
+	switch(start_addr)
+	{
+		case 0:
+			p_flash = &fake_flash[0][0];
+			index = 0;
+			break;
+		case 0x32000:
+			p_flash = &fake_flash[1][0];
+			index = 1;
+			break;
+		case 0x64000:
+			p_flash = &fake_flash[2][0];
+			index = 2;
+			break;
+		case 0x96000:
+			p_flash = &fake_flash[3][0];
+			index = 3;
+			break;
+		case 0xC8000:
+			p_flash = &fake_flash[4][0];
+			index = 4;
+			break;
+		case 0xFA000:
+			p_flash = &fake_flash[5][0];
+			index = 5;
+			break;
+		case 0x12C000:
+			p_flash = &fake_flash[6][0];
+			index = 6;
+			break;
+		case 0x15E000:
+			p_flash = &fake_flash[7][0];
+			index = 7;
+			break;
+		case 0x190000:
+			p_flash = &fake_flash[8][0];
+			index = 8;
+			break;
+		case 0x1C2000:
+			p_flash = &fake_flash[9][0];
+			index = 9;
+			break;
+		case 0x28A000:
+			p_flash = &fake_flash[10][0];
+			index = 10;
+			break;
+		case 0x352000:
+			p_flash = &fake_flash[11][0];
+			index = 11;
+			break;
+		default:
+			break;
+	}
+
+	if(p_flash == (uint8_t*)0 || p_buf == (uint8_t*)0 || length_in_byte > 200 ) 
+	{
+		printf("fatal error ");
+		return X_False;
+	}
+
+	CopyBuffer(p_buf,p_flash,length_in_byte);
+
+/*
+	printf(" write to index %d , length %d \r\n",index,length_in_byte);
+	for(uint16_t i = 0;i<length_in_byte;i++)
+	{
+		printf("%2x",p_buf[i]);
+	}
+	printf("\r\n");
+*/
+	return X_True;
+}
+static X_Void ClearFakeFlash(X_Void)
+{
+	for(uint8_t i = 0;i<12;i++)
+	{
+		byteBufInit(&fake_flash[i][0],200,0xff);
+	}
 }
 
 TEST(open,close)
 {
 	sFileInfo * cur_file = INVALID_FILE_INFO;
+	ClearFakeFlash();
 
 	cur_file = File_Open(error_string1);
 	EXPECT_EQ(cur_file,INVALID_FILE_INFO);
@@ -188,15 +353,150 @@ TEST(open,close)
 	cur_file = File_Open(error_string2);
 	EXPECT_EQ(cur_file,INVALID_FILE_INFO);
 
-
+/*~~~~~~~~~~~~~~~~~~~~1 wave ~~~~~~~~~~~~~~~~~~~~~~~*/
+/*
+	static const uint32_t addr_table[TOTAL_FILE_TYPE_NUMBER][MAX_VERSION_FOR_ONE_TYPE_FILE] = {
+    {0,         0x32000,    0x64000}, // relay 
+    {0x96000,   0xC8000,    0xFA000}, // master
+    {0x12C000,  0x15E000,   0x190000},// wave
+    {0x1C2000,  0x28A000,   0x352000},// FPGA
+};
+*/
 	cur_file = File_Open(open_string1_1);
 	EXPECT_NE(cur_file,INVALID_FILE_INFO);
 	EXPECT_EQ(X_True,cur_file->isValid);
 	EXPECT_EQ(0,cur_file->total_length);
 	EXPECT_EQ(0x12C000,cur_file->start_addr);
+	EXPECT_EQ(0xffff,cur_file ->crc);
+
+	cur_file ->cur_pointer  = 50;
+	cur_file ->total_length = 100;
+	cur_file ->crc          = 0x1234;
+	File_Close(cur_file);
 	cur_file = INVALID_FILE_INFO;
+	//printf("\r\n\r\n");
+
+
+	cur_file = File_Open(open_string1_2);
+	EXPECT_NE(cur_file,INVALID_FILE_INFO);
+	EXPECT_EQ(X_True,cur_file->isValid);
+	EXPECT_EQ(0,cur_file->total_length);
+	EXPECT_EQ(0x15E000,cur_file->start_addr);
+	EXPECT_EQ(0xffff,cur_file ->crc);
+
+	File_Close(cur_file);
+	cur_file = INVALID_FILE_INFO;
+	//printf("\r\n\r\n");
+
+	
+	cur_file = File_Open(open_string1_3);
+	EXPECT_NE(cur_file,INVALID_FILE_INFO);
+	EXPECT_EQ(X_True,cur_file->isValid);
+	EXPECT_EQ(0,cur_file->total_length);
+	EXPECT_EQ(0x190000,cur_file->start_addr);
+	EXPECT_EQ(0xffff,cur_file ->crc);
+
+	File_Close(cur_file);
+	cur_file = INVALID_FILE_INFO;
+	//printf("\r\n\r\n");
+
+
+	cur_file = File_Open(open_string1_4);
+	EXPECT_NE(cur_file,INVALID_FILE_INFO);
+	EXPECT_EQ(X_True,cur_file->isValid);
+	EXPECT_EQ(0,cur_file->total_length);
+	EXPECT_EQ(0x12C000,cur_file->start_addr);
+	EXPECT_EQ(0x1234,cur_file ->crc);
+
+	File_Close(cur_file);
+	cur_file = INVALID_FILE_INFO;
+	//printf("\r\n\r\n");
+
+/*~~~~~~~~~~~~~~~~~~1 wave again~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ClearFakeFlash();
+
+cur_file = File_Open(open_string1_3);     // MCUwV2.4.3
+	EXPECT_NE(cur_file,INVALID_FILE_INFO);
+	EXPECT_EQ(X_True,cur_file->isValid);
+	EXPECT_EQ(0,cur_file->total_length);
+	EXPECT_EQ(0x12C000,cur_file->start_addr);
+	EXPECT_EQ(0xffff,cur_file ->crc);
+
+	File_Close(cur_file);
+	cur_file = INVALID_FILE_INFO;
+	//printf("\r\n\r\n");
+
+
+	cur_file = File_Open(open_string1_1); // 1.2.3
+	EXPECT_NE(cur_file,INVALID_FILE_INFO);
+	EXPECT_EQ(X_True,cur_file->isValid);
+	EXPECT_EQ(0,cur_file->total_length);
+	EXPECT_EQ(0x15E000,cur_file->start_addr);
+	EXPECT_EQ(0xffff,cur_file ->crc);
+	cur_file ->cur_pointer  = 50;
+	cur_file ->total_length = 100;
+	cur_file ->crc          = 0x1234;
+
+	File_Close(cur_file);
+	cur_file = INVALID_FILE_INFO;
+	//printf("\r\n\r\n");
+
+
+	cur_file = File_Open(open_string1_2); // 2.2.3
+	EXPECT_NE(cur_file,INVALID_FILE_INFO);
+	EXPECT_EQ(X_True,cur_file->isValid);
+	EXPECT_EQ(0,cur_file->total_length);
+	EXPECT_EQ(0x190000,cur_file->start_addr);
+	EXPECT_EQ(0xffff,cur_file ->crc);
+
+	File_Close(cur_file);
+	cur_file = INVALID_FILE_INFO;
+	//printf("\r\n\r\n");
+
+
+	cur_file = File_Open(open_string1_4); // 2.4.5
+	EXPECT_NE(cur_file,INVALID_FILE_INFO);
+	EXPECT_EQ(X_True,cur_file->isValid);
+	EXPECT_EQ(0,cur_file->total_length);
+	EXPECT_EQ(0x15E000,cur_file->start_addr);
+	EXPECT_EQ(0x1234,cur_file ->crc);
+	
+	File_Close(cur_file);
+	cur_file = INVALID_FILE_INFO;
+	//printf("\r\n\r\n");
+
+
+/*~~~~~~~~~~~~~~~~~~2 relay ~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~3 master~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~4 FPGA~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 }
+/*
+static char error_string1[] = "UnknowV1.2.3";
+static char error_string2[] = "MCUkV1.2.3";
+
+static char open_string1_1[] = "MCUwV1.2.3";
+static char open_string1_2[] = "MCUwV2.2.3";
+static char open_string1_3[] = "MCUwV2.4.3";
+static char open_string1_4[] = "MCUwV2.4.5";
+
+static char open_string2_1[] = "MCUrV0.0.1";
+static char open_string2_2[] = "MCUrV1.9.9";
+static char open_string2_3[] = "MCUrV15.2.3";
+static char open_string2_4[] = "MCUrV16.2.3";
+
+static char open_string3_1[] = "MCUmV9.9.9";
+static char open_string3_2[] = "MCUmV10.9.9";
+static char open_string3_3[] = "MCUmV11.0.0";
+static char open_string3_4[] = "MCUmV12.2.3";
+
+static char open_string4_1[] = "FPGAV1.2.3";
+static char open_string4_2[] = "FPGAV1.2.3";
+static char open_string4_3[] = "FPGAV9.2.3";
+static char open_string4_4[] = "FPGAV4.0.0";
+*/
 /************************************************************************************************************************/
 
  GTEST_API_ int main(int argc, char **argv) {
