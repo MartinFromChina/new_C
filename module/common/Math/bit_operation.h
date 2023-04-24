@@ -26,6 +26,12 @@ uint16_t TwoByteFactorSet(uint16_t factor,uint8_t bit_number,X_Boolean SetOrClea
 
 uint32_t uint32_rotate_bit(uint32_t source);// ! careful about the hardware platform
 
+uint32_t fourbyte_setbit(uint32_t source,uint8_t bitnumber);
+uint32_t fourbyte_clearbit(uint32_t source,uint8_t bitnumber);
+uint32_t fourbyte_getbit(uint32_t source,uint8_t bitnumber);
+uint32_t fourbyte_bitoverturn(uint32_t source,uint8_t bitnumber);
+uint32_t FourByteFactorSet(uint32_t factor,uint8_t bit_number,X_Boolean SetOrClear);
+
 uint8_t GetBinaryBitNumber(uint32_t value);
 uint8_t GetLeadZeroCount(uint32_t source);
 uint8_t GetRearZeroCount(uint32_t source);

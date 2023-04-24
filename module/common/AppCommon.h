@@ -6,10 +6,16 @@
 #endif
 		
 #include "x_cross_platform.h"
-#define ARM_COMPILER_PRESENT // ?
 
 #ifndef CopyBuffer
-static __inline X_Void __CopyBuffer(X_Void const* src, X_Void* dst, X_UInt length)
+          
+  #ifdef ARM_COMPILER_PRESENT
+    static __inline X_Void __CopyBuffer(X_Void const* src, X_Void* dst, X_UInt length)
+  #endif
+  #ifdef IAR_COMPILER_PRESENT
+    #pragma inline
+    static X_Void __CopyBuffer(X_Void const* src, X_Void* dst, X_UInt length)
+  #endif
 {
     X_UInt8 const* _src;
     X_UInt8* _dst;
@@ -29,7 +35,14 @@ static __inline X_Void __CopyBuffer(X_Void const* src, X_Void* dst, X_UInt lengt
 #endif
 
 #ifndef ByteGetCheckSum
-static __inline uint16_t __ByteGetCheckSum(uint8_t const* src, uint16_t length)
+
+  #ifdef ARM_COMPILER_PRESENT
+    static __inline uint16_t __ByteGetCheckSum(uint8_t const* src, uint16_t length)
+  #endif
+  #ifdef IAR_COMPILER_PRESENT
+    #pragma inline
+    static uint16_t __ByteGetCheckSum(uint8_t const* src, uint16_t length)
+  #endif
 {
    uint16_t i,sum;
 	
@@ -49,6 +62,7 @@ X_Void byteBufInit(uint8_t *p_buf,uint16_t length,uint8_t init_value);
 X_Void twobyteBufInit(uint16_t *p_buf,uint16_t length,uint16_t init_value);
 uint16_t TwoBytesReverse(uint16_t src);
 uint32_t FourBytesReverse(uint32_t src);
+uint16_t GetCRC(uint16_t crc_init,const uint8_t *p_data,uint32_t length);
 #ifdef __cplusplus
 		}
 #endif

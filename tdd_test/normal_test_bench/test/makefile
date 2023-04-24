@@ -1,5 +1,5 @@
 DLIBS = ../../google_test/lib/libgmock.a
-DEFS = -DUSE_TDD_MOCK=1 -DLOG_DEBUG_METHOD=printf
+DEFS = -DUSE_TDD_MOCK=1 -DLOG_DEBUG_METHOD=printf -DARM_COMPILER_PRESENT=1
 TARGET = test
 
 # Flags passed to the C++ compiler.

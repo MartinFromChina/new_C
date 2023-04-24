@@ -1,0 +1,2 @@
+ gcc -g -Wall -Wextra -pthread -std=c99  -E test.c -o test_expansion.c
+ gcc -g -Wall -Wextra -pthread -std=c99  -E loop_scheduler_test.cc -o expansion.cc

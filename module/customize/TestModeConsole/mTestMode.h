@@ -12,7 +12,7 @@
 
 #define MAX_TEST_MODE_OUTPUT_STRING_LENGTH        300
 #define MAX_TM_COMMAND_CACHE_NUM                  10
-#define MAX_TEST_MODE_COMMAND_LENGTH              300 // TMENTER OVER     £º the command length is 5 : ENTER           
+#define MAX_TEST_MODE_COMMAND_LENGTH              2000 // TMENTER OVER     £º the command length is 5 : ENTER           
 #define TEST_MODE_COMMAND_STRING_EXTERN_LENGTH    7 // TM OVER
 #define TEST_MODE_RECV_EXTERN_LENGTH              3 // 1 for recv state ,2 for data length
 #define TEST_MODE_CMD_ROUTINE_END_STRING          "RUNALL"
@@ -70,7 +70,7 @@ typedef struct
 	uint16_t cur_push_num;
 	uint16_t cur_pop_num;
 	uint8_t header_index;
-	uint8_t data_index;
+	uint16_t data_index;
 	uint8_t temp_rec_buf[MAX_TEST_MODE_COMMAND_LENGTH + TEST_MODE_COMMAND_STRING_EXTERN_LENGTH + TEST_MODE_RECV_EXTERN_LENGTH]; 
 }sTestModeRecvParam;
 

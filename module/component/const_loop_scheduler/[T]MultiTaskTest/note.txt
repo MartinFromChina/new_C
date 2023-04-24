@@ -1,0 +1,2 @@
+shell 免交互：
+https://blog.csdn.net/m0_57515995/article/details/125713620

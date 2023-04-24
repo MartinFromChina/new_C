@@ -120,6 +120,51 @@ uint32_t uint32_rotate_bit(uint32_t source)// ! careful about the hardware platf
     return((source >> 16) | (source << 16));
 }
 
+//uint16_t operation 
+#define FourByteMask							((uint32_t)(1u << 0))
+
+uint32_t fourbyte_setbit(uint32_t source,uint8_t bitnumber)
+{
+	source = source | (FourByteMask << bitnumber);
+	return source;
+}
+uint32_t fourbyte_clearbit(uint32_t source,uint8_t bitnumber)
+{
+	source = source & (~(FourByteMask << bitnumber));
+	return source;
+}
+uint32_t fourbyte_getbit(uint32_t source,uint8_t bitnumber)
+{
+	if((source & (FourByteMask << bitnumber)) != 0)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+uint32_t fourbyte_bitoverturn(uint32_t source,uint8_t bitnumber)
+{
+	uint32_t bitmask = FourByteMask;
+	bitmask = bitmask << bitnumber;
+	source = source ^ bitmask;
+	return source;
+	
+}
+
+uint32_t FourByteFactorSet(uint32_t factor,uint8_t bit_number,X_Boolean SetOrClear)
+{
+	uint32_t  value;
+	if(SetOrClear == Set)
+	{
+		value = fourbyte_setbit(factor,bit_number);
+	}
+	else
+	{
+		value = fourbyte_clearbit(factor,bit_number);
+}
+
+	return value;
+}
 
 static struct _power_table
 {

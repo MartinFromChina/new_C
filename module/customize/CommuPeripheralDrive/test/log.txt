@@ -1,0 +1,209 @@
+[ RUN      ] recv.normal
+ ms 330 recving "
+ ms 341 recving "
+ ms 352 recving ,
+ ms 363 recving 1
+ ms 374 recving 2
+ ms 385 recving 4
+ ms 396 recving r
+ ms 407 recving p
+ ms 418 recving d
+ ms 429 recving f
+ ms 440 recving g
+ ms 451 recving f
+ ms 462 recving s
+ ms 473 recving d
+ ms 484 recving ,
+ ms 495 recving "
+ ms 506 recving a
+ ms 517 recving b
+ ms 528 recving c
+ ms 539 recving "
+ !!! load 3 ;to recv_data abc
+ ms 550 recving .
+ ms 561 recving .
+ ms 572 recving .
+ ms 583 recving .
+ ms 594 recving .
+ ms 605 recving .
+ ms 616 recving +
+ ms 627 recving P
+ ms 638 recving B
+ ms 649 recving K
+ ms 660 recving
+ ms 671 recving R
+ ms 682 recving e
+ ms 693 recving a
+ ms 704 recving d
+ ms 715 recving y
+ ms 726 recving
+ ms 737 recving
+ ms 748 recving
+ ms 759 recving
+
+ ms 770 recving
+ ms 781 recving O
+ ms 792 recving
+ ms 803 recving O
+ ms 814 recving
+ ms 825 recving O
+ ms 836 recving K
+ ms 847 recving
+ ms 858 recving O
+ ms 869 recving
+ ms 880 recving a
+ ms 891 recving b
+ ms 902 recving
+ ms 913 recving O
+ ms 924 recving k
+ ms 935 recving
+ ms 946 recving k
+ ms 957 recving O
+ ms 968 recving
+ ms 979 recving K
+ ms 990 recving O
+ ms 1001 recving
+ ms 1012 recving
+ ms 1023 recving
+ ms 1034 recving "
+ ms 1045 recving "
+ ms 1056 recving "
+ ms 1067 recving "
+ ms 1078 recving "
+ ms 1089 recving "
+ ms 1100 recving "
+ ms 1111 recving "
+ ms 1122 recving "
+ ms 1133 recving "
+ ms 1144 recving "
+ ms 1155 recving "
+ ms 1166 recving "
+ ms 1177 recving
+ ms 1188 recving "
+ ms 1199 recving 0
+ ms 1210 recving 0
+ ms 1221 recving 4
+ ms 1232 recving 3
+ ms 1243 recving 9
+ ms 1254 recving 0
+ ms 1265 recving a
+ ms 1276 recving b
+ ms 1287 recving c
+ ms 1298 recving d
+ ms 1309 recving e
+ ms 1320 recving f
+ ms 1331 recving w
+ ms 1342 recving q
+ ms 1353 recving n
+ ms 1364 recving "
+ ms 1375 recving
+ ms 1386 recving "
+ ms 1397 recving 0
+ ms 1408 recving 0
+ ms 1419 recving 4
+ ms 1430 recving 3
+ ms 1441 recving 9
+ ms 1452 recving 0
+ ms 1463 recving 7
+ ms 1474 recving "
+ !!! load 7 ;to recv_data 0043907bcdef
+ ms 1485 recving
+ ms 1496 recving +
+ ms 1507 recving S
+ ms 1518 recving M
+ ms 1529 recving S
+ ms 1540 recving
+ ms 1551 recving R
+ ms 1562 recving e
+ ms 1573 recving a
+ ms 1584 recving d
+ ms 1595 recving y
+ ms 1606 recving
+ ms 1617 recving +
+ ms 1628 recving S
+ ms 1639 recving Y
+ ms 1650 recving S
+ ms 1661 recving T
+ ms 1672 recving E
+ ms 1683 recving M
+ ms 1694 recving :
+ ms 1705 recving R
+ ms 1716 recving E
+ ms 1727 recving S
+ ms 1738 recving E
+ ms 1749 recving T
+ ms 1760 recving
+ ms 1771 recving 1
+ ms 1782 recving 3
+ ms 1793 recving
+ ms 1804 recving
+ ms 1815 recving
+
+ ms 1826 recving
+ ms 1837 recving +
+ ms 1848 recving s
+ ms 1859 recving Y
+ ms 1870 recving S
+ ms 1881 recving T
+ ms 1892 recving E
+ ms 1903 recving M
+ ms 1914 recving :
+ ms 1925 recving R
+ ms 1936 recving E
+ ms 1947 recving S
+ ms 1958 recving E
+ ms 1969 recving T
+ ms 1980 recving
+ ms 1991 recving
+ ms 2002 recving
+
+ ms 2013 recving
+ ms 2024 recving 4
+ ms 2035 recving
+ ms 2046 recving +
+ ms 2057 recving S
+ ms 2068 recving Y
+ ms 2079 recving S
+ ms 2090 recving T
+ ms 2101 recving E
+ ms 2112 recving M
+ ms 2123 recving
+ ms 2134 recving :
+ ms 2145 recving R
+ ms 2156 recving E
+ ms 2167 recving S
+ ms 2178 recving E
+ ms 2189 recving T
+ ms 2200 recving
+ ms 2211 recving
+ ms 2222 recving
+
+ ms 2233 recving
+ ms 2244 recving O
+ ms 2255 recving K
+ ms 2266 recving
+ ms 2277 recving O
+ ms 2288 recving k
+ ms 2299 recving
+ ms 2310 recving "
+ ms 2321 recving 1
+ ms 2332 recving 2
+ ms 2343 recving 3
+ ms 2354 recving 4
+ ms 2365 recving 5
+ ms 2376 recving 6
+ ms 2387 recving 7
+ ms 2398 recving 8
+ ms 2409 recving 9
+ ms 2420 recving 0
+ ms 2431 recving "
+ !!! load 10 ;to recv_data 1234567890ef
+ ms 2442 recving .
+ ms 2453 recving .
+ ms 2464 recving .
+ ms 2475 recving
+tdd_test.cc:180: Failure
+Value of: 1
+Expected: temp_cnt
+Which is: '\0'
+[  FAILED  ] recv.normal (93 ms)

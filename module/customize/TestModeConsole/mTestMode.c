@@ -4,6 +4,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+//////////#include "LogDebugSwitch.h"
+
 #define MAX_FRAME_LENGTH         (MAX_TEST_MODE_COMMAND_LENGTH + TEST_MODE_COMMAND_STRING_EXTERN_LENGTH + TEST_MODE_RECV_EXTERN_LENGTH)
 #define MAX_FRAME_CHCHE_NUM      MAX_TM_COMMAND_CACHE_NUM 
 
@@ -58,7 +60,7 @@ StateNumber TM_CommandAnalysisAction(s_StateMachineParam *p_this)
 	{
 		for(i=0;i<p_ext -> command_table_size;i++)
 		{
-			if((p_ext ->temp_command_length == p_ext ->p_command_table[i].length || p_ext ->p_command_table[i].length == TM_LENGTH_DONT_CARE) &&
+						if((p_ext ->temp_command_length == p_ext ->p_command_table[i].length || p_ext ->p_command_table[i].length == TM_LENGTH_DONT_CARE) &&
 						(memcmp(p_ext ->temp_command_buf, p_ext ->p_command_table[i].command_string,p_ext ->p_command_table[i].compare_length) == 0))
 			{
 				
@@ -96,7 +98,16 @@ StateNumber TM_CommandAnalysisAction(s_StateMachineParam *p_this)
 		
 		if(i >= p_ext -> command_table_size) 
 		{
-			TmLogPrintf(TEST_MODE_BASIC_LOG_DEBUG,(p_ext ->send_buf_method," Unrecognized TestMode Command !!!\r\n"));
+			if(p_ext ->temp_command_length <= (MAX_TEST_MODE_COMMAND_LENGTH - 1))
+			{
+				p_ext ->temp_command_buf[p_ext ->temp_command_length] = ' ';
+			}
+			else
+			{
+				p_ext ->temp_command_buf[(MAX_TEST_MODE_COMMAND_LENGTH - 1)] = ' ';
+			}
+			TmLogPrintf(TEST_MODE_BASIC_LOG_DEBUG,(p_ext ->send_buf_method," Unrecognized TestMode Command !!! : %s\r\n"
+			,p_ext ->temp_command_buf));		
 			p_ext ->isNewCommandCome = X_False;
 		}
 		return p_this->current_state;	 
@@ -153,7 +164,7 @@ StateNumber TM_WaitAction(s_StateMachineParam *p_this)
 		{
 			TmLogPrintf(TEST_MODE_BASIC_LOG_DEBUG,(p_ext ->send_buf_method,"\r\n ---------[ OK ] \r\n"));
 			p_ext ->successed_cnt ++;
-			if(p_ext ->recovery != X_Null) {p_ext ->recovery();}
+			if(p_ext ->recovery != X_Null) {p_ext ->recovery();p_ext ->recovery = (tm_recovery_method)0;}
 			return TM_Finish;
 		}
 	}
@@ -163,7 +174,7 @@ StateNumber TM_WaitAction(s_StateMachineParam *p_this)
 		{
 			TmLogPrintf(TEST_MODE_BASIC_LOG_DEBUG,(p_ext ->send_buf_method,"\r\n --------- [ PROCESS Failed ]\r\n"));
 			p_ext ->failed_cnt ++;
-			if(p_ext ->recovery != X_Null) {p_ext ->recovery();}
+			if(p_ext ->recovery != X_Null) {p_ext ->recovery();p_ext ->recovery = (tm_recovery_method)0;}
 			return TM_Finish;
 		}
 	}
@@ -180,7 +191,7 @@ StateNumber TM_WaitAction(s_StateMachineParam *p_this)
 			TmLogPrintf(TEST_MODE_BASIC_LOG_DEBUG,(p_ext ->send_buf_method,"\r\n --------- [ PROCESS NORMAL END ]\r\n"));
 			p_ext ->successed_cnt ++;
 		}
-		
+		if(p_ext ->recovery != X_Null) {p_ext ->recovery();p_ext ->recovery = (tm_recovery_method)0;}
 		return TM_Finish;
 	}
 	p_ext ->wait_counter -= p_ext ->handle_called_freq_in_ms;
@@ -244,11 +255,18 @@ static X_Boolean TM_find_header(sTestModeRecvParam *p_recv,uint8_t current_data)
 {
 	//no need p_recv pointer check ,it is guarantee by the module
 	if(p_recv ->header_index == 0 && current_data == 'T') {p_recv ->header_index = 1;return X_False;}
-	if(p_recv ->header_index == 1 && current_data == 'M')
+	if(p_recv ->header_index == 1)
 	{
-		p_recv ->header_index = 0;
-//////////		INSERT(LogDebug)(TEST_MODE_DATA_REC_DEBUG,(" TM command data get header \r\n"));
-		return X_True;
+		if(current_data == 'M')
+		{
+			p_recv ->header_index = 0;
+			/////INSERT(LogDebug)(TEST_MODE_DATA_REC_DEBUG,(" TM command data get header \r\n"));
+			return X_True;
+		}
+		else if(current_data == 'T')
+		{
+			return X_False;
+		}
 	}
 	p_recv ->header_index = 0;
 	return X_False;
@@ -264,6 +282,9 @@ static X_Void TM_find_others(sTestModeRecvParam *p_recv,uint8_t current_data)
 		p_recv ->data_index   = 0;
 		TmLogPrintf(TEST_MODE_BASIC_LOG_DEBUG,(p_recv ->send_buf_method,
 															" TM command data receive error occur , reset to idle receive state!!!\r\n"));
+		
+//////////		INSERT(LogDebug)(TEST_MODE_BASIC_LOG_DEBUG,(" TM command data receive error occur , reset to idle receive state!!!\r\n"));
+		
 		p_recv ->temp_rec_buf[0] = (uint8_t)FOP_idle;
 		return;
 	}
@@ -281,7 +302,7 @@ static X_Void TM_find_others(sTestModeRecvParam *p_recv,uint8_t current_data)
 	if(p_recv ->temp_rec_buf[0] == FOP_inprocess)
 	{
 		p_recv ->temp_rec_buf[p_recv ->data_index] = current_data;
-
+//////////		INSERT(LogDebug)(TEST_MODE_DATA_REC_DEBUG & ((p_recv ->data_index%10) == 0),(" TM %d\r\n",p_recv ->data_index));
 		if(p_recv ->data_index >= (TEST_MODE_COMMAND_STRING_EXTERN_LENGTH + TEST_MODE_RECV_EXTERN_LENGTH - 1) 
 				&& current_data == TM_COMMAND_END_FLAG4 
 				&& p_recv ->temp_rec_buf[p_recv ->data_index - 1] == TM_COMMAND_END_FLAG3
@@ -296,6 +317,9 @@ static X_Void TM_find_others(sTestModeRecvParam *p_recv,uint8_t current_data)
 			
 			p_recv -> header_index = 0;
 			p_recv ->temp_rec_buf[0] = (uint8_t)FOP_successed;
+			
+//////////////			INSERT(LogDebug)(TEST_MODE_DATA_REC_DEBUG,(" TM command data get tail %d\r\n",only_cmd_payload_length));
+			
 			return;
 		}
 		p_recv ->temp_rec_buf[0] = (uint8_t)FOP_inprocess;
@@ -308,7 +332,6 @@ static X_Void TM_find_others(sTestModeRecvParam *p_recv,uint8_t current_data)
 static X_Boolean tm_ProtocolRecvInit(sTestModeRecvParam *p_manager)
 {
 	if(p_manager == X_Null) {return X_False;}
-	if(p_manager ->temp_rec_buf == X_Null) {return X_False;} 
 	
 	if(p_manager ->max_recv_length == 0 || p_manager ->max_recv_length > MAX_FRAME_LENGTH) {return X_False;}
 	if(p_manager ->max_command_length == 0 || p_manager ->max_command_length > MAX_TEST_MODE_COMMAND_LENGTH) {return X_False;}
@@ -413,7 +436,7 @@ X_Boolean mTestModeInit(const sTestModeParam *p_tm)
 	if(tm_ProtocolRecvInit(p_tm ->p_recv) != X_True){return X_False;}
 	
 	if(p_tm ->handle_called_freq_in_ms == 0){return X_False;}
-	if(p_tm ->get_byte_method == X_Null){return X_False;}
+	if(p_tm ->get_byte_method == X_Null ){return X_False;}
 	
 	sTestModeParamExtern *p_ext = (sTestModeParamExtern *)p_tm ->p_state_param;
 	if(p_ext ->handle_called_freq_in_ms == 0) {return X_False;}

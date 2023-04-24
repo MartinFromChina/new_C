@@ -1,0 +1,6 @@
+参考资料：
+https://blog.csdn.net/zhaojun666/article/details/105209003/
+
+添加用户自定义关键字：
+找到：C:\Keil_v5\UV4\arm.prop
+然后将“user_keywords_for_keil.txt”中的内容拷贝到“# C/C++ Editor files”

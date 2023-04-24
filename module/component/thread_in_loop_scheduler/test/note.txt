@@ -1,0 +1,17 @@
+UCOSiii 源码讲解   野火 
+https://weread.qq.com/web/reader/c5e32d005c32e5c5e26bedfkc9f326d018c9f0f895fb5e4
+
+查看预编译之后的宏展开：
+ g++ -g -Wall -Wextra -pthread -I../../../common -E marco_expansion_test.c -o ./obj/marco_expansion_test.c
+ gcc -g -Wall -Wextra -pthread -std=c99 -I../../../common -E marco_expansion_test.c -o ./obj/marco_expansion_test.c
+ 
+ gcc -g -Wall -Wextra -pthread -std=c99  -E test.c -o test_expansion.c
+ 查看编译器支持的标准：
+ gcc -E -dM - </dev/null | grep "STDC_VERSION"
+
+
+
+
+ g++ -g -Wall -Wextra -pthread -I../../../common -E loop_scheduler_test.cc -o ./obj/loop_scheduler_test.cc
+ 
+ 
