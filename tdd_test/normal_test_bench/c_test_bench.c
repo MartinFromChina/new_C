@@ -139,13 +139,8 @@ static X_Void Generator_TM_CMD(uint8_t *p_data,uint16_t length)
 
 }
 
-
-
-
-
-
-
 #define FRAME_TYPE_COMBINATE_OP                 0xCC
+#define FRAME_TYPE_DELAY_TIMING                              0X15 
 
 X_Void GeneratorCMD(X_Void)
 {
@@ -165,6 +160,53 @@ X_Void GeneratorCMD(X_Void)
 
     cer_cmd.op_number      = 1;
     total_length += 1;
+
+    check_sum = ByteGetCheckSum((uint8_t *)&cer_cmd,total_length - 2);
+    cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 1 - 1]  = check_sum >> 8;
+    cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 2 - 1]  = check_sum;
+    
+    Generator_TM_CMD((uint8_t *)&cer_cmd,total_length);
+
+}
+
+
+X_Void GeneratorCMDTiming(X_Void)
+{
+    uint16_t check_sum,total_length = 2;
+    s_CombinateOp_CMD cer_cmd;
+
+    cer_cmd.head.head = 0x55aa;
+    cer_cmd.head.src_addr = 0x000380e0;
+    cer_cmd.head.dest_addr = 0x00038010;
+    cer_cmd.head.next_addr = 0x00038010;
+    cer_cmd.head.pTrace    = 0;
+    cer_cmd.head.nTrace    = 0;
+    cer_cmd.head.type      = FRAME_TYPE_COMBINATE_OP;
+    cer_cmd.head.length    = 1;
+    total_length += LORA_DATA_HEADER_SIZE;
+
+
+    cer_cmd.op_number      = 1;
+    total_length += 1;
+
+    /*
+    typedef struct
+    {
+        uint8_t ack_cnt; // 0 means no need to wait ack
+        uint8_t ack_time_500ms; // 
+        uint32_t dest; // src is local 
+        uint8_t  p_trace; // uitn16_t ptrace low 8 bits
+        uint8_t type;
+        uint8_t length; // lora frame is smaller then 200 ; 8bits is enough 
+        uint8_t param[];
+    }s_OneCombinateOpCmd;
+    */
+    s_OneCombinateOpCmd *p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[0];
+    p_op ->ack_cnt = 1;
+    p_op ->ack_time_500ms = 22;
+    p_op ->dest = 0x00038040; 
+    p_op ->p_trace = 0;
+    p_op ->type    = FRAME_TYPE_DELAY_TIMING;
 
     check_sum = ByteGetCheckSum((uint8_t *)&cer_cmd,total_length - 2);
     cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 1 - 1]  = check_sum >> 8;
