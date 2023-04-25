@@ -123,7 +123,7 @@ static X_Void Generator_TM_CMD(uint8_t *p_data,uint16_t length)
                
 
     uint8_t *p_cloud = (uint8_t *)&clould;
-    printf("the TM command is :\r\n TMCLOUD");
+    printf("the TM command is :\r\nTMCLOUD");
     for(uint16_t i=0;i<(clould.clould_head.total_length);i++)
     {
         if(p_cloud[i] < 16)
@@ -141,6 +141,9 @@ static X_Void Generator_TM_CMD(uint8_t *p_data,uint16_t length)
 
 #define FRAME_TYPE_COMBINATE_OP                 0xCC
 #define FRAME_TYPE_DELAY_TIMING                              0X15 
+#define FRAME_TYPE_TRIGGERED_DELAY_TIMING                    0X14
+#define FRAME_TYPE_START_RECV_WAVE_CMD                       0x23
+#define FRAME_TYPE_TEST_END_CMD                 0X22
 
 X_Void GeneratorCMD(X_Void)
 {
@@ -182,7 +185,7 @@ X_Void GeneratorCMDTiming(X_Void)
     cer_cmd.head.pTrace    = 0;
     cer_cmd.head.nTrace    = 0;
     cer_cmd.head.type      = FRAME_TYPE_COMBINATE_OP;
-    cer_cmd.head.length    = 1;
+    cer_cmd.head.length    = 1 + 9 + 10;
     total_length += LORA_DATA_HEADER_SIZE;
 
 
@@ -200,18 +203,360 @@ X_Void GeneratorCMDTiming(X_Void)
         uint8_t length; // lora frame is smaller then 200 ; 8bits is enough 
         uint8_t param[];
     }s_OneCombinateOpCmd;
+
+    typedef struct{
+        uint32_t      total_time_ms;
+        uint32_t      time_accept_addr;
+        uint16_t 		delay_ms;    // ?? ping ?? /2
+        uint16_t 		check_sum;
+    }sTriggeredTimingPayload;
     */
+    uint32_t      time_out_ms = 20500;
+    uint32_t      time_accept_addr = 0x00038040;
+    uint16_t 	  delay_ms = 300; 
     s_OneCombinateOpCmd *p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[0];
-    p_op ->ack_cnt = 1;
-    p_op ->ack_time_500ms = 22;
-    p_op ->dest = 0x00038040; 
+    p_op ->ack_cnt = 0xFF;
+    p_op ->ack_time_500ms = 40;
+    p_op ->dest = 0x00038010; //  
     p_op ->p_trace = 0;
-    p_op ->type    = FRAME_TYPE_DELAY_TIMING;
+    p_op ->type    = FRAME_TYPE_TRIGGERED_DELAY_TIMING;
+    p_op ->length  = 10;
+    CopyBuffer(&time_out_ms,p_op ->param,4);
+    CopyBuffer(&time_accept_addr,&p_op ->param[4],4);
+    CopyBuffer(&delay_ms,&p_op ->param[8],2);
+    total_length += (9+10);
 
     check_sum = ByteGetCheckSum((uint8_t *)&cer_cmd,total_length - 2);
     cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 1 - 1]  = check_sum >> 8;
     cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 2 - 1]  = check_sum;
     
     Generator_TM_CMD((uint8_t *)&cer_cmd,total_length);
+
+}
+
+
+X_Void GeneratorCMDTrigTiming(X_Void)
+{
+     uint16_t check_sum,total_length = 2;
+    s_CombinateOp_CMD cer_cmd;
+
+    cer_cmd.head.head = 0x55aa;
+    cer_cmd.head.src_addr = 0x000380e0;
+    cer_cmd.head.dest_addr = 0x00038010;
+    cer_cmd.head.next_addr = 0x00038010;
+    cer_cmd.head.pTrace    = 0;
+    cer_cmd.head.nTrace    = 0;
+    cer_cmd.head.type      = FRAME_TYPE_COMBINATE_OP;
+    cer_cmd.head.length    = 1 + 9 + 10;
+    total_length += LORA_DATA_HEADER_SIZE;
+
+
+    cer_cmd.op_number      = 1;
+    total_length += 1;
+
+    /*
+    typedef struct
+    {
+        uint8_t ack_cnt; // 0 means no need to wait ack
+        uint8_t ack_time_500ms; // 
+        uint32_t dest; // src is local 
+        uint8_t  p_trace; // uitn16_t ptrace low 8 bits
+        uint8_t type;
+        uint8_t length; // lora frame is smaller then 200 ; 8bits is enough 
+        uint8_t param[];
+    }s_OneCombinateOpCmd;
+
+    typedef struct{
+        uint32_t      total_time_ms;
+        uint32_t      time_accept_addr;
+        uint16_t 		delay_ms;    // ?? ping ?? /2
+        uint16_t 		check_sum;
+    }sTriggeredTimingPayload;
+    */
+    uint32_t      time_out_ms = 20500;
+    uint32_t      time_accept_addr = 0x00038640;
+    uint16_t 	  delay_ms = 300; 
+    s_OneCombinateOpCmd *p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[0];
+    p_op ->ack_cnt = 1;
+    p_op ->ack_time_500ms = 41;
+    p_op ->dest = 0x00038610; //  
+    p_op ->p_trace = 0;
+    p_op ->type    = FRAME_TYPE_TRIGGERED_DELAY_TIMING;
+    p_op ->length  = 10;
+    CopyBuffer(&time_out_ms,p_op ->param,4);
+    CopyBuffer(&time_accept_addr,&p_op ->param[4],4);
+    CopyBuffer(&delay_ms,&p_op ->param[8],2);
+    total_length += (9+10);
+
+    check_sum = ByteGetCheckSum((uint8_t *)&cer_cmd,total_length - 2);
+    cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 1 - 1]  = check_sum >> 8;
+    cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 2 - 1]  = check_sum;
+    
+    Generator_TM_CMD((uint8_t *)&cer_cmd,total_length);
+
+}
+
+
+X_Void GeneratorCMD_NeighborTrigTiming_LocalTrigTiming(X_Void)
+{
+    uint16_t check_sum,total_length = 2;
+    s_CombinateOp_CMD cer_cmd;
+
+    cer_cmd.head.head = 0x55aa;
+    cer_cmd.head.src_addr = 0x000380e0;
+    cer_cmd.head.dest_addr = 0x00038010;
+    cer_cmd.head.next_addr = 0x00038010;
+    cer_cmd.head.pTrace    = 0;
+    cer_cmd.head.nTrace    = 0;
+    cer_cmd.head.type      = FRAME_TYPE_COMBINATE_OP;
+    cer_cmd.head.length    = 1 + (9 + 10) +(9+10);
+    total_length += LORA_DATA_HEADER_SIZE;
+
+
+    cer_cmd.op_number      = 2;
+    total_length += 1;
+
+    /*
+    typedef struct
+    {
+        uint8_t ack_cnt; // 0 means no need to wait ack
+        uint8_t ack_time_500ms; // 
+        uint32_t dest; // src is local 
+        uint8_t  p_trace; // uitn16_t ptrace low 8 bits
+        uint8_t type;
+        uint8_t length; // lora frame is smaller then 200 ; 8bits is enough 
+        uint8_t param[];
+    }s_OneCombinateOpCmd;
+
+    typedef struct{
+        uint32_t      total_time_ms;
+        uint32_t      time_accept_addr;
+        uint16_t 		delay_ms;    // ?? ping ?? /2
+        uint16_t 		check_sum;
+    }sTriggeredTimingPayload;
+    */
+    uint32_t      time_out_ms = 20500;
+    uint32_t      time_accept_addr = 0x00038640;
+    uint16_t 	  delay_ms = 300; 
+    s_OneCombinateOpCmd *p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[0]; // op 1
+    p_op ->ack_cnt = 1;
+    p_op ->ack_time_500ms = 41;
+    p_op ->dest = 0x00038610; //  
+    p_op ->p_trace = 0;
+    p_op ->type    = FRAME_TYPE_TRIGGERED_DELAY_TIMING;
+    p_op ->length  = 10;
+    CopyBuffer(&time_out_ms,p_op ->param,4);
+    CopyBuffer(&time_accept_addr,&p_op ->param[4],4);
+    CopyBuffer(&delay_ms,&p_op ->param[8],2);
+    total_length += (9+10);
+
+
+
+    time_out_ms = 20500;
+    time_accept_addr = 0x00038040;
+    delay_ms = 300; 
+    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[9+10];   // op 2
+    p_op ->ack_cnt = 0xFF;
+    p_op ->ack_time_500ms = 40;
+    p_op ->dest = 0x00038010; //  
+    p_op ->p_trace = 0;
+    p_op ->type    = FRAME_TYPE_TRIGGERED_DELAY_TIMING;
+    p_op ->length  = 10;
+    CopyBuffer(&time_out_ms,p_op ->param,4);
+    CopyBuffer(&time_accept_addr,&p_op ->param[4],4);
+    CopyBuffer(&delay_ms,&p_op ->param[8],2);
+    total_length += (9+10);
+
+    check_sum = ByteGetCheckSum((uint8_t *)&cer_cmd,total_length - 2);
+    cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 1 - 1]  = check_sum >> 8;
+    cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 2 - 1]  = check_sum;
+    
+    Generator_TM_CMD((uint8_t *)&cer_cmd,total_length);
+
+}
+
+
+X_Void GeneratorCMD_All(X_Void)
+{
+    uint16_t check_sum,total_length = 2;
+    s_CombinateOp_CMD cer_cmd;
+
+    cer_cmd.head.head = 0x55aa;
+    cer_cmd.head.src_addr = 0x000380e0;
+    cer_cmd.head.dest_addr = 0x00038010;
+    cer_cmd.head.next_addr = 0x00038010;
+    cer_cmd.head.pTrace    = 0;
+    cer_cmd.head.nTrace    = 0;
+    cer_cmd.head.type      = FRAME_TYPE_COMBINATE_OP;
+    
+    total_length += LORA_DATA_HEADER_SIZE;
+
+
+    cer_cmd.op_number      = 5;
+    total_length += 1;
+
+    /*
+    typedef struct
+    {
+        uint8_t ack_cnt; // 0 means no need to wait ack
+        uint8_t ack_time_500ms; // 
+        uint32_t dest; // src is local 
+        uint8_t  p_trace; // uitn16_t ptrace low 8 bits
+        uint8_t type;
+        uint8_t length; // lora frame is smaller then 200 ; 8bits is enough 
+        uint8_t param[];
+    }s_OneCombinateOpCmd;
+    */
+   /**********************************************1 trigger neighbor timing *********************************************/
+    uint32_t      time_out_ms = 20500;
+    uint32_t      time_accept_addr = 0x00038640;
+    uint16_t 	  delay_ms = 300; 
+    s_OneCombinateOpCmd *p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[0]; // op 1
+    p_op ->ack_cnt = 1;
+    p_op ->ack_time_500ms = 41;
+    p_op ->dest = 0x00038610; //  
+    p_op ->p_trace = 0;
+    p_op ->type    = FRAME_TYPE_TRIGGERED_DELAY_TIMING;
+    p_op ->length  = 10;
+    CopyBuffer(&time_out_ms,p_op ->param,4);
+    CopyBuffer(&time_accept_addr,&p_op ->param[4],4);
+    CopyBuffer(&delay_ms,&p_op ->param[8],2);
+    total_length += (9+10);
+    /*******************************************************************************************/
+
+    /*********************************************2 trigger local timing**********************************************/
+    time_out_ms = 20500;
+    time_accept_addr = 0x00038040;
+    delay_ms = 300; 
+    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[9+10];   // op 2
+    p_op ->ack_cnt = 0xFF;
+    p_op ->ack_time_500ms = 40;
+    p_op ->dest = 0x00038010; //  
+    p_op ->p_trace = 0;
+    p_op ->type    = FRAME_TYPE_TRIGGERED_DELAY_TIMING;
+    p_op ->length  = 10;
+    CopyBuffer(&time_out_ms,p_op ->param,4);
+    CopyBuffer(&time_accept_addr,&p_op ->param[4],4);
+    CopyBuffer(&delay_ms,&p_op ->param[8],2);
+    total_length += (9+10);
+    /*******************************************************************************************/
+
+
+    /*
+    typedef struct{
+        uint8_t RecvMode;			// 0  mcu??  1 FPGA??
+        uint8_t FREQ;
+        uint8_t Signal1_Width;
+        uint8_t InterVal_Width; 
+        uint8_t Signal2_Width;
+        uint32_t threshold;  
+        uint16_t check_sum;
+    }sStartRecvWaveCmdPayload;     
+
+    r_wave.head.head            = LORA_CMD_FRAME_HEAD;
+     r_wave.head.src_addr        = local.address;
+     r_wave.head.dest_addr       = cur_dest_addr;
+     // r_wave.head.next_addr       = // tansfer will handle it 
+     r_wave.head.pTrace          = 0;
+     r_wave.head.nTrace          = 0;
+     r_wave.head.type            = FRAME_TYPE_START_RECV_WAVE_CMD;
+     r_wave.head.length          = RECV_WAVE_REQ_PAYLOAD_SIZE - 2;
+     
+     r_wave.payload.rwave_request.RecvMode         = cur_mode;
+     r_wave.payload.rwave_request.FREQ             = 28;
+     
+     
+
+    */
+     /*****************************************3**************************************************/
+    uint8_t RecvMode = 0;			// 0  mcu??  1 FPGA??
+    uint8_t FREQ = 28;
+    uint8_t Signal1_Width;
+    uint8_t InterVal_Width; 
+    uint8_t Signal2_Width;
+    uint32_t threshold;  
+
+    if(RecvMode == 0)
+    {
+        Signal1_Width    = 150;
+        InterVal_Width   = 100;
+        Signal2_Width    = 150;
+        threshold        = 0x400;
+    }
+    else
+    {
+        Signal1_Width    = 200;
+        InterVal_Width   = 0;
+        Signal2_Width    = 0;
+        threshold        = 50000;
+    }
+
+    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[9+10 + 9+ 10];   // op 3
+    p_op ->ack_cnt = 3;
+    p_op ->ack_time_500ms = 2;
+    p_op ->dest = 0x00038040; //  
+    p_op ->p_trace = 0;
+    p_op ->type    = FRAME_TYPE_START_RECV_WAVE_CMD;
+    p_op ->length  = 9;
+    p_op ->param[0] = RecvMode;
+    p_op ->param[1] = FREQ;
+    p_op ->param[2] = Signal1_Width;
+    p_op ->param[3] = InterVal_Width;
+    p_op ->param[4] = Signal2_Width;
+    CopyBuffer(&threshold,&p_op ->param[5],4);
+    total_length += (9+9);
+    /*******************************************************************************************/
+
+    
+     /*****************************************4**************************************************/
+     p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[9+10 + 9+ 10 + 9 + 9];   // op 3
+    /*******************************************************************************************/
+
+    
+     /*****************************************5**************************************************/
+
+    /*******************************************************************************************/
+
+    
+     /*****************************************6**************************************************/
+
+    /*******************************************************************************************/
+
+    
+     /*****************************************7**************************************************/
+
+    /*******************************************************************************************/
+
+    
+     /*****************************************8**************************************************/
+     p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[9+10 + 9+ 10 + 9 + 9];   // op 8
+     p_op ->ack_cnt = 3;
+    p_op ->ack_time_500ms = 2;
+    p_op ->dest = 0x00038040; //  
+    p_op ->p_trace = 0;
+    p_op ->type    = FRAME_TYPE_TEST_END_CMD;
+    p_op ->length  = 0;
+    total_length += (9);
+    /*******************************************************************************************/
+
+    
+     /*****************************************9**************************************************/
+     p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[9+10 + 9+ 10 + 9 + 9 + 9];   // op 8
+     p_op ->ack_cnt = 3;
+    p_op ->ack_time_500ms = 8;
+    p_op ->dest = 0x00038640; //  
+    p_op ->p_trace = 0;
+    p_op ->type    = FRAME_TYPE_TEST_END_CMD;
+    p_op ->length  = 0;
+    total_length += (9);
+    /*******************************************************************************************/
+
+    cer_cmd.head.length    = total_length - 2 - LORA_DATA_HEADER_SIZE;
+    check_sum = ByteGetCheckSum((uint8_t *)&cer_cmd,total_length - 2);
+    cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 1 - 1]  = check_sum >> 8;
+    cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 2 - 1]  = check_sum;
+    
+    Generator_TM_CMD((uint8_t *)&cer_cmd,total_length);
+
 
 }

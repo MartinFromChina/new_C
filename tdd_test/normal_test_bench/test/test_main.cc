@@ -19,9 +19,17 @@ TEST(self,introduce)
 
 /**********************************************add the test code below************************************************/
 extern X_Void GeneratorCMD(X_Void);
+extern X_Void GeneratorCMDTiming(X_Void);
+extern X_Void GeneratorCMDTrigTiming(X_Void);
+extern X_Void GeneratorCMD_NeighborTrigTiming_LocalTrigTiming(X_Void);
+extern X_Void GeneratorCMD_All(X_Void);
 TEST(cmd,generator)
 {
-	GeneratorCMD();
+	//GeneratorCMD();
+  //GeneratorCMDTiming();
+  //GeneratorCMDTrigTiming();
+  GeneratorCMD_NeighborTrigTiming_LocalTrigTiming();
+  GeneratorCMD_All();
 }
 /************************************************************************************************************************/
 
