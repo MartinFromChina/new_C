@@ -589,7 +589,7 @@ X_Void GeneratorCMD_All_2(X_Void)
     total_length += LORA_DATA_HEADER_SIZE;
 
 
-    cer_cmd.op_number      = 6;
+    cer_cmd.op_number      = 8;
     total_length += 1;
 
     /*
@@ -608,7 +608,7 @@ X_Void GeneratorCMD_All_2(X_Void)
     uint32_t time_out_ms = 20500;
     uint32_t time_accept_addr = 0x00038040;
     uint16_t delay_ms = 600; 
-    s_OneCombinateOpCmd *  p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[0];   // op 2
+    s_OneCombinateOpCmd *  p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 3 - LORA_DATA_HEADER_SIZE];   // op 2
     p_op ->ack_cnt = 0xFF;
     p_op ->ack_time_500ms = 40;
     p_op ->dest = 0x00038010; //  
@@ -625,7 +625,7 @@ X_Void GeneratorCMD_All_2(X_Void)
           time_out_ms = 20500;
           time_accept_addr = 0x00038640;
      	  delay_ms = 600; 
-    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[9+10]; // op 1
+    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 3 - LORA_DATA_HEADER_SIZE]; // op 1
     p_op ->ack_cnt = 0xFF;
     p_op ->ack_time_500ms = 41;
     p_op ->dest = 0x00038610; //  
@@ -690,7 +690,7 @@ X_Void GeneratorCMD_All_2(X_Void)
         threshold        = 50000;
     }
 
-    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[9+10 + 9+ 10];   // op 3
+    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 3 - LORA_DATA_HEADER_SIZE];   // op 3
     p_op ->ack_cnt = 3;
     p_op ->ack_time_500ms = 4;
     p_op ->dest = 0x00038040; //  
@@ -722,7 +722,7 @@ X_Void GeneratorCMD_All_2(X_Void)
         Signal2_Width    = 0;
     }
 
-    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[9+10 + 9+ 10 + 9 + 9];   // op 4 
+    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 3 - LORA_DATA_HEADER_SIZE];   // op 4 
     p_op ->ack_cnt = 3;
     p_op ->ack_time_500ms = 4;
     p_op ->dest = 0x00038640; //  
@@ -749,6 +749,17 @@ X_Void GeneratorCMD_All_2(X_Void)
     
     submit_data.payload.submit_data.DataType = FRAME_TYPE_RECEIVER_SUBMITS_DATA1;
 
+    typedef struct{           // FRAME_TYPE_RECEIVER_SUBMITS_DATA1
+        //////  sLoraCommonHeader head;
+        uint16_t Voltage[2];		//TWO BATTERY VOLT 
+        uint16_t LORA_rssi[2];	//LORA RSSI
+        uint16_t tempratrue;  	//TEMPRATURE
+        uint16_t TestResult;        //CONNECTED,BREAK,TRAIN PASSING
+        uint16_t AMP1[16];		//SIGNAL AMP
+        uint16_t AMP0[16];		//NO SIGNAL AMP
+        uint16_t check_sum;
+    }sReceiverSubmitsData1Payload;
+
 
     #define FRAME_TYPE_RECEIVER_SUBMITS_DATA1                    0X32      //???????1:
     #define FRAME_TYPE_RECEIVER_SUBMITS_DATA2                    0X33      //???????2:
@@ -757,35 +768,34 @@ X_Void GeneratorCMD_All_2(X_Void)
     #define FRAME_TYPE_RELAY_SUBMISSION_DATA                     0X36      //??????:
     */
      /*****************************************5 make T1 report data **************************************************/
-     p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[9+10 + 9+ 10 + 9 + 9 + 9 + 4];   // op 5 
-     /*
+     p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 3 - LORA_DATA_HEADER_SIZE];   // op 5 
+     
      p_op ->ack_cnt = 3;
      p_op ->ack_time_500ms = 4;
-     p_op ->dest = 0x00038640; //  
+     p_op ->dest = 0x00038040; //  
      p_op ->p_trace = 0;
-     p_op ->type    = FRAME_TYPE_START_SENDWAVE_CMD;
-     p_op ->length  = 4;
-     p_op ->param[0] = FREQ;
-     p_op ->param[1] = Signal1_Width;
-     p_op ->param[2] = InterVal_Width;
-     p_op ->param[3] = Signal2_Width;
-    total_length += (9+4);
-    */
+     p_op ->type    = FRAME_TYPE_RECEIVER_SUBMITS_DATA1;
+     p_op ->length  = 0;
+    total_length += (9);
+    
     /*******************************************************************************************/
 
     
      /*****************************************6  make T2 report data**************************************************/
-
+    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 3 - LORA_DATA_HEADER_SIZE];   // op 6 
+     
+     p_op ->ack_cnt = 3;
+     p_op ->ack_time_500ms = 4;
+     p_op ->dest = 0x00038640; //  
+     p_op ->p_trace = 0;
+     p_op ->type    = FRAME_TYPE_TRANSMITTER_SUBMITS_DATA1;
+     p_op ->length  = 0;
+    total_length += (9);
     /*******************************************************************************************/
 
     
      /*****************************************7**************************************************/
-
-    /*******************************************************************************************/
-
-    
-     /*****************************************8**************************************************/
-     p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[9+10 +      9+ 10 +    9 + 9 +    9 + 4];   // op 8
+     p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 3 - LORA_DATA_HEADER_SIZE];   // op 8
      p_op ->ack_cnt = 3;
     p_op ->ack_time_500ms = 4;
     p_op ->dest = 0x00038040; //  
@@ -796,8 +806,8 @@ X_Void GeneratorCMD_All_2(X_Void)
     /*******************************************************************************************/
 
     
-     /*****************************************9**************************************************/
-     p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[9+10 +     9+ 10 +    9 + 9 +    9 + 4      + 9];   // op 8
+     /*****************************************8**************************************************/
+     p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 3 - LORA_DATA_HEADER_SIZE];   // op 9
      p_op ->ack_cnt = 3;
     p_op ->ack_time_500ms = 8;
     p_op ->dest = 0x00038640; //  
