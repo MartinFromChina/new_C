@@ -23,13 +23,15 @@ extern X_Void GeneratorCMDTiming(X_Void);
 extern X_Void GeneratorCMDTrigTiming(X_Void);
 extern X_Void GeneratorCMD_NeighborTrigTiming_LocalTrigTiming(X_Void);
 extern X_Void GeneratorCMD_All(X_Void);
+extern X_Void GeneratorCMD_All_2(X_Void);
 TEST(cmd,generator)
 {
 	//GeneratorCMD();
   //GeneratorCMDTiming();
-  //GeneratorCMDTrigTiming();
+  GeneratorCMDTrigTiming();
   GeneratorCMD_NeighborTrigTiming_LocalTrigTiming();
   GeneratorCMD_All();
+  GeneratorCMD_All_2();
 }
 /************************************************************************************************************************/
 
