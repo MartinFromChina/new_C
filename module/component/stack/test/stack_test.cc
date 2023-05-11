@@ -206,8 +206,29 @@ TEST(empty,test)
 {
 
 }
+
 GTEST_API_ int main(int argc, char **argv) {
   cout<<"Running main() from stack_test.cc\n";
+  // ::testing::GTEST_FLAG(filter) = "*class*:*mode*";
+
   testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+  #if (WINDOWS_64_SYSTEM == 0)
+  	return
+  #else
+	int value = 
+  #endif
+  RUN_ALL_TESTS();
+
+  while(1)
+  {
+	
+  }
+
+#if (WINDOWS_64_SYSTEM!=0)
+  value = value;
+  while(1)
+  {
+
+  }
+#endif
 }

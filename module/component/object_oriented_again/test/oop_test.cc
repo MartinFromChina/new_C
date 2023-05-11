@@ -1,7 +1,7 @@
 #include <iostream>
 #include "tdd_common.h"
 
-#include "../w_oop.h"
+#include "../oop.h"
 #include "LoraCommuProtocol.h"
 #include"../../../common/AppCommon.h"
 using namespace std;
@@ -168,6 +168,7 @@ TEST(func,overloadinbg)
 
 ***************************/
 /* 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*
 static X_Void    fishing_method(X_Void)
 {
 	printf(" ~~~~~~~~~~~~~~~~~~~~~~~~~ we are fishing by the river  \r\n");
@@ -348,25 +349,6 @@ X_Boolean  TopInterface( s_all_class_base const *  p_base,uint32_t op_code)
 
 	printf("\r\n ----------  my father have some special method to play with dog , I just learn from him , let me show you \r\n");
 
-/**************************************
- * 这个用法有没有掌握的必要。。。。。
- * **********************************************/
-/*
-	father * const * p_father_class = &p_this ->public_elem.p_parent_father;
-	(*p_father_class) ->W_OLF_CALL(dog_play,3,X_True,3);
-	(*p_father_class) ->W_OLF_CALL(dog_play,2,2);
-	(*p_father_class) ->W_OLF_CALL(dog_play,1);
-	(*p_father_class) ->W_OLF_CALL(dog_play);
-*/
-/*
-	WITH(const father,&p_this ->public_elem.p_parent_father)
-	{
-		father_270 ->W_OLF_CALL(dog_play,3,X_True,3);
-		father_270 ->W_OLF_CALL(dog_play,2,2);
-		father_270 ->W_OLF_CALL(dog_play,1);
-		father_270 ->W_OLF_CALL(dog_play);
-	}
-*/
 	CONST_WITH(father,&p_this ->p_parent_father,father)
 	{
 		C_THIS(father) ->W_OLF_CALL(dog_play,3,X_True,3);
@@ -411,7 +393,10 @@ TEST(class,inherit_combinate)
 	
 	TopInterface(&myself.base,3);
 }
+*/
+
 /* 3 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*
 typedef X_Void (*p_fly_func)(X_Void);
 
 X_Void FlayNoWay(X_Void)
@@ -481,7 +466,9 @@ TEST(class,common_interface)
 	}
 
 }
+*/
 /* 4 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*
 typedef X_Void (*heat)(X_Void);
 typedef X_Void (*prepare_stuff)(X_Void);
 typedef X_Void (*brew)(X_Void);
@@ -590,13 +577,15 @@ TEST(mode,template_method)
 	}
 	
 }
-
+*/
 
 //////////TEST(mode,template_method_and_func_overlaod) // necessary  ? 
 //////////{
 
 //////////}
 /* 5 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*
 typedef uint32_t (*get_cost)(s_all_class_base const * p_base);
 
 W_CLASS_DEF(basic_cost
@@ -741,7 +730,10 @@ TEST(mode,Decorator)
 	cur_cost = n_cost2.get_cost_method(&n_cost2.base);
 	printf("new cost2 with new cost1 and basic cost is %d \r\n",cur_cost);
 }
+*/
 /* 6 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*
 typedef X_Boolean (* validator)(uint32_t value);
 #define MAX_STACK_SIZE              100
 
@@ -863,12 +855,96 @@ TEST(stack,mul_check)
 
 
 }
+
+*/
+#undef  _USE_hello_PROTECT_MEMBER
+#define  _USE_hello_PROTECT_MEMBER   1
+#include "test.h"
+static hello hello1 = {1,3};
+
+static world world1 = {1,3,NO_PRIVATE_VALUE};
+
+static marry marry1 = {1};
+
+static void test_func(void)
+{
+	printf("pub_elem is %d %d %d \r\n",THIS(hello1).i,THIS(world1).i,THIS(marry1).i);
+
+	//PROTECT_INTERNAL(world,&world1,p_this);
+	//printf("protect_elem is %d \r\n", p_this ->k);
+	//PROTECT_INTERNAL(hello,&hello1,p_this1);
+
+	//PRIVATE_INTERNAL(hello,&hello1,p_pri1);
+	//printf("private_elem is %d \r\n", p_pri1 ->j);
+}
+
+CLASS_DEF(peny
+	,// public
+		INHERIT_CLASS(world);
+		uint8_t drink;
+	,// protect
+		uint32_t haha;
+		uint8_t  ha;
+		uint16_t huhu[100];
+	,// private
+        uint8_t hehe;
+);
+
+static peny peny1 ={
+    // public
+	{
+		CLASS_INHERIT(world,world1),
+		100,
+	},
+	// protect
+    {0},
+    // private
+    {0},
+};
+
+#define IMPLEMENT_OF_peny                     1
+
+static void test_inherit(peny *p_peny)
+{
+	if(p_peny == (peny*)0) {
+		printf("fatal error pointer null \r\n");
+		return;
+	}
+	printf("drink %d \r\n", p_peny ->public_elem.drink);
+    printf("parent k %d \r\n", p_peny ->public_elem.p_parent_world->protect_elem.k);
+	printf("parent i %d \r\n", p_peny ->public_elem.p_parent_world->public_elem.i);
+
+	peny1.public_elem.p_parent_world->protect_elem.k = 25;
+
+	PROTECT_INTERNAL(peny,p_peny,p_this);
+	printf("sizeof protect %d\r\n", (uint16_t)(sizeof(p_peny ->invisible_pro)/ sizeof(uint8_t)));
+
+	p_this ->haha = 82;
+	p_this ->huhu[55] = 0xff;
+
+	PRIVATE_INTERNAL(peny,p_peny,p_pri1);
+	printf("private %d protect %d %d\r\n", p_pri1 ->hehe,p_this ->huhu[55],p_this ->haha);
+
+	
+}
+
+
+
+TEST(temp,class_def)
+{
+	test_func();
+	test_inherit(&peny1);
+}
+
 /* 7 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 GTEST_API_ int main(int argc, char **argv) {
-  cout<<"Running main() from stack_test.cc\n";
+  cout<<"Running main() from oop_test.cc\n";
 
  // ::testing::GTEST_FLAG(filter) = "*class*:*mode*";
+
+  // printf(" i is %d \r\n",another2.p_all ->pub.i);
+	
 
   testing::InitGoogleTest(&argc, argv);
   #if (WINDOWS_64_SYSTEM == 0)

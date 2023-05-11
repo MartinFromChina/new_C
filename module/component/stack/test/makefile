@@ -1,11 +1,22 @@
-DLIBS = ../../../google_test/lib/libgmock.a
-TARGET = mStack
+SYS_SW_WIN64=1
+variable_0=0
+DEFS = -DUSE_TDD_MOCK=1 -DLOG_DEBUG_METHOD=printf -DWINDOWS_64_SYSTEM=$(SYS_SW_WIN64) -DARM_COMPILER_PRESENT=1
+
+ifeq ($(SYS_SW_WIN64),$(variable_0))
+	DLIBS = ../../../google_test/lib/libgmock.a
+else
+	DLIBS = ../../../google_test/lib/libgmock_win64.a
+	CXXFLAGS += -Wno-explicit  -Wno-deprecated-copy
+endif
+
+TARGET = mStack_out
 
 SRCFILES = mStack.cc 
 
 OBJS = $(SRCFILES: .cc = .o) 
 
 CPPFLAGS += -isystem $(COMMON_DIR)
+CXXFLAGS += $(DEFS)
 
 # Flags passed to the C++ compiler.
 CXXFLAGS += -g -Wall -Wextra -pthread

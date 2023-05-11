@@ -4,4 +4,8 @@ if [ $? -ne "0" ]; then
 echo "make failed!!! please Check error"
 exit
 fi
-./mStack_out
+
+./oop_test
+#echo cmd
+#echo start oop_test.exe
+#echo bash
