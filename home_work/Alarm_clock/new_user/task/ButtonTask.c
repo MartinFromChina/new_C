@@ -23,6 +23,7 @@ static X_Void button_task_init(uint32_t ms)
 {
     ms = ms;
     mModule_ButtonInit();
+    SysLogDebug(1,(" button_task_init ms %d\r\n",ms));
 }
 TASK_BODY_BEGIN(button_task,button_task_init,0,0){
     X_delay(BUTTON_MODULE_ACTION_FREQ_MS);
@@ -415,9 +416,15 @@ static uint8_t mDri_GetButtonsValue(X_Void)
     key1 = GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_3);	//PE3 
     key2 = GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_2);//PE2
     key3 = GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0);	//PA0
+    
+    key0 = (key0 == 1) ? 0 : 1;
+    key1 = (key1 == 1) ? 0 : 1;
+    key2 = (key2 == 1) ? 0 : 1;
+    key3 = (key3 == 1) ? 0 : 1;
 	
-    result = 0;
+    result = 0x0F;
 	result = key0 + (key1 << 1) + (key2 << 2) + (key3 << 3);
+////////    SysLogDebug(1,("button value %2x \r\n",result));
   return (result);
 }
 

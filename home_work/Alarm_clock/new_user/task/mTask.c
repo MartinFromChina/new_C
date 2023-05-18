@@ -18,7 +18,7 @@ uint32_t TerminalNumberGet(X_Void)
 }
 
 static const s_X_TaskList task_list[] = {
-  {TID_MainTask,            X_Null},
+////////  {TID_MainTask,            X_Null},
 ////////////  {TID_MainTask,            main_task},
 ////////////  {TID_LoraTask,            lora_task},
   {TID_ButtonTask,          button_task},
@@ -41,16 +41,18 @@ X_Void TaskInit(X_Void)
     uint8_t i;
     LogDebugInit();
     INSERT(LogDebug)(1,(" hello world \r\n"));
+    SysLogDebug(1,(" this is an alarm clock  \r\n"));
 	if(x_task_init(task_manager) != xte_ok)
 	{
 		SysLogDebug(1,(" !!! fatal error , task init failed \r\n"));
 	}
     
-    for(i = TID_MainTask ;i < TID_MaxTaskID_Plus_1;i++)
-    {
-        common_task_freeze(i);
-    }
-    common_task_restart(TID_MainTask);
+////////    for(i = TID_MainTask ;i < TID_MaxTaskID_Plus_1;i++)
+////////    {
+////////        common_task_freeze(i);
+////////    }
+////////    common_task_restart(TID_MainTask);
+//////    common_task_restart(TID_ButtonTask);
     
     isClassInitOK = ClassInit();
 }
