@@ -3,7 +3,7 @@
 ..\obj\w25qxx.o: ..\SYSTEM\sys\sys.h
 ..\obj\w25qxx.o: ..\USER\stm32f4xx.h
 ..\obj\w25qxx.o: ..\CORE\core_cm4.h
-..\obj\w25qxx.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\w25qxx.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\w25qxx.o: ..\CORE\core_cmInstr.h
 ..\obj\w25qxx.o: ..\CORE\core_cmFunc.h
 ..\obj\w25qxx.o: ..\CORE\core_cm4_simd.h
@@ -39,4 +39,3 @@
 ..\obj\w25qxx.o: ..\HARDWARE\SPI\spi.h
 ..\obj\w25qxx.o: ..\SYSTEM\delay\delay.h
 ..\obj\w25qxx.o: ..\SYSTEM\usart\usart.h
-..\obj\w25qxx.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

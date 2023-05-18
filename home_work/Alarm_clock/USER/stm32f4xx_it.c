@@ -139,12 +139,21 @@ void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
-#include <stdio.h>
-static uint32_t sys_cnt = 0;
+//////#include <stdio.h>
+static uint32_t sys_cnt = 0,ms_cnt = 0;
+
+uint32_t mFunc_SoftTimerGetSysTickCnt(void)
+{
+    uint32_t ms_backup;
+    ms_backup = ms_cnt;
+    return ms_backup;
+}
+
 void SysTick_Handler(void)
 {
 //////////	printf(" this is systick\r\n");
 	if(sys_cnt > 0) {sys_cnt --;}
+    ms_cnt ++;
 }
 
 void SetSysCnt(uint32_t ms)

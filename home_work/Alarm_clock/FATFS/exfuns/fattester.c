@@ -52,18 +52,18 @@ u8 mf_read(u16 len)
 	u16 i,t;
 	u8 res=0;
 	u16 tlen=0;
-	printf("\r\nRead file data is:\r\n");
+	////printf("\r\nRead file data is:\r\n");
 	for(i=0;i<len/512;i++)
 	{
 		res=f_read(file,fatbuf,512,&br);
 		if(res)
 		{
-			printf("Read Error:%d\r\n",res);
+			//printf("Read Error:%d\r\n",res);
 			break;
 		}else
 		{
 			tlen+=br;
-			for(t=0;t<br;t++)printf("%c",fatbuf[t]); 
+			//for(t=0;t<br;t++)//printf("%c",fatbuf[t]); 
 		}
 	}
 	if(len%512)
@@ -71,15 +71,15 @@ u8 mf_read(u16 len)
 		res=f_read(file,fatbuf,len%512,&br);
 		if(res)	//读数据出错了
 		{
-			printf("\r\nRead Error:%d\r\n",res);   
+			//printf("\r\nRead Error:%d\r\n",res);   
 		}else
 		{
 			tlen+=br;
-			for(t=0;t<br;t++)printf("%c",fatbuf[t]); 
+			//for(t=0;t<br;t++)//printf("%c",fatbuf[t]); 
 		}	 
 	}
-	if(tlen)printf("\r\nReaded data len:%d\r\n",tlen);//读到的数据长度
-	printf("Read data over\r\n");	 
+	//if(tlen)//printf("\r\nReaded data len:%d\r\n",tlen);//读到的数据长度
+	//printf("Read data over\r\n");	 
 	return res;
 }
 //写入数据
@@ -90,14 +90,14 @@ u8 mf_write(u8*dat,u16 len)
 {			    
 	u8 res;	   					   
 
-	printf("\r\nBegin Write file...\r\n");
-	printf("Write data len:%d\r\n",len);	 
+	//printf("\r\nBegin Write file...\r\n");
+	//printf("Write data len:%d\r\n",len);	 
 	res=f_write(file,dat,len,&bw);
-	if(res)
-	{
-		printf("Write Error:%d\r\n",res);   
-	}else printf("Writed data len:%d\r\n",bw);
-	printf("Write data over.\r\n");
+//////	if(res)
+//////	{
+//////		//printf("Write Error:%d\r\n",res);   
+//////	}else //printf("Writed data len:%d\r\n",bw);
+//////	//printf("Write data over.\r\n");
 	return res;
 }
 
@@ -135,21 +135,21 @@ u8 mf_readdir(void)
 #else
 	fn=fileinfo.fname;;
 #endif	
-	printf("\r\n DIR info:\r\n");
+	//printf("\r\n DIR info:\r\n");
 
-	printf("dir.id:%d\r\n",dir.id);
-	printf("dir.index:%d\r\n",dir.index);
-	printf("dir.sclust:%d\r\n",dir.sclust);
-	printf("dir.clust:%d\r\n",dir.clust);
-	printf("dir.sect:%d\r\n",dir.sect);	  
+	//printf("dir.id:%d\r\n",dir.id);
+	//printf("dir.index:%d\r\n",dir.index);
+	//printf("dir.sclust:%d\r\n",dir.sclust);
+	//printf("dir.clust:%d\r\n",dir.clust);
+	//printf("dir.sect:%d\r\n",dir.sect);	  
 
-	printf("\r\n");
-	printf("File Name is:%s\r\n",fn);
-	printf("File Size is:%d\r\n",fileinfo.fsize);
-	printf("File data is:%d\r\n",fileinfo.fdate);
-	printf("File time is:%d\r\n",fileinfo.ftime);
-	printf("File Attr is:%d\r\n",fileinfo.fattrib);
-	printf("\r\n");
+	//printf("\r\n");
+	//printf("File Name is:%s\r\n",fn);
+	//printf("File Size is:%d\r\n",fileinfo.fsize);
+	//printf("File data is:%d\r\n",fileinfo.fdate);
+	//printf("File time is:%d\r\n",fileinfo.ftime);
+	//printf("File Attr is:%d\r\n",fileinfo.fattrib);
+	//printf("\r\n");
 	myfree(SRAMIN,fileinfo.lfname);
 	return 0;
 }			 
@@ -169,7 +169,7 @@ u8 mf_scan_files(u8 * path)
     res = f_opendir(&dir,(const TCHAR*)path); //打开一个目录
     if (res == FR_OK) 
 	{	
-		printf("\r\n"); 
+		//printf("\r\n"); 
 		while(1)
 		{
 	        res = f_readdir(&dir, &fileinfo);                   //读取目录下的一个文件
@@ -180,8 +180,8 @@ u8 mf_scan_files(u8 * path)
 #else							   
         	fn = fileinfo.fname;
 #endif	                                              /* It is a file. */
-			printf("%s/", path);//打印路径	
-			printf("%s\r\n",  fn);//打印文件名	  
+			//printf("%s/", path);//打印路径	
+			//printf("%s\r\n",  fn);//打印文件名	  
 		} 
     }	  
 	myfree(SRAMIN,fileinfo.lfname);
@@ -208,15 +208,15 @@ u32 mf_showfree(u8 *drv)
 		if(tot_sect<20480)//总容量小于10M
 		{
 		    /* Print free space in unit of KB (assuming 512 bytes/sector) */
-		    printf("\r\n磁盘总容量:%d KB\r\n"
-		           "可用空间:%d KB\r\n",
-		           tot_sect>>1,fre_sect>>1);
+//////		    //printf("\r\n磁盘总容量:%d KB\r\n"
+//////		           "可用空间:%d KB\r\n",
+//////		           tot_sect>>1,fre_sect>>1);
 		}else
 		{
 		    /* Print free space in unit of KB (assuming 512 bytes/sector) */
-		    printf("\r\n磁盘总容量:%d MB\r\n"
-		           "可用空间:%d MB\r\n",
-		           tot_sect>>11,fre_sect>>11);
+		    //printf("\r\n磁盘总容量:%d MB\r\n"
+//////		           "可用空间:%d MB\r\n",
+//////		           tot_sect>>11,fre_sect>>11);
 		}
 	}
 	return fre_sect;
@@ -280,11 +280,11 @@ void mf_getlabel(u8 *path)
 	u32 sn=0;
 	u8 res;
 	res=f_getlabel ((const TCHAR *)path,(TCHAR *)buf,(DWORD*)&sn);
-	if(res==FR_OK)
-	{
-		printf("\r\n磁盘%s 的盘符为:%s\r\n",path,buf);
-		printf("磁盘%s 的序列号:%X\r\n\r\n",path,sn); 
-	}else printf("\r\n获取失败，错误码:%X\r\n",res);
+//////	if(res==FR_OK)
+//////	{
+//////		//printf("\r\n磁盘%s 的盘符为:%s\r\n",path,buf);
+//////		//printf("磁盘%s 的序列号:%X\r\n\r\n",path,sn); 
+//////	}else //printf("\r\n获取失败，错误码:%X\r\n",res);
 }
 //设置盘符（磁盘名字），最长11个字符！！，支持数字和大写字母组合以及汉字等
 //path:磁盘号+名字，比如"0:ALIENTEK"、"1:OPENEDV"  
@@ -292,10 +292,10 @@ void mf_setlabel(u8 *path)
 {
 	u8 res;
 	res=f_setlabel ((const TCHAR *)path);
-	if(res==FR_OK)
-	{
-		printf("\r\n磁盘盘符设置成功:%s\r\n",path);
-	}else printf("\r\n磁盘盘符设置失败，错误码:%X\r\n",res);
+//////	if(res==FR_OK)
+//////	{
+//////		//printf("\r\n磁盘盘符设置成功:%s\r\n",path);
+//////	}else //printf("\r\n磁盘盘符设置失败，错误码:%X\r\n",res);
 } 
 
 //从文件里面读取一段字符串
@@ -307,7 +307,7 @@ void mf_gets(u16 size)
 	if(*rbuf==0)return  ;//没有数据读到
 	else
 	{
-		printf("\r\nThe String Readed Is:%s\r\n",rbuf);  	  
+//////		//printf("\r\nThe String Readed Is:%s\r\n",rbuf);  	  
 	}			    	
 }
 //需要_USE_STRFUNC>=1

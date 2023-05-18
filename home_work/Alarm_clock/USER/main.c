@@ -14,6 +14,8 @@
 #include "text.h"	 
 #include "wm8978.h"	 
 #include "audioplay.h"	
+
+#include "mTask.h"
 //ALIENTEK 探索者STM32F407开发板 实验43
 //音乐播放器 实验 -库函数版本
 //技术支持：www.openedv.com
@@ -24,18 +26,16 @@
 #define TIME_TO_PLAY_MUSIC_AFTER_PWR_UP_IN_MINUTES       360 // 6hours = 6 * 60 = 360 minutes
 #define TIME_TO_PLAY_MUSIC_AFTER_PWR_UP_IN_MS            ((uint32_t)(TIME_TO_PLAY_MUSIC_AFTER_PWR_UP_IN_MINUTES * 60000))
 
-static uint32_t cnt = 0;
 extern void SetSysCnt(uint32_t ms);
 extern uint32_t GetSysCnt(void);
 int main(void)
 {        
 	SetSysCnt(TIME_TO_PLAY_MUSIC_AFTER_PWR_UP_IN_MS);
-	cnt = TIME_TO_PLAY_MUSIC_AFTER_PWR_UP_IN_MS;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置系统中断优先级分组2
 	delay_init(168);  //初始化延时函数
 	uart_init(115200);		//初始化串口波特率为115200
 	LED_Init();					//初始化LED 
-	usmart_dev.init(84);		//初始化USMART
+////	usmart_dev.init(84);		//初始化USMART
  	LCD_Init();					//LCD初始化  
  	KEY_Init();					//按键初始化  
 	W25QXX_Init();				//初始化W25Q128
@@ -62,19 +62,12 @@ int main(void)
 	Show_Str(60,110,200,16,"2014年5月24日",16,0);
 	Show_Str(60,130,200,16,"KEY0:NEXT   KEY2:PREV",16,0); 
 	Show_Str(60,150,200,16,"KEY_UP:PAUSE/PLAY",16,0);
+    
+    TaskInit();
 	while(1)
 	{ 
-//		if(GetSysCnt() > 0) 
-//		{
-//			continue;
-//		}
-		if(cnt > 0)
-		{
-			cnt --;
-			delay_us(1050);
-			continue;
-		}
-		audio_play();
+        TaskLoopExe();
+//////		audio_play();
 	} 
 }
 

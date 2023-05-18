@@ -1,0 +1,1174 @@
+L 1 "..\..\..\module\common\Math\bit_operation.c"
+N#include "bit_operation.h"
+L 1 "..\..\..\module\common\Math\bit_operation.h" 1
+N#ifndef __BIT_OPERATION_H
+N#define __BIT_OPERATION_H
+N
+N#ifdef __cplusplus
+S extern "C"{
+N#endif
+N
+N
+N#include "../x_cross_platform.h" //!!! makefile is sentive to "/" and "\"  , use "/"！！！
+L 1 "..\..\..\module\common\Math\../x_cross_platform.h" 1
+N#ifndef __X_CROSS_PLATFORM_H
+N#define __X_CROSS_PLATFORM_H
+N
+N#include <stdint.h>
+L 1 "D:\Program Files\ARM\ARMCC\Bin\..\include\stdint.h" 1
+N/* Copyright (C) ARM Ltd., 1999,2014 */
+N/* All rights reserved */
+N
+N/*
+N * RCS $Revision$
+N * Checkin $Date$
+N * Revising $Author: agrant $
+N */
+N
+N#ifndef __stdint_h
+N#define __stdint_h
+N#define __ARMCLIB_VERSION 5060037
+N
+N  #ifdef __INT64_TYPE__
+S    /* armclang predefines '__INT64_TYPE__' and '__INT64_C_SUFFIX__' */
+S    #define __INT64 __INT64_TYPE__
+N  #else
+N    /* armcc has builtin '__int64' which can be used in --strict mode */
+N    #define __INT64 __int64
+N    #define __INT64_C_SUFFIX__ ll
+N  #endif
+N  #define __PASTE2(x, y) x ## y
+N  #define __PASTE(x, y) __PASTE2(x, y)
+N  #define __INT64_C(x)  __ESCAPE__(__PASTE(x, __INT64_C_SUFFIX__))
+N  #define __UINT64_C(x)  __ESCAPE__(__PASTE(x ## u, __INT64_C_SUFFIX__))
+N  #if defined(__clang__) || (defined(__ARMCC_VERSION) && !defined(__STRICT_ANSI__))
+X  #if 0L || (1L && !0L)
+N    /* armclang and non-strict armcc allow 'long long' in system headers */
+N    #define __LONGLONG long long
+N  #else
+S    /* strict armcc has '__int64' */
+S    #define __LONGLONG __int64
+N  #endif
+N
+N  #ifndef __STDINT_DECLS
+N  #define __STDINT_DECLS
+N
+N    #undef __CLIBNS
+N
+N    #ifdef __cplusplus
+S      namespace std {
+S          #define __CLIBNS std::
+S          extern "C" {
+N    #else
+N      #define __CLIBNS
+N    #endif  /* __cplusplus */
+N
+N
+N/*
+N * 'signed' is redundant below, except for 'signed char' and if
+N * the typedef is used to declare a bitfield.
+N */
+N
+N    /* 7.18.1.1 */
+N
+N    /* exact-width signed integer types */
+Ntypedef   signed          char int8_t;
+Ntypedef   signed short     int int16_t;
+Ntypedef   signed           int int32_t;
+Ntypedef   signed       __INT64 int64_t;
+Xtypedef   signed       __int64 int64_t;
+N
+N    /* exact-width unsigned integer types */
+Ntypedef unsigned          char uint8_t;
+Ntypedef unsigned short     int uint16_t;
+Ntypedef unsigned           int uint32_t;
+Ntypedef unsigned       __INT64 uint64_t;
+Xtypedef unsigned       __int64 uint64_t;
+N
+N    /* 7.18.1.2 */
+N
+N    /* smallest type of at least n bits */
+N    /* minimum-width signed integer types */
+Ntypedef   signed          char int_least8_t;
+Ntypedef   signed short     int int_least16_t;
+Ntypedef   signed           int int_least32_t;
+Ntypedef   signed       __INT64 int_least64_t;
+Xtypedef   signed       __int64 int_least64_t;
+N
+N    /* minimum-width unsigned integer types */
+Ntypedef unsigned          char uint_least8_t;
+Ntypedef unsigned short     int uint_least16_t;
+Ntypedef unsigned           int uint_least32_t;
+Ntypedef unsigned       __INT64 uint_least64_t;
+Xtypedef unsigned       __int64 uint_least64_t;
+N
+N    /* 7.18.1.3 */
+N
+N    /* fastest minimum-width signed integer types */
+Ntypedef   signed           int int_fast8_t;
+Ntypedef   signed           int int_fast16_t;
+Ntypedef   signed           int int_fast32_t;
+Ntypedef   signed       __INT64 int_fast64_t;
+Xtypedef   signed       __int64 int_fast64_t;
+N
+N    /* fastest minimum-width unsigned integer types */
+Ntypedef unsigned           int uint_fast8_t;
+Ntypedef unsigned           int uint_fast16_t;
+Ntypedef unsigned           int uint_fast32_t;
+Ntypedef unsigned       __INT64 uint_fast64_t;
+Xtypedef unsigned       __int64 uint_fast64_t;
+N
+N    /* 7.18.1.4 integer types capable of holding object pointers */
+N#if __sizeof_ptr == 8
+X#if 4 == 8
+Stypedef   signed       __INT64 intptr_t;
+Stypedef unsigned       __INT64 uintptr_t;
+N#else
+Ntypedef   signed           int intptr_t;
+Ntypedef unsigned           int uintptr_t;
+N#endif
+N
+N    /* 7.18.1.5 greatest-width integer types */
+Ntypedef   signed     __LONGLONG intmax_t;
+Xtypedef   signed     long long intmax_t;
+Ntypedef unsigned     __LONGLONG uintmax_t;
+Xtypedef unsigned     long long uintmax_t;
+N
+N
+N#if !defined(__cplusplus) || defined(__STDC_LIMIT_MACROS)
+X#if !0L || 0L
+N
+N    /* 7.18.2.1 */
+N
+N    /* minimum values of exact-width signed integer types */
+N#define INT8_MIN                   -128
+N#define INT16_MIN                -32768
+N#define INT32_MIN          (~0x7fffffff)   /* -2147483648 is unsigned */
+N#define INT64_MIN  __INT64_C(~0x7fffffffffffffff) /* -9223372036854775808 is unsigned */
+N
+N    /* maximum values of exact-width signed integer types */
+N#define INT8_MAX                    127
+N#define INT16_MAX                 32767
+N#define INT32_MAX            2147483647
+N#define INT64_MAX  __INT64_C(9223372036854775807)
+N
+N    /* maximum values of exact-width unsigned integer types */
+N#define UINT8_MAX                   255
+N#define UINT16_MAX                65535
+N#define UINT32_MAX           4294967295u
+N#define UINT64_MAX __UINT64_C(18446744073709551615)
+N
+N    /* 7.18.2.2 */
+N
+N    /* minimum values of minimum-width signed integer types */
+N#define INT_LEAST8_MIN                   -128
+N#define INT_LEAST16_MIN                -32768
+N#define INT_LEAST32_MIN          (~0x7fffffff)
+N#define INT_LEAST64_MIN  __INT64_C(~0x7fffffffffffffff)
+N
+N    /* maximum values of minimum-width signed integer types */
+N#define INT_LEAST8_MAX                    127
+N#define INT_LEAST16_MAX                 32767
+N#define INT_LEAST32_MAX            2147483647
+N#define INT_LEAST64_MAX  __INT64_C(9223372036854775807)
+N
+N    /* maximum values of minimum-width unsigned integer types */
+N#define UINT_LEAST8_MAX                   255
+N#define UINT_LEAST16_MAX                65535
+N#define UINT_LEAST32_MAX           4294967295u
+N#define UINT_LEAST64_MAX __UINT64_C(18446744073709551615)
+N
+N    /* 7.18.2.3 */
+N
+N    /* minimum values of fastest minimum-width signed integer types */
+N#define INT_FAST8_MIN           (~0x7fffffff)
+N#define INT_FAST16_MIN          (~0x7fffffff)
+N#define INT_FAST32_MIN          (~0x7fffffff)
+N#define INT_FAST64_MIN  __INT64_C(~0x7fffffffffffffff)
+N
+N    /* maximum values of fastest minimum-width signed integer types */
+N#define INT_FAST8_MAX             2147483647
+N#define INT_FAST16_MAX            2147483647
+N#define INT_FAST32_MAX            2147483647
+N#define INT_FAST64_MAX  __INT64_C(9223372036854775807)
+N
+N    /* maximum values of fastest minimum-width unsigned integer types */
+N#define UINT_FAST8_MAX            4294967295u
+N#define UINT_FAST16_MAX           4294967295u
+N#define UINT_FAST32_MAX           4294967295u
+N#define UINT_FAST64_MAX __UINT64_C(18446744073709551615)
+N
+N    /* 7.18.2.4 */
+N
+N    /* minimum value of pointer-holding signed integer type */
+N#if __sizeof_ptr == 8
+X#if 4 == 8
+S#define INTPTR_MIN INT64_MIN
+N#else
+N#define INTPTR_MIN INT32_MIN
+N#endif
+N
+N    /* maximum value of pointer-holding signed integer type */
+N#if __sizeof_ptr == 8
+X#if 4 == 8
+S#define INTPTR_MAX INT64_MAX
+N#else
+N#define INTPTR_MAX INT32_MAX
+N#endif
+N
+N    /* maximum value of pointer-holding unsigned integer type */
+N#if __sizeof_ptr == 8
+X#if 4 == 8
+S#define UINTPTR_MAX UINT64_MAX
+N#else
+N#define UINTPTR_MAX UINT32_MAX
+N#endif
+N
+N    /* 7.18.2.5 */
+N
+N    /* minimum value of greatest-width signed integer type */
+N#define INTMAX_MIN  __ESCAPE__(~0x7fffffffffffffffll)
+N
+N    /* maximum value of greatest-width signed integer type */
+N#define INTMAX_MAX  __ESCAPE__(9223372036854775807ll)
+N
+N    /* maximum value of greatest-width unsigned integer type */
+N#define UINTMAX_MAX __ESCAPE__(18446744073709551615ull)
+N
+N    /* 7.18.3 */
+N
+N    /* limits of ptrdiff_t */
+N#if __sizeof_ptr == 8
+X#if 4 == 8
+S#define PTRDIFF_MIN INT64_MIN
+S#define PTRDIFF_MAX INT64_MAX
+N#else
+N#define PTRDIFF_MIN INT32_MIN
+N#define PTRDIFF_MAX INT32_MAX
+N#endif
+N
+N    /* limits of sig_atomic_t */
+N#define SIG_ATOMIC_MIN (~0x7fffffff)
+N#define SIG_ATOMIC_MAX   2147483647
+N
+N    /* limit of size_t */
+N#if __sizeof_ptr == 8
+X#if 4 == 8
+S#define SIZE_MAX UINT64_MAX
+N#else
+N#define SIZE_MAX UINT32_MAX
+N#endif
+N
+N    /* limits of wchar_t */
+N    /* NB we have to undef and redef because they're defined in both
+N     * stdint.h and wchar.h */
+N#undef WCHAR_MIN
+N#undef WCHAR_MAX
+N
+N#if defined(__WCHAR32) || (defined(__ARM_SIZEOF_WCHAR_T) && __ARM_SIZEOF_WCHAR_T == 4)
+X#if 0L || (0L && __ARM_SIZEOF_WCHAR_T == 4)
+S  #define WCHAR_MIN   0
+S  #define WCHAR_MAX   0xffffffffU
+N#else
+N  #define WCHAR_MIN   0
+N  #define WCHAR_MAX   65535
+N#endif
+N
+N    /* limits of wint_t */
+N#define WINT_MIN (~0x7fffffff)
+N#define WINT_MAX 2147483647
+N
+N#endif /* __STDC_LIMIT_MACROS */
+N
+N#if !defined(__cplusplus) || defined(__STDC_CONSTANT_MACROS)
+X#if !0L || 0L
+N
+N    /* 7.18.4.1 macros for minimum-width integer constants */
+N#define INT8_C(x)   (x)
+N#define INT16_C(x)  (x)
+N#define INT32_C(x)  (x)
+N#define INT64_C(x)  __INT64_C(x)
+N
+N#define UINT8_C(x)  (x ## u)
+N#define UINT16_C(x) (x ## u)
+N#define UINT32_C(x) (x ## u)
+N#define UINT64_C(x) __UINT64_C(x)
+N
+N    /* 7.18.4.2 macros for greatest-width integer constants */
+N#define INTMAX_C(x)  __ESCAPE__(x ## ll)
+N#define UINTMAX_C(x) __ESCAPE__(x ## ull)
+N
+N#endif /* __STDC_CONSTANT_MACROS */
+N
+N    #ifdef __cplusplus
+S         }  /* extern "C" */
+S      }  /* namespace std */
+N    #endif /* __cplusplus */
+N  #endif /* __STDINT_DECLS */
+N
+N  #ifdef __cplusplus
+S    #ifndef __STDINT_NO_EXPORTS
+S      using ::std::int8_t;
+S      using ::std::int16_t;
+S      using ::std::int32_t;
+S      using ::std::int64_t;
+S      using ::std::uint8_t;
+S      using ::std::uint16_t;
+S      using ::std::uint32_t;
+S      using ::std::uint64_t;
+S      using ::std::int_least8_t;
+S      using ::std::int_least16_t;
+S      using ::std::int_least32_t;
+S      using ::std::int_least64_t;
+S      using ::std::uint_least8_t;
+S      using ::std::uint_least16_t;
+S      using ::std::uint_least32_t;
+S      using ::std::uint_least64_t;
+S      using ::std::int_fast8_t;
+S      using ::std::int_fast16_t;
+S      using ::std::int_fast32_t;
+S      using ::std::int_fast64_t;
+S      using ::std::uint_fast8_t;
+S      using ::std::uint_fast16_t;
+S      using ::std::uint_fast32_t;
+S      using ::std::uint_fast64_t;
+S      using ::std::intptr_t;
+S      using ::std::uintptr_t;
+S      using ::std::intmax_t;
+S      using ::std::uintmax_t;
+S    #endif
+N  #endif /* __cplusplus */
+N
+N#undef __INT64
+N#undef __LONGLONG
+N
+N#endif /* __stdint_h */
+N
+N/* end of stdint.h */
+L 5 "..\..\..\module\common\Math\../x_cross_platform.h" 2
+N#include <wchar.h>
+L 1 "D:\Program Files\ARM\ARMCC\Bin\..\include\wchar.h" 1
+N/* wchar.h: C99 header */
+N/* Copyright 2002 ARM Limited. All rights reserved.            */
+N/*
+N * RCS $Revision$
+N * Checkin $Date$
+N * Revising $Author: agrant $
+N */
+N
+N#ifndef __wchar_h
+N#define __wchar_h
+N#define __ARMCLIB_VERSION 5060037
+N
+N#define _ARMABI __declspec(__nothrow)
+N
+N  #ifndef __WCHAR_DECLS
+N  #define __WCHAR_DECLS
+N
+N    #undef __CLIBNS
+N    #ifdef __cplusplus
+S        #define __CLIBNS ::std::
+S        namespace std {
+S        extern "C" {
+N    #else /* ndef __cplusplus */
+N      #define __CLIBNS
+N    #endif /* ndef __cplusplus */
+N
+N    #if defined(__cplusplus) || !defined(__STRICT_ANSI__) || !defined(__size_t)
+X    #if 0L || !0L || !0L
+N     /* always defined in C++ and non-strict C for consistency of debug info */
+N      #if __sizeof_ptr == 8
+X      #if 4 == 8
+S        typedef unsigned long size_t;   /* see <stddef.h> */
+N      #else
+N        typedef unsigned int size_t;   /* see <stddef.h> */
+N      #endif
+N      #if !defined(__cplusplus) && defined(__STRICT_ANSI__)
+X      #if !0L && 0L
+S        #define __size_t 1
+N      #endif
+N    #endif
+N
+N    #ifndef __cplusplus  /* wchar_t is a builtin type for C++ */
+N      #if !defined(__STRICT_ANSI__) || !defined(__wchar_t)
+X      #if !0L || !0L
+N       /* always defined in non-strict C for consistency of debug info */
+N        #if defined(__WCHAR32) || (defined(__ARM_SIZEOF_WCHAR_T) && __ARM_SIZEOF_WCHAR_T == 4)
+X        #if 0L || (0L && __ARM_SIZEOF_WCHAR_T == 4)
+S          typedef unsigned int wchar_t; /* see <stddef.h> */
+N        #else
+N          typedef unsigned short wchar_t; /* see <stddef.h> */
+N        #endif
+N        #ifdef __STRICT_ANSI__
+S          #define __wchar_t 1
+N        #endif
+N      #endif
+N    #endif
+N
+N    #if defined(__cplusplus) || !defined(__STRICT_ANSI__) || !defined(__wint_t)
+X    #if 0L || !0L || !0L
+N     /* always defined in C++ and non-strict C for consistency of debug info */
+N      typedef int wint_t;   /* see also <wctype.h> */
+N      #if !defined(__cplusplus) && defined(__STRICT_ANSI__)
+X      #if !0L && 0L
+S        #define __wint_t 1
+N      #endif
+N    #endif
+N
+N        /* limits of wchar_t */
+N        /* NB we have to undef and redef because they're defined in both
+N         * stdint.h and wchar.h */
+N    #undef WCHAR_MIN
+N    #undef WCHAR_MAX
+N
+N    #if defined(__WCHAR32)  || (defined(__ARM_SIZEOF_WCHAR_T) && __ARM_SIZEOF_WCHAR_T == 4)
+X    #if 0L  || (0L && __ARM_SIZEOF_WCHAR_T == 4)
+S      #define WCHAR_MIN   0
+S      #define WCHAR_MAX   0xffffffffU
+N    #else
+N      #define WCHAR_MIN   0
+N      #define WCHAR_MAX   65535
+N    #endif
+N
+N    #undef NULL
+N    #define NULL 0                   /* see <stddef.h> */
+N
+N    /* ANSI forbids va_list to be defined here */
+N    /* keep in step with <stdarg.h> and <stdio.h> */
+N    #if !defined(__va_list) && (defined(__cplusplus) || !defined(__STRICT_ANSI__) || !defined(__va_list_defined))
+X    #if !0L && (0L || !0L || !0L)
+N    /* always defined in C++ and non-strict C for consistency of debug info */
+N      #ifdef __clang__
+S        typedef __builtin_va_list __va_list;
+N      #else
+N        typedef struct __va_list __va_list;
+N      #endif
+N      #if !defined(__cplusplus) && defined(__STRICT_ANSI__)
+X      #if !0L && 0L
+S        #define __va_list_defined 1
+N      #endif
+N    #endif
+N
+N  #ifndef __ARM_WCHAR_NO_IO
+N    #undef WEOF
+N    #define WEOF ((__CLIBNS wint_t)-1)
+N
+N    /* ANSI forbids FILE to be defined here */
+N    #if !defined(__STRICT_ANSI__)
+X    #if !0L
+N    /* always defined in non-strict C/C++ for consistency of debug info */
+N      typedef struct __FILE FILE;
+N    #else
+S      struct __FILE;
+N    #endif
+N  #endif /* __ARM_WCHAR_NO_IO */
+N
+N    /*
+N     * If the compiler supports signalling nans as per N965 then it
+N     * will define __SUPPORT_SNAN__, in which case a user may define
+N     * _WANT_SNAN in order to obtain compliant versions of the
+N     * fwprintf, fwscanf, and wcstod families of functions.
+N     */
+N    #if defined(__SUPPORT_SNAN__) && defined(_WANT_SNAN)
+X    #if 0L && 0L
+S    #pragma import(__use_snan)
+N    #endif
+N
+N
+N    /*
+N     * mbstate_t must be able to contain all the data from an
+N     * incomplete MB character, plus shift states. CJK-specific
+N     * encodings seem to tend to have at most three bytes per
+N     * character, and a single-figure number of shift states, so 32
+N     * bits is sufficient for any of these. UTF-8 encoding a full
+N     * 32-bit value is the hardest thing to deal with, and in that
+N     * situation the worst case is having to store 25 bits of
+N     * character (1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx) plus
+N     * a few bits saying what sort of state is being stored. This is
+N     * still easy enough to fit into 32 bits, so I think a single
+N     * 32-bit integer is enough in here.
+N     */
+N    typedef struct __mbstate_t {
+N        unsigned int __state, __state2;
+N    } mbstate_t;
+N
+N    /*
+N     * `struct tm' must be declared in this header as an incomplete
+N     * type.
+N     */
+N    struct tm;
+N            
+N    extern _ARMABI size_t wcsftime(wchar_t * __restrict /*s*/, size_t /*maxsize*/,
+X    extern __declspec(__nothrow) size_t wcsftime(wchar_t * __restrict  , size_t  ,
+N                       const wchar_t * __restrict /*format*/, const struct tm * __restrict /*timeptr*/) __attribute__((__nonnull__(1,3,4)));
+N
+N  #ifndef __ARM_WCHAR_NO_IO
+N    /*
+N     * Formatted wide-character I/O functions
+N     */
+N#pragma __printf_args
+N    int swprintf(wchar_t * __restrict /*s*/, size_t /*n*/,
+N                 const wchar_t * __restrict /*format*/, ...) __attribute__((__nonnull__(3)));
+N#pragma __printf_args
+N    int vswprintf(wchar_t * __restrict /*s*/, size_t /*n*/,
+N                  const wchar_t * __restrict /*format*/, __va_list /*arg*/) __attribute__((__nonnull__(3)));
+N#pragma __scanf_args
+N    int swscanf(const wchar_t * __restrict /*s*/,
+N                const wchar_t * __restrict /*format*/, ...) __attribute__((__nonnull__(1,2)));
+N#pragma __scanf_args
+N    int vswscanf(const wchar_t * __restrict /*s*/,
+N                 const wchar_t * __restrict /*format*/, __va_list /*arg*/) __attribute__((__nonnull__(1,2)));
+N
+N
+N#pragma __printf_args
+N    int fwprintf(struct __FILE * __restrict /*stream*/,
+N                 const wchar_t * __restrict /*format*/, ...) __attribute__((__nonnull__(1,2)));
+N#pragma __printf_args
+N    int vfwprintf(struct __FILE * __restrict /*stream*/,
+N                  const wchar_t * __restrict /*format*/, __va_list /*arg*/) __attribute__((__nonnull__(1,2)));
+N#pragma __scanf_args
+N    int fwscanf(struct __FILE * __restrict /*stream*/,
+N                const wchar_t * __restrict /*format*/, ...) __attribute__((__nonnull__(1,2)));
+N#pragma __scanf_args
+N    int vfwscanf(struct __FILE * __restrict /*stream*/,
+N                 const wchar_t * __restrict /*format*/, __va_list /*arg*/) __attribute__((__nonnull__(1,2)));
+N
+N
+N#pragma __printf_args
+N    int wprintf(const wchar_t * __restrict /*format*/, ...) __attribute__((__nonnull__(1)));
+N#pragma __printf_args
+N    int vwprintf(const wchar_t * __restrict /*format*/, __va_list /*arg*/) __attribute__((__nonnull__(1)));
+N#pragma __scanf_args
+N    int wscanf(const wchar_t * __restrict /*format*/, ...) __attribute__((__nonnull__(1)));
+N#pragma __scanf_args
+N    int vwscanf(const wchar_t * __restrict /*format*/, __va_list /*arg*/) __attribute__((__nonnull__(1)));
+N
+N    /* 
+N     * Unformatted wide-character I/O functions
+N     */
+N    wint_t fgetwc(struct __FILE * /*stream*/) __attribute__((__nonnull__(1)));
+N    wchar_t *fgetws(wchar_t * __restrict /*s*/, int /*n*/, struct __FILE * __restrict /*stream*/) __attribute__((__nonnull__(1,3)));
+N    wint_t fputwc(wchar_t /*c*/, struct __FILE * /*stream*/) __attribute__((__nonnull__(2)));
+N    int fputws(const wchar_t * __restrict /*s*/, struct __FILE * __restrict /*stream*/) __attribute__((__nonnull__(1,2)));
+N    int fwide(struct __FILE * /*stream*/, int /*mode*/) __attribute__((__nonnull__(1)));
+N    wint_t getwc(struct __FILE * /*stream*/) __attribute__((__nonnull__(1)));
+N    wint_t getwchar(void);
+N    wint_t putwc(wchar_t /*c*/, struct __FILE * /*stream*/) __attribute__((__nonnull__(2)));
+N    wint_t putwchar(wchar_t /*c*/);
+N    wint_t ungetwc(wint_t /*c*/, struct __FILE * /*stream*/) __attribute__((__nonnull__(2)));
+N  #endif /* __ARM_WCHAR_NO_IO */
+N
+N    wint_t btowc(int /*c*/);
+N    wint_t wctob(int /*c*/);
+N    int mbsinit(const mbstate_t * /*ps*/);
+N    size_t mbrlen(const char * __restrict /*s*/, size_t /*n*/,
+N                  mbstate_t * __restrict /*ps*/);
+N    size_t mbrtowc(wchar_t * __restrict /*pwc*/,
+N                   const char * __restrict /*s*/,
+N                   size_t /*n*/, mbstate_t * __restrict /*ps*/);
+N    size_t wcrtomb(char * __restrict /*s*/, wchar_t /*wc*/,
+N                   mbstate_t * __restrict /*ps*/);
+N    size_t mbsrtowcs(wchar_t * __restrict /*dst*/,
+N                     const char ** __restrict /*src*/,
+N                     size_t /*len*/, mbstate_t * __restrict /*ps*/) __attribute__((__nonnull__(2)));
+N    size_t wcsrtombs(char * __restrict /*dst*/,
+N                     const wchar_t ** __restrict /*src*/,
+N                     size_t /*len*/, mbstate_t * __restrict /*ps*/) __attribute__((__nonnull__(2)));
+N    size_t _mbsnrtowcs(wchar_t * __restrict /*dst*/,
+N                       const char ** __restrict /*src*/,
+N                       size_t /*nmb*/,
+N                       size_t /*len*/, mbstate_t * __restrict /*ps*/) __attribute__((__nonnull__(2)));
+N    size_t _wcsnrtombs(char * __restrict /*dst*/,
+N                       const wchar_t ** __restrict /*src*/,
+N                       size_t /*nwc*/,
+N                       size_t /*len*/, mbstate_t * __restrict /*ps*/) __attribute__((__nonnull__(2)));
+N#if !defined(__STRICT_ANSI__)
+X#if !0L
+N    size_t mbsnrtowcs(wchar_t * __restrict /*dst*/,
+N                      const char ** __restrict /*src*/,
+N                      size_t /*nmb*/,
+N                      size_t /*len*/, mbstate_t * __restrict /*ps*/) __attribute__((__nonnull__(2)));
+N    size_t wcsnrtombs(char * __restrict /*dst*/,
+N                      const wchar_t ** __restrict /*src*/,
+N                      size_t /*nwc*/,
+N                      size_t /*len*/, mbstate_t * __restrict /*ps*/) __attribute__((__nonnull__(2)));
+N#endif
+N
+N    /*
+N     * Wide-character string-to-number conversions. Parallel to strto*.
+N     */
+N    double wcstod(const wchar_t * /*nptr*/, wchar_t ** /*endptr*/) __attribute__((__nonnull__(1)));
+N    float wcstof(const wchar_t * /*nptr*/, wchar_t ** /*endptr*/) __attribute__((__nonnull__(1)));
+N    long double wcstold(const wchar_t * /*nptr*/, wchar_t ** /*endptr*/) __attribute__((__nonnull__(1)));
+N    long int wcstol(const wchar_t * /*nptr*/, wchar_t **/*endptr*/,
+N                    int /*base*/) __attribute__((__nonnull__(1)));
+N    unsigned long int wcstoul(const wchar_t * /*nptr*/,
+N                              wchar_t ** /*endptr*/, int /*base*/) __attribute__((__nonnull__(1)));
+N#if !defined(__STRICT_ANSI__) || (defined(__STDC_VERSION__) && 199901L <= __STDC_VERSION__) || (defined(__cplusplus) && 201103L <= __cplusplus)
+X#if !0L || (1L && 199901L <= 199901L) || (0L && 201103L <= __cplusplus)
+N    long long int wcstoll(const wchar_t * __restrict /*nptr*/,
+N                          wchar_t ** __restrict /*endptr*/, int /*base*/) __attribute__((__nonnull__(1)));
+N    unsigned long long int wcstoull(const wchar_t * __restrict /*nptr*/,
+N                                    wchar_t ** __restrict /*endptr*/,
+N                                    int /*base*/) __attribute__((__nonnull__(1)));
+N#endif
+N
+N    /*
+N     * General wide-character string utilities.
+N     */
+N    wchar_t *wcscpy(wchar_t * __restrict /*s1*/,
+N                    const wchar_t * __restrict /*s2*/) __attribute__((__nonnull__(1,2)));
+N    wchar_t *wcsncpy(wchar_t * __restrict /*s1*/,
+N                     const wchar_t * __restrict /*s2*/, size_t /*n*/) __attribute__((__nonnull__(1,2)));
+N    wchar_t *wmemcpy(wchar_t * __restrict /*s1*/,
+N                     const wchar_t * __restrict /*s2*/, size_t /*n*/) __attribute__((__nonnull__(1,2)));
+N    wchar_t *wmemmove(wchar_t * __restrict /*s1*/,
+N                      const wchar_t * __restrict /*s2*/, size_t /*n*/) __attribute__((__nonnull__(1,2)));
+N    wchar_t *wcscat(wchar_t * __restrict /*s1*/,
+N                    const wchar_t * __restrict /*s2*/) __attribute__((__nonnull__(1,2)));
+N    wchar_t *wcsncat(wchar_t * __restrict /*s1*/,
+N                     const wchar_t * __restrict /*s2*/, size_t /*n*/) __attribute__((__nonnull__(1,2)));
+N    int wcscmp(const wchar_t * __restrict /*s1*/,
+N               const wchar_t * __restrict /*s2*/) __attribute__((__nonnull__(1,2)));
+N    int wcsncmp(const wchar_t * __restrict /*s1*/,
+N                const wchar_t * __restrict /*s2*/, size_t /*n*/) __attribute__((__nonnull__(1,2)));
+N    int wcscasecmp(const wchar_t * __restrict /*s1*/,
+N                   const wchar_t * __restrict /*s2*/) __attribute__((__nonnull__(1,2)));
+N    int wcsncasecmp(const wchar_t * __restrict /*s1*/,
+N                    const wchar_t * __restrict /*s2*/, size_t /*n*/) __attribute__((__nonnull__(1,2)));
+N    int wcscoll(const wchar_t * __restrict /*s1*/,
+N                const wchar_t * __restrict /*s2*/) __attribute__((__nonnull__(1,2)));
+N    size_t wcsxfrm(wchar_t * __restrict /*s1*/,
+N                   const wchar_t * __restrict /*s2*/, size_t /*n*/) __attribute__((__nonnull__(2)));
+N    int wmemcmp(const wchar_t * __restrict /*s1*/,
+N                const wchar_t * __restrict /*s2*/, size_t /*n*/) __attribute__((__nonnull__(1,2)));
+N    size_t wcscspn(const wchar_t * __restrict /*s1*/,
+N                   const wchar_t * __restrict /*s2*/) __attribute__((__nonnull__(1,2)));
+N    size_t wcsspn(const wchar_t * __restrict /*s1*/,
+N                  const wchar_t * __restrict /*s2*/) __attribute__((__nonnull__(1,2)));
+N    wchar_t *wcstok(wchar_t * __restrict /*s1*/,
+N                    const wchar_t * __restrict /*s2*/,
+N                    wchar_t ** __restrict /*ptr*/) __attribute__((__nonnull__(2,3)));
+N    size_t wcslen(const wchar_t * __restrict /*s*/) __attribute__((__nonnull__(1)));
+N    wchar_t *wmemset(wchar_t * __restrict /*s*/, wchar_t /*c*/, size_t /*n*/) __attribute__((__nonnull__(1)));
+N
+N#if defined(__cplusplus) && !defined(__ARMCOMPILER_LIBCXX)
+X#if 0L && !0L
+S    /*
+S     * C++'s overloading allows us to provide versions of these
+S     * functions which search a const string and return a const
+S     * pointer into it, and separate versions which search a
+S     * non-const string and return a non-const pointer.
+S     */
+S    const wchar_t *wcschr(const wchar_t * __restrict /*s*/, wchar_t /*c*/) __attribute__((__nonnull__(1)));
+S    const wchar_t *wcspbrk(const wchar_t * __restrict /*s1*/,
+S                           const wchar_t * __restrict /*s2*/) __attribute__((__nonnull__(1,2)));
+S    const wchar_t *wcsrchr(const wchar_t * __restrict /*s*/, wchar_t /*c*/) __attribute__((__nonnull__(1)));
+S    const wchar_t *wcsstr(const wchar_t * __restrict /*s1*/,
+S                          const wchar_t * __restrict /*s2*/) __attribute__((__nonnull__(1,2)));
+S    const wchar_t *wmemchr(const wchar_t * __restrict /*s*/, wchar_t /*c*/,
+S                           size_t /*n*/) __attribute__((__nonnull__(1)));
+S#ifndef __WCHAR_DISABLED
+S    extern "C++" wchar_t *wcschr(wchar_t * __restrict __s, wchar_t __c) __attribute__((__nonnull__(1)));
+S    extern "C++" inline wchar_t *wcschr(wchar_t * __restrict __s, wchar_t __c)
+S      { return const_cast<wchar_t *>(wcschr(const_cast<const wchar_t *>(__s), __c)); }
+S    extern "C++" wchar_t *wcspbrk(wchar_t * __restrict __s1, const wchar_t * __restrict __s2) __attribute__((__nonnull__(1,2)));
+S    extern "C++" inline wchar_t *wcspbrk(wchar_t * __restrict __s1, const wchar_t * __restrict __s2)
+S      { return const_cast<wchar_t *>(wcspbrk(const_cast<const wchar_t *>(__s1), __s2)); }
+S    extern "C++" wchar_t *wcsrchr(wchar_t * __restrict __s, wchar_t __c) __attribute__((__nonnull__(1)));
+S    extern "C++" inline wchar_t *wcsrchr(wchar_t * __restrict __s, wchar_t __c)
+S      { return const_cast<wchar_t *>(wcsrchr(const_cast<const wchar_t *>(__s), __c)); }
+S    extern "C++" wchar_t *wcsstr(wchar_t * __restrict __s1,
+S                          const wchar_t * __restrict __s2) __attribute__((__nonnull__(1,2)));
+S    extern "C++" inline wchar_t *wcsstr(wchar_t * __restrict __s1,
+S                          const wchar_t * __restrict __s2)
+S      { return const_cast<wchar_t *>(wcsstr(const_cast<const wchar_t *>(__s1), __s2)); }
+S    extern "C++" wchar_t *wmemchr(wchar_t * __restrict __s, wchar_t __c,
+S                                  size_t __n) __attribute__((__nonnull__(1)));
+S    extern "C++" inline wchar_t *wmemchr(wchar_t * __restrict __s, wchar_t __c,
+S                                  size_t __n)
+S    { return const_cast<wchar_t *>(wmemchr(const_cast<const wchar_t *>(__s), __c, __n)); }
+S#endif
+N#else
+N    /*
+N     * C's approximation to the above is to have all of these
+N     * functions search a const string and return a non-const
+N     * pointer. This is the only way to prevent compile errors in
+N     * all sensible uses of the functions, but unfortunately
+N     * renders them unable to spot a lot of the possible error
+N     * cases.
+N     */
+N#if defined(__cplusplus) && defined(__ARMCOMPILER_LIBCXX)
+X#if 0L && 0L
+S  }  /* extern "C" */
+S  }  /* namespace std */
+S  extern "C" {
+N#endif
+N    wchar_t *wcschr(const wchar_t * __restrict /*s*/, wchar_t /*c*/) __attribute__((__nonnull__(1)));
+N    wchar_t *wcspbrk(const wchar_t * __restrict /*s1*/,
+N                     const wchar_t * __restrict /*s2*/) __attribute__((__nonnull__(1,2)));
+N    wchar_t *wcsrchr(const wchar_t * __restrict /*s*/, wchar_t /*c*/) __attribute__((__nonnull__(1)));
+N    wchar_t *wcsstr(const wchar_t * __restrict /*s1*/,
+N                    const wchar_t * __restrict /*s2*/) __attribute__((__nonnull__(1,2)));
+N    wchar_t *wmemchr(const wchar_t * __restrict /*s*/, wchar_t /*c*/,
+N                     __CLIBNS size_t /*n*/) __attribute__((__nonnull__(1)));
+X                      size_t  ) __attribute__((__nonnull__(1)));
+N#if defined(__cplusplus) && defined(__ARMCOMPILER_LIBCXX)
+X#if 0L && 0L
+S  }  /* extern "C" */
+S  namespace std {
+S  extern "C" {
+N#endif
+N#endif
+N
+N    #ifdef __cplusplus
+S         }  /* extern "C" */
+S      }  /* namespace std */
+N    #endif /* __cplusplus */
+N  #endif /* __WCHAR_DECLS */
+N
+N  #if _AEABI_PORTABILITY_LEVEL != 0 && !defined _AEABI_PORTABLE
+X  #if _AEABI_PORTABILITY_LEVEL != 0 && !0L
+S    #define _AEABI_PORTABLE
+N  #endif
+N
+N  #ifdef __cplusplus
+S    #ifndef __WCHAR_NO_EXPORTS
+S      using ::std::size_t;
+S      using ::std::wint_t;
+S      using ::std::mbstate_t;
+S      using ::std::tm;
+S      using ::std::wcsftime;
+S    #ifndef __ARM_WCHAR_NO_IO
+S      using ::std::swprintf;
+S      using ::std::vswprintf;
+S      using ::std::swscanf;
+S      using ::std::vswscanf;
+S      using ::std::fwprintf;
+S      using ::std::vfwprintf;
+S      using ::std::fwscanf;
+S      using ::std::vfwscanf;
+S      using ::std::wprintf;
+S      using ::std::vwprintf;
+S      using ::std::wscanf;
+S      using ::std::vwscanf;
+S      using ::std::fgetwc;
+S      using ::std::fgetws;
+S      using ::std::fputwc;
+S      using ::std::fputws;
+S      using ::std::fwide;
+S      using ::std::getwc;
+S      using ::std::getwchar;
+S      using ::std::putwc;
+S      using ::std::putwchar;
+S      using ::std::ungetwc;
+S      using ::std::btowc;
+S    #endif /* __ARM_WCHAR_NO_IO */
+S      using ::std::wctob;
+S      using ::std::mbsinit;
+S      using ::std::mbrlen;
+S      using ::std::mbrtowc;
+S      using ::std::wcrtomb;
+S      using ::std::mbsrtowcs;
+S      using ::std::wcsrtombs;
+S      using ::std::_mbsnrtowcs;
+S      using ::std::_wcsnrtombs;
+S#if !defined(__STRICT_ANSI__)
+S      using ::std::mbsnrtowcs;
+S      using ::std::wcsnrtombs;
+S#endif
+S      using ::std::wcstod;
+S      using ::std::wcstof;
+S      using ::std::wcstold;
+S      using ::std::wcstol;
+S      using ::std::wcstoul;
+S#if !defined(__STRICT_ANSI__) || (defined(__STDC_VERSION__) && 199901L <= __STDC_VERSION__) || (defined(__cplusplus) && 201103L <= __cplusplus)
+S      using ::std::wcstoll;
+S      using ::std::wcstoull;
+S#endif /* !defined(__STRICT_ANSI__) || (defined(__STDC_VERSION__) && 199901L <= __STDC_VERSION__) || (defined(__cplusplus) && 201103L <= __cplusplus) */
+S      using ::std::wcscpy;
+S      using ::std::wcsncpy;
+S      using ::std::wmemcpy;
+S      using ::std::wmemmove;
+S      using ::std::wcscat;
+S      using ::std::wcsncat;
+S      using ::std::wcscmp;
+S      using ::std::wcsncmp;
+S      using ::std::wcscasecmp;
+S      using ::std::wcsncasecmp;
+S      using ::std::wcscoll;
+S      using ::std::wcsxfrm;
+S      using ::std::wmemcmp;
+S#if defined(__cplusplus) && !defined(__ARMCOMPILER_LIBCXX)
+S      using ::std::wcschr;
+S      using ::std::wcspbrk;
+S      using ::std::wcsrchr;
+S      using ::std::wcsstr;
+S      using ::std::wmemchr;
+S#endif /* defined(__cplusplus) && !defined(__ARMCOMPILER_LIBCXX) */
+S      using ::std::wcscspn;
+S      using ::std::wcsspn;
+S      using ::std::wcstok;
+S      using ::std::wcslen;
+S      using ::std::wmemset;
+S#if !defined(__STRICT_ANSI__) && !defined(__ARM_WCHAR_NO_IO)
+S      using ::std::FILE;
+S#endif
+S    #endif /* __WCHAR_NO_EXPORTS */
+N  #endif /* __cplusplus */
+N#endif /* ndef __wchar_h */
+N
+N/* end of wchar.h */
+N
+L 6 "..\..\..\module\common\Math\../x_cross_platform.h" 2
+N
+N#define X_Void      void
+Ntypedef int8_t      X_Int8;
+Ntypedef uint8_t     X_UInt8;
+Ntypedef int16_t     X_Int16;
+Ntypedef uint16_t    X_UInt16;
+Ntypedef int32_t     X_Int32;
+Ntypedef uint32_t    X_UInt32;
+Ntypedef int64_t     X_Int64;
+Ntypedef uint64_t    X_UInt64;
+Ntypedef float       X_Float32;
+Ntypedef double      X_Float64;
+Ntypedef char        X_Char;
+Ntypedef wchar_t     X_WChar;
+N
+Ntypedef unsigned int    X_UInt;
+Ntypedef int             X_Int;
+Ntypedef X_Int64         X_IntLongest;
+Ntypedef X_UInt64        X_UIntLongest;
+N
+N#define X_Null              ((X_Void*)0)
+N
+Ntypedef int                 X_Boolean;
+N#define X_True              (0 == 0)
+N#define X_False             (0 != 0)
+N
+N#define MapperAssertion     ((sizeof(X_Int8) == 1) && (sizeof(X_UInt8) == 1) && (sizeof(X_Int16) == 2) && (sizeof(X_UInt16) == 2) && (sizeof(X_Int32) == 4) && (sizeof(X_UInt32) == 4) && (sizeof(X_Float32) == 4) && (sizeof(X_Float64) == 8))
+N
+N#ifndef __FUNCTION__
+N    #define __FUNCTION__  "not support "
+N#endif
+N
+N#ifndef __func__  
+N    #define __func__    "not support "
+N#endif
+N
+N/*
+N这两个宏都可以用于获取当前函数名称，但它们在使用方式和适用范围上有所不同。 
+N 
+N __FUNCTION__  宏会在编译时被替换为当前函数的名称字符串，可以在任何函数中使用，包括全局作用域。但是它不是标准宏，不被所有编译器都支持。 
+N 
+N __func__  宏是C99标准的一部分，支持更广泛，并且也会在编译时被替换为当前函数的名称字符串。它只能在函数内使用，因此对于全局作用域或类作用域中的函数， __FUNCTION__  可能是更好的选择。 
+N 
+N因此，如果你的编译器支持  __FUNCTION__ ，并且你不需要跨编译器移植代码，则  __FUNCTION__  可以是更通用的选择。如果需要与不同类型的编译器和标准兼容，则应使用  __func__ 。
+N*/
+N
+N#endif
+L 10 "..\..\..\module\common\Math\bit_operation.h" 2
+N
+N#define Set  (0 == 0)
+N#define Clear (0 != 0)
+N
+Nuint8_t byte_rotate_bit(uint8_t source);// ! careful about the hardware platform ;test arm 32 ok
+Nuint8_t byte_setbit(uint8_t source,uint8_t bitnumber);
+Nuint8_t byte_clearbit(uint8_t source,uint8_t bitnumber);
+Nuint8_t byte_getbit(uint8_t source,uint8_t bitnumber);
+Nuint8_t byte_bitoverturn(uint8_t source,uint8_t bitnumber);
+Nuint8_t ByteFactorSet(uint8_t factor,uint8_t bit_number,X_Boolean SetOrClear);
+N
+Nuint16_t twobyte_setbit(uint16_t source,uint8_t bitnumber);
+Nuint16_t twobyte_clearbit(uint16_t source,uint8_t bitnumber);
+Nuint16_t twobyte_getbit(uint16_t source,uint8_t bitnumber);
+Nuint16_t twobyte_bitoverturn(uint16_t source,uint8_t bitnumber);
+Nuint16_t TwoByteFactorSet(uint16_t factor,uint8_t bit_number,X_Boolean SetOrClear);
+N
+Nuint32_t uint32_rotate_bit(uint32_t source);// ! careful about the hardware platform
+N
+Nuint32_t fourbyte_setbit(uint32_t source,uint8_t bitnumber);
+Nuint32_t fourbyte_clearbit(uint32_t source,uint8_t bitnumber);
+Nuint32_t fourbyte_getbit(uint32_t source,uint8_t bitnumber);
+Nuint32_t fourbyte_bitoverturn(uint32_t source,uint8_t bitnumber);
+Nuint32_t FourByteFactorSet(uint32_t factor,uint8_t bit_number,X_Boolean SetOrClear);
+N
+Nuint8_t GetBinaryBitNumber(uint32_t value);
+Nuint8_t GetLeadZeroCount(uint32_t source);
+Nuint8_t GetRearZeroCount(uint32_t source);
+N
+N#ifdef __cplusplus
+S 	}
+N#endif
+N
+N
+N#endif
+L 2 "..\..\..\module\common\Math\bit_operation.c" 2
+N
+N/*********************************************
+Nchange one bit keep others at the same time:
+N							1           		 0
+Nset:		 | (000_1)        & (111_0) 
+N
+Nkeep one bit change others at the same time:
+N										1           		 0
+Nset others:		 | (111_0)        & (000_1) 
+N*********************************************/
+N
+N// byte operation
+N#define ByteMask							((uint8_t)(1u << 0))
+N
+Nuint8_t byte_rotate_bit(uint8_t source)// ! careful about the hardware platform ,test arm 32 ok
+N{
+N		source = (source & 0xaa) >> 1 | (source & 0x55) << 1;
+N		source = (source & 0xcc) >> 2 | (source & 0x33) << 2;
+N		source = (source & 0xf0) >> 4 | (source & 0x0f) << 4;
+N////////////		SEGGER_RTT_Debug(ROTATE_BIT_DEBUG,(" source: %d \r\n",source));
+N		return source;
+N}
+N
+Nuint8_t byte_setbit(uint8_t source,uint8_t bitnumber)
+N{
+N	source = source | (ByteMask << bitnumber);
+X	source = source | (((uint8_t)(1u << 0)) << bitnumber);
+N	return source;
+N}
+Nuint8_t byte_clearbit(uint8_t source,uint8_t bitnumber)
+N{
+N	source = source & (~(ByteMask << bitnumber));
+X	source = source & (~(((uint8_t)(1u << 0)) << bitnumber));
+N	return source;
+N}
+Nuint8_t byte_getbit(uint8_t source,uint8_t bitnumber)
+N{
+N	if((source & (ByteMask << bitnumber)) != 0)
+X	if((source & (((uint8_t)(1u << 0)) << bitnumber)) != 0)
+N	{
+N		return 1;
+N	}
+N	return 0;
+N}
+Nuint8_t byte_bitoverturn(uint8_t source,uint8_t bitnumber)
+N{
+N	uint8_t bitmask = ByteMask;
+X	uint8_t bitmask = ((uint8_t)(1u << 0));
+N	bitmask = bitmask << bitnumber;
+N	source = source ^ bitmask;
+N	return source;
+N	
+N}
+N
+Nuint8_t ByteFactorSet(uint8_t factor,uint8_t bit_number,X_Boolean SetOrClear)
+N{
+N	uint8_t  value;
+N	if(SetOrClear == Set)
+X	if(SetOrClear == (0 == 0))
+N	{
+N		value = byte_setbit(factor,bit_number);
+N	}
+N	else
+N	{
+N		value = byte_clearbit(factor,bit_number);
+N}
+N
+N	return value;
+N}
+N
+N
+N//uint16_t operation 
+N#define TwoByteMask							((uint16_t)(1u << 0))
+N
+Nuint16_t twobyte_setbit(uint16_t source,uint8_t bitnumber)
+N{
+N	source = source | (TwoByteMask << bitnumber);
+X	source = source | (((uint16_t)(1u << 0)) << bitnumber);
+N	return source;
+N}
+Nuint16_t twobyte_clearbit(uint16_t source,uint8_t bitnumber)
+N{
+N	source = source & (~(TwoByteMask << bitnumber));
+X	source = source & (~(((uint16_t)(1u << 0)) << bitnumber));
+N	return source;
+N}
+Nuint16_t twobyte_getbit(uint16_t source,uint8_t bitnumber)
+N{
+N	if((source & (TwoByteMask << bitnumber)) != 0)
+X	if((source & (((uint16_t)(1u << 0)) << bitnumber)) != 0)
+N	{
+N		return 1;
+N	}
+N	return 0;
+N}
+N
+Nuint16_t twobyte_bitoverturn(uint16_t source,uint8_t bitnumber)
+N{
+N	uint16_t bitmask = TwoByteMask;
+X	uint16_t bitmask = ((uint16_t)(1u << 0));
+N	bitmask = bitmask << bitnumber;
+N	source = source ^ bitmask;
+N	return source;
+N	
+N}
+N
+Nuint16_t TwoByteFactorSet(uint16_t factor,uint8_t bit_number,X_Boolean SetOrClear)
+N{
+N	uint16_t  value;
+N	if(SetOrClear == Set)
+X	if(SetOrClear == (0 == 0))
+N	{
+N		value = twobyte_setbit(factor,bit_number);
+N	}
+N	else
+N	{
+N		value = twobyte_clearbit(factor,bit_number);
+N}
+N
+N	return value;
+N}
+N
+Nuint32_t uint32_rotate_bit(uint32_t source)// ! careful about the hardware platform
+N{
+N	source = (((source & 0xaaaaaaaa) >> 1) | ((source & 0x55555555) << 1));
+N	source = (((source & 0xcccccccc) >> 2) | ((source & 0x33333333) << 2));
+N	source = (((source & 0xf0f0f0f0) >> 4) | ((source & 0x0f0f0f0f) << 4));
+N	source = (((source & 0xff00ff00) >> 8) | ((source & 0x00ff00ff) << 8));
+N    return((source >> 16) | (source << 16));
+N}
+N
+N//uint16_t operation 
+N#define FourByteMask							((uint32_t)(1u << 0))
+N
+Nuint32_t fourbyte_setbit(uint32_t source,uint8_t bitnumber)
+N{
+N	source = source | (FourByteMask << bitnumber);
+X	source = source | (((uint32_t)(1u << 0)) << bitnumber);
+N	return source;
+N}
+Nuint32_t fourbyte_clearbit(uint32_t source,uint8_t bitnumber)
+N{
+N	source = source & (~(FourByteMask << bitnumber));
+X	source = source & (~(((uint32_t)(1u << 0)) << bitnumber));
+N	return source;
+N}
+Nuint32_t fourbyte_getbit(uint32_t source,uint8_t bitnumber)
+N{
+N	if((source & (FourByteMask << bitnumber)) != 0)
+X	if((source & (((uint32_t)(1u << 0)) << bitnumber)) != 0)
+N	{
+N		return 1;
+N	}
+N	return 0;
+N}
+N
+Nuint32_t fourbyte_bitoverturn(uint32_t source,uint8_t bitnumber)
+N{
+N	uint32_t bitmask = FourByteMask;
+X	uint32_t bitmask = ((uint32_t)(1u << 0));
+N	bitmask = bitmask << bitnumber;
+N	source = source ^ bitmask;
+N	return source;
+N	
+N}
+N
+Nuint32_t FourByteFactorSet(uint32_t factor,uint8_t bit_number,X_Boolean SetOrClear)
+N{
+N	uint32_t  value;
+N	if(SetOrClear == Set)
+X	if(SetOrClear == (0 == 0))
+N	{
+N		value = fourbyte_setbit(factor,bit_number);
+N	}
+N	else
+N	{
+N		value = fourbyte_clearbit(factor,bit_number);
+N}
+N
+N	return value;
+N}
+N
+Nstatic struct _power_table
+N{
+N	uint8_t minus;
+N	uint32_t result;
+N}
+Nconst power_table_for_number2[]=
+N{
+N	{0,1},	{1,2},	{2,4},	{3,8},	{4,16},	{5,32},	{6,64},	{7,128},
+N	{8,256},{9,512},	{10,1024},	{11,2048},	{12,4096},	{13,8192},	{14,16384},	{15,327168},
+N	{16,65536},	{17,131072},	{18,262144},	{19,524288},	{20,1048576},	{21,2097152},	{22,4194304},	{23,8388608},
+N	{24,16777216},	{25,33554432},	{26,67108864},	{27,134217728},	{28,268435456},	{29,536870912},	{30,1073741824},	{31,2147483648},
+N
+N};
+N
+Nuint8_t GetBinaryBitNumber(uint32_t value)
+N{
+N	uint8_t i;
+N	if(value == 0) {return 1;}
+N	for(i=0;i<sizeof(power_table_for_number2)/sizeof(power_table_for_number2[0]);i++)
+N	{
+N		if(value < power_table_for_number2[i].result) {return i;}
+N	}
+N	return i+1; // 32
+N}
+N
+N
+N#ifndef CPU_CFG_LEAD_ZEROS_ASM_PRESENT
+Nstatic const uint8_t LeadZeroTable_8[256] = {
+N		8u,7u,6u,6u,5u,5u,5u,5u,4u,4u,4u,4u,4u,4u,4u,4u, /* 0x00 to 0x0F */
+N		3u,3u,3u,3u,3u,3u,3u,3u,3u,3u,3u,3u,3u,3u,3u,3u, /* 0x10 to 0x1F */
+N		2u,2u,2u,2u,2u,2u,2u,2u,2u,2u,2u,2u,2u,2u,2u,2u, /* 0x20 to 0x2F */
+N		2u,2u,2u,2u,2u,2u,2u,2u,2u,2u,2u,2u,2u,2u,2u,2u, /* 0x30 to 0x3F */
+N		1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u, /* 0x40 to 0x4F */
+N		1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u, /* 0x50 to 0x5F */
+N		1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u, /* 0x60 to 0x6F */
+N		1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u,1u, /* 0x70 to 0x7F */
+N		0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u, /* 0x80 to 0x8F */
+N		0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u, /* 0x90 to 0x9F */
+N		0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u, /* 0xA0 to 0xAF */
+N		0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u, /* 0xB0 to 0xBF */
+N		0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u, /* 0xC0 to 0xCF */
+N		0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u, /* 0xD0 to 0xDF */
+N		0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u, /* 0xE0 to 0xEF */
+N		0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u,0u /* 0xF0 to 0xFF */
+N};
+N
+Nuint8_t GetLeadZeroCount(uint32_t source)
+N{
+N	uint8_t nbr_lead_zeros;
+N	uint8_t ix;
+N	if (source > 0x0000FFFFu)
+N	{
+N		if (source > 0x00FFFFFFu)
+N		{
+N			ix = (uint8_t)(source >> 24u);
+N			nbr_lead_zeros=(LeadZeroTable_8[ix]+0u);
+N		}
+N		else
+N		{
+N			ix = (uint8_t)(source >> 16u);
+N			nbr_lead_zeros = (LeadZeroTable_8[ix] + 8u);
+N		}
+N	}
+N	else
+N	{
+N		if (source > 0x000000FFu)
+N		{
+N			ix = (uint8_t)(source >> 8u);
+N			nbr_lead_zeros = (LeadZeroTable_8[ix] + 16u);
+N		}
+N		else {
+N			ix = (uint8_t)(source >> 0u);
+N			nbr_lead_zeros = (LeadZeroTable_8[ix] + 24u);
+N		}
+N	}
+N	return (nbr_lead_zeros);
+N}
+N
+Nuint8_t GetRearZeroCount(uint32_t source)
+N{
+N	source = uint32_rotate_bit(source);
+N	return GetLeadZeroCount(source);
+N}
+N#endif
+N

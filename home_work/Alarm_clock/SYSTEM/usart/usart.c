@@ -33,18 +33,19 @@
  
 
 //////////////////////////////////////////////////////////////////
-//加入以下代码,支持printf函数,而不需要选择use MicroLIB	  
-#if 1
+//加入以下代码,支持printf函数,而不需要选择use MicroLIB	
+
+#if 0
 #pragma import(__use_no_semihosting)             
 //标准库需要的支持函数                 
-struct __FILE 
+typedef struct __FILE 
 { 
 	int handle; 
-}; 
+}FILE; 
 
-FILE __stdout;       
+////FILE __stdout;       
 //定义_sys_exit()以避免使用半主机模式    
-_sys_exit(int x) 
+int _sys_exit(int x) 
 { 
 	x = x; 
 } 

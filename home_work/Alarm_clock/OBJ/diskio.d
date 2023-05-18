@@ -4,7 +4,7 @@
 ..\obj\diskio.o: ..\HARDWARE\SDIO\sdio_sdcard.h
 ..\obj\diskio.o: ..\USER\stm32f4xx.h
 ..\obj\diskio.o: ..\CORE\core_cm4.h
-..\obj\diskio.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\diskio.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\diskio.o: ..\CORE\core_cmInstr.h
 ..\obj\diskio.o: ..\CORE\core_cmFunc.h
 ..\obj\diskio.o: ..\CORE\core_cm4_simd.h

@@ -5,7 +5,7 @@
 ..\obj\mycc936.o: ..\TEXT\fontupd.h
 ..\obj\mycc936.o: ..\USER\stm32f4xx.h
 ..\obj\mycc936.o: ..\CORE\core_cm4.h
-..\obj\mycc936.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\mycc936.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\mycc936.o: ..\CORE\core_cmInstr.h
 ..\obj\mycc936.o: ..\CORE\core_cmFunc.h
 ..\obj\mycc936.o: ..\CORE\core_cm4_simd.h

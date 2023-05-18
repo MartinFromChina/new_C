@@ -2,7 +2,7 @@
 ..\obj\fattester.o: ..\FATFS\exfuns\fattester.h
 ..\obj\fattester.o: ..\USER\stm32f4xx.h
 ..\obj\fattester.o: ..\CORE\core_cm4.h
-..\obj\fattester.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\fattester.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\fattester.o: ..\CORE\core_cmInstr.h
 ..\obj\fattester.o: ..\CORE\core_cmFunc.h
 ..\obj\fattester.o: ..\CORE\core_cm4_simd.h
@@ -42,8 +42,7 @@
 ..\obj\fattester.o: ..\USMART\usmart.h
 ..\obj\fattester.o: ..\USMART\usmart_str.h
 ..\obj\fattester.o: ..\SYSTEM\usart\usart.h
-..\obj\fattester.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\fattester.o: ..\SYSTEM\sys\sys.h
 ..\obj\fattester.o: ..\FATFS\exfuns\exfuns.h
 ..\obj\fattester.o: ..\MALLOC\malloc.h
-..\obj\fattester.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\fattester.o: D:\Program Files\ARM\ARMCC\Bin\..\include\string.h

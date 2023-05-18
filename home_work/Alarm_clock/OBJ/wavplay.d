@@ -3,7 +3,7 @@
 ..\obj\wavplay.o: ..\SYSTEM\sys\sys.h
 ..\obj\wavplay.o: ..\USER\stm32f4xx.h
 ..\obj\wavplay.o: ..\CORE\core_cm4.h
-..\obj\wavplay.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\wavplay.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\wavplay.o: ..\CORE\core_cmInstr.h
 ..\obj\wavplay.o: ..\CORE\core_cmFunc.h
 ..\obj\wavplay.o: ..\CORE\core_cm4_simd.h
@@ -41,7 +41,6 @@
 ..\obj\wavplay.o: ..\FATFS\src\integer.h
 ..\obj\wavplay.o: ..\FATFS\src\ffconf.h
 ..\obj\wavplay.o: ..\SYSTEM\usart\usart.h
-..\obj\wavplay.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\wavplay.o: ..\SYSTEM\delay\delay.h
 ..\obj\wavplay.o: ..\MALLOC\malloc.h
 ..\obj\wavplay.o: ..\HARDWARE\I2S\i2s.h

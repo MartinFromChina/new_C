@@ -3,7 +3,7 @@
 ..\obj\wm8978.o: ..\SYSTEM\sys\sys.h
 ..\obj\wm8978.o: ..\USER\stm32f4xx.h
 ..\obj\wm8978.o: ..\CORE\core_cm4.h
-..\obj\wm8978.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\wm8978.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\wm8978.o: ..\CORE\core_cmInstr.h
 ..\obj\wm8978.o: ..\CORE\core_cmFunc.h
 ..\obj\wm8978.o: ..\CORE\core_cm4_simd.h

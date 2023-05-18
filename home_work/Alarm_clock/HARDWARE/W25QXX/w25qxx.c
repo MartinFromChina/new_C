@@ -243,7 +243,7 @@ void W25QXX_Erase_Chip(void)
 void W25QXX_Erase_Sector(u32 Dst_Addr)   
 {  
 	//监视falsh擦除情况,测试用   
- 	printf("fe:%x\r\n",Dst_Addr);	  
+////// 	printf("fe:%x\r\n",Dst_Addr);	  
  	Dst_Addr*=4096;
     W25QXX_Write_Enable();                  //SET WEL 	 
     W25QXX_Wait_Busy();   

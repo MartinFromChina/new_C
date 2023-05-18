@@ -208,7 +208,7 @@ u8 audio_play_song(u8* fname)
 			res=wav_play_song(fname);
 			break;
 		default://其他文件,自动跳转到下一曲
-			printf("can't play:%s\r\n",fname);
+////////			printf("can't play:%s\r\n",fname);
 			res=KEY0_PRES;
 			break;
 	}

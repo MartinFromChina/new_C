@@ -2,7 +2,7 @@
 ..\obj\fontupd.o: ..\TEXT\fontupd.h
 ..\obj\fontupd.o: ..\USER\stm32f4xx.h
 ..\obj\fontupd.o: ..\CORE\core_cm4.h
-..\obj\fontupd.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\fontupd.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\fontupd.o: ..\CORE\core_cmInstr.h
 ..\obj\fontupd.o: ..\CORE\core_cmFunc.h
 ..\obj\fontupd.o: ..\CORE\core_cm4_simd.h
@@ -41,9 +41,8 @@
 ..\obj\fontupd.o: ..\HARDWARE\W25QXX\w25qxx.h
 ..\obj\fontupd.o: ..\SYSTEM\sys\sys.h
 ..\obj\fontupd.o: ..\HARDWARE\LCD\lcd.h
-..\obj\fontupd.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-..\obj\fontupd.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\fontupd.o: D:\Program Files\ARM\ARMCC\Bin\..\include\stdlib.h
+..\obj\fontupd.o: D:\Program Files\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\fontupd.o: ..\MALLOC\malloc.h
 ..\obj\fontupd.o: ..\SYSTEM\delay\delay.h
 ..\obj\fontupd.o: ..\SYSTEM\usart\usart.h
-..\obj\fontupd.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
