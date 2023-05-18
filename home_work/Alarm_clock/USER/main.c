@@ -67,7 +67,6 @@ int main(void)
 	while(1)
 	{ 
         TaskLoopExe();
-//////		audio_play();
 	} 
 }
 

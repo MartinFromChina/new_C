@@ -1,5 +1,6 @@
 #include "mTask.h"
 #include "ButtonTask.h"
+#include "mApp_MainTask.h"
 ////////#include "mApp_MainTask.h"
 ////////#include "loraTask.h"
 ////////#include "DelayExtTask.h"
@@ -18,8 +19,7 @@ uint32_t TerminalNumberGet(X_Void)
 }
 
 static const s_X_TaskList task_list[] = {
-////////  {TID_MainTask,            X_Null},
-////////////  {TID_MainTask,            main_task},
+  {TID_MainTask,            main_task},
 ////////////  {TID_LoraTask,            lora_task},
   {TID_ButtonTask,          button_task},
 ////////////  {TID_DelayTask,           delay_todo_task},
@@ -38,7 +38,6 @@ X_TASK_SCHEDULER_DEF(task_manager,sizeof(task_list)/sizeof(task_list[0]),task_li
 
 X_Void TaskInit(X_Void)
 {
-    uint8_t i;
     LogDebugInit();
     INSERT(LogDebug)(1,(" hello world \r\n"));
     SysLogDebug(1,(" this is an alarm clock  \r\n"));
@@ -47,7 +46,7 @@ X_Void TaskInit(X_Void)
 		SysLogDebug(1,(" !!! fatal error , task init failed \r\n"));
 	}
     
-////////    for(i = TID_MainTask ;i < TID_MaxTaskID_Plus_1;i++)
+////////    for(uint8_t i = TID_MainTask ;i < TID_MaxTaskID_Plus_1;i++)
 ////////    {
 ////////        common_task_freeze(i);
 ////////    }

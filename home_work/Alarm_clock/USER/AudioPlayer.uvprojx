@@ -892,6 +892,11 @@
               <FilePath>..\new_user\task\mTask.c</FilePath>
             </File>
             <File>
+              <FileName>mApp_MainTask.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\new_user\task\mApp_MainTask.c</FilePath>
+            </File>
+            <File>
               <FileName>ButtonTask.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\new_user\task\ButtonTask.c</FilePath>
