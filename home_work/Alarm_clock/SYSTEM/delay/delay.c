@@ -168,8 +168,8 @@ void delay_us(u32 nus)
 //延时nms
 //nms:要延时的ms数
 //nms:0~65535
-void delay_ms(u16 nms)
-{	
+////void delay_ms(u16 nms)
+////{	
 //////////	if(delay_osrunning&&delay_osintnesting==0)//如果OS已经在跑了,并且不是在中断里面(中断里面不能任务调度)	    
 //////////	{		 
 //////////		if(nms>=fac_ms)						//延时的时间大于OS的最少时间周期 
@@ -179,23 +179,19 @@ void delay_ms(u16 nms)
 //////////		nms%=fac_ms;						//OS已经无法提供这么小的延时了,采用普通方式延时    
 //////////	}
 //////////	delay_us((u32)(nms*1000));				//普通方式延时
-}
+////}
 #else  //不用ucos时
 //延时nus
 //nus为要延时的us数.	
 //注意:nus的值,不要大于798915us(最大值即2^24/fac_us@fac_us=21)
-void delay_us(u32 nus)
+void delay_us(u32 Us)
 {		
-////////	u32 temp;	    	 
-////////	SysTick->LOAD=nus*fac_us; 				//时间加载	  		 
-////////	SysTick->VAL=0x00;        				//清空计数器
-////////	SysTick->CTRL|=SysTick_CTRL_ENABLE_Msk ; //开始倒数 	 
-////////	do
-////////	{
-////////		temp=SysTick->CTRL;
-////////	}while((temp&0x01)&&!(temp&(1<<16)));	//等待时间到达   
-////////	SysTick->CTRL&=~SysTick_CTRL_ENABLE_Msk; //关闭计数器
-////////	SysTick->VAL =0X00;       				//清空计数器 
+  __IO uint32_t Delay = Us * 168 / 8;//(SystemCoreClock / 8U / 1000000U)
+  do
+  {
+    __NOP();
+  }
+  while (Delay --);
 }
 //延时nms
 //注意nms的范围
@@ -203,8 +199,8 @@ void delay_us(u32 nus)
 //nms<=0xffffff*8*1000/SYSCLK
 //SYSCLK单位为Hz,nms单位为ms
 //对168M条件下,nms<=798ms 
-void delay_xms(u16 nms)
-{	 		  	  
+//////void delay_xms(u16 nms)
+//////{	 		  	  
 //////	u32 temp;		   
 //////	SysTick->LOAD=(u32)nms*fac_ms;			//时间加载(SysTick->LOAD为24bit)
 //////	SysTick->VAL =0x00;           			//清空计数器
@@ -215,20 +211,18 @@ void delay_xms(u16 nms)
 //////	}while((temp&0x01)&&!(temp&(1<<16)));	//等待时间到达   
 //////	SysTick->CTRL&=~SysTick_CTRL_ENABLE_Msk;       //关闭计数器
 //////	SysTick->VAL =0X00;     		  		//清空计数器	  	    
-} 
+//////} 
 //延时nms 
 //nms:0~65535
-void delay_ms(u16 nms)
+void delay_ms(u16 ms)
 {	 	 
-////////	u8 repeat=nms/540;						//这里用540,是考虑到某些客户可能超频使用,
-////////											//比如超频到248M的时候,delay_xms最大只能延时541ms左右了
-////////	u16 remain=nms%540;
-////////	while(repeat)
-////////	{
-////////		delay_xms(540);
-////////		repeat--;
-////////	}
-////////	if(remain)delay_xms(remain);
+    uint32_t tickstart;
+	tickstart = mFunc_SoftTimerGetSysTickCnt();
+	
+	while(1)
+	{
+		if((ms == 0) || ((mFunc_SoftTimerGetSysTickCnt() - tickstart) > ms)) {break;}
+	}
 } 
 #endif
 			 
