@@ -82,3 +82,5 @@ static X_Boolean KeyObserverReg(key_updata updata_func)
 }
 
 #undef  IMPLEMENT_OF_controller
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

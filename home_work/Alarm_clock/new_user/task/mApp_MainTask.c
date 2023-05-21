@@ -33,4 +33,7 @@ TASK_BODY_BEGIN(main_task,main_task_init,0,0){
    X_do(audio_play());
 }TASK_BODY_END
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
+X_Void SetCurDelayMs(uint32_t ms)
+{
+    cur_delay_ms = ms;
+}

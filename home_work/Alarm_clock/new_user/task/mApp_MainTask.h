@@ -12,7 +12,8 @@
 #endif
 
 X_Void main_task(uint32_t x_task_param_ms,uint16_t task_id,uint8_t *p_isInitDone);      
-
+X_Void SetCurDelayMs(uint32_t ms);
+        
 #ifdef __cplusplus
 		}
 #endif

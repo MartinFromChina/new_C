@@ -15,12 +15,27 @@ typedef enum
     ke_click,
     ke_double_click,
     ke_long_push,
+    ke_long_push_release,
 }e_basic_key_evt;
 
 typedef  X_Void (* key_updata)(e_basic_key_evt evt,uint8_t key_id);
 
+typedef enum
+{
+    ve_idle = 0,
+    ve_time_updata,
+    ve_set_alarm_clock,
+    ve_config_clock,
+    ve_config_speed,
+}e_view_event;
+
+typedef  X_Void (* view_updata)(e_view_event evt,uint8_t viewer_id,
+                                    uint32_t delay_ms);
+
 #define MAX_BUTTON_NUM       3
 #define MAX_KEY_OBSERVER_NUM       2
+
+#define MAX_VIEW_OBSERVER_NUM       2
 
 typedef struct controller controller;
 

@@ -906,6 +906,11 @@
               <FileType>1</FileType>
               <FilePath>..\new_user\task\TestModeTask.c</FilePath>
             </File>
+            <File>
+              <FileName>ConfigParamPoll_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\new_user\task\ConfigParamPoll_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

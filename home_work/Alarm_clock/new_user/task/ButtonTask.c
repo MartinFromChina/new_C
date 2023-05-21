@@ -125,6 +125,9 @@ static void Button1_LongPushReleaseDoing(uint16_t tickcyle)
 										,USER_VALID_LONG_PUSH_IN_MS_DEFAULT
 										,(tickcyle*ACTION_FREQ_IN_MS)-USER_VALID_LONG_PUSH_IN_MS_DEFAULT));
 	#endif
+    
+    FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
+    THIS(controller_basic).key_evt(1,ke_long_push_release,0);
 }
 static void Button2_LongPushReleaseDoing(uint16_t tickcyle)
 {
@@ -134,6 +137,8 @@ static void Button2_LongPushReleaseDoing(uint16_t tickcyle)
 										,USER_VALID_LONG_PUSH_IN_MS_DEFAULT
 										,(tickcyle*ACTION_FREQ_IN_MS)-USER_VALID_LONG_PUSH_IN_MS_DEFAULT));
 	#endif
+    FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
+    THIS(controller_basic).key_evt(2,ke_long_push_release,0);
 }
 static void Button3_LongPushReleaseDoing(uint16_t tickcyle)
 {
@@ -143,6 +148,8 @@ static void Button3_LongPushReleaseDoing(uint16_t tickcyle)
 										,USER_VALID_LONG_PUSH_IN_MS_DEFAULT
 										,(tickcyle*ACTION_FREQ_IN_MS)-USER_VALID_LONG_PUSH_IN_MS_DEFAULT));
 	#endif
+    FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
+    THIS(controller_basic).key_evt(3,ke_long_push_release,0);
 }
 
 static void Button4_LongPushReleaseDoing(uint16_t tickcyle)
@@ -153,6 +160,8 @@ static void Button4_LongPushReleaseDoing(uint16_t tickcyle)
 										,USER_VALID_LONG_PUSH_IN_MS_DEFAULT
 										,(tickcyle*ACTION_FREQ_IN_MS)-USER_VALID_LONG_PUSH_IN_MS_DEFAULT));
 	#endif
+    FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
+    THIS(controller_basic).key_evt(4,ke_long_push_release,0);
 }
 
 static void Button5_LongPushReleaseDoing(uint16_t tickcyle)
@@ -163,6 +172,8 @@ static void Button5_LongPushReleaseDoing(uint16_t tickcyle)
 										,USER_VALID_LONG_PUSH_IN_MS_DEFAULT
 										,(tickcyle*ACTION_FREQ_IN_MS)-USER_VALID_LONG_PUSH_IN_MS_DEFAULT));
 	#endif
+    FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
+    THIS(controller_basic).key_evt(5,ke_long_push_release,0);
 }
 
 static void Button6_LongPushReleaseDoing(uint16_t tickcyle)
@@ -173,6 +184,8 @@ static void Button6_LongPushReleaseDoing(uint16_t tickcyle)
 										,USER_VALID_LONG_PUSH_IN_MS_DEFAULT
 										,(tickcyle*ACTION_FREQ_IN_MS)-USER_VALID_LONG_PUSH_IN_MS_DEFAULT));
 	#endif
+    FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
+    THIS(controller_basic).key_evt(6,ke_long_push_release,0);
 }
 
 static struct _LongPushReleaseDoing

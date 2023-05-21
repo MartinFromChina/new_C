@@ -2,6 +2,7 @@
 #include "ButtonTask.h"
 #include "mApp_MainTask.h"
 #include "TestModeTask.h"
+#include "ConfigParamPoll_task.h"
 
 extern uint32_t mFunc_SoftTimerGetSysTickCnt(void);
 extern X_Boolean ClassInit(X_Void);
@@ -18,6 +19,8 @@ static const s_X_TaskList task_list[] = {
   {TID_MainTask,            main_task},
   {TID_ButtonTask,          button_task},
   {TID_TestMode,            testmode_task},
+  {TID_TimeUp,              time_up_task},
+  {TID_TimeDown,            time_down_task},
 };
 
 X_TASK_SCHEDULER_DEF(task_manager,sizeof(task_list)/sizeof(task_list[0]),task_list);
@@ -36,9 +39,10 @@ X_Void TaskInit(X_Void)
 ////////    {
 ////////        common_task_freeze(i);
 ////////    }
-////////    common_task_restart(TID_MainTask);
-//////    common_task_restart(TID_ButtonTask);
-    
+    common_task_freeze(TID_MainTask);
+    common_task_freeze(TID_TimeUp);
+    common_task_freeze(TID_TimeDown);
+
     isClassInitOK = ClassInit();
 }
 

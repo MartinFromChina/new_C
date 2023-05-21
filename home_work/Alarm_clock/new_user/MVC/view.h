@@ -16,6 +16,11 @@ CLASS_DEF(view
      X_Boolean (* const constructor)(view * p_this);
      const key_updata key_evt_updata;
      X_Void (* const runner)(uint32_t ms);
+     const view_updata view_evt_updata;
+     ,// private
+     uint8_t  hour;
+     uint8_t  minute;
+     uint8_t  sec;
 );
      
 #ifdef __cplusplus
