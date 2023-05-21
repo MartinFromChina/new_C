@@ -7,17 +7,17 @@
 #endif
 
 #include "../../../../../module/component/object_oriented_again/oop.h"
-
+#include "controller.h"
+     
 typedef struct model model;
      
 CLASS_DEF(model
      ,// public
         X_Boolean (* const constructor)(model * p_this);
+        const key_updata key_evt_updata;
         X_Void (* const runner)(uint32_t ms);
-        X_Void (* const interface_next)(X_Void);
-        X_Void (* const interface_back)(X_Void);
-     ,// private
-        uint16_t interface_id; 
+//////     ,// private
+//////        uint16_t interface_id; 
 );
      
 #ifdef __cplusplus

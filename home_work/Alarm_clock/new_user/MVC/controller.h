@@ -17,13 +17,10 @@ typedef enum
     ke_long_push,
 }e_basic_key_evt;
 
-typedef struct
-{
-    e_basic_key_evt value;
-    X_Void (* updata)(e_basic_key_evt evt);// �������ã����ǵõ�����˫���������£��ֱ�attach
-}s_key_evt;
+typedef  X_Void (* key_updata)(e_basic_key_evt evt,uint8_t key_id);
 
 #define MAX_BUTTON_NUM       3
+#define MAX_KEY_OBSERVER_NUM       2
 
 typedef struct controller controller;
 
@@ -32,8 +29,11 @@ CLASS_DEF(controller
      X_Boolean (* const constructor)(controller * p_this);
      X_Void (* const key_evt)(uint8_t key_id,e_basic_key_evt evt,uint32_t ms);
      X_Void (* const key_subject)(X_Void);
+     X_Boolean (* const key_observer_reg)(key_updata updata_func);
      ,// private 
-     s_key_evt key_evt_table[MAX_BUTTON_NUM];
+     e_basic_key_evt key_evt_table[MAX_BUTTON_NUM];
+     key_updata      key_observer[MAX_KEY_OBSERVER_NUM];
+     uint8_t         observer_num;
 );
      
 #ifdef __cplusplus

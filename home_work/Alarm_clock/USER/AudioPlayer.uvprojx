@@ -921,6 +921,16 @@
               <FileType>1</FileType>
               <FilePath>..\new_user\MVC\controller.c</FilePath>
             </File>
+            <File>
+              <FileName>model.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\new_user\MVC\model.c</FilePath>
+            </File>
+            <File>
+              <FileName>view.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\new_user\MVC\view.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

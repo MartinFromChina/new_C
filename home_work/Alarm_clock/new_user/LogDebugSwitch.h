@@ -55,7 +55,7 @@ X_Boolean mDri_TestModeSentBufInterface(const uint8_t *p_buf,uint16_t length);
 /*****************************SYS_INIT*************************************/
 #define SYS_INIT_DEBUG				1
 #define SYS_INFO_DEBUG        1
-#define BUTTON_DOING_DEBUG                  1
+#define BUTTON_DOING_DEBUG                  0
 
 #include "SysLog.h"
 #ifdef __cplusplus
