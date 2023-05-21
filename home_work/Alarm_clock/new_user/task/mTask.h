@@ -28,6 +28,7 @@ typedef enum
 {
     TID_MainTask = 1,
     TID_ButtonTask,
+    TID_TestMode,
     TID_MaxTaskID_Plus_1,
 }e_TaskID;
 

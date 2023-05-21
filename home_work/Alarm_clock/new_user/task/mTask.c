@@ -1,11 +1,7 @@
 #include "mTask.h"
 #include "ButtonTask.h"
 #include "mApp_MainTask.h"
-////////#include "mApp_MainTask.h"
-////////#include "loraTask.h"
-////////#include "DelayExtTask.h"
-////////#include "ButtonTask.h"
-////////#include "ConfigParamPoll_task.h"
+#include "TestModeTask.h"
 
 extern uint32_t mFunc_SoftTimerGetSysTickCnt(void);
 extern X_Boolean ClassInit(X_Void);
@@ -20,18 +16,8 @@ uint32_t TerminalNumberGet(X_Void)
 
 static const s_X_TaskList task_list[] = {
   {TID_MainTask,            main_task},
-////////////  {TID_LoraTask,            lora_task},
   {TID_ButtonTask,          button_task},
-////////////  {TID_DelayTask,           delay_todo_task},
-////////////  {TID_TestDestTask,        addr_task},
-////////////  
-////////////  {TID_TestPeriodTask,      speed_task},
-//////////  {TID_DistanceTask,        distance_task},
-//////////  {TID_LineNumTask,         line_num_task},
-//////////  {TID_DeviceNumTask,       device_num_task},
-//////////  {TID_AirSpeed,            air_speed_task},
-//////////  {TID_channel,             channel_task},
-//////////  {TID_frame_length,        frame_length_task},
+  {TID_TestMode,            testmode_task},
 };
 
 X_TASK_SCHEDULER_DEF(task_manager,sizeof(task_list)/sizeof(task_list[0]),task_list);

@@ -7,6 +7,8 @@
         
 #define USE_DEBUG_MODE          1
 
+#define USE_SEGGER_RTT_READ_COMMAND      1
+        
 /*****************************SYS_INIT*************************************/
 #define LOG_DEBUG_METHOD 	SeggerRTT_LogDebug
 #define USE_INSERT_DEBUG		1
@@ -44,6 +46,9 @@
 X_Void LogDebugInit(X_Void);
 X_Void SeggerRTT_LogDebug(const char * sFormat, ...);
 X_Void SeggerRttLoopRead(X_Void);		
+X_Void mDri_TestModeReceiveBufClear(X_Void);
+X_Boolean mDri_TestModeGetByteInterface(uint8_t *p_data);
+X_Boolean mDri_TestModeSentBufInterface(const uint8_t *p_buf,uint16_t length);
 		
 		
 /*****************************SYS_INIT*************************************/

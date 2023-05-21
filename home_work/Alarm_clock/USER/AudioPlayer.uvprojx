@@ -901,6 +901,11 @@
               <FileType>1</FileType>
               <FilePath>..\new_user\task\ButtonTask.c</FilePath>
             </File>
+            <File>
+              <FileName>TestModeTask.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\new_user\task\TestModeTask.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
