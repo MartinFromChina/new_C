@@ -48,33 +48,33 @@ extern controller  controller_basic;
 #ifdef UserNeedLongPush
 static void Button1_LongPushDoing(void)
 {
-////	//INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 1 LongPush \r\n"));
+    INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 1 LongPush \r\n"));
     FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
     THIS(controller_basic).key_evt(1,ke_long_push,0);
 }
 static void Button2_LongPushDoing(void)
 {
-////	//INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 2 LongPush \r\n"));
+    INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 2 LongPush \r\n"));
     FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
     THIS(controller_basic).key_evt(2,ke_long_push,0);
 }
 static void Button3_LongPushDoing(void)
 {
-//////	//INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 3 LongPush \r\n"));
+    INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 3 LongPush \r\n"));
 ////////    isSpeed_Down_longpush = X_True;
     FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
     THIS(controller_basic).key_evt(3,ke_long_push,0);
 }
 static void Button4_LongPushDoing(void)
 {
-////	//INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 4 LongPush \r\n"));
+    INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 4 LongPush \r\n"));
 //////    isConfigDone = X_True;
     FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
     THIS(controller_basic).key_evt(4,ke_long_push,0);
 }
 static void Button5_LongPushDoing(void)
 {
-	////INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 5 LongPush \r\n"));
+	INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 5 LongPush \r\n"));
     FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
     THIS(controller_basic).key_evt(5,ke_long_push,0);
 }
@@ -301,7 +301,7 @@ extern X_Void ClearSendRecvCnt(X_Void);
 #ifdef UserNeedDoubleClick
 static void Button1_DoubleClickDoing(void)
 {
-	//INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 1 Double Click \r\n"));
+	INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 1 Double Click \r\n"));
     
 ////////    ClearSendRecvCnt();
     
@@ -310,14 +310,14 @@ static void Button1_DoubleClickDoing(void)
 }
 static void Button2_DoubleClickDoing(void)
 {
-	//INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 2 Double Click \r\n"));
+	INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 2 Double Click \r\n"));
     
     FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
     THIS(controller_basic).key_evt(2,ke_double_click,0);
 }
 static void Button3_DoubleClickDoing(void)
 {
-	//INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 3 Double Click \r\n"));
+	INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 3 Double Click \r\n"));
 //////    isSpeed_Down_doubleclick = X_True;
     
     FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
@@ -325,7 +325,7 @@ static void Button3_DoubleClickDoing(void)
 }
 static void Button4_DoubleClickDoing(void)
 {
-	//INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 4 Double Click \r\n"));
+	INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 4 Double Click \r\n"));
 //////    isConfigDone = X_True;
     
     FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
@@ -333,7 +333,7 @@ static void Button4_DoubleClickDoing(void)
 }
 static void Button5_DoubleClickDoing(void)
 {
-	//INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 5 Double Click \r\n"));
+	INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 5 Double Click \r\n"));
 //////    isConfigDone = X_False;
     
     FUNC_PTR_CHECK(THIS(controller_basic).key_evt,return);
@@ -341,7 +341,7 @@ static void Button5_DoubleClickDoing(void)
 }
 static void Button6_DoubleClickDoing(void)
 {
-	//INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 6 Double Click \r\n"));
+	INSERT(LogDebug)(BUTTON_DOING_DEBUG,("Button 6 Double Click \r\n"));
 //////    if(DoesUnderTestCondition() == X_False)
 //////    {
 //////        Lora_SR_TestWithRssi();

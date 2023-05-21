@@ -33,7 +33,6 @@ static X_Boolean Constructor(controller * p_this)
         p_pri ->key_evt_table[i].updata = X_Null;
     }
     
-    
     return X_True;
 }
 

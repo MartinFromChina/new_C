@@ -3,7 +3,7 @@
 #include "../../../module/common/loopqueue/loop_queues.h"
 #include "../../../module/common/AppCommon.h"
 
-#define MAX_SEGGER_RTT_RECV_SIZE_IN_BYTES          200
+
 #define MAX_TM_FRAME_SEND_LENGTH                   200
 
 #if (USE_SEGGER_RTT_READ_COMMAND != 0)

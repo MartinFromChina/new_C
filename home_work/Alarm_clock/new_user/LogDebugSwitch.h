@@ -5,12 +5,13 @@
 	extern "C"{
 #endif
         
-#define USE_DEBUG_MODE          1
+#define USE_DEBUG_MODE                              1
 
-#define USE_SEGGER_RTT_READ_COMMAND      1
+#define USE_SEGGER_RTT_READ_COMMAND                 1
+#define MAX_SEGGER_RTT_RECV_SIZE_IN_BYTES           200        
         
 /*****************************SYS_INIT*************************************/
-#define LOG_DEBUG_METHOD 	SeggerRTT_LogDebug
+#define LOG_DEBUG_METHOD 	    SeggerRTT_LogDebug
 #define USE_INSERT_DEBUG		1
 		
 #if (USE_DEBUG_MODE == 0 && USE_INSERT_DEBUG != 0)

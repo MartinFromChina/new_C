@@ -27,12 +27,19 @@ TASK_BODY_BEGIN(testmode_task,testmode_task_init,0,0){
    X_do(mTestModeHandle(p_test));
 }TASK_BODY_END
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+extern X_Void mDri_MCU_Reset(X_Void);
+extern void delay_ms(u16 ms);
 
-
-
-
-
-
+static StateNumber RESET_todo(s_StateMachineParam *p_base)
+{
+	sTestModeParamExternForUser *p_ext = (sTestModeParamExternForUser*)p_base;
+	
+    delay_ms(500);
+	mDri_MCU_Reset();
+	
+	p_ext ->successed_cnt ++;
+	return TM_Finish;
+}
 
 
 
@@ -44,6 +51,8 @@ static const sTmCommandAnalysis new_command_analysis[] = {
 	{X_False,  "ENTER",					    5,	5,	TM_ENTER_todo},
 	{X_False,  "EXIT",						4,	4,	TM_EXIT_todo},
 ////	{X_False,  "PWRON",           TM_LENGTH_DONT_CARE,  5,  PWRON_todo},
+    
+    {X_False,  "RESET",                     5,  5,  RESET_todo},
 };
 
 /***********************************************************************************************

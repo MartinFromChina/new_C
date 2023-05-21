@@ -61,3 +61,10 @@ X_Boolean common_task_restart(uint16_t id)
 {
 	return (restart_x_task(task_manager,id)== xte_ok);
 }
+
+#include "sys.h"
+X_Void mDri_MCU_Reset(X_Void)
+{
+        __disable_fault_irq();      // STM32 ииик?бф??  
+        NVIC_SystemReset();
+}
