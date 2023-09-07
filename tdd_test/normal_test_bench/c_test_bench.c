@@ -66,6 +66,7 @@ typedef struct
 typedef struct
 {
     sLoraCommonHeader head;
+    uint32_t cmd_id;
     uint8_t op_number;
     uint8_t op_params[MAX_LORA_RECV_DATA_LENGTH - LORA_DATA_HEADER_SIZE - 1 - 3]; // - 1 for opnumber ; - 3 for loramodule uint16_t addr ,uint8_t channel 
 }s_CombinateOp_CMD;
@@ -82,6 +83,8 @@ typedef struct
 
 #define MESSAGE_TYPE_COMMAND                                (0x03)
 #define CT_LowPowerCmds                                     (0x20)
+
+
 
 static X_Void Generator_TM_CMD(char * string,uint8_t *p_data,uint16_t length)
 {
@@ -323,7 +326,8 @@ X_Void GeneratorCMD_NeighborTrigTiming_LocalTrigTiming(X_Void)
 
 
     cer_cmd.op_number      = 2;
-    total_length += 1;
+    cer_cmd.cmd_id         = 0;
+    total_length += 5;
 
     /*
     typedef struct
@@ -570,8 +574,17 @@ X_Void GeneratorCMD_All(X_Void)
 
 }
 
+/*
+#define R1              0x00037010
+#define R2              0x00037510
+#define T1              0x00037030
+#define T2              0x00037530
+*/
 
-
+#define R1              0x00037010
+#define R2              0x00036510
+#define T1              0x00037030
+#define T2              0x00036530
 
 X_Void GeneratorCMD_All_2(X_Void)
 {
@@ -579,9 +592,9 @@ X_Void GeneratorCMD_All_2(X_Void)
     s_CombinateOp_CMD cer_cmd;
 
     cer_cmd.head.head = 0x55aa;
-    cer_cmd.head.src_addr = 0x000380e0;
-    cer_cmd.head.dest_addr = 0x00038010;
-    cer_cmd.head.next_addr = 0x00038010;
+    cer_cmd.head.src_addr = 0x000370e0;
+    cer_cmd.head.dest_addr = R1;
+    cer_cmd.head.next_addr = R1;
     cer_cmd.head.pTrace    = 0;
     cer_cmd.head.nTrace    = 0;
     cer_cmd.head.type      = FRAME_TYPE_COMBINATE_OP;
@@ -590,7 +603,8 @@ X_Void GeneratorCMD_All_2(X_Void)
 
 
     cer_cmd.op_number      = 8;
-    total_length += 1;
+    cer_cmd.cmd_id         = 0;
+    total_length += 5;
 
     /*
     typedef struct
@@ -608,10 +622,10 @@ X_Void GeneratorCMD_All_2(X_Void)
     uint32_t time_out_ms = 20500;
     uint32_t time_accept_addr = 0x00038040;
     uint16_t delay_ms = 600; 
-    s_OneCombinateOpCmd *  p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 3 - LORA_DATA_HEADER_SIZE];   // op 2
+    s_OneCombinateOpCmd *  p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 7 - LORA_DATA_HEADER_SIZE];   // op 2
     p_op ->ack_cnt = 0xFF;
     p_op ->ack_time_500ms = 40;
-    p_op ->dest = 0x00038010; //  
+    p_op ->dest = R1; //  
     p_op ->p_trace = 0;
     p_op ->type    = FRAME_TYPE_TRIGGERED_DELAY_TIMING;
     p_op ->length  = 10;
@@ -625,10 +639,10 @@ X_Void GeneratorCMD_All_2(X_Void)
           time_out_ms = 20500;
           time_accept_addr = 0x00038640;
      	  delay_ms = 600; 
-    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 3 - LORA_DATA_HEADER_SIZE]; // op 1
+    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 7 - LORA_DATA_HEADER_SIZE]; // op 1
     p_op ->ack_cnt = 0xFF;
     p_op ->ack_time_500ms = 41;
-    p_op ->dest = 0x00038610; //  
+    p_op ->dest = R2; //  
     p_op ->p_trace = 0;
     p_op ->type    = FRAME_TYPE_TRIGGERED_DELAY_TIMING;
     p_op ->length  = 10;
@@ -690,10 +704,10 @@ X_Void GeneratorCMD_All_2(X_Void)
         threshold        = 50000;
     }
 
-    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 3 - LORA_DATA_HEADER_SIZE];   // op 3
+    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 7 - LORA_DATA_HEADER_SIZE];   // op 3
     p_op ->ack_cnt = 3;
     p_op ->ack_time_500ms = 4;
-    p_op ->dest = 0x00038040; //  
+    p_op ->dest = T1; //  
     p_op ->p_trace = 0;
     p_op ->type    = FRAME_TYPE_START_RECV_WAVE_CMD;
     p_op ->length  = 9;
@@ -722,10 +736,10 @@ X_Void GeneratorCMD_All_2(X_Void)
         Signal2_Width    = 0;
     }
 
-    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 3 - LORA_DATA_HEADER_SIZE];   // op 4 
+    p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 7 - LORA_DATA_HEADER_SIZE];   // op 4 
     p_op ->ack_cnt = 3;
     p_op ->ack_time_500ms = 4;
-    p_op ->dest = 0x00038640; //  
+    p_op ->dest = T2; //  
     p_op ->p_trace = 0;
     p_op ->type    = FRAME_TYPE_START_SENDWAVE_CMD;
     p_op ->length  = 4;
@@ -768,7 +782,7 @@ X_Void GeneratorCMD_All_2(X_Void)
     #define FRAME_TYPE_RELAY_SUBMISSION_DATA                     0X36      //??????:
     */
      /*****************************************5 make T1 report data **************************************************/
-     p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 3 - LORA_DATA_HEADER_SIZE];   // op 5 
+     p_op = (s_OneCombinateOpCmd *) &cer_cmd.op_params[total_length - 7 - LORA_DATA_HEADER_SIZE];   // op 5 
      
      p_op ->ack_cnt = 3;
      p_op ->ack_time_500ms = 4;
@@ -819,8 +833,8 @@ X_Void GeneratorCMD_All_2(X_Void)
 
     cer_cmd.head.length    = total_length - 2 - LORA_DATA_HEADER_SIZE;
     check_sum = ByteGetCheckSum((uint8_t *)&cer_cmd,total_length - 2);
-    cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 1 - 1]  = check_sum >> 8;
-    cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 2 - 1]  = check_sum;
+    cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 1 - 1 - 4]  = check_sum >> 8;
+    cer_cmd.op_params[total_length - LORA_DATA_HEADER_SIZE - 2 - 1 - 4]  = check_sum;
     
     Generator_TM_CMD(" all 2",(uint8_t *)&cer_cmd,total_length);
 

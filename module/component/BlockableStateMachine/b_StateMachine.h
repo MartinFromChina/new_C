@@ -197,7 +197,26 @@ X_Boolean BSM_SetState(const s_B_StateMachine *p_bsm,StateNumber state);
 #define S_return(return_value)  return return_value
 /**********************************************************************************************************************/
 
+/************************************************************
+BLOCKABLE_SM_DEF(main_state,X_False,
+                 S_find_start_Action,
+                 S_find_0_Action,
+                 S_find_x_Action,
+                 S_load_xxxx_Action,
+                 S_find_end_Action
+                 );
 
+wrong example below , do not use "," at the end 
+BLOCKABLE_SM_DEF(main_state,X_False,
+                 S_find_start_Action,
+                 S_find_0_Action,
+                 S_find_x_Action,
+                 S_load_xxxx_Action,
+                 S_find_end_Action,
+                 );
+ * 
+ * **************************************************************/
+ 
 #ifdef __cplusplus
 		}
 #endif

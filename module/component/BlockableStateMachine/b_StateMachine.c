@@ -10,6 +10,12 @@ X_Boolean BSM_Run( const s_B_StateMachine *p_bsm,s_BSM_Param *p_param_base,uint3
 
     // 1,load cur state from innear or outside suddenchange 
 	temp_state = (*p_bsm->p_CurrentStateNum);
+	if(temp_state >= p_bsm->TotalStateNum)
+	{
+		(*p_bsm->p_CurrentStateNum) = DEFAULT_B_STATE_NUMBER;
+		return X_False;
+	}
+
 	if(p_bsm ->is_state_self_ctrl != X_True 
                 && *p_bsm ->p_SuddenChangeState < p_bsm->TotalStateNum) 
 	{
@@ -33,12 +39,6 @@ X_Boolean BSM_Run( const s_B_StateMachine *p_bsm,s_BSM_Param *p_param_base,uint3
         {
             p_param_base -> cur_line_num = 0;
         }
-
-		if(temp_state >= p_bsm->TotalStateNum)
-		{
-			(*p_bsm->p_CurrentStateNum) = DEFAULT_B_STATE_NUMBER;
-			return X_False;
-		}
 		(*p_bsm->p_CurrentStateNum) = temp_state;
 		
         return X_True;
